@@ -15,7 +15,6 @@ env:
 jobs:
   compilation:
     name: Compiling...
-    needs: cleaning
     runs-on: ubuntu-latest
     container: epitechcontent/epitest-docker
     timeout-minutes: 4
