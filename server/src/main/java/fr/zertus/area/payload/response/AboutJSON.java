@@ -1,10 +1,8 @@
 package fr.zertus.area.payload.response;
 
-import fr.zertus.area.entity.Service;
+import fr.zertus.area.app.App;
 import fr.zertus.area.utils.IPGetter;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
@@ -17,7 +15,7 @@ public class AboutJSON {
     Client client;
     Server server;
 
-    public AboutJSON(List<Service> services) {
+    public AboutJSON(List<App.AboutJSONApp> services) {
         this.client = new Client();
         this.client.setHost(IPGetter.getClientIpAddressIfServletRequestExist());
 
@@ -35,7 +33,7 @@ public class AboutJSON {
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
     public static class Server {
         Timestamp current_time;
-        List<Service> services;
+        List<App.AboutJSONApp> services;
     }
 
 }
