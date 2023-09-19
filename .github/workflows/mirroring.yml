@@ -2,7 +2,7 @@ name: Clone Repository
 on:
   push:
     branches:
-      - main
+      - master
   workflow_run:
     workflows:
       - "Block Push on Norme Failure"
