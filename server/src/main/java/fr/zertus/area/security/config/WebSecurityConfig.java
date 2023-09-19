@@ -1,6 +1,7 @@
 package fr.zertus.area.security.config;
 
 import fr.zertus.area.security.filter.JwtTokenFilter;
+import fr.zertus.area.service.AreaUserDetailsService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private AreaUserDetailsService userDetailsService;
 
     @Autowired
     private JwtTokenFilter jwtAuthenticationFilter;
@@ -58,7 +59,7 @@ public class WebSecurityConfig {
         httpSecurity.csrf(CsrfConfigurer::disable);
 
         httpSecurity.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers("/user/login", "/user/register", "/user/verify").permitAll();
+            authorize.requestMatchers("/user/login", "/user/register", "/user/verify", "/about.json").permitAll();
             authorize.anyRequest().authenticated();
         });
 

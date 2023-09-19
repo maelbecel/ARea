@@ -1,5 +1,6 @@
 package fr.zertus.area.service;
 
+import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.request.user.RegisterDTO;
@@ -49,6 +50,15 @@ public class UserService {
             currentUser.setEmail(user.getEmail());
         if (!user.getPassword().isEmpty())
             currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(currentUser);
+        return true;
+    }
+
+    public boolean addConnectedServiceToUser(ConnectedService connectedService) throws DataNotFoundException {
+        User currentUser = getCurrentUser();
+        if (currentUser == null)
+            return false;
+        currentUser.addConnectedService(connectedService);
         userRepository.save(currentUser);
         return true;
     }
