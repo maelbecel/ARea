@@ -1,0 +1,41 @@
+name: Clone Repository
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows:
+      - "Block Push on Norme Failure"
+    types:
+      - completed
+env:
+  MIRROR_URL:
+    git@github.com:EpitechPromo2026/B-DEV-500-REN-5-1-area-enzo.garnier.git
+
+jobs:
+  compilation:
+    name: Compiling...
+    needs: cleaning
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: |
+          echo compiling project
+
+  mirroring:
+    runs-on: ubuntu-latest
+    needs: compilation
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            ${{ env.MIRROR_URL }}
+          ssh_private_key:
+            ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
