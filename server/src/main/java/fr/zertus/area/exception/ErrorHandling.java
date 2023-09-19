@@ -9,6 +9,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ErrorHandling extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ApiResponse.badRequest(e.getMessage()).toResponseEntity();
+    }
+
     @ExceptionHandler(IllegalAccessException.class)
     public ResponseEntity<ApiResponse<String>> handleIllegalAccessException(IllegalAccessException e) {
         return ApiResponse.unauthorized(e.getMessage()).toResponseEntity();

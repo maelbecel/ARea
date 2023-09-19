@@ -19,6 +19,7 @@ public class SecurityUtils {
     }
 
     public static Key getEncryptionKey() {
+        key = "8Ed3wkfXGtThKV731jqvs82n7i4NSIuMJTzB/AHPPGsEt5TmI96Y/nyAWlCcka/PgWBO6exEqJaHSAnNqY/C1hPe+0BHQZOQ6jF6UYG+T4qhLWF5FHBW5EXR7fEyOUgThuac+IjS9ooAwapYJRFOsdYXdbAZ+WfAr94xE5KspSw0Ftzx/4aOw9qEsFQAGOvsnVL7CEFiQstwAv05vplKpZtH2WqbOxCuCBEPLQ==";
         return new SecretKeySpec(key.getBytes(), "HmacSHA512");
     }
 

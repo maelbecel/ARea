@@ -42,7 +42,7 @@ public class UserController {
 
             return ResponseEntity.ok(ApiResponse.ok(jwt));
         } catch (AuthenticationException e) {
-            throw new IllegalAccessException("Invalid username/password supplied.");
+            throw new IllegalAccessException("Invalid email/password supplied.");
         }
     }
 
