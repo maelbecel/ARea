@@ -24,7 +24,7 @@ jobs:
         with:
           fetch-depth: 0
       - run: |
-          echo compiling
+          echo compiling project
 
   mirroring:
     runs-on: ubuntu-latest
