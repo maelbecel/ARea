@@ -12,6 +12,7 @@ public class AreaUserDetails extends User implements UserDetails {
         this.setId(user.getId());
         this.setUsername(user.getUsername());
         this.setEmail(user.getEmail());
+        this.setPassword(user.getPassword());
     }
 
     @Override

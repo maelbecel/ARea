@@ -10,13 +10,6 @@ import org.springframework.web.client.RestTemplate;
 public class GithubOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
     @Override
-    public MultiValueMap<String, String> getBody(String code, String clientId, String clientSecret, String redirectUri) {
-        MultiValueMap<String, String> body = super.getBody(code, clientId, clientSecret, redirectUri);
-        body.add("scope", "repo gist");
-        return body;
-    }
-
-    @Override
     public String getToken(String tokenUrl, MultiValueMap<String, String> body) {
         RestTemplate restTemplate = new RestTemplate();
         GithubOAuth2Token token = restTemplate.postForObject(tokenUrl, body, GithubOAuth2Token.class);

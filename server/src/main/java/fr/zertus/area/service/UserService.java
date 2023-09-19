@@ -54,13 +54,12 @@ public class UserService {
         return true;
     }
 
-    public boolean addConnectedServiceToUser(ConnectedService connectedService) throws DataNotFoundException {
+    public void addConnectedServiceToUser(ConnectedService connectedService) throws DataNotFoundException {
         User currentUser = getCurrentUser();
         if (currentUser == null)
-            return false;
+            return;
         currentUser.addConnectedService(connectedService);
         userRepository.save(currentUser);
-        return true;
     }
 
 }

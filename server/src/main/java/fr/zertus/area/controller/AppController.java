@@ -34,7 +34,7 @@ public class AppController {
     private UserService userService;
 
     @GetMapping("{slug}/oauth2")
-    public ResponseEntity<ApiResponse<String>> redirectToOauth2(@PathVariable String slug) {
+    public ResponseEntity<ApiResponse<String>> redirectToOAuth2(@PathVariable String slug) {
         App app = appService.getApp(slug);
         if (app == null)
             return ApiResponse.notFound("Service not found").toResponseEntity();
@@ -54,7 +54,7 @@ public class AppController {
             URI.create(authorizationUri +
                 "?client_id=" + clientId +
                 "&redirect_uri=" + redirectUri +
-                "&scope=" + String.join(" ", scope) +
+                "&scope=" + String.join("%20", scope) +
                 "&state=" + state
             )
         ).build();
