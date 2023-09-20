@@ -64,12 +64,7 @@ public class AppService {
         long userId = SecurityUtils.getCurrentUserId();
 
         return ResponseEntity.status(302).location(
-            URI.create(authorizationUri +
-                "?client_id=" + clientId +
-                "&redirect_uri=" + redirectUri +
-                "&scope=" + String.join("%20", scope) +
-                "&state=" + state + "-" + userId
-            )
+            app.getOAuth2Handler().getOAuth2AuthorizationUri(authorizationUri, clientId, redirectUri, state, userId, scope)
         ).build();
     }
 

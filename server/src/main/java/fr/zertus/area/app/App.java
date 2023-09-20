@@ -1,7 +1,5 @@
 package fr.zertus.area.app;
 
-import fr.zertus.area.entity.action.Action;
-import fr.zertus.area.entity.reaction.Reaction;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 
 import java.util.List;
