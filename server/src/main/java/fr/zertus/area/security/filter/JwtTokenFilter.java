@@ -25,6 +25,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
     private AreaUserDetailsService userDetailsService;
 
+    /**
+     * Filter that will check if the request has a valid JWT token
+     * Set SecurityContext if the token is valid
+     * @param request The request
+     * @param response The response
+     * @param filterChain The filter chain
+     * @throws ServletException If the request is not valid
+     * @throws IOException If the request is not valid
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {

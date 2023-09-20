@@ -5,6 +5,14 @@ import org.springframework.util.MultiValueMap;
 
 public abstract class OAuth2CodeAuthorizationHandler {
 
+    /**
+     * Get default body for OAuth2 authorization code
+     * @param code authorization code
+     * @param clientId client id
+     * @param clientSecret client secret
+     * @param redirectUri redirect uri
+     * @return body
+     */
     public MultiValueMap<String, String> getBody(String code, String clientId, String clientSecret, String redirectUri) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");

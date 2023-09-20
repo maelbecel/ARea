@@ -40,6 +40,12 @@ public class AppService {
         return new ArrayList<>(apps.values());
     }
 
+    /**
+     * Redirect to the OAuth2 app
+     * @param slug the slug of the app
+     * @return a response entity with the redirection
+     * @throws DataNotFoundException if the app is not found
+     */
     public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug) throws DataNotFoundException {
         App app = getApp(slug);
         if (app == null)
@@ -67,6 +73,15 @@ public class AppService {
         ).build();
     }
 
+    /**
+     * Callback of the OAuth2 app (called by the app)
+     * @param slug the slug of the app
+     * @param code the code given by the app
+     * @param state the state given by the app
+     * @param error the error given by the app
+     * @return a response entity with the redirection
+     * @throws DataNotFoundException if the app is not found
+     */
     public ResponseEntity<ApiResponse<String>> callbackOAuth2App(String slug, String code, String state, String error) throws DataNotFoundException {
         App app = getApp(slug);
         if (app == null)

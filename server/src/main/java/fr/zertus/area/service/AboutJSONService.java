@@ -14,6 +14,11 @@ public class AboutJSONService {
     @Autowired
     private AppService appService;
 
+    /**
+     * Get the about JSON
+     * (see {@link AboutJSON})
+     * @return the about JSON
+     */
     public AboutJSON getAboutJSON() {
         List<App.AboutJSONApp> apps = new ArrayList<>();
         for (App app : appService.getApps()) {
