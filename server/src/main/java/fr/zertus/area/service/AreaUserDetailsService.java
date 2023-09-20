@@ -15,6 +15,12 @@ public class AreaUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Load a user from the database using its email
+     * @param username the email of the user
+     * @return the user if it exists
+     * @throws UsernameNotFoundException if the user doesn't exist
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {

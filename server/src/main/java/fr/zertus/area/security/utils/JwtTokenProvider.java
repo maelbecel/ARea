@@ -19,6 +19,12 @@ public class JwtTokenProvider {
 
     public static Key key = SecurityUtils.getEncryptionKey();
 
+    /**
+     * Create a JWT token from an authentication object.
+     * This token will be valid for 4 weeks.
+     * @param authentication the authentication object to create the token from
+     * @return the JWT token
+     */
     public static String createToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Date now = new Date();
@@ -32,7 +38,30 @@ public class JwtTokenProvider {
             .compact();
     }
 
+    /**
+     * Create a JWT token from an authentication object.
+     * @param authentication the authentication object to create the token from
+     * @param time the time in milliseconds the token will be valid
+     * @return
+     */
+    public static String createToken(Authentication authentication, long time) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + time);
 
+        return Jwts.builder()
+            .setSubject(userDetails.getUsername())
+            .setIssuedAt(new Date())
+            .setExpiration(expiryDate)
+            .signWith(key)
+            .compact();
+    }
+
+    /**
+     * Resolve the token from the request.
+     * @param request the request to resolve the token from
+     * @return the token or null if there is no token
+     */
     public static String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -41,7 +70,12 @@ public class JwtTokenProvider {
         return null;
     }
 
-
+    /**
+     * Validate JWT token. Don't forget to set the key before calling this method.
+     * Don't throw an exception if the token is invalid but log it.
+     * @param token the token to validate
+     * @return true if the token is valid
+     */
     public static boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -60,6 +94,11 @@ public class JwtTokenProvider {
         return false;
     }
 
+    /**
+     * Get the subject of the token. Don't forget to set the key before calling this method.
+     * @param token the token to get the subject from
+     * @return the subject of the token
+     */
     public static String getSubject(String token) {
         return Jwts.parserBuilder()
             .setSigningKey(key)

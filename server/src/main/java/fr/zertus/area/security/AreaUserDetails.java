@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+/**
+ * Custom implementation of {@link UserDetails} to use {@link User} as a {@link UserDetails} with Spring Security.
+ */
 public class AreaUserDetails extends User implements UserDetails {
 
     public AreaUserDetails(final User user) {

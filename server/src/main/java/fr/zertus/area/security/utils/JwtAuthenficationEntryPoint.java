@@ -11,6 +11,13 @@ import java.io.IOException;
 
 public class JwtAuthenficationEntryPoint extends BasicAuthenticationEntryPoint {
 
+    /**
+     * Send a 401 error if the user is not authenticated
+     * @param request the request
+     * @param response the response
+     * @param authException the exception
+     * @throws IOException if an error occurs
+     */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -18,6 +25,9 @@ public class JwtAuthenficationEntryPoint extends BasicAuthenticationEntryPoint {
         response.getWriter().println(new Gson().toJson(ApiResponse.unauthorized("You are not authorized to access this resource.")));
     }
 
+    /**
+     * Set the realm name
+     */
     @Override
     public void afterPropertiesSet() {
         setRealmName("Area51 JWT");
