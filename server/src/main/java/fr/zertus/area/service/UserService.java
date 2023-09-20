@@ -54,12 +54,8 @@ public class UserService {
         return true;
     }
 
-    public void addConnectedServiceToUser(ConnectedService connectedService) throws DataNotFoundException {
-        User currentUser = getCurrentUser();
-        if (currentUser == null)
-            return;
-        currentUser.addConnectedService(connectedService);
-        userRepository.save(currentUser);
+    public void save(User user) {
+        userRepository.save(user);
     }
 
 }
