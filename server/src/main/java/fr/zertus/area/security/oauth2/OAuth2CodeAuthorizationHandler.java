@@ -3,6 +3,9 @@ package fr.zertus.area.security.oauth2;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.net.URI;
+import java.util.Set;
+
 public abstract class OAuth2CodeAuthorizationHandler {
 
     /**
@@ -26,6 +29,15 @@ public abstract class OAuth2CodeAuthorizationHandler {
     public abstract String getToken(String token, MultiValueMap<String, String> body);
 
     public abstract String getState();
+
+    public URI getOAuth2AuthorizationUri(String authorizationUri, String clientId, String redirectUri, String state, long userId, Set<String> scope) {
+        return URI.create(authorizationUri +
+            "?client_id=" + clientId +
+            "&redirect_uri=" + redirectUri +
+            "&scope=" + String.join("%20", scope) +
+            "&state=" + state + "-" + userId
+        );
+    }
 
     public boolean isStateValid(String state) {
         return state.equals(getState());

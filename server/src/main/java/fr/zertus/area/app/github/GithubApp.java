@@ -1,10 +1,11 @@
 package fr.zertus.area.app.github;
 
+import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
-import fr.zertus.area.entity.action.Action;
-import fr.zertus.area.entity.reaction.Reaction;
+import fr.zertus.area.app.Reaction;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GithubApp extends App {
@@ -23,12 +24,12 @@ public class GithubApp extends App {
 
     @Override
     public List<Action> getActions() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
     public List<Reaction> getReactions() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
