@@ -1,7 +1,7 @@
 package fr.zertus.area.app;
 
-import fr.zertus.area.entity.action.Action;
-import fr.zertus.area.entity.reaction.Reaction;
+import fr.zertus.area.app.Action;
+import fr.zertus.area.app.Reaction;
 
 import java.util.List;
 

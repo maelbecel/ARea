@@ -1,6 +1,7 @@
 package fr.zertus.area.service;
 
 import fr.zertus.area.app.App;
+import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
@@ -30,6 +31,9 @@ public class AppService {
     static {
         GithubApp githubApp = new GithubApp();
         apps.put(githubApp.getSlug(), githubApp);
+
+        DiscordApp discordApp = new DiscordApp();
+        apps.put(discordApp.getSlug(), discordApp);
     }
 
     public App getApp(String slug) {
