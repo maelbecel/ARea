@@ -12,16 +12,6 @@ services:
       MYSQL_USER: area51
       MYSQL_PASSWORD: bD8TEW2iwL6WbK
 
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - 8082:80
-    depends_on:
-      - db
-    environment:
-      - PMA_ARBITRARY=1
-
   server:
     image: area51/server:latest
     build: ./server
