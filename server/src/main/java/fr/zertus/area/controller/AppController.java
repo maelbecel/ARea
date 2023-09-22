@@ -1,6 +1,7 @@
 package fr.zertus.area.controller;
 
 import fr.zertus.area.app.App;
+import fr.zertus.area.app.discord.DiscordOAuth2Handler;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.DataNotFoundException;
@@ -8,6 +9,8 @@ import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.utils.SecurityUtils;
 import fr.zertus.area.service.AppService;
 import fr.zertus.area.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
@@ -24,6 +27,8 @@ import java.util.Set;
 @RestController
 @RequestMapping("/service")
 public class AppController {
+
+    private static final Logger logger = LoggerFactory.getLogger(DiscordOAuth2Handler.class);
 
     @Autowired
     private AppService appService;

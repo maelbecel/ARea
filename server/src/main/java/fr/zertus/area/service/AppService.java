@@ -1,6 +1,7 @@
 package fr.zertus.area.service;
 
 import fr.zertus.area.app.App;
+import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
 import fr.zertus.area.app.twitch.TwitchApp;
 import fr.zertus.area.entity.ConnectedService;
@@ -34,6 +35,9 @@ public class AppService {
 
         TwitchApp twitchApp = new TwitchApp();
         apps.put(twitchApp.getSlug(), twitchApp);
+
+        DiscordApp discordApp = new DiscordApp();
+        apps.put(discordApp.getSlug(), discordApp);
     }
 
     public App getApp(String slug) {
