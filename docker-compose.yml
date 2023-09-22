@@ -11,19 +11,21 @@ services:
       MYSQL_DATABASE: area51
       MYSQL_USER: area51
       MYSQL_PASSWORD: bD8TEW2iwL6WbK
-
-  server:
-    image: area51/server:latest
-    build: ./server
-    restart: always
     ports:
-      - 8080:8080
-    depends_on:
-      - db
-    environment:
-      - TZ=Europe/Paris
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_NAME=area51
-      - DB_USER=area51
-      - DB_PASSWORD=bD8TEW2iwL6WbK
+      - 3306:3306
+
+#  server:
+#    image: area51/server:latest
+#    build: ./server
+#    restart: always
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      - db
+#    environment:
+#      - TZ=Europe/Paris
+#      - DB_HOST=db
+#      - DB_PORT=3306
+#      - DB_NAME=area51
+#      - DB_USER=area51
+#      - DB_PASSWORD=bD8TEW2iwL6WbK

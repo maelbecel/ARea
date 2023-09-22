@@ -32,4 +32,12 @@ public class SecurityUtils {
         return new SecretKeySpec(key.getBytes(), "HmacSHA512");
     }
 
+    public static String getTempToken(long userId) {
+        return "mysupertokenidisverylongandverysecure-" + userId;
+    }
+
+    public static long getUserIdFromTempToken(String token) {
+        return Long.parseLong(token.split("-")[1]);
+    }
+
 }
