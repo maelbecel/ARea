@@ -56,10 +56,8 @@ public class AppController {
 
     @GetMapping("{slug}/callback")
     public ResponseEntity<ApiResponse<String>> handleOAuth2Callback(@PathVariable String slug, @RequestParam(required = false) String error,
-                                                                    @RequestParam(required = false) String code, @RequestParam String state,
-                                                                    @RequestHeader("user-agent") String userAgent) throws DataNotFoundException {
-        boolean isMobile = userAgent.contains("Android");
-        return appService.callbackOAuth2App(slug, code, state, error, isMobile);
+                                                                    @RequestParam(required = false) String code, @RequestParam String state) throws DataNotFoundException {
+        return appService.callbackOAuth2App(slug, code, state, error);
     }
 
 }

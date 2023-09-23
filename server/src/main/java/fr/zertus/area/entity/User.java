@@ -46,6 +46,12 @@ public class User {
 
     public void addConnectedService(ConnectedService connectedService) {
         List<ConnectedService> connectedServices = getConnectedServices();
+        for (int i = 0; i < connectedServices.size(); i++) {
+            if (connectedServices.get(i).getSlug().equals(connectedService.getSlug())) {
+                connectedServices.remove(i);
+                break;
+            }
+        }
         connectedServices.add(connectedService);
         setConnectedServices(connectedServices);
     }
