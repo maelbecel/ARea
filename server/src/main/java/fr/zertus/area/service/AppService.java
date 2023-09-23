@@ -37,8 +37,7 @@ public class AppService {
         apps.put(discordApp.getSlug(), discordApp);
     }
 
-    @Value("${oauth2.web.redirect-uri}")
-    private String webRedirectUri;
+    private static final Map<Long, String> redirectUris = new HashMap<>();
 
     public App getApp(String slug) {
         return apps.get(slug);
@@ -54,7 +53,7 @@ public class AppService {
      * @return a response entity with the redirection
      * @throws DataNotFoundException if the app is not found
      */
-    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String mobileRedirect) throws DataNotFoundException {
+    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String redirectUri) throws DataNotFoundException {
         App app = getApp(slug);
         if (app == null)
             return ApiResponse.notFound("Service not found").toResponseEntity();
@@ -66,17 +65,20 @@ public class AppService {
 
         String authorizationUri = clientRegistration.getProviderDetails().getAuthorizationUri();
         String clientId = clientRegistration.getClientId();
-        String redirectUri = clientRegistration.getRedirectUri();
+        // This is the redirect uri set in the application.properties
+        // We need this for indicate to the OAuth2 app where to redirect after the authorization (callback)
+        String defaultRedirectUri = clientRegistration.getRedirectUri();
         Set<String> scope = clientRegistration.getScopes();
         String state = app.getOAuth2Handler().getState();
         state += "-" + userId;
 
-        if (mobileRedirect != null) {
-            state += "-" + mobileRedirect;
-        }
+        // This part is for redirect when process is done (check callbackOAuth2App)
+        String redirectUriFinal = redirectUri != null ? redirectUri : defaultRedirectUri;
+        redirectUris.put(userId, redirectUriFinal);
 
+        // Here we set defaultRedirectUri because we need to redirect to the callback after the authorization
         return ResponseEntity.status(302).location(
-            app.getOAuth2Handler().getOAuth2AuthorizationUri(authorizationUri, clientId, redirectUri, state, scope)
+            app.getOAuth2Handler().getOAuth2AuthorizationUri(authorizationUri, clientId, defaultRedirectUri, state, scope)
         ).build();
     }
 
@@ -89,7 +91,7 @@ public class AppService {
      * @return a response entity with the redirection
      * @throws DataNotFoundException if the app is not found
      */
-    public ResponseEntity<ApiResponse<String>> callbackOAuth2App(String slug, String code, String state, String error, Boolean fromMobile) throws DataNotFoundException {
+    public ResponseEntity<ApiResponse<String>> callbackOAuth2App(String slug, String code, String state, String error) throws DataNotFoundException {
         App app = getApp(slug);
         if (app == null)
             return ApiResponse.notFound("Service not found").toResponseEntity();
@@ -98,15 +100,13 @@ public class AppService {
         if (!app.getOAuth2Handler().isStateValid(state.split("-")[0]))
             return ApiResponse.badRequest("State is not valid").toResponseEntity();
 
-        String mobileRedirectUri = null;
-        if (fromMobile != null && fromMobile) {
-            mobileRedirectUri = state.split("-")[2];
-        }
+        String redirectUri = redirectUris.get(Long.parseLong(state.split("-")[1]));
+        if (redirectUri == null)
+            return ApiResponse.badRequest("Redirect uri is not valid").toResponseEntity();
+        redirectUris.remove(Long.parseLong(state.split("-")[1]));
 
         if (error != null) {
-            if (fromMobile != null && fromMobile)
-                return ResponseEntity.status(302).location(URI.create(mobileRedirectUri)).build();
-            return ResponseEntity.status(302).location(URI.create(webRedirectUri)).build();
+            return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
         }
 
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(slug);
@@ -116,9 +116,10 @@ public class AppService {
         String tokenUrl = clientRegistration.getProviderDetails().getTokenUri();
         String clientId = clientRegistration.getClientId();
         String clientSecret = clientRegistration.getClientSecret();
-        String redirectUri = clientRegistration.getRedirectUri();
+        String defaultRedirectUri = clientRegistration.getRedirectUri();
 
-        MultiValueMap<String, String> body = app.getOAuth2Handler().getBody(code, clientId, clientSecret, redirectUri);
+        // We need to give a redirect Uri (I don't know why, because token result is the return of this request) so we give the default one
+        MultiValueMap<String, String> body = app.getOAuth2Handler().getBody(code, clientId, clientSecret, defaultRedirectUri);
         String token = app.getOAuth2Handler().getToken(tokenUrl, body);
         long userId = Long.parseLong(state.split("-")[1]);
 
@@ -128,9 +129,7 @@ public class AppService {
         user.addConnectedService(new ConnectedService(slug, token));
         userService.save(user);
 
-        if (fromMobile != null && fromMobile)
-            return ResponseEntity.status(302).location(URI.create(mobileRedirectUri)).build();
-        return ResponseEntity.status(302).location(URI.create(webRedirectUri)).build();
+        return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
     }
 
 }
