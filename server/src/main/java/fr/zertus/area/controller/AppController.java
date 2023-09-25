@@ -16,13 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-<<<<<<< HEAD
-import java.net.URI;
-import java.util.Set;
-
-=======
 @CrossOrigin
->>>>>>> 5cbd4b0 (feat (./): add a swagger to the server)
 @RestController
 @RequestMapping("/service")
 @Tag(name = "App", description = "App endpoint")
