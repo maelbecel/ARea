@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.Set;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/service")
 public class AppController {
@@ -34,14 +33,18 @@ public class AppController {
     private AppService appService;
 
     @GetMapping("{slug}/oauth2")
-    public ResponseEntity<ApiResponse<String>> redirectToOAuth2(@PathVariable String slug, @RequestParam(required = false) String authToken, @RequestParam(required = false) String redirecturi) throws DataNotFoundException {
-        if (authToken == null && SecurityContextHolder.getContext() == null) {
-            return ApiResponse.unauthorized("You must be logged in to access this resource").toResponseEntity();
+    public ResponseEntity<ApiResponse<String>> redirectToOAuth2(@PathVariable String slug, @RequestParam(required = false) String authToken, @RequestParam(required = false) String redirecturi) throws DataNotFoundException, IllegalAccessException {
+        if (authToken == null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            throw new IllegalAccessException("You must be logged in to access this page.");
         }
 
         Long userId = null;
         if (authToken == null) {
-            userId = SecurityUtils.getCurrentUserId();
+            try {
+                userId = SecurityUtils.getCurrentUserId();
+            } catch (Exception e) {
+                throw new IllegalAccessException("You must be logged in to access this page.");
+            }
         } else {
             userId = SecurityUtils.getUserIdFromTempToken(authToken);
         }
