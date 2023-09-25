@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 
 const IndexPage: NextPage = () => {
   const [menuState, setmenuState] = useState<Boolean>(false);
-  
+
   const { data: session } = useSession();
 
   const [sessionContent, setSession] = useState();
@@ -40,14 +40,6 @@ const IndexPage: NextPage = () => {
 
   return (
     <div className="w-screen bg-background select-none">
-      <Menu menuState={menuState} setmenuState={setmenuState}>
-        <div className={menuState ? "flex-col ml-[64px]" : "flex-col ml-[200px]"}>
-          <MainSearchBar />
-          <MetaTeamComps />
-          <WhatIsToF /> {/* A Finir */}
-          <Footer />
-        </div>
-      </Menu>
       <h1>Home</h1>
         <h1  >Endpoints</h1>
           <p >You must be signed in to see responses.</p>

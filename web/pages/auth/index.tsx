@@ -6,8 +6,8 @@ import { authOptions } from "../api/auth/[...nextauth]";
 
 // --- Components --- //
 
-const IndexPage: NextPage = () => {
-//const IndexPage = ({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+//const IndexPage: NextPage = () => {
+const IndexPage = ({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const { data: session, status } = useSession()
 
     return (
@@ -71,7 +71,7 @@ const IndexPage: NextPage = () => {
             ))}
             </>*/
 
-/*const getServerSideProps = async (context: GetServerSidePropsContext) => {
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const session = await getServerSession(context.req, context.res, authOptions);
 
     if (session) {
@@ -83,6 +83,6 @@ const IndexPage: NextPage = () => {
     const providers = await getProviders();
 
     return { props: { providers: providers ?? [] } };
-}*/
+}
 
 export default IndexPage; // Add this line to make IndexPage the default export.
