@@ -1,19 +1,18 @@
+// --- Librairies --- //
 import type { NextPage } from 'next'
-import Menu from '../components/menu'
-import MainSearchBar from '../components/lib/mainContainer/mainSearchBar'
-import WhatIsToF from '../components/lib/mainContainer/whatIsToF'
-import Footer from '../components/lib/footer/footer'
 import { useEffect, useState } from 'react'
-import MetaTeamComps from '../components/lib/mainContainer/metaTeamComps/metaTeamComps'
 import { useSession } from "next-auth/react";
 
-const IndexPage: NextPage = () => {
-  const [menuState, setmenuState] = useState<Boolean>(false);
+// --- Components --- //
+import NavBar, { NavBarButton, SimpleLink } from '../components/navbar'
 
+const IndexPage: NextPage = () => {
   const { data: session } = useSession();
 
   const [sessionContent, setSession] = useState();
   const [jwtContent, setJwt] = useState();
+
+  const [data, setData] = useState();
 
   useEffect(() => {
       const fetchSession = async () => {
@@ -34,22 +33,53 @@ const IndexPage: NextPage = () => {
 
       fetchSession();
       fetchJwt();
-    }, [session]);
+  }, [session]);
 
-    console.log(sessionContent);
+  const handleClick = async () => {
+    try {
+      const response = await fetch('https://api.zertus.fr/area51/service/github/oauth2?redirecturi=http://localhost:8081', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+
+      const data = await response.json();
+
+      setData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
-    <div className="w-screen bg-background select-none">
-      <h1>Home</h1>
-        <h1  >Endpoints</h1>
-          <p >You must be signed in to see responses.</p>
-          <h2  >Session</h2>
-          <pre>/api/examples/session</pre>
-          <pre><code>{JSON.stringify(sessionContent, null, 2)}</code></pre>
-          <h2  >JWT</h2>
-          <pre>/api/examples/jwt</pre>
-  <pre><code>{JSON.stringify(jwtContent, null, 2)}</code></pre>
-    </div>
+    <>
+      <NavBar>
+        <SimpleLink   href="/sign-up" text="Sign up" />
+        <NavBarButton href="/login"   text="Login" />
+      </NavBar>
+
+      <div className="w-screen h-screen bg-background select-none">
+        <button onClick={() => handleClick()}>Github</button>
+        {
+          data && (
+            <pre>
+              <code>{JSON.stringify(data)}</code>
+            </pre>
+          )
+        }
+
+        <h1>Home</h1>
+        <h1>Endpoints</h1>
+        <p>You must be signed in to see responses.</p>
+        <h2>Session</h2>
+        <pre>/api/examples/session</pre>
+        <pre><code>{JSON.stringify(sessionContent, null, 2)}</code></pre>
+        <h2>JWT</h2>
+        <pre>/api/examples/jwt</pre>
+        <pre><code>{JSON.stringify(jwtContent, null, 2)}</code></pre>
+      </div>
+    </>
   )
 }
 

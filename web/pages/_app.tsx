@@ -7,7 +7,6 @@ import type { AppProps } from "next/app"
 import type { Session } from "next-auth"
 
 // --- Components --- //
-import NavBar from '../components/navbar'
 import Footer from '../components/footer'
 import { AuthProvider } from '../components/providers/AuthProvider'
 
@@ -15,7 +14,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } } : AppProps<{ 
   return (
     <SessionProvider session={session}>
       <AuthProvider>
-        <NavBar />
         <Component {...pageProps} />
         <Footer />
       </AuthProvider>
