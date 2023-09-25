@@ -59,7 +59,7 @@ public class WebSecurityConfig {
         httpSecurity.csrf(CsrfConfigurer::disable);
 
         httpSecurity.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers("/user/login", "/user/register", "/user/verify", "/about.json", "/service/{slug}/oauth2", "/service/{slug}/callback").permitAll();
+            authorize.requestMatchers("/user/login", "/user/register", "/user/verify", "/about.json", "/service/{slug}/oauth2", "/service/{slug}/callback", "/documentation/**", "/docs/**").permitAll();
             authorize.anyRequest().authenticated();
         });
 
