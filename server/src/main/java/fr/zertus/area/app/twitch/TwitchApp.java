@@ -40,4 +40,10 @@ public class TwitchApp extends App {
     public OAuth2CodeAuthorizationHandler getOAuth2Handler() {
         return handler;
     }
+
+    @Override
+    public AppDecoration getDecoration() {
+        return new AppDecoration("", "");
+    }
+
 }

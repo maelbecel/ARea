@@ -15,7 +15,7 @@ public class AboutJSON {
     Client client;
     Server server;
 
-    public AboutJSON(List<App.AboutJSONApp> services) {
+    public AboutJSON(List<App> services) {
         this.client = new Client();
         this.client.setHost(IPGetter.getClientIpAddressIfServletRequestExist());
 
@@ -33,7 +33,7 @@ public class AboutJSON {
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
     public static class Server {
         Timestamp current_time;
-        List<App.AboutJSONApp> services;
+        List<App> services;
     }
 
 }
