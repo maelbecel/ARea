@@ -9,7 +9,7 @@ const AuthContext = createContext({
 
 // Créez un composant AuthProvider qui enveloppe votre application
 export const AuthProvider = ({ children }: any) => {
-  const [token, setToken] = useState<string>('');
+    const [token, setToken] = useState<string>('');
 
     // Fonction pour vérifier si un token existe dans le local storage
     const checkToken = async () => {

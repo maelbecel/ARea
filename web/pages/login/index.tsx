@@ -22,6 +22,8 @@ const IndexPage: NextPage = () => {
         const checkAlreadyLogged = async () => {
             if (token) {
                 route.push("/");
+            } else if (localStorage.getItem("token") !== null) {
+                route.push("/");
             }
         }
 
@@ -51,6 +53,8 @@ const IndexPage: NextPage = () => {
 
             if (data?.status === 200) {
                 setToken(data?.data);
+
+                localStorage.setItem("token", data?.data);
 
                 route.push("/");
             } else {

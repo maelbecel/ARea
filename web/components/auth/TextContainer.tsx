@@ -45,7 +45,8 @@ const Forgot = ({ text, redirectUri }: { text: string, redirectUri: string }) =>
 
 const RequestButton = ({ text, handleClick }: ButtonProps) => {
     return (
-        <button className="bg-[#363841] text-white font-extrabold text-[1.8rem] cursor-pointer rounded-[50px] p-[1.6rem] pl-[4.4rem] pr-[4.4rem] select-none"
+        <button className="bg-[#363841] text-white font-extrabold text-[1.8rem] cursor-pointer rounded-[50px] p-[1.6rem] pl-[4.4rem] pr-[4.4rem] select-none
+                            active:bg-white active:text-[#363841]"
                 onClick={handleClick}
         >
             {text}
