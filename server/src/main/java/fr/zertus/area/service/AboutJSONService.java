@@ -20,11 +20,7 @@ public class AboutJSONService {
      * @return the about JSON
      */
     public AboutJSON getAboutJSON() {
-        List<App.AboutJSONApp> apps = new ArrayList<>();
-        for (App app : appService.getApps()) {
-            apps.add(app.getAbout());
-        }
-        return new AboutJSON(apps);
+        return new AboutJSON(appService.getApps());
     }
 
 }

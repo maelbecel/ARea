@@ -35,4 +35,8 @@ public class DiscordApp extends App {
     @Override
     public OAuth2CodeAuthorizationHandler getOAuth2Handler() { return handler; }
 
+    @Override
+    public AppDecoration getDecoration() {
+        return new AppDecoration("", "");
+    }
 }
