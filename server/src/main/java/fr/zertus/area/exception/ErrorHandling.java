@@ -49,8 +49,9 @@ public class ErrorHandling extends ResponseEntityExceptionHandler {
      * @param e The exception
      * @return A ResponseEntity with the error message
      */
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(Exception e) {
+        e.printStackTrace();
         return ApiResponse.internalServerError(e.getMessage()).toResponseEntity();
     }
 

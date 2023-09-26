@@ -82,10 +82,10 @@ public class UserController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = String.class))),
     })
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<Object>> getCurrentUser() throws IllegalAccessException {
+    public ResponseEntity<ApiResponse<User>> getCurrentUser() throws IllegalAccessException {
         try {
             User user = userService.getCurrentUser();
-            return ResponseEntity.ok(ApiResponse.ok(user));
+            return ApiResponse.ok(user).toResponseEntity();
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
             throw new IllegalAccessException("Invalid token");
