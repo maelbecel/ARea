@@ -21,8 +21,11 @@ const IndexPage: NextPage = () => {
 
     useEffect(() => {
         const checkAlreadyLogged = async () => {
-            if (token)
+            if (token) {
                 router.push("/");
+            } else if (localStorage.getItem("token") !== null) {
+                router.push("/");
+            }
         }
 
         checkAlreadyLogged();
@@ -50,6 +53,8 @@ const IndexPage: NextPage = () => {
 
             if (data?.status === 200) {
                 setToken(data?.password);
+
+                localStorage.setItem("token", data?.data);
 
                 router.push("/");
             } else if (data?.status === 400) {

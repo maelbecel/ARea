@@ -20,6 +20,8 @@ const IndexPage: NextPage = () => {
         const checkAlreadyLogged = async () => {
             if (token)
                 route.push("/");
+            else if (localStorage.getItem("token") !== null)
+                route.push("/");
         }
 
         checkAlreadyLogged();

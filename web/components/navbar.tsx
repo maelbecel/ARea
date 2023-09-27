@@ -19,7 +19,9 @@ const Icon = () => {
 const NavBarButton = ({ href, text}: { href: string, text: string }) => {
     return (
         <Link href={href}>
-            <div className="bg-[#363841] text-white font-extrabold text-[24px] p-[10px] rounded-[25px] pl-[44px] pr-[44px] cursor-pointer">
+            <div className="bg-[#363841] text-white font-extrabold text-[24px] p-[10px] rounded-[25px] pl-[44px] pr-[44px] cursor-pointer
+                            active:bg-white active:text-[#363841]"
+            >
                 {text}
             </div>
         </Link>
@@ -31,6 +33,25 @@ const SimpleLink = ({ href, text }: { href: string, text: string }) => {
         <Link href={href}>
             <div className="text-[#363841] font-bold text-[32px] cursor-pointer">
                 {text}
+            </div>
+        </Link>
+    )
+}
+
+/**
+ * @param url  Image url of the profile
+ * @param args Arguments of the profile page (username, mail, password, etc...)
+ *             Example: TODO: example
+ */
+const Profile = ({ url, args }: { url ?: string, args ?: string }) => {
+    return (
+        <Link href={`/profile/args`}>
+            <div className="flex flex-row items-center">
+                {url ? (
+                    <Image src={url} width={70} height={70} alt="Profile" />
+                ) : (
+                    <Image src="/Icons/profile.svg" width={70} height={70} alt="Profile" />
+                )}
             </div>
         </Link>
     )
@@ -53,6 +74,6 @@ const NavBar = ({ children }: NavBarProps) => {
     )
 }
 
-export { Icon, NavBarButton, SimpleLink }
+export { Icon, NavBarButton, SimpleLink, Profile }
 export default NavBar
 
