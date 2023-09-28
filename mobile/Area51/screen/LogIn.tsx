@@ -11,6 +11,7 @@ import React, { useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
+import LoginAPI from '../api/Login';
 
 /* The code is defining a functional component called `Login` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -19,13 +20,30 @@ const Login = ({ navigation }) => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
 
+    /**
+     * The function `connect` logs in a user using the LoginAPI, displays an alert if there is an
+     * error, navigates to the 'Area 51' page if the login is successful, and displays an alert with
+     * the response message if the login is unsuccessful.
+     */
+    const connect = async () => {
+        const response = await LoginAPI(email, password);
+        if (response == null) {
+            alert("An Error occcur");
+        } else if (response.status == 200) {
+            console.log("Token :" + response.data);
+            navigation.navigate('Area 51');
+        } else {
+            alert(response.message);
+        }
+    }
+
     return (
         <View style={styles.container}>
           <Text style={styles.login}>Log in</Text>
           <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
           <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
           <Text style={styles.forgot}>Forgot your password ?</Text>
-          <SubmitButton title="Log in" onPress={() => navigation.navigate('Area 51')} />
+          <SubmitButton title="Log in" onPress={connect} />
           <Text style={styles.forgot} onPress={() => navigation.navigate('SignUp')} >No account ? Sign up here</Text>
           <Text style={styles.or}>or</Text>
           <SubmitButton title="Log in with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />

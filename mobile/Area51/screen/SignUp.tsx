@@ -11,6 +11,7 @@ import React, { useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
+import RegisterAPI from '../api/Register';
 
 /* The code is defining a functional component called `Signup` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -20,13 +21,30 @@ const Signup = ({ navigation }) => {
     const [password, setPassword] = React.useState('');
     const [username, setUsername] = React.useState('');
 
+    /**
+     * The function "connect" is an asynchronous function that makes a registration API call and
+     * handles the response accordingly.
+     */
+    const connect = async () => {
+      const response = await RegisterAPI(email, password, username);
+      if (response == null) {
+          alert("An Error occcur");
+      } else if (response.status == 200) {
+        console.log("Token :" + response.data);
+          navigation.navigate('Area 51');
+      } else {
+          alert(response.message);
+      }
+  }
+
+
     return (
         <View style={styles.container}>
           <Text style={styles.login}>Sign up</Text>
           <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
           <FormInput title="Username" icon={{ name: "person", width: 27, height: 27 }} onChangeText={setUsername} />
           <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
-          <SubmitButton title="Sign up" onPress={() => navigation.navigate('Area 51')} />
+          <SubmitButton title="Sign up" onPress={connect} />
           <Text style={styles.forgot} onPress={() => navigation.navigate('Login')} >Already an account ? Log in here</Text>
           <Text style={styles.or}>or</Text>
           <SubmitButton title="Sign up with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
