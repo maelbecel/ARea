@@ -8,15 +8,12 @@ import type { Session } from "next-auth"
 
 // --- Components --- //
 import Footer from '../components/footer'
-import { AuthProvider } from '../components/providers/AuthProvider'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } } : AppProps<{ session: Session }>) {
   return (
     <SessionProvider session={session}>
-      <AuthProvider>
-        <Component {...pageProps} />
-        <Footer />
-      </AuthProvider>
+      <Component {...pageProps} />
+      <Footer />
     </SessionProvider>
   )
 }

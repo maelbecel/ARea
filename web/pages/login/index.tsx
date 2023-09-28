@@ -2,11 +2,8 @@
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 
-// --- Provider import --- //
-import { useAuth } from "../../components/providers/AuthProvider";
-
 // --- Components import --- //
-import NavBar, { NavBarButton } from "../../components/navbar";
+import NavBar, { Icon, LeftSection, NavBarNavigateButton, RightSection } from "../../components/navbar";
 import TextContainer, { Forgot, InputContainer } from "../../components/auth/TextContainer";
 import { useRouter } from "next/router";
 
@@ -14,23 +11,25 @@ const IndexPage: NextPage = () => {
     const [email   , setEmail]    = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const { token, setToken } = useAuth();
-
     const route = useRouter();
 
     useEffect(() => {
+        setEmail("");
+        setPassword("");
+
         const checkAlreadyLogged = async () => {
-            if (token) {
-                route.push("/");
-            } else if (localStorage.getItem("token") !== null) {
+            if (localStorage.getItem("token") !== null) {
                 route.push("/");
             }
         }
 
-        console.log(token);
-
         checkAlreadyLogged();
-    }, [route, token]);
+    }, [route]);
+
+    const clearInputs = () => {
+        setEmail("");
+        setPassword("");
+    }
 
     const handleClick = async () => {
         if (!email || !password) {
@@ -52,12 +51,14 @@ const IndexPage: NextPage = () => {
             const data = await response.json();
 
             if (data?.status === 200) {
-                setToken(data?.data);
-
                 localStorage.setItem("token", data?.data);
+
+                clearInputs();
 
                 route.push("/");
             } else {
+                clearInputs();
+
                 console.log(data);
                 // TODO: error
             }
@@ -69,7 +70,12 @@ const IndexPage: NextPage = () => {
     return (
         <>
             <NavBar>
-                <NavBarButton href="/sign-up"   text="Sign up" />
+                <LeftSection>
+                    <Icon />
+                </LeftSection>
+                <RightSection>
+                    <NavBarNavigateButton href="/sign-up" text="Sign up" />
+                </RightSection>
             </NavBar>
 
             <div className="h-screen flex justify-center items-start">

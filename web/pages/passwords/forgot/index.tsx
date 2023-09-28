@@ -3,29 +3,21 @@ import type { NextPage } from "next";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-// --- Provider import --- //
-import { useAuth } from "../../../components/providers/AuthProvider";
-
 // --- Components import --- //
-import NavBar, { NavBarButton, SimpleLink } from "../../../components/navbar";
+import NavBar, { Icon, LeftSection, NavBarNavigateButton, RightSection, SimpleLink } from "../../../components/navbar";
 import TextContainer from "../../../components/auth/TextContainer";
 
 const IndexPage: NextPage = () => {
-
-    const { token } = useAuth();
-
     const route = useRouter();
 
     useEffect(() => {
         const checkAlreadyLogged = async () => {
-            if (token)
-                route.push("/");
-            else if (localStorage.getItem("token") !== null)
+            if (localStorage.getItem("token") !== null)
                 route.push("/");
         }
 
         checkAlreadyLogged();
-    }, [route, token]);
+    }, [route]);
 
     const handleClick = async () => {
     }
@@ -33,8 +25,13 @@ const IndexPage: NextPage = () => {
     return (
         <>
             <NavBar>
-                <SimpleLink   href="/sign-up" text="Sign up" />
-                <NavBarButton href="/login" text="Log in" />
+                <LeftSection>
+                    <Icon />
+                </LeftSection>
+                <RightSection>
+                    <SimpleLink   href="/sign-up" text="Sign up" />
+                    <NavBarNavigateButton href="/login" text="Log in" />
+                </RightSection>
             </NavBar>
 
             <div className="h-screen flex justify-center items-start">
