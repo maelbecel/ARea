@@ -1,7 +1,5 @@
 package fr.zertus.area.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
