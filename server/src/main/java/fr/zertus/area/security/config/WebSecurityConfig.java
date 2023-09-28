@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -54,10 +55,11 @@ public class WebSecurityConfig {
             headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
         });
 
+        httpSecurity.cors(CorsConfigurer::disable);
         httpSecurity.csrf(CsrfConfigurer::disable);
 
         httpSecurity.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers("/user/login", "/user/register", "/user/verify", "/about.json", "/service/{slug}/oauth2", "/service/{slug}/callback", "/documentation/**", "/docs/**").permitAll();
+            authorize.requestMatchers("/user/login", "/user/register", "/user/verify", "/about.json", "/service/{slug}/oauth2", "/service/{slug}/callback", "/docs/**").permitAll();
             authorize.anyRequest().authenticated();
         });
 

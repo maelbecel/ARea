@@ -4,6 +4,8 @@ import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +18,12 @@ public abstract class Reaction implements IReaction {
 
     protected final Map<String, String> placeholders;
 
-    public Reaction(String name, String description, List<FormInput> inputs, Map<String, String> placeholders) {
+    public Reaction(String name, String description) {
         this.name = name;
         this.description = description;
 
-        this.inputs = inputs;
-        this.placeholders = placeholders;
+        this.inputs = new ArrayList<>();
+        this.placeholders = new HashMap<>();
     }
 
     @Override
@@ -55,7 +57,7 @@ public abstract class Reaction implements IReaction {
     }
 
     @Override
-    public boolean trigger(ConnectedService service) {
+    public boolean trigger(ConnectedService service, Map<String, String> placeholders, Map<String, String> parameters) {
         return false;
     }
 
