@@ -3,7 +3,6 @@ package fr.zertus.area.service;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.AlreadyUsedException;
 import fr.zertus.area.payload.request.user.RegisterDTO;
-import fr.zertus.area.payload.response.AboutJSON;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
