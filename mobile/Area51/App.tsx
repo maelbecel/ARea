@@ -61,14 +61,25 @@ function Tabs() {
 
             return <Icon name={iconName} size={size} color={color} />;
           },
+          tabBarActiveTintColor: '#000',
+          tabBarInactiveTintColor: '#A8A8A8',
+          tabBarActiveBackgroundColor: '#FFFFFF',
+          tabBarInactiveBackgroundColor: '#FFFFFF',
+          tabBarShowLabel: false,
+          tabBarStyle: [
+            {
+              display: 'flex',
+            },
+            null,
+          ],
         })}
-      >
-        <Tab.Screen name="My Applets" component={AppletsScreen} options={{ headerShown: false, tabBarBadge: getNbApplets() }} />
-        <Tab.Screen name="Explore" component={ExploreScreen} options={{ headerShown: false }} />
-        <Tab.Screen name="Create" component={CreateScreen} options={{ headerShown: false }} />
-        <Tab.Screen name="Activity" component={ActivityScreen} options={{ headerShown: false }} />
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
-      </Tab.Navigator>
+    >
+      <Tab.Screen name="My Applets" component={AppletsScreen} options={{ headerShown: false, tabBarBadge: getNbApplets() }} />
+      <Tab.Screen name="Explore" component={ExploreScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Create" component={CreateScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Activity" component={ActivityScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+    </Tab.Navigator>
   )
 }
 
