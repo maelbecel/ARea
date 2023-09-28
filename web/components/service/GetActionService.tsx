@@ -1,6 +1,5 @@
 // --- Librairies import --- //
 import Link from "next/link"
-import Image from "next/image"
 import { useEffect, useState } from "react"
 
 // --- Interface --- //
@@ -12,9 +11,9 @@ interface ActionProps {
 // --- Component --- //
 const ActionComponent = ({ name, description, color, theme, service } : { name : string, description: string, color : string, theme : string, service : string }) => {
     const hexColor = color.substring(5, color.length - 1);
-    
+
     return (
-        <Link href={`/`}>
+        <Link href={`/service/auth?color=${hexColor}&service=${service}`}>
             <div className={`${color} rounded-[10px] shadow-xl hover:brightness-125 flex-col flex-wrap w-[100%] p-[24px] flex`}>
                 <div className="font-bold text-[28px]">
                     {name}
@@ -45,7 +44,6 @@ const GetActionService = ({ name, color, theme = 'light' }: { name: string, colo
 
         // placeholder
         setAction([
-            { name: "Nouvelle vidéo likée", description: `Cette action s’active à chaque fois que vous likez une vidéo` },
             { name: "Nouvelle vidéo likée", description: `Cette action s’active à chaque fois que vous likez une vidéo` },
             { name: "Nouvelle vidéo likée", description: `Cette action s’active à chaque fois que vous likez une vidéo` },
             { name: "Nouvelle vidéo likée", description: `Cette action s’active à chaque fois que vous likez une vidéo` },

@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 // --- Components import --- //
 import NavBar, { Icon, LeftSection, NavBarNavigateButton, RightSection, SimpleLink } from "../../../components/navbar";
 import TextContainer from "../../../components/auth/TextContainer";
+import Footer from "../../../components/footer";
 
 const IndexPage: NextPage = () => {
     const route = useRouter();
@@ -39,6 +40,8 @@ const IndexPage: NextPage = () => {
                     {/*TODO: implement forgot your password */}
                 </TextContainer>
             </div>
+
+            <Footer />
         </>
     )
 }
