@@ -8,7 +8,7 @@ import SearchService from '../components/service/SearchService';
 
 const IndexPage: NextPage = () => {
   const [token, setToken] = useState<string>('');
-  const [connected  , setConnected]   = useState<boolean>(false);
+  const [connected  , setConnected] = useState<boolean>(false);
 
   useEffect(() => {
     setToken(localStorage.getItem("token") as string);

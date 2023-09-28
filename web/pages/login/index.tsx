@@ -14,6 +14,9 @@ const IndexPage: NextPage = () => {
     const route = useRouter();
 
     useEffect(() => {
+        setEmail("");
+        setPassword("");
+
         const checkAlreadyLogged = async () => {
             if (localStorage.getItem("token") !== null) {
                 route.push("/");
