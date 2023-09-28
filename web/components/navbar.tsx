@@ -45,7 +45,7 @@ const SimpleLink = ({ href, text }: { href: string, text: string }) => {
  */
 const Profile = ({ url, args }: { url ?: string, args ?: string }) => {
     return (
-        <Link href={`/profile/args`}>
+        <Link href={`/profile/`}>
             <div className="flex flex-row items-center">
                 {url ? (
                     <Image src={url} width={70} height={70} alt="Profile" />
