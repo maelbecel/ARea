@@ -1,6 +1,7 @@
 package fr.zertus.area.service;
 
 import fr.zertus.area.entity.User;
+import fr.zertus.area.exception.AlreadyUsedException;
 import fr.zertus.area.payload.request.user.RegisterDTO;
 import fr.zertus.area.payload.response.AboutJSON;
 import fr.zertus.area.payload.response.ApiResponse;
@@ -29,7 +30,7 @@ public class RegisterUserService {
      * @return the user if it was successfully registered, an error otherwise
      * @throws IllegalArgumentException if the email is invalid or if the email is already in use
      */
-    public ApiResponse<User> register(RegisterDTO register) {
+    public ApiResponse<User> register(RegisterDTO register) throws AlreadyUsedException {
         if (register.getEmail().isEmpty() || register.getUsername().isEmpty() || register.getPassword().isEmpty())
             throw new IllegalArgumentException("Please fill all the fields!");
         if (!isEmailValid(register.getEmail()))
@@ -41,7 +42,7 @@ public class RegisterUserService {
         user.setPassword(passwordEncoder.encode(register.getPassword()));
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email address already in use!");
+            throw new AlreadyUsedException("Email address already in use!");
         } else {
             return ApiResponse.ok(userRepository.save(user));
         }

@@ -16,6 +16,6 @@ public interface IReaction {
 
     public boolean setupReaction(ConnectedService service, List<FormInput> inputs);
 
-    public boolean trigger(ConnectedService service);
+    public boolean trigger(ConnectedService service, Map<String, String> placeholders, Map<String, String> parameters);
 
 }

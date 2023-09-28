@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
+import fr.zertus.area.app.Reaction;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.gson.*;
@@ -23,6 +24,7 @@ public class GsonConfiguration {
             builder.registerTypeAdapter(User.class, new UserTypeAdapter());
             builder.registerTypeAdapter(FormInput.class, new FormInputTypeAdapter());
             builder.registerTypeAdapter(Action.class, new ActionTypeAdapter());
+            builder.registerTypeAdapter(Reaction.class, new ReactionTypeAdapter());
             builder.registerTypeAdapter(App.class, new AppTypeAdapter());
         };
     }

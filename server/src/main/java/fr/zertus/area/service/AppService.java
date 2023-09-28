@@ -57,7 +57,7 @@ public class AppService {
      * @return a response entity with the redirection
      * @throws DataNotFoundException if the app is not found
      */
-    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String redirectUri) throws DataNotFoundException {
+    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String redirectUri) {
         App app = getApp(slug);
         if (app == null)
             return ApiResponse.notFound("Service not found").toResponseEntity();

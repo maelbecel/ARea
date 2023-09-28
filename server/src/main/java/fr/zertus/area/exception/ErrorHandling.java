@@ -1,6 +1,7 @@
 package fr.zertus.area.exception;
 
 import fr.zertus.area.payload.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * This is for uniformity and to avoid having to handle exceptions in each controller
  */
 @ControllerAdvice
+@Slf4j
 public class ErrorHandling extends ResponseEntityExceptionHandler {
 
     /**
@@ -45,13 +47,23 @@ public class ErrorHandling extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Handle AlreadyUsedException -> Conflict (409)
+     * @param e The exception
+     * @return A ResponseEntity with the error message
+     */
+    @ExceptionHandler(AlreadyUsedException.class)
+    public ResponseEntity<ApiResponse<String>> handleAlreadyUsedException(AlreadyUsedException e) {
+        return ApiResponse.conflict(e.getMessage()).toResponseEntity();
+    }
+
+    /**
      * Handle Exception -> Internal Server Error (500) | Also used as a fallback
      * @param e The exception
      * @return A ResponseEntity with the error message
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(Exception e) {
-        e.printStackTrace();
+        log.error(e.getMessage() + " - " + e.getStackTrace()[0]);
         return ApiResponse.internalServerError(e.getMessage()).toResponseEntity();
     }
 

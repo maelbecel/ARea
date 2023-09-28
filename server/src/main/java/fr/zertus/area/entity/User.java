@@ -30,7 +30,7 @@ public class User {
     @Column(name = "password")
     String password;
 
-    @Column(name = "enabled")
+    @Column(name = "enabled", columnDefinition = "TEXT")
     String connectedServices;
 
     public List<ConnectedService> getConnectedServices() {

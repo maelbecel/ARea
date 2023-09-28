@@ -151,7 +151,16 @@ public class ApiResponse<T> {
     }
 
     /**
-     * Create a new ApiResponse with status 406 and the given message
+     * Create a new ApiResponse with status 409 and the given message
+     * @param message
+     * @return
+     */
+    public static ApiResponse<String> conflict(String message) {
+        return new ApiResponse<>(409, message);
+    }
+
+    /**
+     * Create a new ApiResponse with status 418 and the given message
      * @param message The message to return
      * @return The ApiResponse (type String)
      */
