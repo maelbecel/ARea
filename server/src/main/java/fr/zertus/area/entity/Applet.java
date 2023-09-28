@@ -27,7 +27,7 @@ public class Applet {
     @Column(name = "action_data")
     String actionData;
 
-    @Column(name = "action_trigger")
+    @Column(name = "action_trigger", nullable = true)
     String actionTrigger;
 
     @Column(name = "reaction_slug")
