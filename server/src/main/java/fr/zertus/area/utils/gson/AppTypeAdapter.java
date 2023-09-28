@@ -7,8 +7,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.gson.GsonBuilderCustomizer;
+import fr.zertus.area.app.Reaction;
 
 import java.io.IOException;
 
@@ -16,6 +15,7 @@ public class AppTypeAdapter extends TypeAdapter<App> {
 
     private final Gson gson = new GsonBuilder()
         .registerTypeAdapter(Action.class, new ActionTypeAdapter())
+        .registerTypeAdapter(Reaction.class, new ReactionTypeAdapter())
         .create();
 
     @Override
@@ -31,6 +31,11 @@ public class AppTypeAdapter extends TypeAdapter<App> {
         }
         jsonWriter.endArray();
         jsonWriter.name("reactions").beginArray();
+        if (app.getReactions() != null) {
+            for (Reaction reaction : app.getReactions()) {
+                gson.getAdapter(Reaction.class).write(jsonWriter, reaction);
+            }
+        }
         jsonWriter.endArray();
         jsonWriter.name("decoration").beginObject();
         jsonWriter.name("logoUrl").value(app.getDecoration().getLogoUrl());
