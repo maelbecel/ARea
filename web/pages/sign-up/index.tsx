@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 // --- Components import --- //
 import NavBar, { NavBarNavigateButton, Icon, LeftSection, RightSection } from "../../components/navbar";
 import TextContainer, { InputContainer } from "../../components/auth/TextContainer";
+import Footer from "../../components/footer";
 
 const IndexPage: NextPage = () => {
     const [username, setUsername] = useState<string>("");
@@ -91,6 +92,8 @@ const IndexPage: NextPage = () => {
                     <InputContainer placeholder='Password' value={password} setValue={setPassword} icon="/Icons/lock.svg" secureMode={true} />
                 </TextContainer>
             </div>
+
+            <Footer />
         </>
     )
 }

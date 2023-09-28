@@ -5,15 +5,15 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 // --- Components import --- //
-import NavBar, { LeftSection, RightSection, NavBarFuncButton, NavBarNavigateButtonIcon, MiddleSection, Title } from "../../components/navbar";
-import GetActionService from "../../components/service/GetActionService";
-import Footer from "../../components/footer";
+import NavBar, { LeftSection, RightSection, NavBarFuncButton, NavBarNavigateButtonIcon, MiddleSection, Title } from "../../../components/navbar";
+import GetActionService from "../../../components/service/GetActionService";
+import Footer from "../../../components/footer";
 
 const IndexPage: NextPage = () => {
     const router = useRouter();
 
-    const [color, setColor] = useState<string>("");
-    const [name , setName]  = useState<string>("");
+    const [color   , setColor] = useState<string>("");
+    const [service , setService]  = useState<string>("");
 
     useEffect(() => {
         const checkIfNotLogged = async () => {
@@ -23,15 +23,15 @@ const IndexPage: NextPage = () => {
 
         const getQueryValue = async () => {
             setColor(router.query.color as string);
-            setName(router.query.name as string);
+            setService(router.query.service as string);
 
-            if (color === undefined || name === undefined)
+            if (color === undefined || service === undefined)
                 router.push("/");
         }
 
         checkIfNotLogged();
         getQueryValue();
-    }, [router, color, name]);
+    }, [router, color, service]);
 
     const getTheme = (hexColor : string ) => {
         if (hexColor?.length !== 6)
@@ -55,6 +55,16 @@ const IndexPage: NextPage = () => {
     const theme = getTheme(color);
     const hexColor = "bg-[#" + color + "]";
 
+    const [active, setActive] = useState<boolean>(false);
+
+    const handleClick = async () => {
+        //TODO: connect with aouth2 the user
+
+        console.log("click")
+
+        setActive(false);
+    }
+
     return (
         <>
             <NavBar color={hexColor} theme={theme}>
@@ -62,7 +72,7 @@ const IndexPage: NextPage = () => {
                     <NavBarFuncButton text="Back" color={color} func={() => router.back()} theme={theme} />
                 </LeftSection>
                 <MiddleSection>
-                    <Title text="Choose an action" theme={theme} />
+                    <Title text="Complete the action fields" theme={theme} />
                 </MiddleSection>
                 <RightSection>
                     <NavBarNavigateButtonIcon href="/help">
@@ -73,20 +83,34 @@ const IndexPage: NextPage = () => {
                 </RightSection>
             </NavBar>
 
-            <div className={`min-h-screen flex justify-start items-center flex-col`}>
-                <div className={`${hexColor} w-full flex justify-center flex-col gap-7 p-6 select-none`}>
+            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col ${theme === 'dark' ? 'text-white' : 'text-[#363841]'} ${hexColor}`}>
+                <div className={`w-full flex justify-center flex-col gap-7 p-6 select-none`}>
                     {/* TODO: remove placeholder */}
                     <Image src={"/Logo/WhiteLogo.svg"} width={168} height={168} alt={"Service Logo"} />
-                    <div className={`${theme === 'dark' ? 'text-white' : 'text-[#363841]'} font-bold text-[50px] flex justify-center`}>
-                        {name}
+                    <div className={`font-bold text-[50px] flex justify-center`}>
+                        {service}
                     </div>
                 </div>
-                <div className={`p-[55px]`}>
-                    <GetActionService name={name} color={hexColor} theme={theme} />
+                <div className={`w-full flex justify-center items-center text-[24px]`}>
+                    {/* TODO: remove place holder and fetch on api */}
+                    Cette action s’active à chaque fois que vous likez une vidéo
+                </div>
+                <div className={`flex justify-center items-center w-full h-full`}>
+                    <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] p-[27px] pl-[130px] pr-[130px]`}
+                         style={{
+                            backgroundColor: active ? '#' + color : (theme === 'dark' ? 'white' : '#363841'),
+                            color          : active ? (theme === 'dark' ? 'white' : '#363841') : '#' + color,
+                         }}
+                         onMouseDown={() => { setActive(true) }}
+                         onMouseLeave={() => { setActive(false) }}
+                         onClick={handleClick}
+                    >
+                        Connection
+                    </div>
                 </div>
             </div>
 
-            <Footer />
+            <Footer color={hexColor} theme={theme} />
         </>
     )
 }

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import NavBar, { Icon, LeftSection, NavBarNavigateButton, RightSection } from "../../components/navbar";
 import TextContainer, { Forgot, InputContainer } from "../../components/auth/TextContainer";
 import { useRouter } from "next/router";
+import Footer from "../../components/footer";
 
 const IndexPage: NextPage = () => {
     const [email   , setEmail]    = useState<string>("");
@@ -85,6 +86,8 @@ const IndexPage: NextPage = () => {
                     <Forgot text="Forgot your password ?" redirectUri="/passwords/forgot" />
                 </TextContainer>
             </div>
+
+            <Footer />
         </>
     )
 }
