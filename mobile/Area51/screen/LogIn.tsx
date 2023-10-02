@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
             console.log("Token :" + response.data);
             navigation.navigate('Area 51');
         } else {
-            alert(response.message);
+            alert("Error " + response.status + "\n" + response.message);
         }
     }
 
