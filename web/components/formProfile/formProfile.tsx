@@ -26,6 +26,7 @@ const Input = ({placeholder, secureMode = false, value, setValue, label } : Inpu
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     placeholder={placeholder}
+                    disabled={secureMode}
                 />
                 { secureMode && 
                     <div className="font-bold text-[18px] text-[#00C2FF] pl-[10px]">
@@ -40,16 +41,6 @@ const FormProfile = ({username, mail, password} : FormProfileProps) => {
     const [UserName, setUsername] = useState<string>(username ?? '')
     const [UserMail, setUserMail] = useState<string>(mail ?? '')
     const [UserPassword, setUserPassword] = useState<string>(password ?? '')
-
-    /*
-    const changeUsername = (e) => {
-        if (e.key === 'Enter') {
-            console.log('Enter key pressed');
-        }
-    }
-    */
-
-    // onKeyPress={changeUsername}
 
     return (
         <div className="flex justify-center flex-col gap-y-10">
