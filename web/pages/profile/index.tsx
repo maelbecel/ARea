@@ -41,7 +41,7 @@ const IndexPage: NextPage = () => {
     /*
         // TODO:
         <NavBar>
-            <SimpleLink   href="/profile/my-applets" text="My applets" />
+            <SimpleLink   href="/myApplets" text="My applets" />
             <NavBarButton href="/create"             text="Create" />
             <Profile />
         </NavBar>
