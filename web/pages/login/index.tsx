@@ -39,7 +39,7 @@ const IndexPage: NextPage = () => {
         }
 
         try {
-            const response = await fetch("https://api.zertus.fr/area51/user/login", {
+            const response = await fetch("http://zertus.fr:8001/user/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -50,6 +50,8 @@ const IndexPage: NextPage = () => {
                 })
             });
             const data = await response.json();
+
+            console.log(data);
 
             if (data?.status === 200) {
                 localStorage.setItem("token", data?.data);
@@ -81,8 +83,8 @@ const IndexPage: NextPage = () => {
 
             <div className="h-screen flex justify-center items-start">
                 <TextContainer title="Log in" handleClick={handleClick}>
-                    <InputContainer placeholder='Email'    value={email}    setValue={setEmail}    icon="/Icons/mail.svg"   />
-                    <InputContainer placeholder='Password' value={password} setValue={setPassword} icon="/Icons/lock.svg" secureMode={true} />
+                    <InputContainer placeholder='Email / Username' value={email}    setValue={setEmail}    icon="/Icons/mail.svg"   />
+                    <InputContainer placeholder='Password'         value={password} setValue={setPassword} icon="/Icons/lock.svg" secureMode={true} />
                     <Forgot text="Forgot your password ?" redirectUri="/passwords/forgot" />
                 </TextContainer>
             </div>
