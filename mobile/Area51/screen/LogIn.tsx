@@ -4,13 +4,14 @@
 //  So if you are done trying to 'optimize' this routine (and failed),
 //  please increment the following counter as a warning
 //  to the next guy:
-//  total_hours_wasted_here = 50
+//  total_hours_wasted_here = 52
 
 /* The code is importing the necessary components from the React and React Native libraries. */
-import React, { useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
+import ServerModal from '../components/ServerModal';
 import LoginAPI from '../api/Login';
 import AutoLoginAPI from '../api/AutoLogin';
 
@@ -18,8 +19,8 @@ import AutoLoginAPI from '../api/AutoLogin';
 `navigation` parameter is likely being passed from a parent component and is used for navigating
 between screens in a React Native application. */
 const Login = ({ navigation }) => {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         const autoLogin = async () => {
@@ -51,6 +52,7 @@ const Login = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+          <ServerModal />
           <Text style={styles.login}>Log in</Text>
           <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
           <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 54,
     fontStyle: 'normal',
     fontWeight: "700",
-  }
+  },
 });
 
 export default Login;
