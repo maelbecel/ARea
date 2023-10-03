@@ -1,8 +1,4 @@
-/* The line `import * as SecureStore from 'expo-secure-store';` is importing the `SecureStore` module
-from the `expo-secure-store` package. This module provides a secure storage API that allows you to
-securely store sensitive data, such as user authentication tokens or API keys, on the device. It
-provides methods for storing, retrieving, and deleting data from the secure storage. */
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * The Login function is an asynchronous function that sends a POST request to a login API endpoint
@@ -15,7 +11,8 @@ import * as SecureStore from 'expo-secure-store';
  */
 const LoginAPI  = async (email: string, password : string) => {
     try {
-        const response = await fetch(`http://zertus.fr:8001/user/login`, {
+        const serverAddress = await AsyncStorage.getItem('serverAddress');
+        const response = await fetch(`${serverAddress}/user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
