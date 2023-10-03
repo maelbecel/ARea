@@ -8,52 +8,87 @@ import { useEffect, useState } from "react";
 import NavBar, { LeftSection, RightSection, NavBarFuncButton, NavBarNavigateButtonIcon, MiddleSection, Title } from "../../../components/navbar";
 import GetActionService from "../../../components/service/GetActionService";
 import Footer from "../../../components/footer";
+import { getTheme } from "../../../utils/getTheme";
+import { ServiceInfoContainer } from "../../../components/service/template";
 
 const IndexPage: NextPage = () => {
     const router = useRouter();
 
-    const [color   , setColor] = useState<string>("");
-    const [service , setService]  = useState<string>("");
+    const [service, setService] = useState<any | undefined>(undefined);
+    const [action, setAction] = useState<any>({});
+    const [slug, setSlug] = useState<string>("");
+    const [name, setName] = useState<string>("");
+    const [token, setToken] = useState<string>("");
+
+    //TODO: add filter system that just create a list of reactions or actions
 
     useEffect(() => {
         const checkIfNotLogged = async () => {
-            if (localStorage.getItem("token") === null)
+            setToken(localStorage.getItem("token") as string);
+
+            if (token === null)
                 router.push("/");
         }
 
         const getQueryValue = async () => {
-            setColor(router.query.color as string);
-            setService(router.query.service as string);
+            setName(router.query.service as string);
+            setSlug(router.query.slug    as string);
 
-            if (color === undefined || service === undefined)
+            if (name === undefined || slug === undefined)
                 router.push("/");
         }
 
         checkIfNotLogged();
         getQueryValue();
-    }, [router, color, service]);
+    }, [router, token, name, slug]);
 
-    const getTheme = (hexColor : string ) => {
-        if (hexColor?.length !== 6)
-            hexColor = hexColor?.split("").map((char) => char + char).join("") as string;
+    useEffect(() => {
+        const getService = async (name: string, slug: string) => {
+            if (name?.length === 0 || slug?.length === 0 || token?.length === 0)
+                return;
 
-        // Convertir la couleur hexadécimale en valeurs RVB
-        const r = parseInt(hexColor?.substring(1, 3), 16);
-        const g = parseInt(hexColor?.substring(3, 5), 16);
-        const b = parseInt(hexColor?.substring(5, 7), 16);
+            try {
+                const response = await fetch(`http://zertus.fr:8001/service/${name}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization : `Bearer ${token}`
+                    },
+                });
 
-        // Calculer la luminosité (en utilisant la formule YIQ)
-        const luminosity = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                const data = await response.json();
 
-        // Déterminer si la couleur de fond est claire ou sombre
-        if (luminosity < 0.5)
-            return 'dark';  // Couleur de fond sombre, texte clair
-        else
-            return 'light'; // Couleur de fond clair, texte sombre
-    }
+                setService(data?.data);
 
-    const theme = getTheme(color);
-    const hexColor = "bg-[#" + color + "]";
+                // Check if service and its properties are defined before spreading
+                if (data?.data && data?.data.actions && data?.data.reactions) {
+                    const findObjectBySlug = (array: any[], slug: string) => {
+                        return array.find(item => item?.slug === slug);
+                    };
+
+                    const actionWithSlug = findObjectBySlug(data.data.actions, slug);
+
+                    if (actionWithSlug) {
+                        setAction(actionWithSlug)
+                        return;
+                    }
+
+                    const reactionWithSlug = findObjectBySlug(data.data.reactions, slug);
+
+                    if (reactionWithSlug) {
+                        setAction(reactionWithSlug);
+                        return;
+                    }
+                }
+            } catch (error) {
+                router.push("/");
+            }
+        }
+
+        getService(name, slug);
+    }, [name, slug, token, router]);
+
+    const theme = getTheme(service?.decoration?.backgroundColor);
 
     const [active, setActive] = useState<boolean>(false);
 
@@ -67,9 +102,9 @@ const IndexPage: NextPage = () => {
 
     return (
         <>
-            <NavBar color={hexColor} theme={theme}>
+            <NavBar color={service?.decoration?.backgroundColor?.substring(1)} theme={theme}>
                 <LeftSection>
-                    <NavBarFuncButton text="Back" color={color} func={() => router.back()} theme={theme} />
+                    <NavBarFuncButton text="Back" color={service?.decoration?.backgroundColor?.substring(1)} func={() => router.back()} theme={theme} />
                 </LeftSection>
                 <MiddleSection>
                     <Title text="Complete the action fields" theme={theme} />
@@ -83,23 +118,22 @@ const IndexPage: NextPage = () => {
                 </RightSection>
             </NavBar>
 
-            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col ${theme === 'dark' ? 'text-white' : 'text-[#363841]'} ${hexColor}`}>
-                <div className={`w-full flex justify-center flex-col gap-7 p-6 select-none`}>
-                    {/* TODO: remove placeholder */}
-                    <Image src={"/Logo/WhiteLogo.svg"} width={168} height={168} alt={"Service Logo"} />
-                    <div className={`font-bold text-[50px] flex justify-center`}>
-                        {service}
-                    </div>
-                </div>
+            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col`}
+                style={{
+                    backgroundColor: service?.decoration?.backgroundColor,
+                    color: theme === 'dark' ? '#ffffff' : '#363841'
+                }}
+            >
+                <ServiceInfoContainer color={service?.decoration.backgroundColor} theme={theme} url={service?.decoration.logoUrl} name={service?.name} />
+
                 <div className={`w-full flex justify-center items-center text-[24px]`}>
-                    {/* TODO: remove place holder and fetch on api */}
-                    Cette action s’active à chaque fois que vous likez une vidéo
+                    {action?.description}
                 </div>
                 <div className={`flex justify-center items-center w-full h-full`}>
                     <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] p-[27px] pl-[130px] pr-[130px]`}
                          style={{
-                            backgroundColor: active ? '#' + color : (theme === 'dark' ? 'white' : '#363841'),
-                            color          : active ? (theme === 'dark' ? 'white' : '#363841') : '#' + color,
+                            backgroundColor: active ? service?.decoration?.backgroundColor : (theme === 'dark' ? 'white' : '#363841'),
+                            color          : active ? (theme === 'dark' ? 'white' : '#363841') : service?.decoration?.backgroundColor,
                          }}
                          onMouseDown={() => { setActive(true) }}
                          onMouseLeave={() => { setActive(false) }}
@@ -110,7 +144,7 @@ const IndexPage: NextPage = () => {
                 </div>
             </div>
 
-            <Footer color={hexColor} theme={theme} />
+            <Footer color={service?.decoration?.backgroundColor?.substring(1)} theme={theme} />
         </>
     )
 }
