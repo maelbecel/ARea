@@ -12,6 +12,7 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
 import LoginAPI from '../api/Login';
+import AutoLoginAPI from '../api/AutoLogin';
 
 /* The code is defining a functional component called `Login` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -19,6 +20,17 @@ between screens in a React Native application. */
 const Login = ({ navigation }) => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+
+    useEffect(() => {
+        const autoLogin = async () => {
+            const response = await AutoLoginAPI();
+            console.log(response);
+            if (response == true) {
+                navigation.navigate('Area 51');
+            }
+          }
+          autoLogin();
+    }, [])
 
     /**
      * The function `connect` logs in a user using the LoginAPI, displays an alert if there is an

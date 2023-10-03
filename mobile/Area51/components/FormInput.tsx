@@ -1,7 +1,7 @@
 /* The `import` statement is used to import specific modules or components from external libraries or
 files. In this case, it is importing various components and types from the `react-native` and
 `react-native-gesture-handler` libraries. */
-import { View, TouchableOpacityProps, StyleSheet, InputModeOptions, Image } from 'react-native';
+import { View, TouchableOpacityProps, StyleSheet, InputModeOptions, Image, DimensionValue } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -16,13 +16,14 @@ interface InputProps extends TouchableOpacityProps {
     icon         : { name: string, width: number, height: number };
     onChangeText : (text: string) => void;
     children    ?: React.ReactNode;
+    size        ?: DimensionValue;
 }
 
 /* The code `const FormInput: React.FC<InputProps> = ({ title, secure = false, inputMode, icon,
 onChangeText, children }) => { ... }` is defining a functional component called `FormInput`. */
-const FormInput: React.FC<InputProps> = ({ title, secure = false, inputMode, icon, onChangeText, children }) => {
+const FormInput: React.FC<InputProps> = ({ title, secure = false, inputMode, icon, onChangeText, children, size = '70%' }) => {
   return (
-    <View style={styles.container}>
+    <View style={[{width: size}, styles.container]}>
       <Icon name={icon.name} size={24} color="#00000080" />
       <TextInput
         style={styles.input}
@@ -48,7 +49,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#D9D9D9',
     flexDirection: 'row',
     alignItems: 'center',
-    width: '70%',
     paddingVertical: 5,
     paddingRight: 26,
     paddingLeft: 16,
