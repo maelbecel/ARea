@@ -1,60 +1,81 @@
 // --- Librairies import --- //
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // --- Components import --- //
 import NavBar, { LeftSection, RightSection, NavBarFuncButton, NavBarNavigateButtonIcon, MiddleSection, Title } from "../../components/navbar";
 import GetActionService from "../../components/service/GetActionService";
+import Footer from "../../components/footer";
+import { getTheme } from "../../utils/getTheme";
+import { ServiceInfoContainer } from "../../components/service/template";
 
 const IndexPage: NextPage = () => {
     const router = useRouter();
 
+    const [service, setService] = useState<any | undefined>(undefined);
+    const [actions, setActions] = useState<any[]>([]);
+    const [slug, setSlug] = useState<string>("");
+    const [token, setToken] = useState<string>("");
+
+    //TODO: add filter system that just create a list of reactions or actions
+
     useEffect(() => {
         const checkIfNotLogged = async () => {
-            if (localStorage.getItem("token") === null)
+            setToken(localStorage.getItem("token") as string);
+
+            if (token === null)
+                router.push("/");
+        }
+
+        const getQueryValue = async () => {
+            setSlug(router.query.name as string);
+
+            if (slug === undefined)
                 router.push("/");
         }
 
         checkIfNotLogged();
-    }, [router]);
+        getQueryValue();
+    }, [router, token, slug]);
 
-    let { color } = router.query as { color: string };
-    const { name } = router.query as { name: string };
+    useEffect(() => {
+        const getService = async (slug: string) => {
+            if (slug?.length === 0 || token?.length === 0)
+                return;
 
-    if (color === undefined)
-        color = "FFFFFF";
-    if (name === undefined)
-        router.push("/");
+            try {
+                const response = await fetch(`http://zertus.fr:8001/service/${slug}`, {
 
-    const getTheme = (hexColor : string ) => {
-        if (hexColor?.length !== 6)
-            hexColor = hexColor?.split("").map((char) => char + char).join("") as string;
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization : `Bearer ${token}`
+                    },
+                });
 
-        // Convertir la couleur hexadécimale en valeurs RVB
-        const r = parseInt(hexColor?.substring(1, 3), 16);
-        const g = parseInt(hexColor?.substring(3, 5), 16);
-        const b = parseInt(hexColor?.substring(5, 7), 16);
+                const data = await response.json();
 
-        // Calculer la luminosité (en utilisant la formule YIQ)
-        const luminosity = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                setService(data?.data);
 
-        // Déterminer si la couleur de fond est claire ou sombre
-        if (luminosity < 0.5)
-            return 'dark';  // Couleur de fond sombre, texte clair
-        else
-            return 'light'; // Couleur de fond clair, texte sombre
-    }
+                // Check if service and its properties are defined before spreading
+                if (data?.data && data?.data.actions && data?.data.reactions)
+                    setActions([...data.data.actions, ...data.data.reactions]);
+            } catch (error) {
+                router.push("/");
+            }
+        }
 
-    const theme = getTheme(color);
-    const hexColor = "bg-[#" + color + "]";
+        getService(slug);
+    }, [slug, token, router]);
+
+    const theme = getTheme(service?.decoration?.backgroundColor);
 
     return (
         <>
-            <NavBar color={hexColor} theme={theme}>
+            {service && <NavBar color={service?.decoration?.backgroundColor?.substring(1)} theme={theme}>
                 <LeftSection>
-                    <NavBarFuncButton text="Back" color={color} func={() => router.back()} theme={theme} />
+                    <NavBarFuncButton text="Back" color={service?.decoration?.backgroundColor?.substring(1)} func={() => router.back()} theme={theme} />
                 </LeftSection>
                 <MiddleSection>
                     <Title text="Choose an action" theme={theme} />
@@ -66,20 +87,17 @@ const IndexPage: NextPage = () => {
                         </svg>
                     </NavBarNavigateButtonIcon>
                 </RightSection>
-            </NavBar>
+            </NavBar>}
 
-            <div className="min-h-screen flex justify-start items-center flex-col">
-                <div className={`${hexColor} w-full flex justify-center flex-col gap-7 p-6`}>
-                    {/* TODO: remove placeholder */}
-                    <Image src={"/Logo/WhiteLogo.svg"} width={168} height={168} alt={"Service Logo"} />
-                    <div className={`${theme === 'dark' ? 'text-white' : 'text-[#363841]'} font-bold text-[50px] flex justify-center`}>
-                        {name}
-                    </div>
-                </div>
+            <div className={`min-h-screen flex justify-start items-center flex-col`}>
+                <ServiceInfoContainer color={service?.decoration.backgroundColor} theme={theme} url={service?.decoration.logoUrl} name={service?.name} />
+
                 <div className={`p-[55px]`}>
-                    <GetActionService name={name} color={hexColor} theme={theme} />
+                    <GetActionService slug={slug} actions={actions} color={service?.decoration?.backgroundColor} theme={theme} />
                 </div>
             </div>
+
+            <Footer />
         </>
     )
 }

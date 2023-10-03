@@ -1,9 +1,14 @@
 // --- Librairies --- //
 import Link from "next/link"
 
-const Footer = () => {
+const Footer = ({ color = "ffffff", theme = 'light' }: { color ?: string, theme ?: string }) => {
     return (
-        <div className="w-full bg-white flex justify-around items-center flex-row font-bold text-[#363841] text-[24px]">
+        <div className={`w-full flex justify-around items-center flex-row font-bold text-[24px]`}
+            style={{
+                backgroundColor: `#${color}`,
+                color: theme === 'light' ? '#363841' : '#ffffff'
+            }}
+        >
             <Link href="/about">
                 About
             </Link>

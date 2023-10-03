@@ -128,13 +128,11 @@ const RightSection = ({ children }: { children: React.ReactNode }) => {
     )
 }
 
-const NavBar = ({ children, color = "bg-white", theme = "light" }: NavBarProps) => {
-    console.log(theme);
-
-    // TODO: check if the user is connected for change the navbar style
-
+const NavBar = ({ children, color = "ffffff", theme = "light" }: NavBarProps) => {
     return (
-        <div className={`p-[1.25rem] w-full flex items-center justify-between flex-row ${color} sticky top-0 border-b-[1px] border-b-black border-opacity-[10%] z-50`}>
+        <div className={`p-[1.25rem] w-full flex items-center justify-between flex-row sticky top-0 border-b-[1px] border-b-black border-opacity-[10%] z-50`}
+             style={{ backgroundColor: `#${color}` }}
+        >
             {children}
         </div>
     )

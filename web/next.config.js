@@ -2,8 +2,8 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['imgur.com'], // Add 'imgur.com' to the list of allowed domains
+    domains: ['imgur.com'],
   },
-};
+}
 
 module.exports = nextConfig;

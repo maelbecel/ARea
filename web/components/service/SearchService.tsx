@@ -6,29 +6,41 @@ import { useEffect, useState } from "react"
 // --- Interface --- //
 interface ServiceProps {
     name: string;
-    logo: string;
-    color: string;
+    slug: string;
+    decoration: {
+        logoUrl: string,
+        backgroundColor: string
+    };
+    actions: []
+    reactions: []
 }
 
 // --- Component --- //
-const ServiceComponent = ({ name, logo, color }: ServiceProps) => {
-    const hexColor = color.substring(5, color.length - 1);
-    
+const ServiceComponent = ({ name, slug, logo, color }: { name: string, slug: string, logo: string, color: string}) => {
+    color = (color.length === 0) ? "#363841" : color;
+
     return (
-        <Link href={`/serviceTemplate?color=${hexColor}&name=${name}`}>
-            <div className={`${color} flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}>
-                <Image src={logo} width={120} height={120} alt={"Service Logo"} />
+        <Link href={`/serviceTemplate?name=${slug}`}>
+            <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
+                 style={{ backgroundColor: color}}
+            >
+                <Image
+                    src={logo}
+                    width={120}
+                    height={120}
+                    alt={"Service Logo"}
+                />
                 <span>{name}</span>
             </div>
         </Link>
     )
 }
 
-const ServiceListComponents = ({ serviceList } : { serviceList : ServiceProps[] }) => {
+const ServiceListComponents = ({ serviceList } : { serviceList ?: ServiceProps[] }) => {
     return (
         <div className="font-bold text-[20px] text-white grid grid-cols-4 gap-5 h-auto mb-[5rem]">
-            {serviceList.map((service, index) => (
-                <ServiceComponent key={index} name={service.name} logo={service.logo} color={service.color} />
+            {serviceList && serviceList.map((service, index) => (
+                <ServiceComponent key={index} name={service.name} slug={service.slug} logo={service.decoration.logoUrl} color={service.decoration.backgroundColor} />
             ))}
         </div>
     );
@@ -39,25 +51,24 @@ const SearchService = () => {
     const [service    , setService] = useState<ServiceProps[]>([]);
 
     useEffect(() => {
-        // TODO: remove placeholder, setup search bar
+        const fetchService = async () => {
+            const token = localStorage.getItem("token");
 
-        // placeholder
-        setService([
-            { name: "YouTube", logo: "/Logo/WhiteLogo.svg", color: "bg-[#FF0000]" },
-            { name: "Github" , logo: "/Logo/WhiteLogo.svg", color: "bg-[#333]"    },
-            { name: "Discord", logo: "/Logo/WhiteLogo.svg", color: "bg-[#7289da]" },
-            { name: "YouTube", logo: "/Logo/WhiteLogo.svg", color: "bg-[#FF0000]" },
-            { name: "Twitch" , logo: "/Logo/WhiteLogo.svg", color: "bg-[#6441a5]" },
-            { name: "Github" , logo: "/Logo/WhiteLogo.svg", color: "bg-[#333]"    },
-            { name: "Twitch" , logo: "/Logo/WhiteLogo.svg", color: "bg-[#6441a5]" },
-            { name: "Twitter", logo: "/Logo/WhiteLogo.svg", color: "bg-[#1DA1F2]" },
-            { name: "YouTube", logo: "/Logo/WhiteLogo.svg", color: "bg-[#FF0000]" },
-            { name: "Discord", logo: "/Logo/WhiteLogo.svg", color: "bg-[#7289da]" },
-            { name: "Github" , logo: "/Logo/WhiteLogo.svg", color: "bg-[#333]"    },
-            { name: "Facebook",logo: "/Logo/WhiteLogo.svg", color: "bg-[#4267b2]" },
-        ]);
+            const response = await fetch("http://zertus.fr:8001/service", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization : `Bearer ${token}`
+                },
+            });
 
-    }, [searchValue])
+            const data = await response.json();
+
+            setService(data?.data);
+        };
+
+        fetchService();
+    }, []);
 
     return (
         <>

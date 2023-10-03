@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 // --- Components --- //
 import NavBar, { NavBarNavigateButton, SimpleLink, Profile, RightSection, LeftSection, Icon } from '../components/navbar'
 import SearchService from '../components/service/SearchService';
+import Footer from '../components/footer';
 
 const IndexPage: NextPage = () => {
   const [token, setToken] = useState<string>('');
@@ -60,6 +61,8 @@ const IndexPage: NextPage = () => {
           </div>
         )}
       </div>
+
+      <Footer />
     </>
   )
 }
