@@ -20,17 +20,20 @@ const IndexPage: NextPage = () => {
             router.push("/login");
         }
         const dataFetch = async () => {
-            const data = await (
-                await fetch("http://zertus.fr:8001/user/me", {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    }
-                })
-            ).json();
-            setData(data);
-            console.log(data);
+            try {
+                const data = await (
+                    await fetch("http://zertus.fr:8001/user/me", {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        }
+                    })
+                ).json();
+                setData(data);
+            } catch (error) {
+                console.log(error);
+            }
         };
         dataFetch();
     }, []);
