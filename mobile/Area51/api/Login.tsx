@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 /**
  * The Login function is an asynchronous function that sends a POST request to a login API endpoint
  * with the provided email and password, and returns the response as JSON.
@@ -9,7 +11,8 @@
  */
 const LoginAPI  = async (email: string, password : string) => {
     try {
-        const response = await fetch(`https://api.zertus.fr/area51/user/login`, {
+        const serverAddress = await AsyncStorage.getItem('serverAddress');
+        const response = await fetch(`${serverAddress}/user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
