@@ -7,7 +7,7 @@
 //  total_hours_wasted_here = 52
 
 /* The code is importing the necessary components from the React and React Native libraries. */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
