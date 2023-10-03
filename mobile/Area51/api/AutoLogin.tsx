@@ -3,6 +3,7 @@ from the `expo-secure-store` package. This module provides a secure storage API 
 securely store sensitive data, such as user authentication tokens or API keys, on the device. It
 provides methods for storing, retrieving, and deleting data from the secure storage. */
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 /**
@@ -14,8 +15,12 @@ import * as SecureStore from 'expo-secure-store';
  */
 const AutoLoginAPI  = async (): Promise<boolean> => {
     try {
+        const serverAddress = await AsyncStorage.getItem('serverAddress');
+        if (serverAddress == null) {
+            return false;
+        }
         const token = await SecureStore.getItemAsync('token_api');
-        const response = await fetch(`http://zertus.fr:8001/user/verify?token=` + token, {
+        const response = await fetch(`${serverAddress}/user/verify?token=` + token, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
