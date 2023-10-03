@@ -40,7 +40,7 @@ const ServerModal: React.FC = () => {
     };
 
     return (
-        <View>
+        <View style={styles.container}>
             <StatusBar
                 backgroundColor={modalVisible ? 'rgba(0, 0, 0, 0.5)' : '#fff'}
             />
@@ -71,6 +71,11 @@ const ServerModal: React.FC = () => {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        marginTop: 20,
+        marginLeft: 20,
+    },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -91,10 +96,6 @@ const styles = StyleSheet.create({
       paddingHorizontal: 10,
     },
     settingsButton: {
-      position: 'absolute',
-      marginTop: 60,
-      alignSelf: 'flex-start',
-      marginLeft: 20,
     },
 });
 
