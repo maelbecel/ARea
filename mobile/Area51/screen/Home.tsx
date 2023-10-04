@@ -1,7 +1,7 @@
 /* The code `import * as React from 'react';` is importing the entire React library and assigning it to
 the variable `React`. This allows us to use React components and functions in our code. */
 import * as React from 'react';
-import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
 import FormInput from '../components/FormInput';
 import Services from '../api/Services';
 import { useState, useEffect } from 'react';
@@ -25,8 +25,11 @@ const Home = ({ navigation }) => {
     fetchApplets();
   }, []);
 
-  //{service.decoration.logoUrl != ""} && <Image source={{ uri: service.decoration.logoUrl }} />
-
+  /**
+   * The function "displayApplets" maps over an array of applets and returns a JSX element for each
+   * applet.
+   * @returns The `displayApplets` function is returning an array of `ServiceCard` components.
+   */
   const displayApplets = () => {
     return applets.map((service) => (
       <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('Service', { slug: service.slug })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
@@ -36,7 +39,7 @@ const Home = ({ navigation }) => {
   return (
     <View style={ styles.container }>
       <View style={ styles.input }>
-        <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {console.log(text)}} size='95%' />
+        <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {console.log(text)}} size='85%' />
       </View>
       <ScrollView style={{ marginBottom: 50}}>
         <View style={ styles.services }>
@@ -50,6 +53,8 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 50,
+    backgroundColor: '#fff',
+    paddingBottom: 100,
   },
   input: {
     alignContent: "center",
