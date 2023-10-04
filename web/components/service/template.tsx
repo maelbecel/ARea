@@ -3,8 +3,8 @@ import Image from "next/image";
 
 const ServiceInfoContainer = ({ color, url, theme, name } : { color: string, url: string, theme: string, name: string }) => {
     return (
-        <div className={`w-full flex justify-center flex-col gap-7 p-6 select-none`}
-            style={{ backgroundColor: `${color}` }}
+        <div style={{backgroundColor: `${color}`}}
+            className={`w-full flex justify-center flex-col gap-7 p-6 select-none`}
         >
             <Image src={url} width={168} height={168} alt={"Service Logo"} className={"object-contain"} />
             <div className={`font-bold text-[50px] flex justify-center`}

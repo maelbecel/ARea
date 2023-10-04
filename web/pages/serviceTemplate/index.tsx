@@ -15,10 +15,9 @@ const IndexPage: NextPage = () => {
 
     const [service, setService] = useState<any | undefined>(undefined);
     const [actions, setActions] = useState<any[]>([]);
-    const [slug, setSlug] = useState<string>("");
-    const [token, setToken] = useState<string>("");
-
-    //TODO: add filter system that just create a list of reactions or actions
+    const [slug   , setSlug]    = useState<string>("");
+    const [token  , setToken]   = useState<string>("");
+    const [type   , setType]    = useState<string>("");
 
     useEffect(() => {
         const checkIfNotLogged = async () => {
@@ -30,6 +29,7 @@ const IndexPage: NextPage = () => {
 
         const getQueryValue = async () => {
             setSlug(router.query.name as string);
+            setType(router.query.type as string);
 
             if (slug === undefined)
                 router.push("/");
@@ -58,16 +58,45 @@ const IndexPage: NextPage = () => {
 
                 setService(data?.data);
 
-                // Check if service and its properties are defined before spreading
-                if (data?.data && data?.data.actions && data?.data.reactions)
-                    setActions([...data.data.actions, ...data.data.reactions]);
+                if (type === undefined) {
+                    if (data?.data && data?.data.actions && data?.data.reactions) {
+                        const actionsWithType = data.data.actions.map((action: any) => ({
+                            ...action,
+                            type: "action",
+                        }));
+                        const reactionsWithType = data.data.reactions.map((reaction: any) => ({
+                            ...reaction,
+                            type: "reaction",
+                        }));
+
+                        setActions([...actionsWithType, ...reactionsWithType]);
+                    }
+                } else if (type === "action") {
+                    if (data?.data && data?.data.actions) {
+                        const actionsWithType = data.data.actions.map((action: any) => ({
+                            ...action,
+                            type: "action",
+                        }));
+
+                        setActions([...actionsWithType]);
+                    }
+                }  else if (type === "reaction") {
+                    if (data?.data && data?.data.reactions) {
+                        const reactionsWithType = data.data.reactions.map((reaction: any) => ({
+                            ...reaction,
+                            type: "reaction",
+                        }));
+
+                        setActions([...reactionsWithType])
+                    }
+                }
             } catch (error) {
                 router.push("/");
             }
         }
 
         getService(slug);
-    }, [slug, token, router]);
+    }, [slug, token, router, type]);
 
     const theme = getTheme(service?.decoration?.backgroundColor);
 

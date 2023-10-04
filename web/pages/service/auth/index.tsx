@@ -1,12 +1,10 @@
 // --- Librairies import --- //
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 // --- Components import --- //
 import NavBar, { LeftSection, RightSection, NavBarFuncButton, NavBarNavigateButtonIcon, MiddleSection, Title } from "../../../components/navbar";
-import GetActionService from "../../../components/service/GetActionService";
 import Footer from "../../../components/footer";
 import { getTheme } from "../../../utils/getTheme";
 import { ServiceInfoContainer } from "../../../components/service/template";
@@ -19,8 +17,9 @@ const IndexPage: NextPage = () => {
     const [slug, setSlug] = useState<string>("");
     const [name, setName] = useState<string>("");
     const [token, setToken] = useState<string>("");
-
-    //TODO: add filter system that just create a list of reactions or actions
+    const [type, setType] = useState<string>("");
+    const [oauth2Token, setOauth2Token] = useState<string>("");
+    const [alreadyConnect, setAlreadyConnect] = useState<boolean>(false);
 
     useEffect(() => {
         const checkIfNotLogged = async () => {
@@ -33,6 +32,7 @@ const IndexPage: NextPage = () => {
         const getQueryValue = async () => {
             setName(router.query.service as string);
             setSlug(router.query.slug    as string);
+            setType(router.query.type    as string);
 
             if (name === undefined || slug === undefined)
                 router.push("/");
@@ -93,12 +93,90 @@ const IndexPage: NextPage = () => {
     const [active, setActive] = useState<boolean>(false);
 
     const handleClick = async () => {
-        //TODO: connect with aouth2 the user
+        const ConnectOAuth2 = async () => {
+            try {
+                const response = await fetch(`http://zertus.fr:8001/service/${name}/oauth2/token`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
 
-        console.log("click")
+                const data = await response.json();
+                
+                setOauth2Token(data?.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
         setActive(false);
+        ConnectOAuth2();
     }
+
+    useEffect(() => {
+        if (alreadyConnect)
+            return;
+
+        const checkOAuth2Connection = async () => {
+            try {
+                const response = await fetch("http://zertus.fr:8001/user/me", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data?.status !== 200)
+                    return;
+
+                const connectedServices = data?.data?.connectedServices as string[];
+
+                for (let i = 0; i < connectedServices?.length; i++) {
+                    if (name === connectedServices[i]) {
+                        setAlreadyConnect(true);
+                        break;
+                    }
+                }
+
+                if (alreadyConnect === false)
+                    return;
+
+                if (type === "reaction") {
+                    localStorage.setItem("reaction", slug);
+                } else if (type === "action") {
+                    localStorage.setItem("action", slug);
+                } else {
+                    console.log("Error: the action not have type");
+                }
+
+                router.push("/create");
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        checkOAuth2Connection();
+    }), [];
+
+    useEffect(() => {
+        if (!oauth2Token || oauth2Token === "" && !alreadyConnect)
+            return;
+
+        if (type === "reaction") {
+            localStorage.setItem("reaction", slug);
+        } else if (type === "action") {
+            localStorage.setItem("action", slug);
+        } else {
+            console.log("Error: the action not have type");
+        }
+
+        window.location.href = `http://zertus.fr:8001/service/${name}/oauth2?redirecturi=http://localhost:8081/create&authToken=${oauth2Token}`
+    }), [oauth2Token];
 
     return (
         <>
