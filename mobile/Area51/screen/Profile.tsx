@@ -71,6 +71,9 @@ const Profile: React.FC = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
+    {loading ? (
+      <ActivityIndicator size="large" color="#0000ff" /> // Affichez un indicateur de chargement pendant le chargement des données
+    ) : (
       <ScrollView
         showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
         showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
@@ -78,11 +81,7 @@ const Profile: React.FC = () => {
         <View style={styles.profilePicture}>
           <SVGImg width={150} height={150} />
         </View>
-        {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" /> // Affichez un indicateur de chargement pendant le chargement des données
-        ) : (
           <ProfileForm data={data} />
-        )}
         <Button
           mode="contained"
           onPress={ handlePress }
@@ -120,6 +119,7 @@ const Profile: React.FC = () => {
             <Text style={styles.logout}>Se déconnecter</Text>
         </TouchableOpacity>
       </ScrollView>
+    )}
     </KeyboardAvoidingView>
   );
 };
@@ -127,8 +127,9 @@ const Profile: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
-    paddingHorizontal: 20, // Marge à gauche et à droite de l'écran
   },
   profilePicture: {
     marginTop: Dimensions.get('window').height / 50, // Marge en haut de l'avatar pour l'espace entre l'image et le texte
