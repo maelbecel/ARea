@@ -3,6 +3,7 @@
 `expo-secure-store` and assigning it to the variable `SecureStore`. This allows you to access the
 functions and variables exported by the `expo-secure-store` module using the `SecureStore` variable. */
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * The above type represents an applet with properties such as slug, name, and decoration.
@@ -25,7 +26,8 @@ const Services = async (): Promise<Applet[]> => {
     try {
         let applets: Applet[] = [];
         const token = await SecureStore.getItemAsync('token_api');
-        const response = await fetch(`http://zertus.fr:8001/service`, {
+        const serverAddress = await AsyncStorage.getItem('serverAddress');
+        const response = await fetch(`${serverAddress}/service`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
