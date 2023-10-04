@@ -51,18 +51,21 @@ const Login = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.container}>
-          <ServerModal />
-          <View style={styles.form}>
-            <Text style={styles.login}>Log in</Text>
-            <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
-            <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
-            <Text style={styles.forgot}>Forgot your password ?</Text>
-            <SubmitButton title="Log in" onPress={connect} />
-            <Text style={styles.forgot} onPress={() => navigation.navigate('SignUp')} >No account ? Sign up here</Text>
-            <Text style={styles.or}>or</Text>
-            <SubmitButton title="Log in with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
-            <SubmitButton title="Log in with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} />
+        /* The code is returning a JSX element that contains other JSX elements. */
+        <View style={{marginTop: 50}}>
+          <View style={styles.container}>
+            <ServerModal />
+            <View style={styles.form}>
+              <Text style={styles.login}>Log in</Text>
+              <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
+              <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
+              <Text style={styles.forgot}>Forgot your password ?</Text>
+              <SubmitButton title="Log in" onPress={connect} />
+              <Text style={styles.forgot} onPress={() => navigation.navigate('SignUp')} >No account ? Sign up here</Text>
+              <Text style={styles.or}>or</Text>
+              <SubmitButton title="Log in with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
+              <SubmitButton title="Log in with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} />
+            </View>
           </View>
         </View>
     )
