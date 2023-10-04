@@ -1,7 +1,11 @@
 // --- Libraires --- //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Button } from "react-native-paper";
+import * as SecureStore from 'expo-secure-store';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserInfosAPI from "../api/UserInfos";
 
 // --- Component --- //
 import OutlinedTextBox from '../components/OutlinedTextBox';
@@ -22,9 +26,36 @@ const SecureText = ({ text }) => {
 };
 
 const Profile: React.FC = () => {
-  const [username, setUsername] = useState<string>('username');
-  const [password, setPassword] = useState<string>('password');
-  const [email, setEmail] = useState<string>('email');
+  const navigation = useNavigation();
+
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+
+  useEffect(() => {
+    const dataFetch = async () => {
+      const serverAddress = await AsyncStorage.getItem('serverAddress');
+      const token = await SecureStore.getItemAsync('token_api');
+
+      if (!token) {
+          navigation.navigate('Login');
+      }
+      const response = await UserInfosAPI(token, serverAddress);
+      console.log(response);
+      setUsername(response.data.username);
+      setEmail(response.data.email);
+    };
+    dataFetch();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await SecureStore.deleteItemAsync('token_api');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleUsernameChange = (text: string) => {
     setUsername(text);
@@ -108,6 +139,13 @@ const Profile: React.FC = () => {
             <Text style={styles.subtitle}>Conditions et confidentialité</Text>
           </View>
         </View>
+        <Button
+          mode="text"
+          onPress={ handleLogout }
+          textColor="red"
+        >
+          Se déconnecter
+        </Button>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -120,7 +158,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20, // Marge à gauche et à droite de l'écran
   },
   profilePicture: {
-    marginTop: Dimensions.get('window').height / 5 - 75,
+    marginTop: Dimensions.get('window').height / 50, // Marge en haut de l'avatar pour l'espace entre l'image et le texte
     marginBottom: (Dimensions.get('window').height / 5 - 75) / 3,
     alignItems: 'center',
     justifyContent: 'center',
