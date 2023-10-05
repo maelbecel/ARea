@@ -15,6 +15,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type Applet = {
     slug: string;
     name: string;
+    action : boolean;
+    reaction: boolean;
     decoration: {
         backgroundColor: string;
         logoUrl: string;
@@ -36,8 +38,11 @@ const Services = async (): Promise<Applet[]> => {
         });
         console.log(response.status);
         const json = await response.json();
+        console.log("JAson : ", json)
         for (let i = 0; i < json.data.length; i++) {
-            let tmp : Applet = {slug : json.data[i].slug, name : json.data[i].name, decoration : {backgroundColor : json.data[i].decoration.backgroundColor, logoUrl : json.data[i].decoration.logoUrl}};
+            let action : boolean = (json.data[i].actions.length > 0);
+            let reaction : boolean = (json.data[i].reactions.length > 0);
+            let tmp : Applet = {slug : json.data[i].slug, name : json.data[i].name, action : action, reaction : reaction, decoration : {backgroundColor : json.data[i].decoration.backgroundColor, logoUrl : json.data[i].decoration.logoUrl}};
             applets.push(tmp);
         }
         return applets;

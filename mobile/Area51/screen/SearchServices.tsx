@@ -1,54 +1,52 @@
-/* The code `import * as React from 'react';` is importing the entire React library and assigning it to
-the variable `React`. This allows us to use React components and functions in our code. */
 import * as React from 'react';
 import { Text, View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
 import FormInput from '../components/FormInput';
 import Services from '../api/Services';
 import { useState, useEffect } from 'react';
 import ServiceCard from '../components/ServiceCard';
+import TopBar from '../components/TopBar';
 
-const SearchService = ({ navigation }) => {
+const SearchServices = ({ navigation, route }) => {
   const [applets, setApplets] = useState([]); // State to store applets
+  const { type }  = route.params;
 
-  // Fetch and set the applets when the component mounts
   useEffect(() => {
     const fetchApplets = async () => {
       try {
         const services = await Services();
-        console.log(services);
         setApplets(services);
       } catch (error) {
-          console.log('Error fetching applets:', error);
+        console.log('Error fetching applets:', error);
       }
     };
 
     fetchApplets();
-  }, []);
+  }, [type]);
 
-  /**
-   * The function "displayApplets" maps over an array of applets and returns a JSX element for each
-   * applet.
-   * @returns The `displayApplets` function is returning an array of `ServiceCard` components.
-   */
-  const displayApplets = () => {
-    return applets.map((service) => (
-      <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('Service', { slug: service.slug })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
-    ));
-  };
+  const filteredApplets = applets.filter((service) => {
+    if (type === "action") return service.action === true;
+    if (type === "reaction") return service.reaction === true;
+    return true; // Include all applets if type is not specified
+  });
 
   return (
-    <View style={ styles.container }>
-      <View style={ styles.input }>
-        <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {console.log(text)}} size='85%' />
+    <View style={styles.container}>
+      <TopBar title="Create" iconLeft='menu' color="#000" onPressLeft={() => navigation.goBack()} />
+      <View style={styles.input}>
+        <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => { console.log(text) }} size='85%' />
       </View>
-      <ScrollView style={{ marginBottom: 50}}>
-        <View style={ styles.services }>
-          {displayApplets()}
+      <ScrollView style={{ marginBottom: 50 }}>
+        <View style={styles.services}>
+          {filteredApplets.length === 0 ? <Text>No result</Text> : (
+            filteredApplets.map((service) => (
+              <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('ServiceTemplate', { slug: service.slug, type: type })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
+            ))
+          )}
         </View>
       </ScrollView>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -63,11 +61,7 @@ const styles = StyleSheet.create({
   services: {
     alignContent: "center",
     alignItems: "center",
-  }
+  },
 });
 
-/* `export default SearchService;` is exporting the `SearchService` component as the default export of this module. This
-means that when another module imports this module, they can import the `SearchService` component directly
-without having to specify its name. For example, in another module, we can import the `SearchService`
-component like this: `import SearchService from './SearchService';`. */
-export default SearchService;
+export default SearchServices;
