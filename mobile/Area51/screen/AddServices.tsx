@@ -29,9 +29,9 @@ const AddServices = ({navigation}) => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices')} />
+      <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} />
       <Icon name="add-circle" size={40} color="#363841" />
-      <ActionChoose type="reaction" slug={reaction} onPress={() => navigation.navigate('SearchServices')} />
+      <ActionChoose type="reaction" slug={reaction} onPress={() => navigation.navigate('SearchServices', {type: "reaction"})} />
       <SubmitButton title="Continuer" onPress={newApplet} textcolor='#FFF'/>
     </View>
   );
