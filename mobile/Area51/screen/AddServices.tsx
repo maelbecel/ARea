@@ -9,7 +9,9 @@ const AddServices = ({navigation}) => {
   const [action, setAction] = React.useState("default");
   const [reaction, setReaction] = React.useState("default");
 
-  const newApplet = () => {
+  const newApplet = async () => {
+    await AsyncStorage.setItem('action', "default");
+    await AsyncStorage.setItem('reaction', "default");
     navigation.navigate("My Applets")
   }
 
@@ -20,6 +22,8 @@ const AddServices = ({navigation}) => {
         const reaction = await AsyncStorage.getItem('reaction');
         setAction((action === null) ? "default" : action);
         setReaction((reaction === null) ? "default" : reaction);
+        console.log("Action : ", action);
+        console.log("Reaction : ", reaction);
       } catch (error) {
         console.log("Error while getting info : ", error);
       }
