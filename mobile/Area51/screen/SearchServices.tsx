@@ -23,29 +23,31 @@ const SearchServices = ({ navigation, route }) => {
     fetchApplets();
   }, [type]);
 
-  const filteredApplets = applets.filter((service) => {
+  const filteredApplets = (applets == null) ? null : applets.filter((service) => {
     if (type === "action") return service.action === true;
     if (type === "reaction") return service.reaction === true;
     return true; // Include all applets if type is not specified
   });
 
-  return (
-    <View style={styles.container}>
-      <TopBar title="Create" iconLeft='menu' color="#000" onPressLeft={() => navigation.goBack()} />
-      <View style={styles.input}>
-        <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => { console.log(text) }} size='85%' />
-      </View>
-      <ScrollView style={{ marginBottom: 50 }}>
-        <View style={styles.services}>
-          {filteredApplets.length === 0 ? <Text>No result</Text> : (
-            filteredApplets.map((service) => (
-              <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('ServiceTemplate', { slug: service.slug, type: type })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
-            ))
-          )}
+  if (applets != undefined && applets != null) {
+    return (
+      <View style={styles.container}>
+        <TopBar title="Create" iconLeft='arrow-back' color="#000" onPressLeft={() => navigation.goBack()} />
+        <View style={styles.input}>
+          <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => { console.log(text) }} size='85%' />
         </View>
-      </ScrollView>
-    </View>
-  );
+        <ScrollView style={{ marginBottom: 50 }}>
+          <View style={styles.services}>
+            {filteredApplets == null || filteredApplets.length === 0 ? <Text>No result</Text> : (
+              filteredApplets.map((service) => (
+                <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('ServiceTemplate', { slug: service.slug, type: type })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
+              ))
+            )}
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

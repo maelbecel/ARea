@@ -38,7 +38,7 @@ const Services = async (): Promise<Applet[]> => {
         });
         console.log(response.status);
         const json = await response.json();
-        console.log("JAson : ", json)
+        if (json.data == undefined) return null;
         for (let i = 0; i < json.data.length; i++) {
             let action : boolean = (json.data[i].actions.length > 0);
             let reaction : boolean = (json.data[i].reactions.length > 0);
