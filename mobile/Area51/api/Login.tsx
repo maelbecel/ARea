@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginAPI  = async (email: string, password : string) => {
     try {
         const serverAddress = await AsyncStorage.getItem('serverAddress');
+        console.log(serverAddress);
         const response = await fetch(`${serverAddress}/user/login`, {
             method: 'POST',
             headers: {
