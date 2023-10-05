@@ -124,6 +124,9 @@ const getReaction = (action : any) : Reaction[] => {
  * @returns The function `ServiceInfo` returns a `Promise` that resolves to a `Service` object.
  */
 const ServiceInfo = async (slug : string): Promise<Service> => {
+    if (slug === "") {
+        return null;
+    }
     try {
         const token = await SecureStore.getItemAsync('token_api');
         const serverAddress = await AsyncStorage.getItem('serverAddress');
@@ -134,7 +137,7 @@ const ServiceInfo = async (slug : string): Promise<Service> => {
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log("Status : ", response.status);
+        console.log(`/service/${slug} :`, response.status);
         if (response.status != 200) {
             return null;
         }
@@ -142,7 +145,7 @@ const ServiceInfo = async (slug : string): Promise<Service> => {
         let service : Service = {slug : json.data.slug, name : json.data.name, actions : null, reactions : null, decoration : {backgroundColor : json.data.decoration.backgroundColor, logoUrl : json.data.decoration.logoUrl}};
         service.actions = getAction(json.data.actions);
         service.reactions = getReaction(json.data.reactions);
-        console.log("Service : ", service);
+        console.log(`Service `, service);
         return service;
     } catch (error) {
         console.error("An error occur : ", error);
