@@ -31,6 +31,7 @@ const Home = ({ navigation }) => {
    * @returns The `displayApplets` function is returning an array of `ServiceCard` components.
    */
   const displayApplets = () => {
+    if (applets == null) return;
     return applets.map((service) => (
       <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('Service', { slug: service.slug })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
     ));

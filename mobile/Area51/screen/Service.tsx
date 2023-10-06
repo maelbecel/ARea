@@ -65,13 +65,13 @@ const Service = ({ navigation, route }) => {
 
   const displayActions = () => {
     return action.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('Action', { slug: service.slug })}/>
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug , type: "action"})}/>
     ));
   };
 
   const displayReactions = () => {
     return reaction.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('Reaction', { slug: service.slug })}/>
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: "reaction" })}/>
     ));
   }
 
@@ -93,16 +93,11 @@ const Service = ({ navigation, route }) => {
     fetchData();
   }, [slug]);
 
-  React.useEffect(() => {
-    console.log("Action : ", action);
-    console.log("Reaction : ", reaction);
-  }, [action, reaction]);
-
   return (
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
       <View style={[{ backgroundColor: color }, styles.container]}>
-        <TopBar title="Explore" iconLeft='menu' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='info' onPressRight={() => navigation.goBack()} />
+        <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='info' onPressRight={() => navigation.goBack()} />
         <Image source={{ uri: url }} style={styles.logo} />
         <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
       </View>
