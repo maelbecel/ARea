@@ -56,4 +56,24 @@ public class User {
         setConnectedServices(connectedServices);
     }
 
+    public ConnectedService getConnectedService(String slug) {
+        List<ConnectedService> connectedServices = getConnectedServices();
+        for (ConnectedService connectedService : connectedServices) {
+            if (connectedService.getSlug().equals(slug))
+                return connectedService;
+        }
+        return null;
+    }
+
+    public void removeConnectedService(String slug) {
+        List<ConnectedService> connectedServices = getConnectedServices();
+        for (int i = 0; i < connectedServices.size(); i++) {
+            if (connectedServices.get(i).getSlug().equals(slug)) {
+                connectedServices.remove(i);
+                break;
+            }
+        }
+        setConnectedServices(connectedServices);
+    }
+
 }

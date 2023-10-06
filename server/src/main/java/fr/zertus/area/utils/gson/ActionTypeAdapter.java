@@ -26,6 +26,7 @@ public class ActionTypeAdapter extends TypeAdapter<Action> {
         jsonWriter.name("inputs").beginArray();
         if (action.getInputs() != null) {
             for (FormInput input : action.getInputs()) {
+                if (input.getType().equals(FormInput.Type.HIDDEN)) continue;
                 gson.getAdapter(FormInput.class).write(jsonWriter, input);
             }
         }

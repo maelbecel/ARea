@@ -1,29 +1,28 @@
 package fr.zertus.area.app;
 
-import fr.zertus.area.entity.ConnectedService;
+import fr.zertus.area.entity.User;
+import fr.zertus.area.exception.BadFormInputException;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class Reaction implements IReaction {
 
     private final String name;
+    private final String slug;
     private final String description;
 
     protected final List<FormInput> inputs;
 
-    protected final Map<String, String> placeholders;
-
-    public Reaction(String name, String description) {
+    public Reaction(String app, String name, String description) {
         this.name = name;
         this.description = description;
+        this.slug = StringUtils.slugify(app + "." + name);
 
         this.inputs = new ArrayList<>();
-        this.placeholders = new HashMap<>();
     }
 
     @Override
@@ -33,7 +32,7 @@ public abstract class Reaction implements IReaction {
 
     @Override
     public String getSlug() {
-        return StringUtils.slugify(getName());
+        return slug;
     }
 
     @Override
@@ -47,17 +46,26 @@ public abstract class Reaction implements IReaction {
     }
 
     @Override
-    public Map<String, String> getPlaceholders() {
-        return placeholders;
+    public List<FormInput> getInputs(User user) {
+        return inputs;
     }
 
     @Override
-    public boolean setupReaction(ConnectedService service, List<FormInput> inputs) {
+    public boolean setupReaction(User user, List<FormInput> inputs) throws BadFormInputException {
+        for (FormInput input : inputs) {
+            if (!input.isValid())
+                return false;
+        }
         return false;
     }
 
     @Override
-    public boolean trigger(ConnectedService service, Map<String, String> placeholders, Map<String, String> parameters) {
+    public boolean deleteReaction(User user, List<FormInput> inputs) {
+        return false;
+    }
+
+    @Override
+    public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws BadFormInputException {
         return false;
     }
 

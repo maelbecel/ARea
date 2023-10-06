@@ -1,7 +1,6 @@
 package fr.zertus.area.controller;
 
 import fr.zertus.area.app.App;
-import fr.zertus.area.app.discord.DiscordOAuth2Handler;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.utils.SecurityUtils;
@@ -9,30 +8,23 @@ import fr.zertus.area.service.AppService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Set;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/service")
 @Tag(name = "Service", description = "Services endpoint")
 public class AppController {
-
-    private static final Logger logger = LoggerFactory.getLogger(DiscordOAuth2Handler.class);
 
     @Autowired
     private AppService appService;

@@ -42,6 +42,8 @@ public class RegisterUserService {
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new AlreadyUsedException("Email address already in use!");
+        } else if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new AlreadyUsedException("Username already in use!");
         } else {
             return ApiResponse.ok(userRepository.save(user));
         }
