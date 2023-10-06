@@ -23,6 +23,7 @@ public class ReactionTypeAdapter extends TypeAdapter<Reaction> {
         jsonWriter.name("inputs").beginArray();
         if (reaction.getInputs() != null) {
             for (FormInput input : reaction.getInputs()) {
+                if (input.getType().equals(FormInput.Type.HIDDEN)) continue;
                 gson.getAdapter(FormInput.class).write(jsonWriter, input);
             }
         }

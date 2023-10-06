@@ -24,7 +24,10 @@ public class AreaUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+            User user = userRepository.findByEmail(username).orElse(null);
+            if (user == null) {
+                user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+            }
             return new AreaUserDetails(user);
         } catch (Exception e) {
             throw new RuntimeException(e);

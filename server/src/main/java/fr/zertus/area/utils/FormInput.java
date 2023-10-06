@@ -1,5 +1,6 @@
 package fr.zertus.area.utils;
 
+import fr.zertus.area.exception.BadFormInputException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,9 @@ public class FormInput {
     List<String> options;
     Type type = Type.TEXT;
 
-    public boolean isValid() {
+    public boolean isValid() throws BadFormInputException {
         if (value == null || value.isEmpty()) {
-            return false;
+            throw new BadFormInputException("The value of the input " + name + " is null or empty");
         }
 
         switch (type) {
@@ -34,17 +35,17 @@ public class FormInput {
                 try {
                     Integer.parseInt(value);
                 } catch (NumberFormatException e) {
-                    return false;
+                    throw new BadFormInputException("The value of the input " + name + " is not a number");
                 }
             }
             case SELECT -> {
                 if (options == null || !options.contains(value)) {
-                    return false;
+                    throw new BadFormInputException("The value of the input " + name + " is not in the options");
                 }
             }
             case URL -> {
                 if (!value.startsWith("http://") || !value.startsWith("https://")) {
-                    return false;
+                    throw new BadFormInputException("The value of the input " + name + " is not an url");
                 }
             }
         }
@@ -84,8 +85,15 @@ public class FormInput {
         return input;
     }
 
+    public static FormInput createHiddenInput(String name, String label, String value) {
+        FormInput input = createDefaultInput(name, label);
+        input.setType(Type.HIDDEN);
+        input.setValue(value);
+        return input;
+    }
+
     public enum Type {
-        TEXT, NUMBER, SELECT, URL
+        TEXT, NUMBER, SELECT, URL, HIDDEN
     }
 
 }

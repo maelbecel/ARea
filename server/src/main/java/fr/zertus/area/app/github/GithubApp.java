@@ -44,6 +44,6 @@ public class GithubApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://imgur.com/kcALSJQ.png", "#7388D9");
+        return new AppDecoration("https://i.imgur.com/dy2uNAS.png", "#1B1F23");
     }
 }
