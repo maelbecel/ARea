@@ -11,7 +11,10 @@ public class CustomTimestampTypeAdapter extends TypeAdapter<Timestamp> {
 
     @Override
     public void write(JsonWriter jsonWriter, Timestamp timestamp) throws IOException {
-        jsonWriter.value(timestamp.getTime() / 1000L); // Timestamp is in milliseconds by default so we divide by 1000 to get seconds
+        if (timestamp == null)
+            jsonWriter.nullValue();
+        else
+            jsonWriter.value(timestamp.getTime() / 1000L); // Timestamp is in milliseconds by default so we divide by 1000 to get seconds
     }
 
     @Override

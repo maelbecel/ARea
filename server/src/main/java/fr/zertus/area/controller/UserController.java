@@ -9,6 +9,7 @@ import fr.zertus.area.security.utils.JwtTokenProvider;
 import fr.zertus.area.service.RegisterUserService;
 import fr.zertus.area.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -124,7 +125,7 @@ public class UserController {
                         @ExampleObject(
                             name = "Example response",
                             description = "This is an example with good register",
-                            value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":5,\"email\":\"lucas.dupont@epitech.eu\",\"username\":\"Zertus\",\"connectedServices\":[]}}"
+                            value = "{\"status\":200,\"message\":\"OK\",\"data\":\"YourTokenBearer\"}"
                         )
                     }
                 )
@@ -161,9 +162,12 @@ public class UserController {
             ),
     })
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<User>> register(@RequestBody RegisterDTO register) throws AlreadyUsedException {
+    public ResponseEntity<ApiResponse<Object>> register(@RequestBody RegisterDTO register) throws Exception {
         ApiResponse<User> response = registerUserService.register(register);
-        return response.toResponseEntity();
+        if (response.getStatus() >= 200 && response.getStatus() < 300) {
+            return login(new LoginDTO(register.getEmail(), register.getPassword()));
+        }
+        throw new Exception("Error while registering");
     }
 
     @Operation(summary = "User info", description = "Get the user information", tags = { "User" })
@@ -199,6 +203,38 @@ public class UserController {
             SecurityContextHolder.clearContext();
             throw new IllegalAccessException("Invalid token");
         }
+    }
+
+    @Operation(summary = "Verify", description = "Verify the user account", tags = { "User" },
+    parameters = {
+        @Parameter(name = "token", description = "Token to verify", required = true, example = "YourToken")
+    })
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "204",
+            description = "Token is valid",
+            content = @Content
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "401",
+            description = "Token is invalid",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class),
+                examples = @ExampleObject(
+                    name = "Example response",
+                    description = "This is an example with invalid token",
+                    value = "{\"status\":401,\"message\":\"Token is invalid\"}"
+                )
+            )
+        )
+    })
+    @GetMapping("/verify")
+    public ResponseEntity<ApiResponse<String>> verify(@RequestParam String token) {
+        boolean verified = userService.verify(token);
+        if (verified)
+            return ApiResponse.noContent().toResponseEntity();
+        return ApiResponse.unauthorized("Token is invalid").toResponseEntity();
     }
 
 }

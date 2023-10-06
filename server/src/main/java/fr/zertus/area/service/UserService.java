@@ -5,6 +5,7 @@ import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.request.user.RegisterDTO;
 import fr.zertus.area.repository.UserRepository;
+import fr.zertus.area.security.utils.JwtTokenProvider;
 import fr.zertus.area.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -91,6 +92,14 @@ public class UserService {
      */
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    public boolean verify(String token) {
+        try {
+            return JwtTokenProvider.validateToken(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

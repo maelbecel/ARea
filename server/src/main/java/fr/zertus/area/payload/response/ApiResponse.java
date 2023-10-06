@@ -160,6 +160,15 @@ public class ApiResponse<T> {
     }
 
     /**
+     * Create a new ApiResponse with status 410 and the given message
+     * @param message The message to return
+     * @return The ApiResponse (type String)
+     */
+    public static ApiResponse<String> gone(String message) {
+        return new ApiResponse<>(410, message);
+    }
+
+    /**
      * Create a new ApiResponse with status 418 and the given message
      * @param message The message to return
      * @return The ApiResponse (type String)
