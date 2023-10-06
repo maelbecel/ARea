@@ -8,7 +8,7 @@ import TopBar from '../components/TopBar';
 
 const SearchServices = ({ navigation, route }) => {
   const [applets, setApplets] = useState([]); // State to store applets
-  const { type }  = route.params;
+  const { type, actionInput, reactionInput }  = route.params;
 
   useEffect(() => {
     const fetchApplets = async () => {
@@ -40,7 +40,7 @@ const SearchServices = ({ navigation, route }) => {
           <View style={styles.services}>
             {filteredApplets == null || filteredApplets.length === 0 ? <Text>No result</Text> : (
               filteredApplets.map((service) => (
-                <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('ServiceTemplate', { slug: service.slug, type: type })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
+                <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('ServiceTemplate', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
               ))
             )}
           </View>

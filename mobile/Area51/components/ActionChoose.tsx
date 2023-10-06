@@ -84,6 +84,13 @@ const getActionName = (info : Service, slug: string): string => {
         }
         i++;
     }
+    i = 0;
+    while (info.reactions[i]) {
+        if (info.reactions[i].slug === slug) {
+            return info.reactions[i].name;
+        }
+        i++;
+    }
     return "";
 }
 

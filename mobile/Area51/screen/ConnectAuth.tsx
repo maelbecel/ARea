@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { Text, View, StatusBar, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, StatusBar, TouchableOpacity, Image, TextInput, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
-import ServiceInfo, {Action, Reaction} from '../api/ServiceInfo';
+import ServiceInfo, {Action, Reaction, Input} from '../api/ServiceInfo';
 import ActionCard from '../components/ActionCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ActionApi from '../api/Action';
+import ReactionApi from '../api/Reaction';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -56,7 +58,7 @@ const getWriteColor = (color: string): string => {
 };
 
 const ConnectAuth = ({ navigation, route }) => {
-  const { slug, type } = route.params;
+  const { slug, type, actionInput, reactionInput } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
@@ -64,17 +66,44 @@ const ConnectAuth = ({ navigation, route }) => {
   const [reaction, setReaction] = React.useState<Reaction[]>([]);
   const [title, setTitle] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
+  const [inputs, setInput] = React.useState<Input[]>([]);
+  let inputsResp = [];
+
+  const showForm = () => {
+   return inputs.map((input, index) => (
+     <View key={input.name} style={{width:"100%"}}>
+       <TextInput placeholder={input.label} onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}} style={[styles.input, { backgroundColor: getWriteColor(color) }]}/>
+     </View>
+   ));
+  }
+
+  const isAllFormFill = () : boolean => {
+    for (let i = 0; i < inputs.length; i++) {
+      console.log("Form ", i, " : ", inputsResp[i])
+      if (inputsResp[i] == null)
+        return false;
+    }
+    console.log("All form fill")
+    return true;
+  }
 
 
   React.useEffect(() => {
     const fetchServiceInfo = async () => {
       const info = await ServiceInfo(slug.split(".")[0])
+      const actionSlug = await AsyncStorage.getItem("action");
+      const infoInput = (type == "action") ? await ActionApi(slug) : await ReactionApi(slug, actionSlug);
       if (info == null) return;
+      setInput(infoInput);
       setColor(info.decoration.backgroundColor);
       setUrl(info.decoration.logoUrl);
       setName(info.name);
       setAction(info.actions);
       setReaction(info.reactions);
+      for (let i = 0; i < info.actions.length; i++) {
+        inputsResp[i] = null;
+      }
+      isAllFormFill();
     }
     fetchServiceInfo();
   }, []);
@@ -95,11 +124,23 @@ const ConnectAuth = ({ navigation, route }) => {
           return;
         }
       }
+      console.log( action.length, " Actions")
+      console.log( reaction.length, " Reactions")
       console.log("Nothing look like this : ", slug)
     }
     findAction();
   }
   , [action, reaction]);
+
+  const redirection = async () => {
+    if (isAllFormFill()) {
+      await AsyncStorage.setItem(type, slug);
+      if (type == "action")
+        navigation.navigate("Create", {actionInput: inputsResp, reactionInput: reactionInput});
+      else
+        navigation.navigate("Create", {actionInput: actionInput, reactionInput: inputsResp});
+    }
+  }
 
 
   if (name != "") {
@@ -113,7 +154,8 @@ const ConnectAuth = ({ navigation, route }) => {
         <View style={[{ backgroundColor: color },styles.action]}>
           <Text style={[styles.name, { color: getWriteColor(color) }]}>{title}</Text>
           <Text style={[styles.desc, { color: getWriteColor(color) }]}>{description}</Text>
-          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.button]} onPress={async () => {await AsyncStorage.setItem(type, slug); navigation.navigate("Create")}}>
+          {showForm()}
+          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.button]} onPress={redirection}>
             <Text style={[{color: color}, styles.buttonText]}>Connection</Text>
           </TouchableOpacity>
         </View>
@@ -164,6 +206,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     alignSelf: 'center',
     width: '70%',
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  input: {
+    fontSize: 20,
+    alignSelf: 'center',
+    width: '70%',
+    borderRadius: 10,
     textAlign: 'center',
     marginBottom: 40,
   },
