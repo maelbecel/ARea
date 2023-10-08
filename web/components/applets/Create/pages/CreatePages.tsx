@@ -8,7 +8,7 @@ import CreateButton from "../components/CreateButton";
 import Image from "next/image";
 
 // --- Interface --- //
-import { Card, defaultReaction } from "../interface";
+import { Card, defaultAction, defaultReaction } from "../interface";
 import { getTheme } from "../../../../utils/getTheme";
 
 const CreateHeader = () => {
@@ -51,7 +51,7 @@ const CreateServiceCard = ({ cardProps, callback } : { cardProps: Card, callback
     );
 };
 
-const CardComponent = ({ cardProps } : { cardProps: Card }) => {
+const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, setService } : { cardProps: Card, index: number, setArray: Dispatch<SetStateAction<Card[]>>, array: Card[], setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>> }) => {
     const theme = getTheme(cardProps.decoration.backgroundColor);
 
     return (
@@ -62,8 +62,30 @@ const CardComponent = ({ cardProps } : { cardProps: Card }) => {
             className={`w-full flex rounded-[15px] flex-col hover:brightness-110`}
         >
             <div className='w-[95%] flex flex-row gap-[20px] justify-end pt-[8px]'>
-                <div className='font-bold text-[16px] underline'>Edit</div>
-                <div className='font-bold text-[16px] underline'>Delete</div>
+                <div className='font-bold text-[16px] underline'
+                    onClick={() => {
+                        setSlug(cardProps.slug);
+                        setService(cardProps.service);
+                        setPages(4);
+                    }}
+                >
+                    Edit
+                </div>
+                <div className='font-bold text-[16px] underline'
+                    onClick={() => {
+                        setArray(array.map((card: Card, i: number) => {
+                            if (i === index) {
+                                if (card.type === 'action')
+                                    return defaultAction;
+                                else
+                                    return defaultReaction;
+                            }
+                            return card;
+                        }));
+                    }}
+                >
+                    Delete
+                </div>
             </div>
             <div className="flex flex-row justify-start gap-6 px-[40px] pb-[30px]">
                 <div className="font-extrabold text-[62px]">{cardProps.type === 'action' ? 'Action' : 'REAction'}</div>
@@ -97,7 +119,7 @@ const NewService = ({ setArray, index } : { setArray: Dispatch<SetStateAction<Ca
     );
 }
 
-const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>> }) => {
+const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>> }) => {
     return (
         <div className={`min-h-screen flex justify-center items-center`}>
             <div className={`max-w-[50%] w-full flex justify-around items-center flex-col gap-[20px]`}>
@@ -114,7 +136,7 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray }
                                     }}
                                 />
                             ) : (
-                                <CardComponent key={index} cardProps={service} />
+                                <CardComponent key={index} cardProps={service} index={index} setArray={setArray} array={array} setPages={setPages} setSlug={setSlug} setService={setService} />
                             )}
                             <NewService setArray={setArray} index={index} />
                         </>
@@ -126,11 +148,11 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray }
     );
 };
 
-const CreatePages = ({ setIndex, setPages, token, array, setArray } : { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>> }) => {
+const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setService } : { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>> }) => {
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} />
+            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} />
         </>
     )
 }

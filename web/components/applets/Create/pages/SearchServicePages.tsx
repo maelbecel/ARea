@@ -2,7 +2,7 @@
 import { Dispatch, SetStateAction } from 'react'
 
 // --- Components --- //
-import NavBar, { RightSection, LeftSection, Icon, NavBarFuncButton, MiddleSection, Title, NavBarNavigateButtonIcon } from '../../../navbar'
+import NavBar, { RightSection, LeftSection, NavBarFuncButton, MiddleSection, Title, NavBarNavigateButtonIcon } from '../../../navbar'
 import SearchService from '../../../service/SearchService'
 
 const SearchServiceHeader = ({ callback }: { callback: () => void }) => {

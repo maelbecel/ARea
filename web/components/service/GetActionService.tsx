@@ -7,11 +7,14 @@ interface ActionProps {
 }
 
 // --- Component --- //
-const ActionButtonComponent = ({ name, description, color, slug, callback } : { name : string, description: string, color : string, slug: string, callback: (slug: string) => void }) => {
+const ActionButtonComponent = ({ name, description, color, slug, callback, type, index, secondaryCallback} : { name : string, description: string, color : string, slug: string, callback: (slug: string, description: string, color: string) => void, type: string, index: number, secondaryCallback: (index: number, type: string) => void }) => {
     return (
         <div className={`rounded-[10px] shadow-xl hover:brightness-125 flex-col flex-wrap w-[100%] p-[24px] flex`}
             style={{ backgroundColor: `${color}`}}
-            onClick={() => callback(slug)}
+            onClick={() => {
+                callback(slug, description, color)
+                secondaryCallback(index, type);
+            }}
         >
             <div className="font-bold text-[28px]">
                 {name}
@@ -23,24 +26,24 @@ const ActionButtonComponent = ({ name, description, color, slug, callback } : { 
     )
 }
 
-const ActionListComponent = ({ actionList, name, color, theme, callback } : { actionList : ActionProps[], name : string, color : string, theme : string, callback: (slug: string) => void }) => {
+const ActionListComponent = ({ actionList, color, theme, callback, cardIndex, secondaryCallback } : { actionList : ActionProps[], color : string, theme : string, callback: (slug: string, description: string, color: string) => void, cardIndex: number, secondaryCallback: (index: number, type: string) => void }) => {
     return (
         <div className={`font-bold text-[20px] grid grid-cols-4 gap-5 h-auto mb-[5rem]`}
             style={{ color: theme === 'light' ? "#363841" : "#ffffff" }}
         >
             {actionList.map((service, index) => (
-                <ActionButtonComponent key={index} name={service.name} description={service.description} color={color} slug={service.slug} callback={callback} />
+                <ActionButtonComponent key={index} name={service.name} description={service.description} color={color} slug={service.slug} type={service.type} callback={callback} index={cardIndex} secondaryCallback={secondaryCallback} />
             ))}
         </div>
     );
 }
 
-const GetActionService = ({ slug, actions, color, theme = 'light', callback = (slug: string) => {} }: { slug: string, actions: any[], color: string, theme?: string, callback?: (slug: string) => void }) => {
+const GetActionService = ({actions, color, theme = 'light', callback, index, secondaryCallback }: { actions: any[], color: string, theme?: string, callback: (slug: string, description: string, color: string) => void, index: number, secondaryCallback: (index: number, type: string) => void }) => {
     if (actions?.length === 0)
         return null;
 
     return (
-        <ActionListComponent actionList={actions} name={slug} color={color} theme={theme} callback={callback} />
+        <ActionListComponent actionList={actions} color={color} theme={theme} callback={callback} secondaryCallback={secondaryCallback} cardIndex={index} />
     )
 }
 

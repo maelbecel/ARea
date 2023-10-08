@@ -1,16 +1,9 @@
-// --- Librairies import --- //
-/*import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-
-// --- Components import --- //
-import GetActionService from "../../components/service/GetActionService";
-import { ServiceInfoContainer } from "../../components/service/template";*/
-
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getTheme } from "../../../../utils/getTheme";
 import NavBar, { LeftSection, MiddleSection, NavBarFuncButton, NavBarNavigateButtonIcon, RightSection, Title } from "../../../navbar";
 import { ServiceInfoContainer } from "../../../service/template";
 import GetActionService from "../../../service/GetActionService";
+import { Card } from "../interface";
 
 const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Dispatch<SetStateAction<number>> }) => {
     const theme = getTheme(color);
@@ -34,7 +27,7 @@ const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Di
     )
 }
 
-const AllActionFromServicePages = ({ service, token, setPages, setSlug, type } : { service: string, token: string, setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, type: string | undefined }) => {
+const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, setIndex, index, array, setArray } : { service: string, token: string, setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, type: string | undefined, setIndex: Dispatch<SetStateAction<number>>, index: number, array: Card[], setArray: Dispatch<SetStateAction<Card[]>> }) => {
     const [props, setProps] = useState<any | undefined>(undefined);
     const [actions, setActions] = useState<any[]>([]);
     const [theme, setTheme] = useState<string>("light");
@@ -104,13 +97,37 @@ const AllActionFromServicePages = ({ service, token, setPages, setSlug, type } :
 
                 <div className={`p-[55px]`}>
                     <GetActionService
-                        slug={service}
                         actions={actions}
                         color={props?.decoration?.backgroundColor}
                         theme={theme}
-                        callback={(slug: string) => {
+                        index={index}
+                        callback={(slug: string, description: string, color: string) => {
                             setSlug(slug);
+
+                            setArray(array.map((card: Card, id: number) => {
+                                if (id === index)
+                                    return {
+                                        ...card,
+                                        slug: slug,
+                                        service: props?.slug,
+                                        description: description,
+                                        decoration: {
+                                            logoUrl: props?.decoration.logoUrl,
+                                            backgroundColor: color,
+                                        }
+                                    };
+                                return card;
+                            }));
+
                             setPages(3);
+                        }}
+                        secondaryCallback={(index: number, type: string) => {
+                            if (index !== -1)
+                                return;
+                            if (type === "action")
+                                setIndex(0);
+                            else if (type === "reaction")
+                                setIndex(1);
                         }}
                     />
                 </div>

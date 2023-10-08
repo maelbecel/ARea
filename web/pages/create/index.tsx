@@ -10,6 +10,7 @@ import SearchServicePages from "../../components/applets/Create/pages/SearchServ
 import { Card, defaultAction, defaultReaction } from "../../components/applets/Create/interface";
 import AllActionFromServicePages from "../../components/applets/Create/pages/AllActionFromServicePages";
 import ServiceConnexionPages from "../../components/applets/Create/pages/ServiceConnexionPages";
+import FillActionInputsPages from "../../components/applets/Create/pages/FillActionInputsPages";
 
 const IndexPage: NextPage = () => {
     const [actionArray, setActionArray] = useState<Card[]>([defaultAction, defaultReaction]);
@@ -39,13 +40,13 @@ const IndexPage: NextPage = () => {
 
     useEffect(() => {
         setToken(localStorage.getItem("token") as string);
-  
+
         if (token === null)
             router.push("/")
     }, [token, router]);
 
     useEffect(() => {
-        console.log(pages, index, currentService, currentSlug);
+        console.log("DEBUG : [", pages, index, currentService, currentSlug, "]");
     }, [pages, index, currentService, currentSlug]);
 
     const getType = (index: number) => {
@@ -58,13 +59,13 @@ const IndexPage: NextPage = () => {
 
     return (
         <>
-            {pages === 0 && <CreatePages setIndex={setIndex} setPages={setPages} token={token} array={actionArray} setArray={setActionArray} />}
+            {pages === 0 && <CreatePages setIndex={setIndex} setPages={setPages} token={token} array={actionArray} setArray={setActionArray} setSlug={setCurrentSlug} setService={setCurrentService} />}
             {pages === 1 && <SearchServicePages setIndex={setIndex} setPages={setPages} currentIndex={index} token={token} setSlug={setCurrentService} />}
-            {pages === 2 && <AllActionFromServicePages service={currentService} token={token} setPages={setPages} type={getType(index)} setSlug={setCurrentSlug} />}
+            {pages === 2 && <AllActionFromServicePages service={currentService} token={token} setPages={setPages} type={getType(index)} setSlug={setCurrentSlug} setIndex={setIndex} index={index} array={actionArray} setArray={setActionArray} />}
             {pages === 3 && <ServiceConnexionPages setPages={setPages} token={token} service={currentService} slug={currentSlug} array={actionArray} />}
-            {pages === 4 && <Footer />}
+            {pages === 4 && <FillActionInputsPages setPages={setPages} token={token} service={currentService} index={index} slug={currentSlug} array={actionArray} setArray={setActionArray} />}
 
-            {pages !== 3 && <Footer />}
+            {pages !== 3 && pages !== 4 && <Footer />}
         </>
     )
 }
