@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
     pages: { signIn: '/auth/index' },
     session: {
         // Learn more about sessions: 
-        // https://next-auth.js.org/configuration/options#session
+        //https://next-auth.js.org/configuration/options#session
         strategy: 'jwt',
         maxAge: 60 * 60 * 24 * 30, // 30 days
         generateSessionToken: () => {
@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         // Learn more about refresh token rotations here: 
-        // https://authjs.dev/guides/basics/refresh-token-rotation
+        //https://authjs.dev/guides/basics/refresh-token-rotation
         async jwt({ token, account }) {
             token.custom_property = randomUUID?.() ?? randomBytes(32).toString("hex")
 
