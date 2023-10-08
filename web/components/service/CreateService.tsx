@@ -9,7 +9,7 @@ const PlusIcon = () => {
     )
 };
 
-const CreateButton = ({ name, color, callbackUrl } : { name: string, color: string, callbackUrl: string }) => {
+const CreateButton = ({ name, color, callbackUrl, index } : { name: string, color: string, callbackUrl: string, index: number }) => {
     const theme = getTheme(color)
 
     const router = useRouter();
@@ -32,7 +32,11 @@ const CreateButton = ({ name, color, callbackUrl } : { name: string, color: stri
                 className={`w-full flex justify-center items-center rounded-[15px] text-[62px] font-extrabold py-[36px] select-none`}
                 onMouseEnter={() => setIsActive(true)}
                 onMouseLeave={() => setIsActive(false)}
-                onClick={() => router.push(callbackUrl)}
+                onClick={() => {
+                    localStorage.setItem('index', index.toString());
+
+                    router.push(callbackUrl)
+                }}
             >
                 {name}
             </div>

@@ -17,41 +17,48 @@ interface ServiceProps {
 }
 
 // --- Component --- //
-const ServiceComponent = ({ name, slug, logo, color }: { name: string, slug: string, logo: string, color: string}) => {
-    const router = useRouter();
-
-    const type = router.query.type as string
-
-    color = (color.length === 0) ? "#363841" : color;
-
+const ServiceButtonComponent = ({ name, slug, logo, color, callback }: { name: string, slug: string, logo: string, color: string, callback: (slug: string) => void}) => {
     return (
-        <Link href={`/serviceTemplate?name=${slug}${type === undefined ? "" : `&type=${type}`}`}>
+        <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
+            style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
+            onClick={() => {
+                callback(slug);
+            }}
+        >
+            <Image src={logo} width={120} height={120} alt={"Service Logo"} />
+            <span>{name}</span>
+        </div>
+    )
+}
+
+const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug: string, logo: string, color: string}) => {
+    return (
+        <Link href={`/create?page=2&service=${slug}`}>
             <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
-                 style={{ backgroundColor: color}}
+                 style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
             >
-                <Image
-                    src={logo}
-                    width={120}
-                    height={120}
-                    alt={"Service Logo"}
-                />
+                <Image src={logo} width={120} height={120} alt={"Service Logo"} />
                 <span>{name}</span>
             </div>
         </Link>
     )
 }
 
-const ServiceListComponents = ({ serviceList } : { serviceList ?: ServiceProps[] }) => {
+const ServiceListComponents = ({ serviceList, type, callback } : { serviceList?: ServiceProps[], type: string, callback: (slug: string) => void }) => {
     return (
         <div className="font-bold text-[20px] text-white grid grid-cols-4 gap-5 h-auto mb-[5rem]">
             {serviceList && serviceList.map((service, index) => (
-                <ServiceComponent key={index} name={service.name} slug={service.slug} logo={service.decoration.logoUrl} color={service.decoration.backgroundColor} />
+                type === 'button' ? (
+                    <ServiceButtonComponent key={index} name={service.name} slug={service.slug} logo={service.decoration.logoUrl} color={service.decoration.backgroundColor} callback={callback} />
+                ) : (
+                    <ServiceLinkComponent key={index} name={service.name} slug={service.slug} logo={service.decoration.logoUrl} color={service.decoration.backgroundColor} />
+                )
             ))}
         </div>
     );
 }
 
-const SearchService = () => {
+const SearchService = ({ type = 'link', callback = (slug: string) => {} } : { type?: string, callback?: (slug: string) => void }) => {
     const [searchValue  , setSearchValue] = useState<string>("");
     const [service      , setService] = useState<ServiceProps[]>([]);
     const [serviceSearch, setServiceSearch] = useState<ServiceProps[]>([]);
@@ -106,7 +113,7 @@ const SearchService = () => {
                 />
             </div>
 
-            <ServiceListComponents serviceList={serviceSearch} />
+            <ServiceListComponents serviceList={serviceSearch} type={type} callback={callback} />
         </>
     )
 }

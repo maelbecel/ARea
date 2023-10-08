@@ -1,30 +1,15 @@
 // --- Librairies --- //
-import type { NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 // --- Components --- //
-import NavBar, { NavBarNavigateButton, SimpleLink, Profile, RightSection, LeftSection, Icon, NavBarFuncButton, MiddleSection, Title, NavBarNavigateButtonIcon } from '../../../components/navbar'
-import SearchService from '../../../components/service/SearchService';
-import Footer from '../../../components/footer';
-import { useRouter } from 'next/router';
+import NavBar, { RightSection, LeftSection, Icon, NavBarFuncButton, MiddleSection, Title, NavBarNavigateButtonIcon } from '../../../navbar'
+import SearchService from '../../../service/SearchService'
 
-const IndexPage: NextPage = () => {
-  const [token, setToken] = useState<string>('');
-
-  const router = useRouter();
-
-  useEffect(() => {
-    setToken(localStorage.getItem("token") as string);
-
-    if (token === null)
-        router.push("/")
-  }, [token, router]);
-
-  return (
-    <>
+const SearchServiceHeader = ({ callback }: { callback: () => void }) => {
+    return (
         <NavBar>
           <LeftSection>
-            <NavBarFuncButton text="Back" func={() => router.back()} />
+            <NavBarFuncButton text="Back" func={() => callback()} />
           </LeftSection>
           <MiddleSection>
             <Title text="Choose a service" />
@@ -37,16 +22,31 @@ const IndexPage: NextPage = () => {
               </NavBarNavigateButtonIcon>
           </RightSection>
         </NavBar>
+    )
+}
+
+const SearchServicePages = ({ currentIndex, setIndex, setPages, token, setSlug } : { currentIndex: number, setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, setSlug: Dispatch<SetStateAction<string>> }) => {
+  return (
+    <>
+        <SearchServiceHeader callback={() => {
+                setPages(0);
+                setIndex(-1);
+            }}
+        />
 
         <div className="w-screen min-h-screen bg-background">
           <div className="flex items-center flex-col mt-[2em]">
-            <SearchService />
+            <SearchService
+              type={"button"}
+              callback={(slug: string) => {
+                setSlug(slug);
+                setPages(2);
+              }}
+            />
           </div>
         </div>
-
-        <Footer />
     </>
   )
 }
 
-export default IndexPage
+export default SearchServicePages;
