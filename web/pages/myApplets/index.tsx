@@ -33,7 +33,7 @@ const IndexPage: NextPage = () => {
                 <Profile />
             </RightSection>
             </NavBar>
-            <div className="w-screen min-h-screen bg-background">
+            <div className="w-full min-h-screen bg-background">
                 <div className="flex items-center mt-[2em]">
                     <div className="w-full flex justify-center items-center">
                         <h1 className="text-center font-extrabold text-[#363841] text-[2.6rem] mb-[1em] w-full">
