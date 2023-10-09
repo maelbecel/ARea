@@ -14,4 +14,6 @@ public interface AppletRepository extends CrudRepository<Applet, Long> {
     List<Applet> findByActionSlugAndEnabled(String action_slug, boolean enabled);
     List<Applet> findByReactionSlug(String reaction_slug);
 
+    void deleteByUserId(Long userId);
+
 }

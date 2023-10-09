@@ -29,7 +29,11 @@ public class AppletService {
     @Autowired
     private UserService userService;
 
-    public Applet save(AppletDTO applet) throws DataNotFoundException, BadFormInputException {
+    public Applet save(AppletDTO applet) throws DataNotFoundException {
+        if (applet.getName().length() > 140) {
+            throw new IllegalArgumentException("Applet name is too long (max 140 characters)");
+        }
+
         User user = userService.getCurrentUser();
 
         Action action = actionReactionService.getAction(applet.getActionSlug());
@@ -120,6 +124,10 @@ public class AppletService {
                 appletRepository.save(applet); // TODO: Find a way to save all applets at the end of the loop with a single request
             }
         }).start();
+    }
+
+    public void deleteUserApplets(long userId) {
+        appletRepository.deleteByUserId(userId);
     }
 
 }
