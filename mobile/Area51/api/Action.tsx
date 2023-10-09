@@ -1,12 +1,18 @@
-
-/* The statement `import * as SecureStore from 'expo-secure-store';` is importing the entire module
-`expo-secure-store` and assigning it to the variable `SecureStore`. This allows you to access the
-functions and variables exported by the `expo-secure-store` module using the `SecureStore` variable. */
+/* The code is importing three modules: `SecureStore` from the `expo-secure-store` library,
+`AsyncStorage` from the `@react-native-async-storage/async-storage` library, and `Input` from the
+`ServiceInfo` file in the current directory. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Input} from  './ServiceInfo'
 
 
+/**
+ * The function `Action` is an asynchronous function that takes a `slug` parameter and returns a
+ * promise that resolves to an array of `Input` objects.
+ * @param {string} slug - The `slug` parameter is a string that represents a unique identifier for the
+ * action. It is used to construct the URL for the API request.
+ * @returns The function `Action` returns a Promise that resolves to an array of `Input` objects.
+ */
 const Action = async (slug : string): Promise<Input[]> => {
     try {
         let inputs : Input[] = [];
@@ -34,8 +40,8 @@ const Action = async (slug : string): Promise<Input[]> => {
     }
 }
 
-/* The statement `export default Services;` is exporting the `Services` function as the default export
-of the module. This means that when another module imports this module, they can import the
-`Services` function directly without having to specify its name. For example, in another module, you
-can import the `Services` function like this: `import Services from './Services';`. */
+/* `export default Action;` is exporting the `Action` function as the default export of the module.
+This means that when another module imports this module, they can import the `Action` function
+directly without having to specify its name. For example, in another module, you can import the
+`Action` function like this: `import Action from './path/to/module';`. */
 export default Action;

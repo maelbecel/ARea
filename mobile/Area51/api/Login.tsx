@@ -34,4 +34,8 @@ const LoginAPI  = async (email: string, password : string) => {
     }
 }
 
+/* The line `export default LoginAPI;` is exporting the `LoginAPI` function as the default export of
+the module. This means that when another module imports this module, they can import the `LoginAPI`
+function directly without having to specify its name. For example, in another module, you can import
+the `LoginAPI` function like this: `import LoginAPI from './LoginAPI';`. */
 export default LoginAPI;

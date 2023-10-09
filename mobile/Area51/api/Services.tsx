@@ -24,6 +24,11 @@ type Applet = {
 }
 
 
+/**
+ * The function `Services` is an asynchronous function that retrieves a list of applets from a server
+ * and returns them as an array of `Applet` objects.
+ * @returns The function `Services` returns a Promise that resolves to an array of `Applet` objects.
+ */
 const Services = async (): Promise<Applet[]> => {
     try {
         let applets: Applet[] = [];

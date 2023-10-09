@@ -5,6 +5,14 @@ functions and variables exported by the `expo-secure-store` module using the `Se
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+/**
+ * The function `ServiceToken` is an asynchronous function that retrieves a service token from an API
+ * endpoint using a provided slug.
+ * @param {string} slug - The `slug` parameter is a string that represents a unique identifier for a
+ * service. It is used to construct the API endpoint URL for retrieving an OAuth2 token for that
+ * service.
+ * @returns The function `ServiceToken` returns a Promise that resolves to a string.
+ */
 const ServiceToken = async (slug : string): Promise<string> => {
     if (slug === "") {
         return null;
@@ -19,7 +27,7 @@ const ServiceToken = async (slug : string): Promise<string> => {
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log(`/service/${slug} :`, response.status);
+        console.log(`/service/${slug}/oauth2/token :`, response.status);
         if (response.status != 200) {
             return null;
         }
@@ -32,4 +40,9 @@ const ServiceToken = async (slug : string): Promise<string> => {
     }
 }
 
+/* The statement `export default ServiceToken;` is exporting the `ServiceToken` function as the default
+export of the module. This means that when another module imports this module using the `import`
+statement, they can choose to import the default export without specifying a name. For example,
+another module can import the `ServiceToken` function like this: `import ServiceToken from
+'./ServiceToken';`. */
 export default ServiceToken;
