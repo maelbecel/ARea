@@ -9,7 +9,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 components are used in the `Tabs` component to define the screens for each tab in the bottom tab
 navigator. Each imported screen component represents a different screen that will be displayed when
 the corresponding tab is selected. */
-import AppletsScreen from './screen/MyApplets';
+import AppletsScreen from './screen/ExploreMyApplets';
+import MyApplets from './screen/MyApplets';
 import ExploreScreen from './screen/Home';
 import CreateScreen from './screen/AddServices';
 import ActivityScreen from './screen/Activity';
@@ -106,6 +107,7 @@ export default function App() {
         <Stack.Screen name="ServiceTemplate" component={ServiceTemplate} options={{ headerShown: false }} />
         <Stack.Screen name="ConnectAuth" component={ConnectAuth} options={{ headerShown: false }} />
         <Stack.Screen name="Area 51" component={Tabs} options={{ headerShown: false }} />
+        <Stack.Screen name="MyApplets" component={MyApplets} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
