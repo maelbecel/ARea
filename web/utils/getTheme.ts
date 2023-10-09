@@ -13,7 +13,7 @@ export const getTheme = (hexColor : string ) => {
     const luminosity = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
     // Déterminer si la couleur de fond est claire ou sombre
-    if (luminosity < 0.5)
+    if (luminosity < 0.80)
         return 'dark';  // Couleur de fond sombre, texte clair
     else
         return 'light'; // Couleur de fond clair, texte sombre

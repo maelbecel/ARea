@@ -1,8 +1,7 @@
 // --- Librairies --- //
 import Link from 'next/link'
 import Image from 'next/image'
-import { CSSProperties, useState } from 'react';
-import { BlockList } from 'net';
+import { useState } from 'react';
 
 // --- Interfaces --- //
 interface NavBarProps {
@@ -41,14 +40,14 @@ const NavBarNavigateButton = ({ href, text, theme = 'light' }: { href: string, t
     )
 }
 
-const NavBarFuncButton = ({ func, text, color = "363841", theme = 'light' }: { func: () => void, text: string, color?: string, theme?: string }) => {
+const NavBarFuncButton = ({ func, text, color = "ffffff", theme = 'light' }: { func: () => void, text: string, color?: string, theme?: string }) => {
     const [active, setActive] = useState<boolean>(false);
 
     return (
         <div className={`font-extrabold text-[24px] p-[10px] rounded-[25px] pl-[44px] pr-[44px] cursor-pointer`}
              style={{
-                backgroundColor: active ? '#' + color : (theme === 'dark' ? 'white' : '#363841'),
-                color          : active ? (theme === 'dark' ? 'white' : '#363841') : '#' + color,
+                backgroundColor: active ? '#' + color : (theme === 'dark' ? '#ffffff' : '#363841'),
+                color          : active ? (theme === 'dark' ? '#ffffff' : '#363841') : '#' + color,
              }}
              onMouseDown={() => { setActive(true) }}
              onMouseLeave={() => { setActive(false) }}
@@ -128,7 +127,7 @@ const RightSection = ({ children }: { children: React.ReactNode }) => {
     )
 }
 
-const NavBar = ({ children, color = "ffffff", theme = "light" }: NavBarProps) => {
+const NavBar = ({ children, color = "ffffff" }: NavBarProps) => {
     return (
         <div className={`p-[1.25rem] w-full flex items-center justify-between flex-row sticky top-0 border-b-[1px] border-b-black border-opacity-[10%] z-50`}
              style={{ backgroundColor: `#${color}` }}
