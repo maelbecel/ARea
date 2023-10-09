@@ -6,6 +6,9 @@ import ActionCard from '../components/ActionCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionApi from '../api/Action';
 import ReactionApi from '../api/Reaction';
+import TokenApi from '../api/ServiceToken'
+import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -67,6 +70,9 @@ const ConnectAuth = ({ navigation, route }) => {
   const [title, setTitle] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
   const [inputs, setInput] = React.useState<Input[]>([]);
+  const redirectUri = Linking.createURL("/oauth2/" + slug.split(".")[0]);
+  const useUrl = Linking.useURL();
+  const [loggedIn, setLoggedIn] = React.useState(false);
   let inputsResp = [];
 
   const showForm = () => {
@@ -87,6 +93,25 @@ const ConnectAuth = ({ navigation, route }) => {
     return true;
   }
 
+  const _openAuthSessionAsync = async () => {
+    try {
+      const serverAddress = await AsyncStorage.getItem('serverAddress');
+      const token = await TokenApi(slug.split(".")[0])
+      let result = await WebBrowser.openAuthSessionAsync(
+        `${serverAddress}/service/${slug.split(".")[0]}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
+      );
+      console.log(result);
+    } catch (error) {
+      alert(error);
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (useUrl && useUrl.includes(slug.split(".")[0])) {
+      setLoggedIn(true);
+    }
+  }, [useUrl]);
 
   React.useEffect(() => {
     const fetchServiceInfo = async () => {
@@ -134,6 +159,7 @@ const ConnectAuth = ({ navigation, route }) => {
 
   const redirection = async () => {
     if (isAllFormFill()) {
+      await _openAuthSessionAsync();
       await AsyncStorage.setItem(type, slug);
       if (type == "action")
         navigation.navigate("Create", {actionInput: inputsResp, reactionInput: reactionInput});
