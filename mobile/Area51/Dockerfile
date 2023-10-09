@@ -1,5 +1,30 @@
-# Utilisation de l'image de base avec Node.js et Expo CLI pré-installés
-FROM node:14
+FROM node:18
+
+# Install OpenJDK 17 & Android SDK
+ARG JDK_VERSION=17
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y --no-install-recommends openjdk-${JDK_VERSION}-jdk && \
+    apt-get install -y --no-install-recommends git wget unzip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# download and install Android SDK
+# https://developer.android.com/studio#command-line-tools-only
+ARG ANDROID_SDK_VERSION=10406996
+ENV ANDROID_HOME /opt/android-sdk
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
+    unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
+    mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/tools && \
+    rm *tools*linux*.zip
+
+# set the environment variables
+ENV JAVA_HOME /usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64
+ENV PATH ${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator
+
+# accept the license agreements of the SDK components
+ADD license_accepter.sh /opt/
+RUN chmod +x /opt/license_accepter.sh && /opt/license_accepter.sh $ANDROID_HOME
 
 # Répertoire de travail
 WORKDIR /app
@@ -7,21 +32,17 @@ WORKDIR /app
 # Copie des fichiers du projet dans le conteneur
 COPY . .
 
+ENV EXPO_TOKEN="vNt9dW4780A48ITU_pP7MJBQ6VcEynDIBgBMMdNf"
+ENV EAS_NO_VCS=1
+
 # Installation des dépendances
-RUN npm install -g expo-cli
 RUN npm install
+RUN npm install -g eas-cli
+
+# Création du dossier de sortie
+RUN mkdir /output
 
 # Exécution de la commande Expo pour créer l'APK
-RUN expo build:android
+RUN eas build --platform android --profile preview --local --non-interactive
 
-# Utilisation d'une image légère Alpine pour réduire la taille finale de l'image
-FROM alpine:latest
-
-# Installation des outils nécessaires pour Android
-RUN apk --no-cache add openjdk11-jre bash
-
-# Copie de l'APK depuis l'étape précédente
-COPY --from=0 /app/android/app/build/outputs/apk/release/app-release.apk /app-release.apk
-
-# Commande par défaut pour exécuter lorsqu'un conteneur est démarré
-CMD ["bash"]
+CMD ["echo", "APK generate in /output"]
