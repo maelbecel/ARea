@@ -34,14 +34,32 @@ public class AppController {
     private AppService appService;
 
     @GetMapping("{slug}/oauth2")
-    public ResponseEntity<ApiResponse<String>> redirectToOAuth2(@PathVariable String slug) throws DataNotFoundException {
-        return appService.redirectOAuth2App(slug);
+    public ResponseEntity<ApiResponse<String>> redirectToOAuth2(@PathVariable String slug, @RequestParam(required = false) String authToken, @RequestParam(required = false) String redirecturi) throws DataNotFoundException {
+        if (authToken == null && SecurityContextHolder.getContext() == null) {
+            return ApiResponse.unauthorized("You must be logged in to access this resource").toResponseEntity();
+        }
+
+        Long userId = null;
+        if (authToken == null) {
+            userId = SecurityUtils.getCurrentUserId();
+        } else {
+            userId = SecurityUtils.getUserIdFromTempToken(authToken);
+        }
+        return appService.redirectOAuth2App(slug, userId, redirecturi);
+    }
+
+    @GetMapping("{slug}/oauth2/mobile")
+    public ResponseEntity<ApiResponse<String>> getTempToken(@PathVariable String slug) throws DataNotFoundException {
+        long userId = SecurityUtils.getCurrentUserId();
+        return ApiResponse.ok(SecurityUtils.getTempToken(userId)).toResponseEntity();
     }
 
     @GetMapping("{slug}/callback")
     public ResponseEntity<ApiResponse<String>> handleOAuth2Callback(@PathVariable String slug, @RequestParam(required = false) String error,
-                                                                    @RequestParam(required = false) String code, @RequestParam String state) throws DataNotFoundException {
-        return appService.callbackOAuth2App(slug, code, state, error);
+                                                                    @RequestParam(required = false) String code, @RequestParam String state,
+                                                                    @RequestHeader("user-agent") String userAgent) throws DataNotFoundException {
+        boolean isMobile = userAgent.contains("Android");
+        return appService.callbackOAuth2App(slug, code, state, error, isMobile);
     }
 
 }

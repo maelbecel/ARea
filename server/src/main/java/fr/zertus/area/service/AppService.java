@@ -9,6 +9,7 @@ import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -36,6 +37,9 @@ public class AppService {
         apps.put(discordApp.getSlug(), discordApp);
     }
 
+    @Value("${oauth2.web.redirect-uri}")
+    private String webRedirectUri;
+
     public App getApp(String slug) {
         return apps.get(slug);
     }
@@ -50,7 +54,7 @@ public class AppService {
      * @return a response entity with the redirection
      * @throws DataNotFoundException if the app is not found
      */
-    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug) throws DataNotFoundException {
+    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String mobileRedirect) throws DataNotFoundException {
         App app = getApp(slug);
         if (app == null)
             return ApiResponse.notFound("Service not found").toResponseEntity();
@@ -65,10 +69,14 @@ public class AppService {
         String redirectUri = clientRegistration.getRedirectUri();
         Set<String> scope = clientRegistration.getScopes();
         String state = app.getOAuth2Handler().getState();
-        long userId = SecurityUtils.getCurrentUserId();
+        state += "-" + userId;
+
+        if (mobileRedirect != null) {
+            state += "-" + mobileRedirect;
+        }
 
         return ResponseEntity.status(302).location(
-            app.getOAuth2Handler().getOAuth2AuthorizationUri(authorizationUri, clientId, redirectUri, state, userId, scope)
+            app.getOAuth2Handler().getOAuth2AuthorizationUri(authorizationUri, clientId, redirectUri, state, scope)
         ).build();
     }
 
@@ -81,7 +89,7 @@ public class AppService {
      * @return a response entity with the redirection
      * @throws DataNotFoundException if the app is not found
      */
-    public ResponseEntity<ApiResponse<String>> callbackOAuth2App(String slug, String code, String state, String error) throws DataNotFoundException {
+    public ResponseEntity<ApiResponse<String>> callbackOAuth2App(String slug, String code, String state, String error, Boolean fromMobile) throws DataNotFoundException {
         App app = getApp(slug);
         if (app == null)
             return ApiResponse.notFound("Service not found").toResponseEntity();
@@ -89,8 +97,16 @@ public class AppService {
             return ApiResponse.badRequest("Service is not OAuth2, you can't call this").toResponseEntity();
         if (!app.getOAuth2Handler().isStateValid(state.split("-")[0]))
             return ApiResponse.badRequest("State is not valid").toResponseEntity();
+
+        String mobileRedirectUri = null;
+        if (fromMobile != null && fromMobile) {
+            mobileRedirectUri = state.split("-")[2];
+        }
+
         if (error != null) {
-            return ResponseEntity.status(302).location(URI.create("https://github.com")).build();
+            if (fromMobile != null && fromMobile)
+                return ResponseEntity.status(302).location(URI.create(mobileRedirectUri)).build();
+            return ResponseEntity.status(302).location(URI.create(webRedirectUri)).build();
         }
 
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(slug);
@@ -112,7 +128,9 @@ public class AppService {
         user.addConnectedService(new ConnectedService(slug, token));
         userService.save(user);
 
-        return ResponseEntity.status(302).location(URI.create("https://github.com")).build();
+        if (fromMobile != null && fromMobile)
+            return ResponseEntity.status(302).location(URI.create(mobileRedirectUri)).build();
+        return ResponseEntity.status(302).location(URI.create(webRedirectUri)).build();
     }
 
 }

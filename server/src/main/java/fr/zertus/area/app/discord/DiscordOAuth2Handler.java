@@ -57,13 +57,12 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
     };
 
     @Override
-    public URI getOAuth2AuthorizationUri(String authorizationUri, String clientId, String redirectUri, String state, long userId, Set<String> scope) {
+    public URI getOAuth2AuthorizationUri(String authorizationUri, String clientId, String redirectUri, String state, Set<String> scope) {
         return URI.create(authorizationUri +
                 "?client_id=" + clientId +
                 "&redirect_uri=" + redirectUri +
                 "&scope=" + String.join("%20", scope) +
-                "&state=" + state + "-" + userId +
-                "&response_type=" + "code" +
+                "&state=" + state +
                 "&prompt=" + "consent"
         );
     }
