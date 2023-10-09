@@ -1,9 +1,12 @@
 package fr.zertus.area.controller;
 
+import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
+import fr.zertus.area.app.Reaction;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.utils.SecurityUtils;
+import fr.zertus.area.service.ActionReactionService;
 import fr.zertus.area.service.AppService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +31,9 @@ public class AppController {
 
     @Autowired
     private AppService appService;
+
+    @Autowired
+    private ActionReactionService actionReactionService;
 
     @Operation(summary = "Get all services", description = "Get all the services available on the API.", tags = { "Service" })
     @ApiResponses(value = {
