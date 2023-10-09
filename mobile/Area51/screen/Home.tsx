@@ -16,7 +16,6 @@ const Home = ({ navigation }) => {
     const fetchApplets = async () => {
       try {
         const services = await Services();
-        console.log(services);
         setApplets(services);
         setDispApplets(services);
       } catch (error) {

@@ -30,7 +30,6 @@ const MyApplet = ({route}) => {
                         }
                     })
                 ).json();
-                console.log(data);
                 setDataApplet(data);
             } catch (error) {
                 console.log(error);

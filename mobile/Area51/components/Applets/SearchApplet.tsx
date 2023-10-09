@@ -6,6 +6,7 @@ import ServiceInfo, {Action, Reaction} from '../../api/ServiceInfo';
 import { useNavigation } from '@react-navigation/native';
 import LogoApplet from "./Logo";
 import Switch from "./Switch";
+import FormInput from "../FormInput";
 
 interface AppletProps {
     id: number;
@@ -48,9 +49,7 @@ const AppletComponent = ({ id, name, actionSlug, reactionSlug, actionTrigger, la
     useEffect(() => {
         const ServiceFetch = async (slug: string) => {
             const service = await ServiceInfo(slug);
-            console.log("service", service);
             setBgColor(service?.decoration?.backgroundColor);
-            console.log("bgColor", bgColor);
         };
         ServiceFetch(actionSlug);
     }, [bgColor]);
@@ -99,6 +98,14 @@ const AppletComponent = ({ id, name, actionSlug, reactionSlug, actionTrigger, la
 const SearchApplet = () => {
     const [applets, setApplets] = useState([]);
     const [searchValue, setSearchValue] = useState("");
+    const [dispApplets, setDispApplets] = useState([]); // State to store applets
+
+    const filterApplets = (name : string) => {
+        if (applets == null) return;
+        let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
+        console.log("OIJHUGYHIJOIHUGYFVUBIHUGYFVHJ",tmp);
+        setDispApplets(tmp);
+    }
 
     useEffect(() => {
         const dataFetch = async () => {
@@ -115,6 +122,7 @@ const SearchApplet = () => {
                 );
                 const data = await response.json();
                 setApplets(data?.data);
+                setDispApplets(data?.data);
             } catch (error) {
                 console.log("error search applet", error);
             }
@@ -131,20 +139,12 @@ const SearchApplet = () => {
     return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             {/* Barre de recherche */}
-            <View style={{ flexDirection: "row", backgroundColor: "#D9D9D9", borderRadius: 15, margin: 20, padding: 10, alignItems: "center" }}>
-                <Icon name={"search"} size={24} color="#00000080" />
-                <TextInput
-                    value={searchValue}
-                    placeholder="Search services"
-                    onChangeText={(text) => setSearchValue(text)}
-                    style={{ flex: 1, fontSize: 24, color: "#363841", fontWeight: "bold" }}
-                />
-            </View>
+            <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
 
             {/* Liste des applets */}
             <FlatList
                 style={{ width: "75%" }}
-                data={applets}
+                data={dispApplets}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <AppletComponent

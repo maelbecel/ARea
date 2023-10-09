@@ -11,7 +11,6 @@ const ExploreMyApplets = () => {
   useEffect(() => {
     const fetchData = async () => {
         const storedToken = await SecureStore.getItemAsync('token_api');
-        console.log('token -> ', storedToken);
         setToken(storedToken || '');
         if (storedToken) {
             console.log('token -> ', storedToken);
