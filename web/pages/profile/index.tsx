@@ -8,6 +8,7 @@ import LinkedAccounts from "../../components/linkedAccounts/linkedAccounts";
 import ProfilePicture from "../../components/profilePicture/profilePicture";
 import FormProfile from "../../components/formProfile/formProfile";
 import UpdateButton from "../../components/updateButton/updateButton";
+import NavBar, { Icon, LeftSection, NavBarNavigateButton, Profile, RightSection } from "../../components/navbar";
 
 const IndexPage: NextPage = () => {
     const [data, setData] = useState<any | undefined>();
@@ -30,6 +31,7 @@ const IndexPage: NextPage = () => {
                         }
                     })
                 ).json();
+                console.log(data);
                 setData(data);
             } catch (error) {
                 console.log(error);
@@ -41,7 +43,7 @@ const IndexPage: NextPage = () => {
     /*
         // TODO:
         <NavBar>
-            <SimpleLink   href="/profile/my-applets" text="My applets" />
+            <SimpleLink   href="/myApplets" text="My applets" />
             <NavBarButton href="/create"             text="Create" />
             <Profile />
         </NavBar>
@@ -49,6 +51,15 @@ const IndexPage: NextPage = () => {
 
     return (
         <>
+            <NavBar>
+                <LeftSection>
+                    <Icon />
+                </LeftSection>
+                <RightSection>
+                    <NavBarNavigateButton href="/create"             text="Create" />
+                    <Profile />
+                </RightSection>
+            </NavBar>
             <div className="min-h-screen flex flex-col items-center">
                 <div className="w-[30%]">
                     <div className="my-[32px]">

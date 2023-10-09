@@ -28,7 +28,7 @@ const IndexPage: NextPage = () => {
             <Icon />
           </LeftSection>
           <RightSection>
-            <SimpleLink   href="/profile/my-applets" text="My applets" />
+            <SimpleLink   href="/myApplets" text="My applets" />
             <NavBarNavigateButton href="/create"             text="Create" />
             <Profile />
           </RightSection>
