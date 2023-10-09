@@ -35,15 +35,24 @@ public class AppletService {
         Action action = actionReactionService.getAction(applet.getActionSlug());
         if (action == null)
             throw new IllegalArgumentException("Action not found");
-        if (!action.setupAction(user, applet.getActionInputs()))
-            throw new IllegalArgumentException("Failed to setup action");
+        try {
+            if (!action.setupAction(user, applet.getActionInputs()))
+                throw new IllegalArgumentException("Failed to setup action");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Action: " + e.getMessage());
+        }
 
         Reaction reaction = actionReactionService.getReaction(applet.getReactionSlug());
         if (reaction == null)
             throw new IllegalArgumentException("Reaction not found");
-        if (!reaction.setupReaction(user, applet.getReactionInputs())) {
+        try {
+            if (!reaction.setupReaction(user, applet.getReactionInputs())) {
+                action.deleteAction(user, applet.getActionInputs());
+                throw new IllegalArgumentException("Failed to setup reaction");
+            }
+        } catch (Exception e) {
             action.deleteAction(user, applet.getActionInputs());
-            throw new IllegalArgumentException("Failed to setup reaction");
+            throw new IllegalArgumentException("Reaction: " + e.getMessage());
         }
 
         Applet appletEntity = new Applet(user, applet.getName(), applet.getActionSlug(), applet.getActionInputs(), "",
@@ -72,7 +81,7 @@ public class AppletService {
     }
 
     /**
-     * Trigger all applets for a specific action
+     * Trigger all enabled applets for a specific action
      * This method is called if the action is triggered and is in charge of triggering all reactions is action is really triggered
      * Also update the last trigger date for each applet and add some logs for interested users
      * This method is called in a new thread to avoid blocking the action
@@ -83,10 +92,8 @@ public class AppletService {
      */
     public void triggerAction(String actionSlug, Map<String, String> values, Map<String, String> parameters) {
         new Thread(() -> {
-            List<Applet> applets = getForAction(actionSlug);
+            List<Applet> applets = appletRepository.findByActionSlugAndEnabled(actionSlug, true);
             for (Applet applet : applets) {
-                applet.setLastTriggerDate(new Timestamp(System.currentTimeMillis()));
-                applet.addLog("Action triggered");
 
                 User user = applet.getUser();
                 Action action = actionReactionService.getAction(applet.getActionSlug());
@@ -98,6 +105,8 @@ public class AppletService {
                 }
                 try {
                     if (action.isTrigger(user, applet.getActionData(), values)) {
+                        applet.setLastTriggerDate(new Timestamp(System.currentTimeMillis()));
+                        applet.addLog("Action triggered");
                         reaction.trigger(user, applet.getReactionData(), parameters);
                         applet.addLog("Reaction triggered");
                         if (applet.isNotifUser()) {
@@ -108,6 +117,7 @@ public class AppletService {
                     applet.addLog("Error while triggering action - " + e.getMessage());
                     log.error("Error while triggering action " + actionSlug + " for applet " + applet.getId() + " - " + e.getMessage());
                 }
+                appletRepository.save(applet); // TODO: Find a way to save all applets at the end of the loop with a single request
             }
         }).start();
     }

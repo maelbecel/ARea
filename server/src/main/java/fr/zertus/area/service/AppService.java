@@ -1,5 +1,6 @@
 package fr.zertus.area.service;
 
+import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
