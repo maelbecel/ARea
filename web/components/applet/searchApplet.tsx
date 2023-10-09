@@ -91,6 +91,7 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
 
 const SearchApplet = () => {
     const [applets, setApplets] = useState<AppletProps[]>([]);
+    const [searchApplets, setSearchApplets] = useState<AppletProps[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
 
     useEffect(() => {
@@ -106,8 +107,8 @@ const SearchApplet = () => {
                         }
                     })
                 ).json();
-                console.log(data);
                 setApplets(data?.data);
+                setSearchApplets(data?.data);
             } catch (error) {
                 console.log(error);
             }
@@ -121,6 +122,17 @@ const SearchApplet = () => {
         }
     }, [applets]);
 
+    const findObjectsBySlug = (array: any[], name: string) => {
+        return array.filter(item => item?.name.toLowerCase().includes(name.toLowerCase()));
+    };
+
+    const handleChange = (event: any) => {
+        const newValue = event.target.value;
+
+        setSearchValue(newValue);
+        setSearchApplets(findObjectsBySlug(applets, newValue));
+    };
+
     return (
         <div className="flex flex-col justify-center items-center">
 
@@ -131,14 +143,14 @@ const SearchApplet = () => {
                 </div>
                 <input value={searchValue}
                         placeholder="Search services"
-                        onChange={(e) => setSearchValue(e.target.value)}
+                        onChange={(e) => handleChange(e)}
                         className="bg-transparent w-full text-[24px] font-bold text-[#363841] outline-none p-[10px]"
                 />
             </div>
             <div className="w-[75%] grid grid-cols-3 gap-8 h-auto">
-                {applets && applets.map((applet, index) => {
+                {searchApplets && searchApplets.map((applet) => {
                     return (
-                        <div key={index}>
+                        <div key={applet.id}>
                             <AppletComponent
                                 id={applet.id}
                                 name={applet.name}
