@@ -36,6 +36,8 @@ const SearchBar: React.FC<InputProps> = ({onChangeText}) => {
   );
 }
 
+/* The `const styles = StyleSheet.create({ ... })` block is defining a JavaScript object called
+`styles` that contains CSS-like styles for the components in the `SearchBar` component. */
 const styles = StyleSheet.create({
     container: {
         paddingTop: 50,
