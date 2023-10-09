@@ -83,6 +83,13 @@ export type Input = {
     type: string;
 }
 
+/**
+ * The function `getInput` takes an array of input objects and returns an array of input objects with
+ * specific properties.
+ * @param {any} input - The `input` parameter is an array of objects. Each object represents an input
+ * field and has the following properties:
+ * @returns The function `getInput` is returning an array of `Input` objects.
+ */
 const getInput = (input : any) : Input[] => {
     let inputs : Input[] = [];
     let i : number = 0;
@@ -94,6 +101,13 @@ const getInput = (input : any) : Input[] => {
     return inputs;
 }
 
+/**
+ * The function `getAction` takes an array of actions and returns an array of `Action` objects with
+ * specific properties.
+ * @param {any} action - The `action` parameter is an array of objects. Each object represents an
+ * action and has the following properties:
+ * @returns The function `getAction` returns an array of `Action` objects.
+ */
 const getAction = (action : any) : Action[] => {
     let actions : Action[] = [];
     let i : number = 0;
@@ -105,6 +119,12 @@ const getAction = (action : any) : Action[] => {
     return actions;
 }
 
+/**
+ * The function "getReaction" takes an action as input and returns an array of reactions.
+ * @param {any} action - The `action` parameter is an array of objects. Each object represents an
+ * action and has the following properties:
+ * @returns The function `getReaction` returns an array of `Reaction` objects.
+ */
 const getReaction = (action : any) : Reaction[] => {
     let reactions : Reaction[] = [];
     let i : number = 0;

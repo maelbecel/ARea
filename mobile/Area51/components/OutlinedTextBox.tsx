@@ -1,24 +1,40 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 
-// --- Interface --- //
+/* The `interface OutlinedTextBoxProps` defines the props that can be passed to the `OutlinedTextBox`
+component. */
 interface OutlinedTextBoxProps {
   onChangeText : (text: string) => void;
   value: string;
   secureTextEntry?: boolean;
 }
 
+/**
+ * The above code defines a React functional component called OutlinedTextBox that renders a text input
+ * field with an outline, and updates its focus state based on user interaction.
+ * @param  - - `onChangeText`: A function that will be called when the text input value changes. It
+ * takes the new value as a parameter.
+ * @returns The `OutlinedTextBox` component is being returned.
+ */
 const OutlinedTextBox: React.FC<OutlinedTextBoxProps> = ({onChangeText, value, secureTextEntry}) => {
   const [isFocused, setIsFocused] = useState(false);
 
+  /**
+   * The handleFocus function sets the state variable isFocused to true.
+   */
   const handleFocus = () => {
     setIsFocused(true);
   };
 
+  /**
+   * The handleBlur function sets the isFocused state to false.
+   */
   const handleBlur = () => {
     setIsFocused(false);
   };
 
+  /* The `return` statement in the `OutlinedTextBox` component is rendering the JSX code that will be
+  displayed on the screen. */
   return (
     <View style={[styles.container, isFocused ? null : styles.focused]}>
       <TextInput

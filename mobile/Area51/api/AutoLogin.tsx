@@ -38,4 +38,8 @@ const AutoLoginAPI  = async (): Promise<boolean> => {
     }
 }
 
+/* The line `export default AutoLoginAPI;` is exporting the `AutoLoginAPI` function as the default
+export of the module. This means that when another module imports this module, they can import the
+`AutoLoginAPI` function directly without having to specify its name. For example, in another module,
+you can import the `AutoLoginAPI` function like this: */
 export default AutoLoginAPI;

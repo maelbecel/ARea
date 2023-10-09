@@ -16,6 +16,8 @@ interface SubmitButtonProps extends TouchableOpacityProps {
     onPress     ?: () => void;
 }
 
+/* The code block `const SubmitButton: React.FC<SubmitButtonProps> = ({ title, onPress, icon,
+textcolor='#FFFFFFBF', }) => { ... }` is defining a functional component called `SubmitButton`. */
 const SubmitButton: React.FC<SubmitButtonProps> = ({ title, onPress, icon, textcolor='#FFFFFFBF', }) => {
     return (
         icon ? (
@@ -31,6 +33,9 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({ title, onPress, icon, textc
     );
 }
 
+/* The `const styles = StyleSheet.create({ ... })` block is creating a JavaScript object that contains
+styles for different components in the `SubmitButton` component. Each key-value pair in the object
+represents a style property and its corresponding value. */
 const styles = StyleSheet.create({
     container: {
         marginVertical: 10,

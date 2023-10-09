@@ -74,6 +74,16 @@ const getServiceFromSlug = (slug: string): string => {
     return service;
 }
 
+/**
+ * The function `getActionName` takes in a `Service` object and a `slug` string, and returns the name
+ * of the action or reaction that matches the given slug.
+ * @param {Service} info - The `info` parameter is of type `Service`, which likely represents some
+ * information about a service or platform. It could contain properties like `actions` and `reactions`,
+ * which are arrays of objects representing different actions and reactions available in the service.
+ * @param {string} slug - The `slug` parameter is a string that represents the unique identifier of an
+ * action or reaction.
+ * @returns The function `getActionName` returns a string.
+ */
 const getActionName = (info : Service, slug: string): string => {
     let i : number = 0;
     if (info == null)
@@ -94,6 +104,20 @@ const getActionName = (info : Service, slug: string): string => {
     return "";
 }
 
+/**
+ * The function `ActionCard` returns a React component that renders a TouchableOpacity with a
+ * background color based on the name prop, and a Text component with a color based on the background
+ * color.
+ * @param {string} name - The name parameter is a string that represents the name of the action card.
+ * It could be any text that you want to display on the action card.
+ * @param {any} onPress - The `onPress` parameter is a function that will be called when the
+ * `TouchableOpacity` component is pressed. It is typically used to handle the action or event that
+ * should occur when the component is pressed.
+ * @returns a TouchableOpacity component with a View and Text component inside. The TouchableOpacity
+ * component has an onPress event handler and a style prop that sets the background color based on the
+ * value of the name parameter. The Text component has a style prop that sets the color based on the
+ * result of the getWriteColor function. The Text component displays the value of the name parameter.
+ */
 const ActionCard = (name : string, onPress : any) => {
     if (name === "Action") {
         var color = "#D9D9D9"
@@ -109,10 +133,15 @@ const ActionCard = (name : string, onPress : any) => {
     )
 }
 
+/* The `ActionChoose` function is a React functional component that renders an action card based on the
+provided `type`, `slug`, and `onPress` props. */
 const ActionChoose: React.FC<CardProps> = ({ type, slug , onPress }) => {
     const [info, setInfo] = React.useState<any>(null);
     const [action, setAction] = React.useState<string>("");
 
+    /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
+    case, the `useEffect` hook is being used to fetch data and update the component's state based on
+    the `type` and `slug` props. */
     React.useEffect(() => {
       if (type !== 'action' && type !== 'reaction' && slug === "default") {
         return;
@@ -133,15 +162,22 @@ const ActionChoose: React.FC<CardProps> = ({ type, slug , onPress }) => {
       fetchData();
     }, [type, slug]);
 
+    /* The code block is checking if the `type` prop is equal to `'action'` and the `slug` prop is
+    equal to `"default"`. If this condition is true, it returns an `ActionCard` component with the
+    name `'Action'` and the `onPress` prop. */
     if (type === 'action' && slug === "default") {
       return ActionCard('Action', onPress);
     } else if (type === 'reaction' && slug === "default") {
       return ActionCard('Reaction', onPress);
     }
 
+    /* The line `const width = (type == "action") ? '70%' : '60%'` is assigning a value to the `width`
+    variable based on the condition `(type == "action")`. */
     const width = (type == "action") ? '70%' : '60%'
 
 
+    /* The code block is conditionally rendering a `TouchableOpacity` component with a specific style
+    and content based on the value of the `info` variable. */
     if (info) {
         return (
             <TouchableOpacity onPress={onPress} style={[{backgroundColor: info.decoration.backgroundColor }, styles.container]}>

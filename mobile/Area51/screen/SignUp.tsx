@@ -38,7 +38,8 @@ const Signup = ({ navigation }) => {
   }
 
 
-    return (
+  /* The code is rendering a view with various components inside it. */
+  return (
         <View style={styles.container}>
           <Text style={styles.login}>Sign up</Text>
           <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
