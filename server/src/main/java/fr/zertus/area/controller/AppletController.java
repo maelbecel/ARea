@@ -98,7 +98,8 @@ public class AppletController {
     @ApiResponses(value = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "204",
-            description = "Applet deleted"
+            description = "Applet deleted",
+            content = @Content
         )
     })
     @DeleteMapping("/{id}")
