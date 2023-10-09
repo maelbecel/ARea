@@ -16,7 +16,6 @@ const ServerModal: React.FC = () => {
             setModalVisible(true);
           } else {
             setServerAddress(savedAddress);
-            console.log('Adresse du serveur récupérée :', savedAddress);
           }
         } catch (error) {
           console.error('Erreur lors de la récupération de l\'adresse du serveur :', error);
