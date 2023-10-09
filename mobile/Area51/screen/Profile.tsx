@@ -1,7 +1,12 @@
 // --- Libraires --- //
-import React, { useState } from "react";
-import { Text, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { Text, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Button } from "react-native-paper";
+import * as SecureStore from 'expo-secure-store';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserInfosAPI from "../api/UserInfos";
+import ProfileForm from "../components/ProfileForm";
 
 // --- Component --- //
 import OutlinedTextBox from '../components/OutlinedTextBox';
@@ -9,47 +14,66 @@ import OutlinedTextBox from '../components/OutlinedTextBox';
 // --- Images/Icons --- //
 import SVGImg from '../assets/svg/iconProfile.svg'
 
-const secureText = (text: string) => {
-  return '•'.repeat(text.length); // Remplace chaque caractère par un astérisque (*)
-};
-
-const SecureText = ({ text }) => {
-  const secureTextValue = secureText(text);
-
-  return (
-    <Text style={styles.secureText}>{secureTextValue}</Text>
-  );
-};
-
 const Profile: React.FC = () => {
-  const [username, setUsername] = useState<string>('username');
-  const [password, setPassword] = useState<string>('password');
-  const [email, setEmail] = useState<string>('email');
+  const navigation = useNavigation();
 
-  const handleUsernameChange = (text: string) => {
-    setUsername(text);
-  };
+  const [data, setData] = useState<any>([]);
+  const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [loading, setLoading] = useState(true);
 
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const serverAddress = await AsyncStorage.getItem('serverAddress');
+        const token = await SecureStore.getItemAsync('token_api');
 
-  const handleEmailChange = (text: string) => {
-    setEmail(text);
+        if (!token || !serverAddress) {
+          navigation.navigate('Login');
+          return;
+        }
+
+        const response = await UserInfosAPI(token, serverAddress);
+        setData(response.data);
+        await AsyncStorage.setItem('username', response.data.username);
+        await AsyncStorage.setItem('email', response.data.email);
+        setLoading(false); // Mettez à jour l'état de chargement une fois les données disponibles
+      } catch (error) {
+        console.error(error);
+        setLoading(false); // Mettez à jour l'état de chargement en cas d'erreur
+      }
+    };
+
+    fetchData();
+  }, []); // Assurez-vous de passer un tableau vide de dépendances pour exécuter l'effet uniquement après le premier rendu
+
+
+  const handleLogout = async () => {
+    try {
+      await SecureStore.deleteItemAsync('token_api');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handlePress = async () => {
     try {
-      console.log(username);
-      console.log(password);
-      console.log(email);
-
+      const username = await AsyncStorage.getItem('username');
+      const email = await AsyncStorage.getItem('email');
+      console.log(username, email);
+      await AsyncStorage.removeItem('username');
+      await AsyncStorage.removeItem('email');
     } catch (error) {
+      console.error(error);
     }
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container}>
+    {loading ? (
+      <ActivityIndicator size="large" color="#0000ff" /> // Affichez un indicateur de chargement pendant le chargement des données
+    ) : (
       <ScrollView
         showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
         showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
@@ -57,36 +81,15 @@ const Profile: React.FC = () => {
         <View style={styles.profilePicture}>
           <SVGImg width={150} height={150} />
         </View>
-        <View style={styles.userInfo}>
-          <View style={{marginBottom: 10}}>
-            <Text style={styles.title}>Compte</Text>
-          </View>
-          <View style={{marginTop: 10}}>
-            <Text style={styles.subtitle}>Nom d'utilisateur</Text>
-            <OutlinedTextBox
-              onChangeText={handleUsernameChange}
-              value={username}
-            />
-          </View>
-          <View style={{marginTop: 10}}>
-            <Text style={styles.subtitle}>Mot de passe</Text>
-            <View style={styles.rectangle}>
-              <SecureText text={password} />
-            </View>
-            <Text style={styles.link}>Modifier le mot de passe</Text>
-          </View>
-          <View style={{marginTop: 10}}>
-            <Text style={styles.subtitle}>Adresse e-mail</Text>
-            <OutlinedTextBox
-              onChangeText={handleEmailChange}
-              value={email}
-            />
-          </View>
-        </View>
+          <ProfileForm data={data} />
         <Button
           mode="contained"
           onPress={ handlePress }
-          style={{marginVertical: 20, marginHorizontal: 30, backgroundColor: '#363841'}}
+          style={[
+            styles.button,
+            username === data.username && email === data.email && styles.disabledButton,
+          ]}
+          disabled={username === data.username && email === data.email}
         >
           Appliquer les changements
         </Button>
@@ -108,7 +111,15 @@ const Profile: React.FC = () => {
             <Text style={styles.subtitle}>Conditions et confidentialité</Text>
           </View>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            handleLogout();
+          }}
+        >
+            <Text style={styles.logout}>Se déconnecter</Text>
+        </TouchableOpacity>
       </ScrollView>
+    )}
     </KeyboardAvoidingView>
   );
 };
@@ -116,14 +127,27 @@ const Profile: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
-    paddingHorizontal: 20, // Marge à gauche et à droite de l'écran
   },
   profilePicture: {
-    marginTop: Dimensions.get('window').height / 5 - 75,
+    marginTop: Dimensions.get('window').height / 50, // Marge en haut de l'avatar pour l'espace entre l'image et le texte
     marginBottom: (Dimensions.get('window').height / 5 - 75) / 3,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  button: {
+    marginVertical: 20,
+    marginHorizontal: 30,
+    backgroundColor: '#363841',
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
+  disabledButton: {
+    backgroundColor: 'gray',
   },
   userInfo: {
     marginHorizontal: 10, // Marge à gauche de l'avatar pour l'espace entre l'image et le texte
@@ -144,24 +168,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  rectangle: {
-    backgroundColor: '#D9D9D9', // Couleur de la boîte
-    borderRadius: 5, // Rayon des coins de la boîte
-    paddingVertical: 10, // Rembourrage vertical pour l'espace interne
-    paddingHorizontal: 10, // Rembourrage horizontal pour l'espace interne
-    marginVertical: 10, // Marge verticale pour l'espace externe
-  },
-  secureText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#363841',
-    opacity: 0.5,
-  },
   separator: {
     height: 0.5, // Hauteur de la ligne
     backgroundColor: '#6D6D6D', // Couleur de la ligne
     marginVertical: 15, // Marge verticale pour l'espace autour de la ligne
     opacity: 0.5, // Opacité de la ligne
+  },
+  logout: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 });
 

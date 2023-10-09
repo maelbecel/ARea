@@ -54,8 +54,8 @@ const getWriteColor = (color: string): string => {
   }
 };
 
-const ServiceTemplate = ({ navigation, route }) => {
-  const { slug, type, actionInput, reactionInput } = route.params;
+const Service = ({ navigation, route }) => {
+  const { slug } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
@@ -65,13 +65,13 @@ const ServiceTemplate = ({ navigation, route }) => {
 
   const displayActions = () => {
     return action.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput})}/>
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug , type: "action"})}/>
     ));
   };
 
   const displayReactions = () => {
     return reaction.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput })}/>
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: "reaction" })}/>
     ));
   }
 
@@ -93,22 +93,18 @@ const ServiceTemplate = ({ navigation, route }) => {
     fetchData();
   }, [slug]);
 
-  React.useEffect(() => {
-    console.log("Action : ", action);
-    console.log("Reaction : ", reaction);
-  }, [action, reaction]);
-
   return (
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
       <View style={[{ backgroundColor: color }, styles.container]}>
-        <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Create")} />
+        <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='info' onPressRight={() => navigation.goBack()} />
         <Image source={{ uri: url }} style={styles.logo} />
         <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
       </View>
       <ScrollView >
         <View style={styles.action}>
-          {(type === "action") ? displayActions() : displayReactions()}
+          {displayActions()}
+          {displayReactions()}
         </View>
       </ScrollView>
     </View>
@@ -147,4 +143,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default ServiceTemplate;
+export default Service;

@@ -17,6 +17,10 @@ import ProfileScreen from './screen/Profile';
 
 import Login from './screen/LogIn';
 import SignUp from './screen/SignUp';
+import Service from './screen/Service';
+import SearchServices from './screen/SearchServices';
+import ServiceTemplate from './screen/ServiceTemplate';
+import ConnectAuth from './screen/ConnectAuth';
 
 /* `const Tab = createBottomTabNavigator();` creates a bottom tab navigator using the
 `createBottomTabNavigator` function from the `@react-navigation/bottom-tabs` library. This bottom
@@ -97,6 +101,10 @@ export default function App() {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+        <Stack.Screen name="Service" component={Service} options={{ headerShown: false }} />
+        <Stack.Screen name="SearchServices" component={SearchServices} options={{ headerShown: false }} />
+        <Stack.Screen name="ServiceTemplate" component={ServiceTemplate} options={{ headerShown: false }} />
+        <Stack.Screen name="ConnectAuth" component={ConnectAuth} options={{ headerShown: false }} />
         <Stack.Screen name="Area 51" component={Tabs} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
