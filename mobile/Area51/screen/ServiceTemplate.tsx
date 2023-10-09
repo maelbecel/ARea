@@ -1,3 +1,4 @@
+/* The code is importing various modules and components from external libraries and files. */
 import * as React from 'react';
 import { Text, View, StatusBar, Image, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
@@ -54,6 +55,9 @@ const getWriteColor = (color: string): string => {
   }
 };
 
+/* The `ServiceTemplate` function is a React component that renders a view for a specific service
+template. It takes in `navigation` and `route` as props, which are provided by React Navigation. The
+`route` prop contains the parameters passed to the component. */
 const ServiceTemplate = ({ navigation, route }) => {
   const { slug, type, actionInput, reactionInput } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
@@ -63,12 +67,22 @@ const ServiceTemplate = ({ navigation, route }) => {
   const [reaction, setReaction] = React.useState<Reaction[]>([]);
 
 
+  /**
+   * The function `displayActions` maps over an array of actions and returns an array of `ActionCard`
+   * components with specific props.
+   * @returns The `displayActions` function is returning an array of `ActionCard` components.
+   */
   const displayActions = () => {
     return action.map((service) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput})}/>
     ));
   };
 
+  /**
+   * The function `displayReactions` maps over an array of `reaction` objects and returns an array of
+   * `ActionCard` components with specific props.
+   * @returns The `displayReactions` function is returning an array of `ActionCard` components.
+   */
   const displayReactions = () => {
     return reaction.map((service) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput })}/>
@@ -76,7 +90,14 @@ const ServiceTemplate = ({ navigation, route }) => {
   }
 
 
+  /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
+  case, the `useEffect` hook is used to fetch data from a service and update the state variables
+  based on the fetched data. */
   React.useEffect(() => {
+    /**
+     * The function fetchData fetches data from a service and sets various state variables based on the
+     * fetched data.
+     */
     const fetchData = async () => {
       try {
         const service = await ServiceInfo(slug);
@@ -93,11 +114,8 @@ const ServiceTemplate = ({ navigation, route }) => {
     fetchData();
   }, [slug]);
 
-  React.useEffect(() => {
-    console.log("Action : ", action);
-    console.log("Reaction : ", reaction);
-  }, [action, reaction]);
-
+  /* The code block is rendering a view that contains a top bar, an image, and a text component. It
+  also includes a scroll view that contains a view with action cards. */
   return (
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
@@ -115,6 +133,8 @@ const ServiceTemplate = ({ navigation, route }) => {
   );
 };
 
+/* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. Each key-value pair in the `styles` object represents a specific style rule. */
 const styles = StyleSheet.create({
   logo: {
     height: 100,

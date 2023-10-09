@@ -7,13 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserInfosAPI from "../api/UserInfos";
 import ProfileForm from "../components/ProfileForm";
-
-// --- Component --- //
-import OutlinedTextBox from '../components/OutlinedTextBox';
-
-// --- Images/Icons --- //
 import SVGImg from '../assets/svg/iconProfile.svg'
 
+/* The above code is a TypeScript React component called "Profile". It is responsible for rendering a
+user profile screen. */
 const Profile: React.FC = () => {
   const navigation = useNavigation();
 
@@ -22,7 +19,18 @@ const Profile: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
+  /* The `useEffect` hook in this code is used to fetch user information from an API and update the
+  component's state with the retrieved data. */
   useEffect(() => {
+    /**
+     * The function fetchData is an asynchronous function that retrieves user information from an API
+     * using a token and server address stored in AsyncStorage, and updates the state with the
+     * retrieved data.
+     * @returns In this code, the function `fetchData` is being defined as an asynchronous function. It
+     * tries to fetch the server address and token from AsyncStorage using `await
+     * AsyncStorage.getItem()`. If either the token or server address is missing, it navigates to the
+     * 'Login' screen and returns.
+     */
     const fetchData = async () => {
       try {
         const serverAddress = await AsyncStorage.getItem('serverAddress');
@@ -48,6 +56,10 @@ const Profile: React.FC = () => {
   }, []); // Assurez-vous de passer un tableau vide de dépendances pour exécuter l'effet uniquement après le premier rendu
 
 
+  /**
+   * The function `handleLogout` deletes the 'token_api' item from SecureStore and navigates to the
+   * 'Login' screen.
+   */
   const handleLogout = async () => {
     try {
       await SecureStore.deleteItemAsync('token_api');
@@ -57,6 +69,10 @@ const Profile: React.FC = () => {
     }
   };
 
+  /**
+   * The function `handlePress` retrieves the values of `username` and `email` from AsyncStorage, logs
+   * them to the console, and then removes the `username` and `email` keys from AsyncStorage.
+   */
   const handlePress = async () => {
     try {
       const username = await AsyncStorage.getItem('username');
@@ -69,6 +85,8 @@ const Profile: React.FC = () => {
     }
   };
 
+  /* The `return` statement in the code is rendering the JSX elements that make up the Profile
+  component. */
   return (
     <KeyboardAvoidingView style={styles.container}>
     {loading ? (
@@ -124,6 +142,9 @@ const Profile: React.FC = () => {
   );
 };
 
+/* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from
+React Native. Each key in the object represents a style name, and its value is an object that
+defines the specific style properties for that name. */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

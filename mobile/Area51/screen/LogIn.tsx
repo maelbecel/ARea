@@ -22,7 +22,14 @@ const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    /* The `useEffect` hook in React is used to perform side effects in functional components. In this
+    code, the `useEffect` hook is used to automatically log in a user if they have already been
+    authenticated. */
     useEffect(() => {
+        /**
+         * The function `autoLogin` checks if the response from the `AutoLoginAPI` is true and
+         * navigates to the 'Area 51' page if it is.
+         */
         const autoLogin = async () => {
             const response = await AutoLoginAPI();
             console.log(response);
@@ -50,6 +57,9 @@ const Login = ({ navigation }) => {
         }
     }
 
+    /* The `return` statement in the code is returning a JSX element that represents the UI of the
+    `Login` component. It is a composition of various React Native components such as `View`,
+    `Text`, `FormInput`, and `SubmitButton`. */
     return (
         /* The code is returning a JSX element that contains other JSX elements. */
         <View style={{marginTop: 50, backgroundColor: "#FFF"}}>

@@ -75,6 +75,7 @@ const ConnectAuth = ({ navigation, route }) => {
   const [loggedIn, setLoggedIn] = React.useState(false);
   let inputsResp = [];
 
+  /* The `showForm` function is a helper function that generates a form based on the `inputs` array. */
   const showForm = () => {
    return inputs.map((input, index) => (
      <View key={input.name} style={{width:"100%"}}>
@@ -83,6 +84,14 @@ const ConnectAuth = ({ navigation, route }) => {
    ));
   }
 
+  /**
+   * The function `isAllFormFill` checks if all the form inputs have been filled and returns true if
+   * they have, and false if any input is null.
+   * @returns The function `isAllFormFill` returns a boolean value. It returns `true` if all the
+   * elements in the `inputsResp` array are not `null`, indicating that all the form fields have been
+   * filled. It returns `false` if any element in the `inputsResp` array is `null`, indicating that
+   * there are still empty form fields.
+   */
   const isAllFormFill = () : boolean => {
     for (let i = 0; i < inputs.length; i++) {
       console.log("Form ", i, " : ", inputsResp[i])
@@ -93,6 +102,10 @@ const ConnectAuth = ({ navigation, route }) => {
     return true;
   }
 
+  /**
+   * The function `_openAuthSessionAsync` is an asynchronous function that retrieves a server address
+   * and token from AsyncStorage, and then opens an authentication session using the WebBrowser API.
+   */
   const _openAuthSessionAsync = async () => {
     try {
       const serverAddress = await AsyncStorage.getItem('serverAddress');
@@ -107,13 +120,23 @@ const ConnectAuth = ({ navigation, route }) => {
     }
   };
 
+  /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
+  case, the effect is triggered when the `useUrl` variable changes. */
   React.useEffect(() => {
     if (useUrl && useUrl.includes(slug.split(".")[0])) {
       setLoggedIn(true);
     }
   }, [useUrl]);
 
+  /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
+  case, the effect is triggered when the component is mounted (since the dependency array `[]` is
+  empty). */
   React.useEffect(() => {
+    /**
+     * The function fetchServiceInfo retrieves information from an API and sets various state variables
+     * based on the response.
+     * @returns The function `fetchServiceInfo` returns nothing (i.e., `undefined`).
+     */
     const fetchServiceInfo = async () => {
       const info = await ServiceInfo(slug.split(".")[0])
       const actionSlug = await AsyncStorage.getItem("action");
@@ -133,7 +156,15 @@ const ConnectAuth = ({ navigation, route }) => {
     fetchServiceInfo();
   }, []);
 
+  /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
+  case, the effect is triggered when the `action` or `reaction` variables change. */
   React.useEffect(() => {
+    /**
+     * The function `findAction` searches for an action or reaction with a matching slug and sets the
+     * title and description accordingly, or logs the number of actions and reactions and a message if
+     * no match is found.
+     * @returns The function `findAction` returns nothing.
+     */
     const findAction = () => {
       for (let i = 0; i < action.length; i++) {
         if (action[i].slug == slug) {
@@ -157,6 +188,10 @@ const ConnectAuth = ({ navigation, route }) => {
   }
   , [action, reaction]);
 
+  /**
+   * The function `redirection` checks if all form fields are filled, opens an authentication session,
+   * sets an item in AsyncStorage, and navigates to a different screen based on the type of form.
+   */
   const redirection = async () => {
     if (isAllFormFill()) {
       await _openAuthSessionAsync();
@@ -169,6 +204,11 @@ const ConnectAuth = ({ navigation, route }) => {
   }
 
 
+  /* The above code is a TypeScript React component that renders a view with a top bar, an image, and
+  some text. It checks if the variable "name" is not empty, and if it is not empty, it renders the
+  view. The view has a background color based on the "color" variable, and it contains a top bar
+  with a title, a left arrow icon, and a right close icon. It also displays an image with a source
+  URL, and a text component with the value of the "name" variable. */
   if (name != "") {
     return (
       <View>
@@ -190,6 +230,8 @@ const ConnectAuth = ({ navigation, route }) => {
   }
 };
 
+/* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. Each key-value pair in the `styles` object represents a specific style rule. */
 const styles = StyleSheet.create({
   logo: {
     height: 100,
@@ -252,4 +294,8 @@ const styles = StyleSheet.create({
 });
 
 
+/* The line `export default ConnectAuth;` is exporting the `ConnectAuth` component as the default
+export of the module. This means that when another module imports this module, it can access the
+`ConnectAuth` component using the default import syntax, like `import ConnectAuth from
+'./ConnectAuth';`. */
 export default ConnectAuth;

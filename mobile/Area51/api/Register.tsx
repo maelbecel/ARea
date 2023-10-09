@@ -34,4 +34,8 @@ const RegisterAPI = async (email: string, password : string, username : string) 
     }
 }
 
+/* The line `export default RegisterAPI;` is exporting the `RegisterAPI` function as the default export
+of this module. This means that when another module imports this module, they can import the
+`RegisterAPI` function directly without having to specify its name. For example, in another module,
+you can import the `RegisterAPI` function like this: */
 export default RegisterAPI;
