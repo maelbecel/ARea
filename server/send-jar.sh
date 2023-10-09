@@ -1,0 +1,1 @@
+rsync -avz target/area-1.0.0.jar zertus.fr:/home/zertus/area51/data/area51.jar
