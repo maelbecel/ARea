@@ -156,6 +156,39 @@ public class AppController {
         return appService.redirectOAuth2App(slug, userId, redirecturi);
     }
 
+    @Operation(summary = "Delete OAuth2", description = "This call is use to delete OAuth2 token for current user from given service", tags = { "Service" },
+        parameters = @Parameter(name = "slug", description = "Slug of the service", required = true, example = "github"))
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "204",
+            description = "OAuth2 token deleted",
+            content = @Content
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "Service not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ApiResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Example response",
+                        description = "This is an example with not found service",
+                        value = "{\"status\":404,\"message\":\"Service not found\"}"
+                    )
+                }
+            )
+        )
+    })
+    @DeleteMapping("/{slug}/oauth2")
+    public ResponseEntity<ApiResponse<String>> deleteOAuth2(@PathVariable String slug) throws DataNotFoundException {
+        if (appService.deleteOAuth2(slug)) {
+            return ApiResponse.noContent().toResponseEntity();
+        } else {
+            throw new DataNotFoundException("Service not found");
+        }
+    }
+
     @Operation(summary = "Get temporary token", description = "This call is use to get temporary token for OAuth2 proccess", tags = { "Service" },
     parameters = {
         @Parameter(name = "slug", description = "Slug of the service", required = true, example = "github"),

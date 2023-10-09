@@ -137,4 +137,13 @@ public class AppService {
         return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
     }
 
+    public boolean deleteOAuth2(String slug) throws DataNotFoundException {
+        User user = userService.getCurrentUser();
+        if (user.getConnectedService(slug) == null) {
+            throw new DataNotFoundException("User is not connected to this service");
+        }
+        user.removeConnectedService(slug);
+        return true;
+    }
+
 }
