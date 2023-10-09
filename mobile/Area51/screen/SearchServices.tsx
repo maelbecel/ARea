@@ -8,6 +8,8 @@ import TopBar from '../components/TopBar';
 
 const SearchServices = ({ navigation, route }) => {
   const [applets, setApplets] = useState([]); // State to store applets
+  const [dispApplets, setDispApplets] = useState([]); // State to store applets
+
   const { type, actionInput, reactionInput }  = route.params;
 
   useEffect(() => {
@@ -15,6 +17,7 @@ const SearchServices = ({ navigation, route }) => {
       try {
         const services = await Services();
         setApplets(services);
+        setDispApplets(services);
       } catch (error) {
         console.log('Error fetching applets:', error);
       }
@@ -23,7 +26,14 @@ const SearchServices = ({ navigation, route }) => {
     fetchApplets();
   }, [type]);
 
-  const filteredApplets = (applets == null) ? null : applets.filter((service) => {
+  const filterApplets = (name : string) => {
+    if (applets == null) return;
+    let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
+    console.log(tmp);
+    setDispApplets(tmp);
+  }
+
+  const filteredApplets = (dispApplets == null) ? null : dispApplets.filter((service) => {
     if (type === "action") return service.action === true;
     if (type === "reaction") return service.reaction === true;
     return true; // Include all applets if type is not specified
@@ -34,7 +44,7 @@ const SearchServices = ({ navigation, route }) => {
       <View style={styles.container}>
         <TopBar title="Create" iconLeft='arrow-back' color="#000" onPressLeft={() => navigation.goBack()} />
         <View style={styles.input}>
-          <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => { console.log(text) }} size='85%' />
+          <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => { filterApplets(text) }} size='85%' />
         </View>
         <ScrollView style={{ marginBottom: 50 }}>
           <View style={styles.services}>
