@@ -9,7 +9,7 @@ import type { Session } from "next-auth"
 function MyApp({ Component, pageProps: { session, ...pageProps } } : AppProps<{ session: Session }>) {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <Component {...pageProps}/>
     </SessionProvider>
   )
 }
