@@ -63,7 +63,7 @@ const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user
                             {actionSlug && <LogoApplet slug={actionSlug} width={56} height={56} toogleBackground={false}/>}
                             {reactionSlug && <LogoApplet slug={reactionSlug} width={56} height={56} toogleBackground={false}/>}
                         </div>
-                        <div className="font-bold text-white text-[37px] pb-[10%]">
+                        <div className="font-bold text-white text-[37px] pb-[10%] overflow-hidden break-words">
                             {name}
                         </div>
                         <Link href="#">

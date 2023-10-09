@@ -32,6 +32,7 @@ interface SwitchProps {
 const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
 
     const [bgColor, setBgColor] = useState<string>("");
+    const [newName, setNewName] = useState<string>(name);
 
     // get background color of the action slug
     useEffect(() => {
@@ -54,6 +55,12 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
             }
         };
         dataFetch(actionSlug);
+
+        if (name.length > 50) {
+            setNewName(name.slice(0, 50) + "...");
+            console.log("name -> ", newName);
+        }
+
     }, []);
 
     useEffect(() => {
@@ -61,19 +68,21 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
     }, [bgColor]);
 
     return (
-        <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px]">
+        <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between">
             <Link href={`/myApplets/applet/${id}`} style={{ cursor: 'pointer', backgroundColor: bgColor }}>
                 <div className="cursor-pointer">
                     <div className="flex flex-wrap">
                         {actionSlug && <LogoApplet slug={actionSlug} width={56} height={56} toogleBackground={false}/>}
                         {reactionSlug && <LogoApplet slug={reactionSlug} width={56} height={56} toogleBackground={false}/>}
                     </div>
-                    <div className="font-bold text-white text-[28px] pb-[40%]">
-                        {name}
+                    <div className="font-bold text-white text-[28px] pb-[40%] w-full overflow-hidden break-words">
+                        <div>
+                           {newName}
+                        </div>
                     </div>
                 </div>
             </Link>
-            <div className="font-bold text-white text-[18px]">
+            <div className="flex justify-end font-bold text-white text-[18px]">
                 <Switch isCheked={enabled} isDisable={true}/>
             </div>
         </div>
