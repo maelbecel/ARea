@@ -32,6 +32,7 @@ interface SwitchProps {
 const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
 
     const [bgColor, setBgColor] = useState<string>("");
+    const [newName, setNewName] = useState<string>(name);
 
     // get background color of the action slug
     useEffect(() => {
@@ -54,6 +55,12 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
             }
         };
         dataFetch(actionSlug);
+
+        if (name.length > 50) {
+            setNewName(name.slice(0, 50) + "...");
+            console.log("name -> ", newName);
+        }
+
     }, []);
 
     useEffect(() => {
@@ -61,19 +68,21 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
     }, [bgColor]);
 
     return (
-        <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px]">
+        <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between">
             <Link href={`/myApplets/applet/${id}`} style={{ cursor: 'pointer', backgroundColor: bgColor }}>
                 <div className="cursor-pointer">
                     <div className="flex flex-wrap">
                         {actionSlug && <LogoApplet slug={actionSlug} width={56} height={56} toogleBackground={false}/>}
                         {reactionSlug && <LogoApplet slug={reactionSlug} width={56} height={56} toogleBackground={false}/>}
                     </div>
-                    <div className="font-bold text-white text-[28px] pb-[40%]">
-                        {name}
+                    <div className="font-bold text-white text-[28px] pb-[40%] w-full overflow-hidden break-words">
+                        <div>
+                           {newName}
+                        </div>
                     </div>
                 </div>
             </Link>
-            <div className="font-bold text-white text-[18px]">
+            <div className="flex justify-end font-bold text-white text-[18px]">
                 <Switch isCheked={enabled} isDisable={true}/>
             </div>
         </div>
@@ -82,6 +91,7 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
 
 const SearchApplet = () => {
     const [applets, setApplets] = useState<AppletProps[]>([]);
+    const [searchApplets, setSearchApplets] = useState<AppletProps[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
 
     useEffect(() => {
@@ -97,8 +107,8 @@ const SearchApplet = () => {
                         }
                     })
                 ).json();
-                console.log(data);
                 setApplets(data?.data);
+                setSearchApplets(data?.data);
             } catch (error) {
                 console.log(error);
             }
@@ -112,6 +122,17 @@ const SearchApplet = () => {
         }
     }, [applets]);
 
+    const findObjectsBySlug = (array: any[], name: string) => {
+        return array.filter(item => item?.name.toLowerCase().includes(name.toLowerCase()));
+    };
+
+    const handleChange = (event: any) => {
+        const newValue = event.target.value;
+
+        setSearchValue(newValue);
+        setSearchApplets(findObjectsBySlug(applets, newValue));
+    };
+
     return (
         <div className="flex flex-col justify-center items-center">
 
@@ -122,14 +143,14 @@ const SearchApplet = () => {
                 </div>
                 <input value={searchValue}
                         placeholder="Search services"
-                        onChange={(e) => setSearchValue(e.target.value)}
+                        onChange={(e) => handleChange(e)}
                         className="bg-transparent w-full text-[24px] font-bold text-[#363841] outline-none p-[10px]"
                 />
             </div>
             <div className="w-[75%] grid grid-cols-3 gap-8 h-auto">
-                {applets && applets.map((applet, index) => {
+                {searchApplets && searchApplets.map((applet) => {
                     return (
-                        <div key={index}>
+                        <div key={applet.id}>
                             <AppletComponent
                                 id={applet.id}
                                 name={applet.name}
