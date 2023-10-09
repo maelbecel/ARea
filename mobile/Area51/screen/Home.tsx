@@ -9,6 +9,7 @@ import ServiceCard from '../components/ServiceCard';
 
 const Home = ({ navigation }) => {
   const [applets, setApplets] = useState([]); // State to store applets
+  const [dispApplets, setDispApplets] = useState([]); // State to store applets
 
   // Fetch and set the applets when the component mounts
   useEffect(() => {
@@ -17,6 +18,7 @@ const Home = ({ navigation }) => {
         const services = await Services();
         console.log(services);
         setApplets(services);
+        setDispApplets(services);
       } catch (error) {
           console.log('Error fetching applets:', error);
       }
@@ -25,14 +27,21 @@ const Home = ({ navigation }) => {
     fetchApplets();
   }, []);
 
+  const filterApplets = (name : string) => {
+    if (applets == null) return;
+    let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
+    console.log(tmp);
+    setDispApplets(tmp);
+  }
+
   /**
    * The function "displayApplets" maps over an array of applets and returns a JSX element for each
    * applet.
    * @returns The `displayApplets` function is returning an array of `ServiceCard` components.
    */
   const displayApplets = () => {
-    if (applets == null) return;
-    return applets.map((service) => (
+    if (dispApplets == null) return;
+    return dispApplets.map((service) => (
       <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('Service', { slug: service.slug })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
     ));
   };
@@ -40,9 +49,9 @@ const Home = ({ navigation }) => {
   return (
     <View style={ styles.container }>
       <View style={ styles.input }>
-        <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {console.log(text)}} size='85%' />
+        <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
       </View>
-      <ScrollView style={{ marginBottom: 50}}>
+      <ScrollView style={{ height: 800 }}>
         <View style={ styles.services }>
           {displayApplets()}
         </View>
