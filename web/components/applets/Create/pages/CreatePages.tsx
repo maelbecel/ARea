@@ -51,7 +51,7 @@ const CreateServiceCard = ({ cardProps, callback } : { cardProps: Card, callback
     );
 };
 
-const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, setService } : { cardProps: Card, index: number, setArray: Dispatch<SetStateAction<Card[]>>, array: Card[], setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>> }) => {
+const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, setService, setEditMode } : { cardProps: Card, index: number, setArray: Dispatch<SetStateAction<Card[]>>, array: Card[], setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, setEditMode: Dispatch<SetStateAction<boolean>> }) => {
     const theme = getTheme(cardProps.decoration.backgroundColor);
 
     return (
@@ -66,6 +66,7 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
                     onClick={() => {
                         setSlug(cardProps.slug);
                         setService(cardProps.service);
+                        setEditMode(true);
                         setPages(4);
                     }}
                 >
@@ -87,7 +88,7 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
                     Delete
                 </div>
             </div>
-            <div className="flex flex-row justify-start gap-6 px-[40px] pb-[30px]">
+            <div className="flex flex-row justify-start gap-6 px-[40px] pb-[30px] items-center">
                 <div className="font-extrabold text-[62px]">{cardProps.type === 'action' ? 'Action' : 'REAction'}</div>
                 <Image src={cardProps.decoration.logoUrl} width={100} height={100} alt='' />
                 <div className="font-bold text-[32px]">{cardProps.name}</div>
@@ -127,7 +128,7 @@ interface appletsInputs {
     type: string;
 };
 
-const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean }) => {
+const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>> }) => {
     const router = useRouter();
 
     const handleClick = async () => {
@@ -212,7 +213,7 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
                                     }}
                                 />
                             ) : (
-                                <CardComponent key={index} cardProps={service} index={index} setArray={setArray} array={array} setPages={setPages} setSlug={setSlug} setService={setService} />
+                                <CardComponent key={index} cardProps={service} index={index} setArray={setArray} array={array} setPages={setPages} setSlug={setSlug} setService={setService} setEditMode={setEditMode} />
                             )}
                             <NewService setArray={setArray} index={index} />
                         </>
@@ -223,11 +224,11 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
     );
 };
 
-const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif } : { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean }) => {
+const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode } : { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>> }) => {
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} />
+            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} />
         </>
     )
 }
