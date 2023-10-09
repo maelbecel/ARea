@@ -59,7 +59,7 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
                 backgroundColor: cardProps.decoration.backgroundColor,
                 color          : (theme === "light" ? '#363841' : '#ffffff')
             }}
-            className={`w-full flex rounded-[15px] flex-col hover:brightness-110`}
+            className={`w-full flex rounded-[15px] flex-col hover:brightness-110 cursor-pointer`}
         >
             <div className='w-[95%] flex flex-row gap-[20px] justify-end pt-[8px]'>
                 <div className='font-bold text-[16px] underline'
@@ -90,7 +90,7 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
             <div className="flex flex-row justify-start gap-6 px-[40px] pb-[30px]">
                 <div className="font-extrabold text-[62px]">{cardProps.type === 'action' ? 'Action' : 'REAction'}</div>
                 <Image src={cardProps.decoration.logoUrl} width={100} height={100} alt='' />
-                <div className="font-bold text-[32px]">{cardProps.description}</div>
+                <div className="font-bold text-[32px]">{cardProps.name}</div>
             </div>
         </div>
     );
@@ -119,7 +119,79 @@ const NewService = ({ setArray, index } : { setArray: Dispatch<SetStateAction<Ca
     );
 }
 
-const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>> }) => {
+interface appletsInputs {
+    name: string;
+    label: string;
+    value: string;
+    options: string[];
+    type: string;
+};
+
+const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean }) => {
+    const router = useRouter();
+
+    const handleClick = async () => {
+        let actionsInputs = [] as appletsInputs[];
+
+        array[0].inputs.forEach((input: string, index: number) => {
+            actionsInputs.push({
+                name: array[0].fields[index].name,
+                label: array[0].fields[index].label,
+                value: input,
+                options: array[0].fields[index].options,
+                type: array[0].fields[index].type
+            });
+        });
+
+        // TODO: mutli-reaction
+
+        let reactionsInputs = [] as appletsInputs[];
+
+        array[1].inputs.forEach((input: string, index: number) => {
+            reactionsInputs.push({
+                name: array[1].fields[index].name,
+                label: array[1].fields[index].label,
+                value: input,
+                options: array[1].fields[index].options,
+                type: array[1].fields[index].type
+            });
+        });
+        console.log("Test");
+
+        const body = {
+            name: title,
+            actionSlug: array[0].slug,
+            actionInputs: actionsInputs,
+            reactionSlug: array[1].slug,
+            reactionInputs: reactionsInputs,
+            notifUser: notif
+        };
+
+        console.log(body);
+
+        try {
+            const response = await fetch(`https://area51.zertus.fr/applet`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization : `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+            if (data?.status !== "201")
+                return;
+            
+            router.push("/");
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className={`min-h-screen flex justify-center items-center`}>
             <div className={`max-w-[50%] w-full flex justify-around items-center flex-col gap-[20px]`}>
@@ -131,6 +203,10 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
                                     key={index}
                                     cardProps={service}
                                     callback={() => {
+                                        if (index > 0 && !active)
+                                            return;
+                                        if (index === 0)
+                                            setActive(true);
                                         setPages(1);
                                         setIndex(index);
                                     }}
@@ -141,18 +217,17 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
                             <NewService setArray={setArray} index={index} />
                         </>
                 )})}
-                {/* TODO: Create an applets fill the callback with the token */}
-                <CreateButton name={"Continue"} callback={() => {}} />
+                <CreateButton name={"Continue"} callback={() => {handleClick()}} />
             </div>
         </div>
     );
 };
 
-const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setService } : { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>> }) => {
+const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif } : { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean }) => {
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} />
+            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} />
         </>
     )
 }

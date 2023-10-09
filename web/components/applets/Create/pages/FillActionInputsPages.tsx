@@ -39,8 +39,6 @@ const ActionInfoContainer = ({ color, theme, url, title } : { color: string, the
 };
 
 const TextField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
-    console.log(array[index].inputs[id]);
-
     return (
         <div className='flex flex-col w-[50%]'>
             <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
@@ -63,9 +61,8 @@ const TextField = ({ input, color, theme, array, setArray, index, id }: { input:
 };
 
 const Field = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
-    if (input.type === "TEXT")
+    if (input.type === "TEXT" || input.type === "URL")
         return (<TextField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
-
     return (
         <>
         </>
@@ -106,7 +103,7 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
 
         const getService = async (slug: string) => {
             try {
-                const response = await fetch(`http://zertus.fr:8001/service/${slug}`, {
+                const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -131,7 +128,7 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
 
             const getAction = async (service: string, slug: string) => {
             try {
-                const response = await fetch(`http://zertus.fr:8001/${index === 0 ? `action/${slug}` : `reaction/${service}/${slug}`}`, {
+                const response = await fetch(`https://area51.zertus.fr/${index === 0 ? `action/${slug}` : `reaction/${slug}/${array[0].slug}`}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -143,6 +140,14 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
 
                 setActionProps(data?.data);
 
+                setArray((prev) => {
+                    const newArray = [...prev];
+
+                    newArray[index].fields = data?.data?.inputs;
+
+                    return (newArray);
+                });
+
                 console.log(data?.data);
             } catch (error) {
                 console.log(error);
@@ -150,7 +155,8 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
         };
 
         getAction(service, slug);
-    }, [index, service, slug, token, actionProps]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [index, service, slug, token, actionProps, array]);
 
     useEffect(() => {
         setTheme(getTheme(props?.decoration?.backgroundColor));
@@ -179,12 +185,16 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
                         actionProps?.inputs?.forEach((input: inputs, id: number) => {
                             if (array[index].inputs[id] === undefined || array[index].inputs[id] === "")
                                 good = false;
-                            else
-                                good = true;
+                            else {
+                                if (input.type === "URL" && !array[index].inputs[id].includes("http"))
+                                    good = false;
+                                else
+                                    good = true;
+                            }
                         });
 
                         if (good === true)
-                            setPages(0);
+                            index === 0 ? setPages(0) : setPages(5);
                     }}
                 />
             </div>

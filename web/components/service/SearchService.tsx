@@ -33,7 +33,7 @@ const ServiceButtonComponent = ({ name, slug, logo, color, callback }: { name: s
 
 const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug: string, logo: string, color: string}) => {
     return (
-        <Link href={`/create?page=2&service=${slug}`}>
+        <Link href={`/create?page=2&service=${slug}&active=true`}>
             <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
                  style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
             >
@@ -68,7 +68,7 @@ const SearchService = ({ type = 'link', callback = (slug: string) => {} } : { ty
             try {
                 const token = localStorage.getItem("token");
 
-                const response = await fetch("http://zertus.fr:8001/service", {
+                const response = await fetch("https://area51.zertus.fr/service", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

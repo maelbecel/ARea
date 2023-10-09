@@ -53,7 +53,7 @@ const ConnexionButton = ({ props, callback } : { props: any | undefined, callbac
     )
 }
 
-const ServiceConnexionPages = ({ setPages, token, service, slug }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, slug: string, array: Card[] }) => {
+const ServiceConnexionPages = ({ setPages, token, service, slug, index, array, setArray }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, slug: string, array: Card[], index: number, setArray: Dispatch<SetStateAction<Card[]>> }) => {
     const [props, setProps] = useState<any | undefined>(undefined);
     const [theme, setTheme] = useState<string>("");
     const [action, setAction] = useState<any>({});
@@ -68,7 +68,7 @@ const ServiceConnexionPages = ({ setPages, token, service, slug }: { setPages: D
 
         const getService = async (service: string) => {
             try {
-                const response = await fetch(`http://zertus.fr:8001/service/${service}`, {
+                const response = await fetch(`https://area51.zertus.fr/service/${service}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const ServiceConnexionPages = ({ setPages, token, service, slug }: { setPages: D
 
         const openOAuth2Window = async () => {
             try {
-                const response = await fetch(`http://zertus.fr:8001/service/${service}/oauth2/token`, {
+                const response = await fetch(`https://area51.zertus.fr/service/${service}/oauth2/token`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ const ServiceConnexionPages = ({ setPages, token, service, slug }: { setPages: D
 
                 // Open the OAuth2 authorization window
                 oauth2Window = window.open(
-                    `http://zertus.fr:8001/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${data?.data}`,
+                    `https://area51.zertus.fr/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${data?.data}`,
                     'OAuth2 Authorization',
                     'width=720,height=480'
                 );
@@ -158,8 +158,24 @@ const ServiceConnexionPages = ({ setPages, token, service, slug }: { setPages: D
 
     // Ajouter un gestionnaire d'événements pour écouter le signal
     window.addEventListener('message', (event) => {
-        if (event.data === 'OAuth2CallbackCompleted')
+        if (event.data === 'OAuth2CallbackCompleted') {
+            setArray(array.map((card: Card, id: number) => {
+                if (id === index)
+                    return {
+                        ...card,
+                        slug: slug,
+                        service: props?.slug,
+                        name: action?.name,
+                        description: action?.description,
+                        decoration: {
+                            logoUrl: props?.decoration.logoUrl,
+                            backgroundColor: props?.decoration.backgroundColor,
+                        }
+                    };
+                return card;
+            }));
             setPages(4);
+        }
     });
 
     return (

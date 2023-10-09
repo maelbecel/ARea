@@ -35,7 +35,7 @@ const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, se
     useEffect(() => {
         const getService = async (slug: string) => {
             try {
-                const response = await fetch(`http://zertus.fr:8001/service/${slug}`, {
+                const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -104,7 +104,7 @@ const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, se
                         callback={(slug: string, description: string, color: string) => {
                             setSlug(slug);
 
-                            setArray(array.map((card: Card, id: number) => {
+                            /*setArray(array.map((card: Card, id: number) => {
                                 if (id === index)
                                     return {
                                         ...card,
@@ -117,7 +117,7 @@ const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, se
                                         }
                                     };
                                 return card;
-                            }));
+                            }));*/
 
                             setPages(3);
                         }}

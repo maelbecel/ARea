@@ -25,10 +25,11 @@ const SearchServiceHeader = ({ callback }: { callback: () => void }) => {
     )
 }
 
-const SearchServicePages = ({ currentIndex, setIndex, setPages, token, setSlug } : { currentIndex: number, setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, setSlug: Dispatch<SetStateAction<string>> }) => {
+const SearchServicePages = ({ currentIndex, setIndex, setPages, token, setSlug, setActive } : { currentIndex: number, setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, setSlug: Dispatch<SetStateAction<string>>, setActive: Dispatch<SetStateAction<boolean>> }) => {
   return (
     <>
         <SearchServiceHeader callback={() => {
+                setActive(false);
                 setPages(0);
                 setIndex(-1);
             }}

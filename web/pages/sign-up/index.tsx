@@ -41,7 +41,7 @@ const IndexPage: NextPage = () => {
         }
 
         try {
-            const response = await fetch("http://zertus.fr:8001/user/register", {
+            const response = await fetch("https://area51.zertus.fr/user/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

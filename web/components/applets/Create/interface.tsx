@@ -6,15 +6,18 @@ export interface Card {
         backgroundColor: string; // background color of the card
     };
     slug: string;        // default "", slug of the card
+    name: string;        // default "", name of the card
     description: string; // default "", description of the card
+    fields: inputs[];    // default [], fields of the card
     inputs: string[];
     placeholders: any;
 };
 
 export interface inputs {
-    name : string; // name of the input
-    label: string; // label of the input
-    type : string; // type of the input (TEXT, URL, NUMBER, SELECT)
+    name : string;     // name of the input
+    label: string;     // label of the input
+    type : string;     // type of the input (TEXT, URL, NUMBER, SELECT)
+    options: string[]; // options of the input (if type is SELECT)
 }
 
 export const defaultAction = {
@@ -26,6 +29,8 @@ export const defaultAction = {
     },
     slug: "",
     description: "",
+    name: "",
+    fields: [] as inputs[],
     inputs: [] as string[],
     placeholders: {}
 } as Card;
@@ -39,6 +44,8 @@ export const defaultReaction = {
     },
     slug: "",
     description: "",
+    name: "",
+    fields: [] as inputs[],
     inputs: [] as string[],
     placeholders: {}
 } as Card;
