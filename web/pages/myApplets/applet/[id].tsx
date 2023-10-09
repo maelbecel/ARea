@@ -57,7 +57,7 @@ const IndexPage: NextPage = () => {
                         }
                     })
                 ).json();
-                console.log(data);
+                console.log("Applets : ", data?.data);
                 setDataApplet(data);
             } catch (error) {
                 console.log(error);

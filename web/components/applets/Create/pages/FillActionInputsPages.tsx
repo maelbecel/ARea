@@ -69,7 +69,7 @@ const Field = ({ input, color, theme, array, setArray, index, id }: { input: inp
     );
 };
 
-const ValidateTriggersButton = ({ props, callback }  : { props: any | undefined, callback: () => void }) => {
+const ValidateTriggersButton = ({ props, callback, text }  : { props: any | undefined, callback: () => void, text: string }) => {
     const [active, setActive] = useState<boolean>(false);
 
     const theme = getTheme(props?.decoration?.backgroundColor);
@@ -87,12 +87,12 @@ const ValidateTriggersButton = ({ props, callback }  : { props: any | undefined,
                 callback();
             }}
         >
-            Create Trigger
+            {text}
         </div>
     )
 };
 
-const FillActionInputsPages = ({ setPages, token, service, slug, index, array, setArray }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>> }) => {
+const FillActionInputsPages = ({ setPages, token, service, slug, index, array, setArray, EditMode }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, EditMode: boolean }) => {
     const [props, setProps] = useState<any | undefined>(undefined);
     const [actionProps, setActionProps] = useState<any | undefined>(undefined);
     const [theme, setTheme] = useState<string>("light");
@@ -164,7 +164,15 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
 
     return (
         <>
-            <Headers callback={() => { setPages(3) }} color={props?.decoration?.backgroundColor} />
+            <Headers
+                callback={() => {
+                    if (EditMode === true)
+                        setPages(0);
+                    else
+                        setPages(3);
+                }}
+                color={props?.decoration?.backgroundColor}
+            />
             <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col`}
                 style={{
                     backgroundColor: props?.decoration?.backgroundColor,
@@ -179,6 +187,7 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
                 })}
                 <ValidateTriggersButton
                     props={props}
+                    text={EditMode === true ? "Edit Trigger" : "Create Trigger"}
                     callback={() => {
                         let good = false as boolean;
 
@@ -193,8 +202,13 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
                             }
                         });
 
-                        if (good === true)
-                            index === 0 ? setPages(0) : setPages(5);
+                        if (good === true) {
+                            if (EditMode === true || index === 0) {
+                                setPages(0);
+                                return;
+                            }
+                            setPages(5);
+                        }
                     }}
                 />
             </div>
