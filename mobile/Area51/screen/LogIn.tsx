@@ -8,7 +8,7 @@
 
 /* The code is importing the necessary components from the React and React Native libraries. */
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
 import ServerModal from '../components/ServerModal';
@@ -52,7 +52,7 @@ const Login = ({ navigation }) => {
 
     return (
         /* The code is returning a JSX element that contains other JSX elements. */
-        <View style={{marginTop: 50}}>
+        <View style={{marginTop: 50, backgroundColor: "#FFF"}}>
           <View style={styles.container}>
             <ServerModal />
             <View style={styles.form}>
@@ -75,7 +75,6 @@ const Login = ({ navigation }) => {
 the React Native library. This object contains two properties: `container` and `login`. */
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
   },
   form : {
