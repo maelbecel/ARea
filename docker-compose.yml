@@ -39,3 +39,14 @@ services:
       - 8081:8081
     depends_on:
       - server
+    volumes:
+      - ./apk:/apk
+
+  mobile:
+    image: area51/mobile:latest
+    build: ./mobile/area51
+    restart: always
+    volumes:
+      - ./apk:/output
+
+
