@@ -54,6 +54,8 @@ const getWriteColor = (color: string): string => {
   }
 };
 
+/* The `Service` component is a functional component that represents a screen in a React Native app. It
+receives two props, `navigation` and `route`, from the React Navigation library. */
 const Service = ({ navigation, route }) => {
   const { slug } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
@@ -63,12 +65,26 @@ const Service = ({ navigation, route }) => {
   const [reaction, setReaction] = React.useState<Reaction[]>([]);
 
 
+  /**
+   * The function `displayActions` returns an array of `ActionCard` components based on the `action`
+   * array, with each component having a unique key, name, description, color, and an `onPress` event
+   * that navigates to the 'ConnectAuth' screen with specific parameters.
+   * @returns The `displayActions` function is returning an array of `ActionCard` components.
+   */
   const displayActions = () => {
     return action.map((service) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug , type: "action"})}/>
     ));
   };
 
+  /**
+   * The function `displayReactions` maps over an array of `reaction` objects and returns an array of
+   * `ActionCard` components with specific props.
+   * @returns The `displayReactions` function is returning an array of `ActionCard` components. Each
+   * `ActionCard` component has a `key` prop set to the `slug` property of the `service` object, and
+   * also has `name`, `description`, `color`, and `onPress` props set based on the properties of the
+   * `service` object.
+   */
   const displayReactions = () => {
     return reaction.map((service) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: "reaction" })}/>
@@ -76,7 +92,13 @@ const Service = ({ navigation, route }) => {
   }
 
 
+  /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
+  case, the effect is triggered when the `slug` variable changes. */
   React.useEffect(() => {
+    /**
+     * The function fetchData fetches data from a service and sets various state variables based on the
+     * fetched data.
+     */
     const fetchData = async () => {
       try {
         const service = await ServiceInfo(slug);
@@ -93,6 +115,8 @@ const Service = ({ navigation, route }) => {
     fetchData();
   }, [slug]);
 
+  /* The `return` statement in the `Service` component is returning a JSX expression that represents
+  the structure and content of the component's rendered output. */
   return (
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
@@ -111,6 +135,8 @@ const Service = ({ navigation, route }) => {
   );
 };
 
+/* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. Each key-value pair in the `styles` object represents a specific style rule. */
 const styles = StyleSheet.create({
   logo: {
     height: 100,

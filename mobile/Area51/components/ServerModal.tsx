@@ -3,10 +3,13 @@ import { View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity, Sta
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MaterialIcons} from '@expo/vector-icons';
 
+/* The code defines a functional component called `ServerModal` using TypeScript and React. */
 const ServerModal: React.FC = () => {
     const [serverAddress, setServerAddress] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
 
+    /* The `useEffect` hook is used to perform side effects in functional components. In this code, the
+    `useEffect` hook is used to check if the server address is already saved in the local storage. */
     useEffect(() => {
       const checkAndShowModal = async () => {
         try {
@@ -16,7 +19,6 @@ const ServerModal: React.FC = () => {
             setModalVisible(true);
           } else {
             setServerAddress(savedAddress);
-            console.log('Adresse du serveur récupérée :', savedAddress);
           }
         } catch (error) {
           console.error('Erreur lors de la récupération de l\'adresse du serveur :', error);
@@ -26,6 +28,9 @@ const ServerModal: React.FC = () => {
       checkAndShowModal();
     }, []); // Le tableau vide [] assure que useEffect s'exécute une seule fois après le premier rendu
 
+    /**
+     * The function saves the server address in local storage and checks if the server is reachable.
+     */
     const saveServerAddress = async () => {
         // Enregistrez l'adresse du serveur dans le stockage local
         try {
@@ -39,6 +44,8 @@ const ServerModal: React.FC = () => {
         }
     };
 
+    /* The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
+    UI of the `ServerModal` component. */
     return (
         <View style={styles.container}>
             {/* <StatusBar backgroundColor={modalVisible ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.0)'}/> */}
@@ -68,6 +75,9 @@ const ServerModal: React.FC = () => {
     );
 }
 
+/* The `const styles = StyleSheet.create({})` block is defining a JavaScript object that contains
+styles for different elements in the component. The `StyleSheet.create()` function is used to create
+a stylesheet object that optimizes the styles for performance. */
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',

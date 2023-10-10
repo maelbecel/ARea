@@ -1,3 +1,8 @@
+/* The line `import * as SecureStore from 'expo-secure-store';` is importing the `SecureStore` module
+from the `expo-secure-store` package. This module provides a secure storage API that allows you to
+securely store sensitive data, such as user authentication tokens or API keys, on the device. It
+provides methods for storing, retrieving, and deleting data from the secure storage. */
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
@@ -12,7 +17,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginAPI  = async (email: string, password : string) => {
     try {
         const serverAddress = await AsyncStorage.getItem('serverAddress');
-        console.log(serverAddress);
         const response = await fetch(`${serverAddress}/user/login`, {
             method: 'POST',
             headers: {
@@ -29,4 +33,8 @@ const LoginAPI  = async (email: string, password : string) => {
     }
 }
 
+/* The line `export default LoginAPI;` is exporting the `LoginAPI` function as the default export of
+the module. This means that when another module imports this module, they can import the `LoginAPI`
+function directly without having to specify its name. For example, in another module, you can import
+the `LoginAPI` function like this: `import LoginAPI from './LoginAPI';`. */
 export default LoginAPI;

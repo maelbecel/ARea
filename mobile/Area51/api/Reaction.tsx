@@ -7,6 +7,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Input} from  './ServiceInfo'
 
 
+/**
+ * The function `Reaction` is an asynchronous function that takes in two string parameters (`slug` and
+ * `actionSlug`) and returns a promise that resolves to an array of `Input` objects.
+ * @param {string} slug - The `slug` parameter is a string that represents the identifier of a specific
+ * reaction. It is used to specify which reaction to retrieve inputs for.
+ * @param {string} actionSlug - The `actionSlug` parameter is a string that represents the action being
+ * performed. It is used in the URL to specify the specific action for the reaction.
+ * @returns The function `Reaction` returns a Promise that resolves to an array of `Input` objects.
+ */
 const Reaction = async (slug : string, actionSlug : string): Promise<Input[]> => {
     try {
         let inputs : Input[] = [];
