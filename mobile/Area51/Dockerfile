@@ -45,4 +45,6 @@ RUN mkdir /output
 # Exécution de la commande Expo pour créer l'APK
 RUN eas build --platform android --profile preview --local --non-interactive
 
-CMD ["echo", "APK generate in /output"]
+CMD cp /app/build-*.apk /output/app.apk && \
+    ls -l /output && \
+    echo "APK généré dans le dossier /output"
