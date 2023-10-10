@@ -2,6 +2,7 @@
   "expo": {
     "name": "Area51",
     "slug": "Area51",
+    "owner": "etipech",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,6 +25,7 @@
       },
       "package": "com.maelbecel.Area51"
     },
+    "scheme": "area51",
     "web": {
       "favicon": "./assets/favicon.png"
     },

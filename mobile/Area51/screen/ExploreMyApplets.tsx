@@ -3,18 +3,17 @@ import { View, Text, StyleSheet } from 'react-native';
 import SearchApplet from '../components/Applets/SearchApplet';
 import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ExploreMyApplets = () => {
   const [token, setToken] = useState('');
   const [connected, setConnected] = useState(false);
-    const navigation = useNavigation();
-  useEffect(() => {
+  const navigation = useNavigation();
+  useFocusEffect(() => {
     const fetchData = async () => {
         const storedToken = await SecureStore.getItemAsync('token_api');
         setToken(storedToken || '');
-        if (storedToken) {
-            console.log('token -> ', storedToken);
-        } else {
+        if (!storedToken) {
         // Rediriger vers la page de connexion
         // Utilisez la logique de navigation de votre choix ici
             navigation.navigate('Login');
@@ -22,7 +21,7 @@ const ExploreMyApplets = () => {
     };
 
     fetchData();
-    }, []); // Assurez-vous de passer un tableau vide de dépendances pour exécuter l'effet uniquement après le premier rendu
+    }); // Assurez-vous de passer un tableau vide de dépendances pour exécuter l'effet uniquement après le premier rendu
 
   return (
     <View style={styles.container}>
