@@ -74,16 +74,17 @@ public class UserService {
      * @return true if the user has been updated, false otherwise
      * @throws DataNotFoundException if the SecurityContext is empty (no user logged in or invalid token)
      */
-    public boolean updateUser(RegisterDTO user) throws DataNotFoundException {
+    public User updateCurrentUser(RegisterDTO user) throws DataNotFoundException {
         User currentUser = getCurrentUser();
         if (currentUser == null)
-            return false;
+            throw new DataNotFoundException("User not found");
+        if (!user.getUsername().isEmpty())
+            currentUser.setUsername(user.getUsername());
         if (!user.getEmail().isEmpty() && RegisterUserService.isEmailValid(user.getEmail()))
             currentUser.setEmail(user.getEmail());
         if (!user.getPassword().isEmpty())
             currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(currentUser);
-        return true;
+        return userRepository.save(currentUser);
     }
 
     /**
@@ -100,6 +101,13 @@ public class UserService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public void delete() throws DataNotFoundException {
+        User user = getCurrentUser();
+        if (user == null)
+            return;
+        userRepository.delete(user);
     }
 
 }

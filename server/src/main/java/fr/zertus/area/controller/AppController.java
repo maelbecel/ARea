@@ -1,9 +1,12 @@
 package fr.zertus.area.controller;
 
+import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
+import fr.zertus.area.app.Reaction;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.utils.SecurityUtils;
+import fr.zertus.area.service.ActionReactionService;
 import fr.zertus.area.service.AppService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +31,9 @@ public class AppController {
 
     @Autowired
     private AppService appService;
+
+    @Autowired
+    private ActionReactionService actionReactionService;
 
     @Operation(summary = "Get all services", description = "Get all the services available on the API.", tags = { "Service" })
     @ApiResponses(value = {
@@ -148,6 +154,39 @@ public class AppController {
             userId = SecurityUtils.getUserIdFromTempToken(authToken);
         }
         return appService.redirectOAuth2App(slug, userId, redirecturi);
+    }
+
+    @Operation(summary = "Delete OAuth2", description = "This call is use to delete OAuth2 token for current user from given service", tags = { "Service" },
+        parameters = @Parameter(name = "slug", description = "Slug of the service", required = true, example = "github"))
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "204",
+            description = "OAuth2 token deleted",
+            content = @Content
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "Service not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ApiResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Example response",
+                        description = "This is an example with not found service",
+                        value = "{\"status\":404,\"message\":\"Service not found\"}"
+                    )
+                }
+            )
+        )
+    })
+    @DeleteMapping("/{slug}/oauth2")
+    public ResponseEntity<ApiResponse<String>> deleteOAuth2(@PathVariable String slug) throws DataNotFoundException {
+        if (appService.deleteOAuth2(slug)) {
+            return ApiResponse.noContent().toResponseEntity();
+        } else {
+            throw new DataNotFoundException("Service not found");
+        }
     }
 
     @Operation(summary = "Get temporary token", description = "This call is use to get temporary token for OAuth2 proccess", tags = { "Service" },

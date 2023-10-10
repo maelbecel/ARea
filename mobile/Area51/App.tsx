@@ -23,6 +23,8 @@ import SearchServices from './screen/SearchServices';
 import ServiceTemplate from './screen/ServiceTemplate';
 import ConnectAuth from './screen/ConnectAuth';
 
+import MyApplet from './api/MyApplet';
+
 /* `const Tab = createBottomTabNavigator();` creates a bottom tab navigator using the
 `createBottomTabNavigator` function from the `@react-navigation/bottom-tabs` library. This bottom
 tab navigator is used to display multiple screens in a tabbed interface at the bottom of the screen. */
@@ -35,10 +37,20 @@ const Stack = createStackNavigator();
  * @returns either a string or a number. If the randomly generated number is less than 100, it will
  * return the number. Otherwise, it will return the string '99+'.
  */
-function getNbApplets(): string | number {
-  let ret = Math.floor(Math.random() * 150);
+const getNbApplets = () => {
+    const [res, setRes] = React.useState(null);
 
-  return ret < 100 ? ret : '99+';
+    React.useEffect(() => {
+      async function fetchData() {
+        const applet = await MyApplet();
+        if (applet.length > 0) {
+          setRes(applet.length);
+        }
+      }
+      fetchData();
+    }, []);
+
+    return res
 }
 
 /* The `Tabs` function is a React component that returns a `Tab.Navigator` component from the

@@ -47,9 +47,9 @@ const Signup = ({ navigation }) => {
           <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
           <SubmitButton title="Sign up" onPress={connect} />
           <Text style={styles.forgot} onPress={() => navigation.navigate('Login')} >Already an account ? Log in here</Text>
-          <Text style={styles.or}>or</Text>
+          {/* <Text style={styles.or}>or</Text>
           <SubmitButton title="Sign up with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
-          <SubmitButton title="Sign up with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} />
+          <SubmitButton title="Sign up with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} /> */}
         </View>
     )
 }

@@ -41,11 +41,12 @@ public class TwitchStreamStartAction extends Action {
             throw new IllegalArgumentException("Channel not found");
 
         // Create subscription
+        String serverUrl = System.getenv("SERVER_BASE_URL") != null ? System.getenv("SERVER_BASE_URL") : "https://area51.zertus.fr";
         TwitchSubscriptionBody twitchSubscriptionBody = new TwitchSubscriptionBody(
             "stream.online",
             "1",
             new TwitchSubscriptionBody.Condition(FormInputUtils.getValue("channel_id", inputs)),
-            new TwitchSubscriptionBody.Transport("webhook", "https://area51.zertus.fr/webhook/twitch", "StateForUserWebhook")
+            new TwitchSubscriptionBody.Transport("webhook", serverUrl + "/webhook/twitch", "StateForUserWebhook")
         );
         try {
             TwitchAppToken appToken = TwitchApp.getAppToken();

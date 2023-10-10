@@ -1,5 +1,6 @@
 package fr.zertus.area.service;
 
+import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
@@ -134,6 +135,15 @@ public class AppService {
         userService.save(user);
 
         return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
+    }
+
+    public boolean deleteOAuth2(String slug) throws DataNotFoundException {
+        User user = userService.getCurrentUser();
+        if (user.getConnectedService(slug) == null) {
+            throw new DataNotFoundException("User is not connected to this service");
+        }
+        user.removeConnectedService(slug);
+        return true;
     }
 
 }
