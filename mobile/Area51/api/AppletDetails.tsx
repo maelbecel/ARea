@@ -5,15 +5,15 @@ const AppletDetails = async (slug: string) => {
     try {
         const token: string = await SecureStore.getItemAsync("token_api");
         const serverAddress: string = await AsyncStorage.getItem('serverAddress');
-        const data: any = await (
+        const response: any =
             await fetch(`${serverAddress}/service/${slug}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
-            })
-        ).json();
+            });
+        const data: any = await response.json();
         return (data?.data?.decoration?.backgroundColor);
     } catch (error) {
         console.log("error applet component", error);

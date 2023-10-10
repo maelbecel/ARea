@@ -5,10 +5,18 @@ import FormInput from "../FormInput";
 import AppletComponent from "./AppletComponent";
 
 import AppletInfos from "../../api/AppletInfos";
+import { ScrollView } from "react-native-gesture-handler";
 
 const SearchApplet = () => {
     const [applets, setApplets] = useState<any>(null); // State to store applets
     const [dispApplets, setDispApplets] = useState<any>(null); // State to store applets
+
+    const reduceTitle = (title: string) => {
+        if (title.length > 20) {
+            return title.slice(0, 20) + "...";
+        }
+        return title;
+    };
 
     const filterApplets = (name : string) => {
         if (applets == null) return;
@@ -36,7 +44,7 @@ const SearchApplet = () => {
     }, [applets]);
 
     return (
-        <View>
+        <ScrollView>
             {/* Barre de recherche */}
             <View style={ styles.input }>
                 <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
@@ -50,7 +58,7 @@ const SearchApplet = () => {
                     <View style={ styles.applet }>
                         <AppletComponent
                             id={item.id}
-                            name={item.name}
+                            name={reduceTitle(item.name)}
                             reactionSlug={item.reactionSlug.split(".")[0]}
                             actionSlug={item.actionSlug.split(".")[0]}
                             enabled={item.enabled}
@@ -58,7 +66,7 @@ const SearchApplet = () => {
                     </View>
                 )}
             />
-            </View>
+        </ScrollView>
     );
 };
 

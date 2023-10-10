@@ -7,12 +7,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // --- Components import --- //
 import AppletInfoContainer from "../components/Applets/AppletInfoContainer";
+import { ScrollView } from "react-native-gesture-handler";
+import TopBar from "../components/TopBar";
+import { useNavigation } from "@react-navigation/native";
 
 const MyApplet = ({route}) => {
     const [bgColor, setBgColor] = useState('');
     const [dataApplet, setDataApplet] = useState(null);
     const [theme, setTheme] = useState('');
     const { id } = route.params;
+    const navigation = useNavigation();
 
     useEffect(() => {
         const dataFetch = async () => {
@@ -70,9 +74,16 @@ const MyApplet = ({route}) => {
             return;
     }, [bgColor]);
 
+    function getWriteColor(bgColor: string): string {
+        throw new Error("Function not implemented.");
+    }
+
     return (
-        <View style={styles.container}>
-            <View style={{ flex: 1 }}>
+        <ScrollView>
+            <View style={{ ...styles.container, backgroundColor: bgColor }}>
+                <TopBar title="My Applet"  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={('white')} />
+            </View>
+            <View>
                 {dataApplet &&
                     <AppletInfoContainer
                         name={dataApplet?.data?.name}
@@ -86,16 +97,22 @@ const MyApplet = ({route}) => {
                     />
                 }
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        marginTop: 30,
-    },
+        paddingTop: 30,
+        shadowColor: '#000',
+          shadowOffset: {
+          width: 0,
+          height: 2,
+          },
+          shadowOpacity: 0.3,
+          shadowRadius: 3.84,
+          elevation: 5,
+      },
 });
 
 export default MyApplet;
