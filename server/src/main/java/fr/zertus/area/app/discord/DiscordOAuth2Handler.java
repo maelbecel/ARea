@@ -21,23 +21,6 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
     @Override
     public String getToken(String tokenUrl, MultiValueMap<String, String> body) {
-<<<<<<< HEAD
-
-        logger.debug("abcdefghijklmnop");
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        // Create HttpHeaders and set custom headers
-        HttpHeaders headers = new HttpHeaders();
-        // headers.add("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); // Set content type to application/x-www-form-urlencoded
-
-
-        // Create a HttpEntity with the headers and body
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
-
-        // Perform the POST request with the custom headers
-=======
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -45,7 +28,6 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
->>>>>>> dev
         ResponseEntity<DiscordOAuth2Token> responseEntity = restTemplate.exchange(
                 tokenUrl,
                 HttpMethod.POST,
@@ -53,20 +35,12 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
                 DiscordOAuth2Token.class
         );
 
-<<<<<<< HEAD
-        // Check the response and handle it accordingly
-=======
->>>>>>> dev
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             DiscordOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
             return token.getAccess_token();
         } else {
-<<<<<<< HEAD
-            // Handle error response
-=======
->>>>>>> dev
             System.err.println("Error: " + responseEntity.getStatusCode());
             return null;
         }
@@ -75,12 +49,8 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
     @Override
     public URI getOAuth2AuthorizationUri(String authorizationUri, String clientId, String redirectUri, String state, Set<String> scope) {
         return URI.create(authorizationUri +
-<<<<<<< HEAD
-                "?client_id=" + clientId +
-=======
                 "?response_type=code" +
                 "&client_id=" + clientId +
->>>>>>> dev
                 "&redirect_uri=" + redirectUri +
                 "&scope=" + String.join("%20", scope) +
                 "&state=" + state +
@@ -90,11 +60,7 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
     @Override
     public String getState() {
-<<<<<<< HEAD
-        return "J4doreM4angerDesraviolisM4sansBeurredeCacahuEteDonVoilactop#vivalavida";
-=======
         return "J4doreM4angerDesraviolisM4sansBeurredeCacahuEteDonVoilactop";
->>>>>>> dev
     };
 
     /* here is the response that we will receive and convert into this object */
