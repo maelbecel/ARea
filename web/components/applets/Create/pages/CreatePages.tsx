@@ -53,7 +53,7 @@ const CreateServiceCard = ({ cardProps, callback } : { cardProps: Card, callback
     );
 };
 
-const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, setService, setEditMode } : { cardProps: Card, index: number, setArray: Dispatch<SetStateAction<Card[]>>, array: Card[], setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, setEditMode: Dispatch<SetStateAction<boolean>> }) => {
+const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, setService, setEditMode, setIndex } : { cardProps: Card, index: number, setArray: Dispatch<SetStateAction<Card[]>>, array: Card[], setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, setEditMode: Dispatch<SetStateAction<boolean>>, setIndex: Dispatch<SetStateAction<number>> }) => {
     const theme = getTheme(cardProps.decoration.backgroundColor);
 
     return (
@@ -68,6 +68,7 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
                     onClick={() => {
                         setSlug(cardProps.slug);
                         setService(cardProps.service);
+                        setIndex(index);
                         setEditMode(true);
                         setPages(4);
                     }}
@@ -130,7 +131,7 @@ interface appletsInputs {
     type: string;
 };
 
-const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>> }) => {
+const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode, currentIndex }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>>, currentIndex: number }) => {
     const router = useRouter();
 
     const handleClick = async () => {
@@ -168,6 +169,8 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
             reactionInputs: reactionsInputs,
             notifUser: notif
         };
+
+        console.log(body);
 
         try {
             const response = await fetch(`https://area51.zertus.fr/applet`, {
@@ -212,7 +215,7 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
                                     }}
                                 />
                             ) : (
-                                <CardComponent key={index} cardProps={service} index={index} setArray={setArray} array={array} setPages={setPages} setSlug={setSlug} setService={setService} setEditMode={setEditMode} />
+                                <CardComponent key={index} cardProps={service} index={index} setArray={setArray} array={array} setPages={setPages} setSlug={setSlug} setService={setService} setEditMode={setEditMode} setIndex={setIndex} />
                             )}
                             <NewService setArray={setArray} index={index} />
                         </>
@@ -223,11 +226,11 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
     );
 };
 
-const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode } : { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>> }) => {
+const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode, index } : { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>>, index: number }) => {
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} />
+            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} currentIndex={index} />
         </>
     )
 }

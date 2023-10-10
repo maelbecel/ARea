@@ -15,6 +15,7 @@ import { useUser } from "../../utils/api/user/UserProvider";
 import { GetProfile } from "../../utils/api/user/me";
 import { UserProfile } from "../../utils/api/user/interface";
 import { NavigateButton } from "../../components/NavBar/components/Button";
+import SimpleLink from "../../components/NavBar/components/SimpleLink";
 
 const IndexPage: NextPage = () => {
     const [data, setData] = useState<any | undefined>();
@@ -66,6 +67,7 @@ const IndexPage: NextPage = () => {
                     <Icon />
                 </LeftSection>
                 <RightSection>
+                    <SimpleLink   href="/myApplets" text="My applets" />
                     <NavigateButton href="/create"             text="Create" />
                     <Profile email={user?.email} />
                 </RightSection>
