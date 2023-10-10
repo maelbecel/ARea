@@ -76,7 +76,7 @@ const IndexPage: NextPage = () => {
             }
         };
         dataFetch();
-    }, [id]);
+    }, [id, token]);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
