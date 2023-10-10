@@ -45,29 +45,31 @@ const SearchApplet = () => {
 
     return (
         <ScrollView>
-            {/* Barre de recherche */}
-            <View style={ styles.input }>
-                <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
-            </View>
-
-            {/* Liste des applets */}
-            <FlatList
-                data={dispApplets}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={ styles.applet }>
-                        <AppletComponent
-                            id={item.id}
-                            name={reduceTitle(item.name)}
-                            reactionSlug={item.reactionSlug.split(".")[0]}
-                            actionSlug={item.actionSlug.split(".")[0]}
-                            enabled={item.enabled}
-                        />
-                    </View>
-                )}
+          {/* Barre de recherche */}
+          <View style={styles.input}>
+            <FormInput
+              title="Search"
+              icon={{ name: "search", width: 27, height: 27 }}
+              onChangeText={(text) => {
+                filterApplets(text);
+              }}
+              size="85%"
             />
+          </View>
+          {/* Liste des applets */}
+          {(dispApplets != null) ? dispApplets.map((item) => (
+            <View style={styles.applet} key={item.id}>
+              <AppletComponent
+                id={item.id}
+                name={reduceTitle(item.name)}
+                reactionSlug={item.reactionSlug.split(".")[0]}
+                actionSlug={item.actionSlug.split(".")[0]}
+                enabled={item.enabled}
+              />
+            </View>
+          )): null}
         </ScrollView>
-    );
+      );
 };
 
 const styles = StyleSheet.create({
