@@ -100,7 +100,7 @@ const Profile: React.FC = () => {
           <SVGImg width={150} height={150} />
         </View>
           <ProfileForm data={data} />
-        <Button
+        {/* <Button
           mode="contained"
           onPress={ handlePress }
           style={[
@@ -110,13 +110,13 @@ const Profile: React.FC = () => {
           disabled={username === data.username && email === data.email}
         >
           Appliquer les changements
-        </Button>
+        </Button> */}
         <View style={styles.separator} />
         <View style={styles.userInfo}>
           <View style={{marginBottom: 10}}>
             <Text style={styles.title}>Comptes associés</Text>
           </View>
-          <View style={{marginTop: 10}}>
+          {/* <View style={{marginTop: 10}}>
             <Text style={styles.subtitle}>Google</Text>
             <Text style={styles.link}>Associer un compte Google</Text>
             <Text style={styles.subtitle}>Facebook</Text>
@@ -127,7 +127,7 @@ const Profile: React.FC = () => {
         <View style={styles.userInfo}>
           <View style={{marginBottom: 20, opacity: 0.5}}>
             <Text style={styles.subtitle}>Conditions et confidentialité</Text>
-          </View>
+          </View> */}
         </View>
         <TouchableOpacity
           onPress={() => {

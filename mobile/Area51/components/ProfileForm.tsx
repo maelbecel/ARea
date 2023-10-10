@@ -96,17 +96,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({data}) => {
             </View>
             <View style={{marginTop: 10}}>
                 <Text style={styles.subtitle}>Nom d'utilisateur</Text>
-                <OutlinedTextBox
+                {/* <OutlinedTextBox
                 onChangeText={handleUsernameChange}
                 value={username}
-                />
+                /> */}
             </View>
             <View style={{marginTop: 10}}>
                 <Text style={styles.subtitle}>Mot de passe</Text>
                 <View style={styles.rectangle}>
                     <SecureText passwordLength={data.passwordLength} />
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={() => {
                         // Navigate to the 'ChangePassword' screen when the user clicks on 'Modifier le mot de passe'
                         // navigation.navigate('ChangePassword');
@@ -114,14 +114,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({data}) => {
                     }}
                 >
                     <Text style={styles.link}>Modifier le mot de passe</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
             <View style={{marginTop: 10}}>
                 <Text style={styles.subtitle}>Adresse e-mail</Text>
-                <OutlinedTextBox
+                {/* <OutlinedTextBox
                     onChangeText={handleEmailChange}
                     value={email}
-                />
+                /> */}
             </View>
         </View>
     );
