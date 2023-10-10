@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Switch as RNSwitch } from "react-native";
+import { View, Switch as RNSwitch, StyleSheet, Text } from "react-native";
 
 interface SwitchProps {
     isChecked: boolean;
@@ -7,33 +7,30 @@ interface SwitchProps {
 }
 
 const Switch = ({ isChecked, isDisabled }: SwitchProps) => {
-    const [isChekedState, setIsChecked] = useState<boolean>(isChecked);
+    const [isEnabled, setIsEnabled] = useState(isChecked);
 
-    const handleSwitchChange = () => {
-        if (!isDisabled) {
-            setIsChecked(!isChekedState);
-            console.log(isChekedState ? "disabled" : "enabled");
-        }
+    const toggleSwitch = () => {
+        if (isDisabled) return;
+        setIsEnabled(previousState => !previousState);
     };
 
     return (
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {isDisabled ? (
-                <View style={{ opacity: 0.5 }}>
-                    <RNSwitch
-                        value={isChekedState}
-                        onValueChange={handleSwitchChange}
-                        disabled={true}
-                    />
-                </View>
-            ) : (
-                <RNSwitch
-                    value={isChekedState}
-                    onValueChange={handleSwitchChange}
-                />
-            )}
+        <View>
+            <RNSwitch
+                trackColor={{ false: 'rgba(200, 200, 200, 0.5)', true: 'rgba(200, 200, 200, 1)' }}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+            />
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+});
 
 export default Switch;
