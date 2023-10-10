@@ -8,7 +8,7 @@
 
 /* The code is importing the necessary components from the React and React Native libraries. */
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
 import ServerModal from '../components/ServerModal';
@@ -22,7 +22,14 @@ const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    /* The `useEffect` hook in React is used to perform side effects in functional components. In this
+    code, the `useEffect` hook is used to automatically log in a user if they have already been
+    authenticated. */
     useEffect(() => {
+        /**
+         * The function `autoLogin` checks if the response from the `AutoLoginAPI` is true and
+         * navigates to the 'Area 51' page if it is.
+         */
         const autoLogin = async () => {
             const response = await AutoLoginAPI();
             console.log(response);
@@ -50,9 +57,12 @@ const Login = ({ navigation }) => {
         }
     }
 
+    /* The `return` statement in the code is returning a JSX element that represents the UI of the
+    `Login` component. It is a composition of various React Native components such as `View`,
+    `Text`, `FormInput`, and `SubmitButton`. */
     return (
         /* The code is returning a JSX element that contains other JSX elements. */
-        <View style={{marginTop: 50}}>
+        <View style={{marginTop: 50, backgroundColor: "#FFF"}}>
           <View style={styles.container}>
             <ServerModal />
             <View style={styles.form}>
@@ -75,7 +85,6 @@ const Login = ({ navigation }) => {
 the React Native library. This object contains two properties: `container` and `login`. */
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
   },
   form : {

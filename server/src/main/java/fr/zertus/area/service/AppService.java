@@ -3,6 +3,7 @@ package fr.zertus.area.service;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
+import fr.zertus.area.app.twitch.TwitchApp;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.DataNotFoundException;
@@ -32,6 +33,9 @@ public class AppService {
     static {
         GithubApp githubApp = new GithubApp();
         apps.put(githubApp.getSlug(), githubApp);
+
+        TwitchApp twitchApp = new TwitchApp();
+        apps.put(twitchApp.getSlug(), twitchApp);
 
         DiscordApp discordApp = new DiscordApp();
         apps.put(discordApp.getSlug(), discordApp);

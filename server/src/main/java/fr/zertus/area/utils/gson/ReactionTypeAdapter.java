@@ -36,4 +36,8 @@ public class ReactionTypeAdapter extends TypeAdapter<Reaction> {
         return null;
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> dev
