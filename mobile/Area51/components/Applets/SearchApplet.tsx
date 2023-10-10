@@ -134,7 +134,8 @@ const SearchApplet = () => {
     return (
         <View style={styles.container}>
             {/* Barre de recherche */}
-            <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
+            <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='95%' />
+
 
             {/* Liste des applets */}
             <FlatList

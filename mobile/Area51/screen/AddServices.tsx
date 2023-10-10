@@ -52,10 +52,11 @@ const AddServices = ({navigation, route}) => {
   /* The `return` statement in the code is rendering the JSX elements that will be displayed on the
   screen when the `AddServices` component is rendered. */
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "#FFF" }}>
       <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} />
       <Icon name="add-circle" size={40} color="#363841" />
       <ActionChoose type="reaction" slug={reaction} onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput})} />
+      <Icon name="add-circle" size={40} color="#363841" />
       <SubmitButton title="Continuer" onPress={newApplet} textcolor='#FFF'/>
     </View>
   );
