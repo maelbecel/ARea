@@ -25,17 +25,11 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); // Set content type to application/x-www-form-urlencoded
-
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<DiscordOAuth2Token> responseEntity = restTemplate.exchange(
-                tokenUrl,
-                HttpMethod.POST,
-                requestEntity,
-                DiscordOAuth2Token.class
-        );
+        ResponseEntity<DiscordOAuth2Token> responseEntity = restTemplate.postForEntity(tokenUrl, requestEntity, DiscordOAuth2Token.class);
 
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
             DiscordOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
