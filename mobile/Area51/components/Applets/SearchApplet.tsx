@@ -134,8 +134,9 @@ const SearchApplet = () => {
     return (
         <View style={styles.container}>
             {/* Barre de recherche */}
-            <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='95%' />
-
+            <View style={ styles.input }>
+                <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
+            </View>
 
             {/* Liste des applets */}
             <FlatList
@@ -156,12 +157,15 @@ const SearchApplet = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        ustifyContent: 'center',
-        alignItems: 'center',
-    },
+  container: {
+    paddingTop: 50,
+    backgroundColor: '#fff',
+    paddingBottom: 100,
+  },
+  input: {
+    alignContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default SearchApplet;

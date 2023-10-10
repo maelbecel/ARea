@@ -25,10 +25,8 @@ const ExploreMyApplets = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
         <Text style={styles.title}>Explore your applets</Text>
         <SearchApplet />
-      </View>
     </View>
   );
 };
