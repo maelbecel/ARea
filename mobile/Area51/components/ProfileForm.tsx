@@ -96,10 +96,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({data}) => {
             </View>
             <View style={{marginTop: 10}}>
                 <Text style={styles.subtitle}>Nom d'utilisateur</Text>
-                {/* <OutlinedTextBox
+                <OutlinedTextBox
                 onChangeText={handleUsernameChange}
                 value={username}
-                /> */}
+                />
             </View>
             <View style={{marginTop: 10}}>
                 <Text style={styles.subtitle}>Mot de passe</Text>
@@ -118,10 +118,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({data}) => {
             </View>
             <View style={{marginTop: 10}}>
                 <Text style={styles.subtitle}>Adresse e-mail</Text>
-                {/* <OutlinedTextBox
+                <OutlinedTextBox
                     onChangeText={handleEmailChange}
                     value={email}
-                /> */}
+                />
             </View>
         </View>
     );
