@@ -32,7 +32,7 @@ WORKDIR /app
 # Copie des fichiers du projet dans le conteneur
 COPY . .
 
-ENV EXPO_TOKEN="q17FR032tXRsrllmr0ueDTMrqZGVRYRXGv0mfbD_"
+ENV EXPO_TOKEN="hjTkfrRg_eaYsNB0IBHRJqrWvq3-_fsIa_jyBnUI"
 ENV EAS_NO_VCS=1
 
 # Installation des dépendances
