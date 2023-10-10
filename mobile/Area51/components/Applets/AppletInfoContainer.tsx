@@ -27,14 +27,6 @@ const AppletInfoContainer = ({ name, color, theme, actionSlug, reactionSlug, use
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <View style={{ backgroundColor: `${color}`, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10 }}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Text style={{ backgroundColor: 'white', borderRadius: 25, paddingVertical: 5, paddingHorizontal: 15 }}>Back</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => console.log("Edit Applet")}>
-                    <Text style={{ backgroundColor: 'white', borderRadius: 25, paddingVertical: 5, paddingHorizontal: 15 }}>Edit Applet</Text>
-                </TouchableOpacity>
-            </View>
             <View style={{ backgroundColor: `${color}`, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <View style={{ backgroundColor: `${color}`, paddingHorizontal: '35%' }}>
                     <TouchableOpacity onPress={() => console.log("Details Applet")}>

@@ -116,12 +116,12 @@ const Profile: React.FC = () => {
           <View style={{marginBottom: 10}}>
             <Text style={styles.title}>Comptes associés</Text>
           </View>
-          <View style={{marginTop: 10}}>
+          {/* <View style={{marginTop: 10}}>
             <Text style={styles.subtitle}>Google</Text>
             <Text style={styles.link}>Associer un compte Google</Text>
             <Text style={styles.subtitle}>Facebook</Text>
             <Text style={styles.link}>Associer un compte Facebook</Text>
-          </View>
+          </View> */}
         </View>
         <View style={styles.separator} />
         <View style={styles.userInfo}>
@@ -147,13 +147,11 @@ React Native. Each key in the object represents a style name, and its value is a
 defines the specific style properties for that name. */
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignContent: 'center',
-    alignItems: 'center',
+    padding: 40,
     backgroundColor: '#fff',
   },
   profilePicture: {
-    marginTop: Dimensions.get('window').height / 50, // Marge en haut de l'avatar pour l'espace entre l'image et le texte
+    marginTop: Dimensions.get('window').height / 20, // Marge en haut de l'avatar pour l'espace entre l'image et le texte
     marginBottom: (Dimensions.get('window').height / 5 - 75) / 3,
     alignItems: 'center',
     justifyContent: 'center',
@@ -198,7 +196,6 @@ const styles = StyleSheet.create({
   logout: {
     color: 'red',
     fontSize: 16,
-    textAlign: 'center',
     fontWeight: 'bold',
     marginBottom: 10,
   },
