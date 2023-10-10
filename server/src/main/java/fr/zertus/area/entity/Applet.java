@@ -113,8 +113,4 @@ public class Applet {
         this.reactionData = gson.toJson(reactionData);
     }
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> dev
