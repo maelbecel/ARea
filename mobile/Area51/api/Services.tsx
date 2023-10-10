@@ -15,6 +15,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type Applet = {
     slug: string;
     name: string;
+    action : boolean;
+    reaction: boolean;
     decoration: {
         backgroundColor: string;
         logoUrl: string;
@@ -22,6 +24,11 @@ type Applet = {
 }
 
 
+/**
+ * The function `Services` is an asynchronous function that retrieves a list of applets from a server
+ * and returns them as an array of `Applet` objects.
+ * @returns The function `Services` returns a Promise that resolves to an array of `Applet` objects.
+ */
 const Services = async (): Promise<Applet[]> => {
     try {
         let applets: Applet[] = [];
@@ -36,8 +43,11 @@ const Services = async (): Promise<Applet[]> => {
         });
         console.log(response.status);
         const json = await response.json();
+        if (json.data == undefined) return null;
         for (let i = 0; i < json.data.length; i++) {
-            let tmp : Applet = {slug : json.data[i].slug, name : json.data[i].name, decoration : {backgroundColor : json.data[i].decoration.backgroundColor, logoUrl : json.data[i].decoration.logoUrl}};
+            let action : boolean = (json.data[i].actions.length > 0);
+            let reaction : boolean = (json.data[i].reactions.length > 0);
+            let tmp : Applet = {slug : json.data[i].slug, name : json.data[i].name, action : action, reaction : reaction, decoration : {backgroundColor : json.data[i].decoration.backgroundColor, logoUrl : json.data[i].decoration.logoUrl}};
             applets.push(tmp);
         }
         return applets;

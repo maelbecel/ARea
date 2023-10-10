@@ -38,7 +38,8 @@ const Signup = ({ navigation }) => {
   }
 
 
-    return (
+  /* The code is rendering a view with various components inside it. */
+  return (
         <View style={styles.container}>
           <Text style={styles.login}>Sign up</Text>
           <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
@@ -46,9 +47,9 @@ const Signup = ({ navigation }) => {
           <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
           <SubmitButton title="Sign up" onPress={connect} />
           <Text style={styles.forgot} onPress={() => navigation.navigate('Login')} >Already an account ? Log in here</Text>
-          <Text style={styles.or}>or</Text>
+          {/* <Text style={styles.or}>or</Text>
           <SubmitButton title="Sign up with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
-          <SubmitButton title="Sign up with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} />
+          <SubmitButton title="Sign up with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} /> */}
         </View>
     )
 }

@@ -12,26 +12,30 @@ interface. */
 interface SubmitButtonProps extends TouchableOpacityProps {
     title        : string;
     icon        ?: { uri: any, width: number, height: number };
+    textcolor   ?: string;
     onPress     ?: () => void;
 }
 
-/* The code `const FormInput: React.FC<InputProps> = ({ title, secure = false, inputMode, icon,
-onChangeText, children }) => { ... }` is defining a functional component called `FormInput`. */
-const SubmitButton: React.FC<SubmitButtonProps> = ({ title, onPress, icon }) => {
+/* The code block `const SubmitButton: React.FC<SubmitButtonProps> = ({ title, onPress, icon,
+textcolor='#FFFFFFBF', }) => { ... }` is defining a functional component called `SubmitButton`. */
+const SubmitButton: React.FC<SubmitButtonProps> = ({ title, onPress, icon, textcolor='#FFFFFFBF', }) => {
     return (
         icon ? (
             <TouchableOpacity style={styles.containerimg} onPress={onPress}>
-                <Text style={styles.title}>{title}</Text>
+                <Text style={[{color: textcolor}, styles.title]}>{title}</Text>
                 <Image source={icon.uri} style={{ width: icon.width, height: icon.height, marginLeft: 10 }} />
             </TouchableOpacity>
         ) : (
             <TouchableOpacity style={styles.container} onPress={onPress}>
-                <Text style={styles.title}>{title}</Text>
+                <Text style={[{color: textcolor}, styles.title]}>{title}</Text>
             </TouchableOpacity>
         )
     );
 }
 
+/* The `const styles = StyleSheet.create({ ... })` block is creating a JavaScript object that contains
+styles for different components in the `SubmitButton` component. Each key-value pair in the object
+represents a style property and its corresponding value. */
 const styles = StyleSheet.create({
     container: {
         marginVertical: 10,
@@ -54,7 +58,6 @@ const styles = StyleSheet.create({
         borderRadius: 90,
     },
     title: {
-        color: '#FFFFFFBF',
         fontSize: 20,
         fontStyle: 'normal',
         fontWeight: "700",

@@ -9,7 +9,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 components are used in the `Tabs` component to define the screens for each tab in the bottom tab
 navigator. Each imported screen component represents a different screen that will be displayed when
 the corresponding tab is selected. */
-import AppletsScreen from './screen/MyServices';
+import AppletsScreen from './screen/ExploreMyApplets';
+import MyApplets from './screen/MyApplets';
 import ExploreScreen from './screen/Home';
 import CreateScreen from './screen/AddServices';
 import ActivityScreen from './screen/Activity';
@@ -18,6 +19,11 @@ import ProfileScreen from './screen/Profile';
 import Login from './screen/LogIn';
 import SignUp from './screen/SignUp';
 import Service from './screen/Service';
+import SearchServices from './screen/SearchServices';
+import ServiceTemplate from './screen/ServiceTemplate';
+import ConnectAuth from './screen/ConnectAuth';
+
+import MyApplet from './api/MyApplet';
 
 /* `const Tab = createBottomTabNavigator();` creates a bottom tab navigator using the
 `createBottomTabNavigator` function from the `@react-navigation/bottom-tabs` library. This bottom
@@ -31,10 +37,20 @@ const Stack = createStackNavigator();
  * @returns either a string or a number. If the randomly generated number is less than 100, it will
  * return the number. Otherwise, it will return the string '99+'.
  */
-function getNbApplets(): string | number {
-  let ret = Math.floor(Math.random() * 150);
+const getNbApplets = () => {
+    const [res, setRes] = React.useState(null);
 
-  return ret < 100 ? ret : '99+';
+    React.useEffect(() => {
+      async function fetchData() {
+        const applet = await MyApplet();
+        if (applet.length > 0) {
+          setRes(applet.length);
+        }
+      }
+      fetchData();
+    }, []);
+
+    return res
 }
 
 /* The `Tabs` function is a React component that returns a `Tab.Navigator` component from the
@@ -95,11 +111,15 @@ function Tabs() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ cardStyle: {backgroundColor: "#FFF"}}}>
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
         <Stack.Screen name="Service" component={Service} options={{ headerShown: false }} />
+        <Stack.Screen name="SearchServices" component={SearchServices} options={{ headerShown: false }} />
+        <Stack.Screen name="ServiceTemplate" component={ServiceTemplate} options={{ headerShown: false }} />
+        <Stack.Screen name="ConnectAuth" component={ConnectAuth} options={{ headerShown: false }} />
         <Stack.Screen name="Area 51" component={Tabs} options={{ headerShown: false }} />
+        <Stack.Screen name="MyApplets" component={MyApplets} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
