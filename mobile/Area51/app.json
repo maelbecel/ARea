@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Area51",
-    "slug": "Area51",
-    "owner": "etipech",
+    "slug": "area51",
+    "owner": "zertus",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -31,9 +31,8 @@
     },
     "extra": {
       "eas": {
-        "projectId": "552f27d9-e506-4f76-87e0-a701bbca6729"
+        "projectId": "3f6907bc-254c-4d06-b4f3-498641bbb682"
       }
-    },
-    "owner": "etipech"
+    }
   }
 }
