@@ -1,7 +1,7 @@
-FROM node:18
+FROM node:16
 
 # Install OpenJDK 17 & Android SDK
-ARG JDK_VERSION=17
+ARG JDK_VERSION=11
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends openjdk-${JDK_VERSION}-jdk && \
@@ -32,7 +32,7 @@ WORKDIR /app
 # Copie des fichiers du projet dans le conteneur
 COPY . .
 
-ENV EXPO_TOKEN="vNt9dW4780A48ITU_pP7MJBQ6VcEynDIBgBMMdNf"
+ENV EXPO_TOKEN="q17FR032tXRsrllmr0ueDTMrqZGVRYRXGv0mfbD_"
 ENV EAS_NO_VCS=1
 
 # Installation des dépendances
