@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // --- Components import --- //
 import AppletInfoContainer from "../components/Applets/AppletInfoContainer";
@@ -14,15 +15,16 @@ const MyApplet = ({route}) => {
     const { id } = route.params;
 
     useEffect(() => {
-      const dataFetch = async () => {
-        try {
-              const token = await SecureStore.getItemAsync("token_api");
-              if (id === undefined) {
-                  console.log("something went wrong");
-                  return;
-              }
+        const dataFetch = async () => {
+            try {
+                const token = await SecureStore.getItemAsync("token_api");
+                if (id === undefined) {
+                    console.log("something went wrong");
+                    return;
+                }
+                const serverAddress = await AsyncStorage.getItem('serverAddress');
                 const data = await (
-                    await fetch(`http://zertus.fr:8001/applet/${id}`, {
+                    await fetch(`${serverAddress}/applet/${id}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -43,8 +45,9 @@ const MyApplet = ({route}) => {
         const dataFetch = async (slug : string) => {
           try {
                   const token = await SecureStore.getItemAsync("token_api");
+                  const serverAddress = await AsyncStorage.getItem('serverAddress');
                     const dataFetched = await (
-                        await fetch(`http://zertus.fr:8001/service/${slug}`, {
+                        await fetch(`${serverAddress}/service/${slug}`, {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',
