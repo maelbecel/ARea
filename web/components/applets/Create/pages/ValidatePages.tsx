@@ -101,7 +101,7 @@ const ValidatePages = ({ setPages, token, service, slug, index, array, setArray,
     useEffect(() => {
         if (props.length !== 0)
             return;
-    
+
         const getService = async (slug: string) => {
             try {
                 const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
@@ -113,28 +113,27 @@ const ValidatePages = ({ setPages, token, service, slug, index, array, setArray,
                 });
     
                 const data = await response.json();
-    
+
                 setProps((prev) => [...prev, data?.data]);
             } catch (error) {
                 console.log(error);
             }
         };
 
-        if (array.length > 0) {
+        if (array.length > 0) {            
             setProps([]);
 
             // Create an array of unique service slugs from the 'array' variable
             const uniqueServiceSlugs = Array.from(new Set(array.map((item) => item.service)));
-    
+
             // Iterate through unique slugs and fetch data for each
             uniqueServiceSlugs.forEach((slug) => {
-                if (slug !== "") {
+                if (slug !== "")
                     getService(slug);
-                }
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token, array]);
+    }, []);
 
     useEffect(() => {
         setTheme(getTheme(props[0]?.decoration?.backgroundColor));
@@ -149,8 +148,8 @@ const ValidatePages = ({ setPages, token, service, slug, index, array, setArray,
                 }}
                 color={props[0]?.decoration?.backgroundColor}
             />
-            <AppletsInfoContainer color={props[0]?.decoration?.backgroundColor} theme={theme} props={props} username={profile?.username} title={title} setTitle={setTitle} />
-            <div className={`min-h-screen flex justify-center gap-[100px] items-center flex-col bg-white text-[#363841]`}>
+            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col bg-white text-[#363841]`}>
+                <AppletsInfoContainer color={props[0]?.decoration?.backgroundColor} theme={theme} props={props} username={profile?.username} title={title} setTitle={setTitle} />
                 <div className={`flex-row flex w-[50%] justify-between items-center`}>
                     <div className="text-[24px] font-bold">Receive a notification when the applet is actived</div>
                     <Switch isCheked={notif} isDisable={false} setChecked={setNotif} />

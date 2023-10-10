@@ -62,7 +62,7 @@ const IndexPage: NextPage = () => {
         </NavBar>
       )}
 
-      <div className="w-screen min-h-screen bg-background">
+      <div className="w-full min-h-screen bg-background">
         {connected ? (
           <div className="flex items-center flex-col mt-[2em]">
             <div className="w-full flex justify-center items-center flex-col">
