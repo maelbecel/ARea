@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.5
+    restart: always
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: gAYpHYhE23j4Qu
+      MYSQL_DATABASE: area51
+      MYSQL_USER: area51
+      MYSQL_PASSWORD: bD8TEW2iwL6WbK
+    ports:
+      - 3306:3306
+
+  server:
+    image: area51/server:latest
+    build: ./server
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - TZ=Europe/Paris
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=area51
+      - DB_USER=area51
+      - DB_PASSWORD=bD8TEW2iwL6WbK
+      - SERVER_BASE_URL=http://localhost:8080
+
+  web:
+    image: area51/web:latest
+    build: ./web
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - server
+    volumes:
+      - ./apk:/apk
+
+  mobile:
+    image: area51/mobile:latest
+    build: ./mobile/area51
+    restart: always
+    volumes:
+      - ./apk:/output
+
+
