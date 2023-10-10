@@ -8,22 +8,32 @@ import LinkedAccounts from "../../components/linkedAccounts/linkedAccounts";
 import ProfilePicture from "../../components/profilePicture/profilePicture";
 import FormProfile from "../../components/formProfile/formProfile";
 import UpdateButton from "../../components/updateButton/updateButton";
-import NavBar, { Icon, LeftSection, NavBarNavigateButton, Profile, RightSection } from "../../components/navbar";
+import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
+import Icon from "../../components/NavBar/components/Icon";
+import Profile from "../../components/NavBar/components/Profile";
+import { useUser } from "../../utils/api/user/UserProvider";
+import { GetProfile } from "../../utils/api/user/me";
+import { UserProfile } from "../../utils/api/user/interface";
+import { NavigateButton } from "../../components/NavBar/components/Button";
 
 const IndexPage: NextPage = () => {
     const [data, setData] = useState<any | undefined>();
+    const [token, setToken] = useState<string>('');
     const router = useRouter();
+    const { user, setUser } = useUser();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token") as string;
 
-        if (!token) {
+        if (!token)
             router.push("/login");
-        }
+
+        setToken(token);
+
         const dataFetch = async () => {
             try {
                 const data = await (
-                    await fetch("http://zertus.fr:8001/user/me", {
+                    await fetch("https://area51.zertus.fr/user/me", {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -38,16 +48,16 @@ const IndexPage: NextPage = () => {
             }
         };
         dataFetch();
-    }, []);
+    }, [token, router]);
 
-    /*
-        // TODO:
-        <NavBar>
-            <SimpleLink   href="/myApplets" text="My applets" />
-            <NavBarButton href="/create"             text="Create" />
-            <Profile />
-        </NavBar>
-    */
+    useEffect(() => {
+        const getProfile = async (token: string) => {
+            setUser(await GetProfile(token) as UserProfile);
+        }
+
+        if (user?.email === null || user?.email === "")
+            getProfile(token);
+    }, [setUser, token, user]);
 
     return (
         <>
@@ -56,8 +66,8 @@ const IndexPage: NextPage = () => {
                     <Icon />
                 </LeftSection>
                 <RightSection>
-                    <NavBarNavigateButton href="/create"             text="Create" />
-                    <Profile />
+                    <NavigateButton href="/create"             text="Create" />
+                    <Profile email={user?.email} />
                 </RightSection>
             </NavBar>
             <div className="min-h-screen flex flex-col items-center">

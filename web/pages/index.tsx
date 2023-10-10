@@ -3,13 +3,21 @@ import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 
 // --- Components --- //
-import NavBar, { NavBarNavigateButton, SimpleLink, Profile, RightSection, LeftSection, Icon } from '../components/navbar'
+import NavBar, { RightSection, LeftSection } from '../components/NavBar/navbar'
+import Icon from '../components/NavBar/components/Icon';
 import SearchService from '../components/service/SearchService';
 import Footer from '../components/footer';
+import SimpleLink from '../components/NavBar/components/SimpleLink';
+import Profile from '../components/NavBar/components/Profile';
+import { useUser } from '../utils/api/user/UserProvider';
+import { GetProfile } from '../utils/api/user/me';
+import { UserProfile } from '../utils/api/user/interface';
+import { NavigateButton } from '../components/NavBar/components/Button';
 
 const IndexPage: NextPage = () => {
   const [token, setToken] = useState<string>('');
   const [connected  , setConnected] = useState<boolean>(false);
+  const { user, setUser } = useUser();
 
   useEffect(() => {
     setToken(localStorage.getItem("token") as string);
@@ -20,6 +28,15 @@ const IndexPage: NextPage = () => {
       setConnected(false);
   }, [token]);
 
+  useEffect(() => {
+    const getProfile = async (token: string) => {
+      setUser(await GetProfile(token) as UserProfile);
+    }
+    
+    if (user?.email === "" || user?.email === null)
+      getProfile(token);
+  }, [token, user, setUser]);
+
   return (
     <>
       {connected ? (
@@ -29,8 +46,8 @@ const IndexPage: NextPage = () => {
           </LeftSection>
           <RightSection>
             <SimpleLink   href="/myApplets" text="My applets" />
-            <NavBarNavigateButton href="/create"             text="Create" />
-            <Profile />
+            <NavigateButton href="/create"             text="Create" />
+            <Profile email={user?.email} />
           </RightSection>
         </NavBar>
       ) : (
@@ -40,7 +57,7 @@ const IndexPage: NextPage = () => {
           </LeftSection>
           <RightSection>
             <SimpleLink   href="/sign-up" text="Sign up" />
-            <NavBarNavigateButton href="/login"   text="Login" />
+            <NavigateButton href="/login"   text="Login" />
           </RightSection>
         </NavBar>
       )}

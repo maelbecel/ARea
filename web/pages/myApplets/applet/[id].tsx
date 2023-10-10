@@ -8,14 +8,14 @@ import { getTheme } from "../../../utils/getTheme";
 // --- Components import --- //
 import AppletInfoContainer from "../../../components/applet/appletInfoContainer";
 import Footer from "../../../components/footer";
-import NavBar, {
-    LeftSection,
-    RightSection,
-    Icon,
-    SimpleLink,
-    NavBarNavigateButton,
-    Profile
-} from "../../../components/navbar";
+import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/navbar";
+import Icon from "../../../components/NavBar/components/Icon";
+import SimpleLink from "../../../components/NavBar/components/SimpleLink";
+import Profile from "../../../components/NavBar/components/Profile";
+import { useUser } from "../../../utils/api/user/UserProvider";
+import { GetProfile } from "../../../utils/api/user/me";
+import { UserProfile } from "../../../utils/api/user/interface";
+import { NavigateButton } from "../../../components/NavBar/components/Button";
 
 interface AppletProps {
     data : {
@@ -37,11 +37,23 @@ const IndexPage: NextPage = () => {
     const [bgColor, setBgColor] = useState<string>('');
     const [dataApplet, setDataApplet] = useState<AppletProps | undefined>();
     const router = useRouter();
-    const { id } = router.query;
     const [theme, setTheme] = useState<string>('');
+    const [token, setToken] = useState<string>('');
+    const { id } = router.query;
+    const { user, setUser } = useUser();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const getProfile = async (token: string) => {
+            setUser(await GetProfile(token) as UserProfile);
+        }
+
+        if (user?.email === "" || user?.email === null)
+            getProfile(token);
+    }, [setUser, token, user]);
+
+    useEffect(() => {
+        setToken(localStorage.getItem("token") as string);
+
         if (id == undefined) {
             console.log("something went wrong");
             return;
@@ -49,7 +61,7 @@ const IndexPage: NextPage = () => {
         const dataFetch = async () => {
             try {
                 const data = await (
-                    await fetch(`http://zertus.fr:8001/applet/${id}`, {
+                    await fetch(`https://area51.zertus.fr/applet/${id}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -66,14 +78,13 @@ const IndexPage: NextPage = () => {
         dataFetch();
     }, [id]);
 
-
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (dataApplet) {
             const dataFetch = async (slug : string) => {
                 try {
                     const dataFetched = await (
-                        await fetch(`http://zertus.fr:8001/service/${slug}`, {
+                        await fetch(`https://area51.zertus.fr/service/${slug}`, {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -99,16 +110,17 @@ const IndexPage: NextPage = () => {
 
     return (
         <div>
-            {dataApplet && <NavBar color={bgColor.substring(1)}>
-            <LeftSection>
-                <Icon />
-            </LeftSection>
-            <RightSection>
-                <SimpleLink   href="/myApplets" text="My applets" />
-                <NavBarNavigateButton href="/create"             text="Create" />
-                <Profile />
-            </RightSection>
-            </NavBar>
+            {dataApplet &&
+                <NavBar color={bgColor.substring(1)}>
+                    <LeftSection>
+                        <Icon theme={theme} />
+                    </LeftSection>
+                    <RightSection color={bgColor.substring(1)} theme={theme}>
+                        <SimpleLink href="/myApplets" text="My applets" theme={theme} />
+                        <NavigateButton href="/create" text="Create" theme={theme} />
+                        <Profile email={user?.email} theme={theme} />
+                    </RightSection>
+                </NavBar>
             }
             <div className={`min-h-screen`}>
                 {dataApplet && 

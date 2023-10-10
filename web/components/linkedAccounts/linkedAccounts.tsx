@@ -32,7 +32,7 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
         const dataFetch = async () => {
             try {
                 const data = await (
-                    await fetch(`http://zertus.fr:8001/service/${slug}/oauth2/token`, {
+                    await fetch(`https://area51.zertus.fr/service/${slug}/oauth2/token`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
         const dataFetch = async () => {
             try {
                 const data = await (
-                    await fetch("http://zertus.fr:8001/service", {
+                    await fetch("https://area51.zertus.fr/service", {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
                     tempElement.url = "#";
                 } else {
                     tempElement.islinked = false;
-                    tempElement.url = "http://zertus.fr:8001/service/" + element.slug + "/oauth2" + "?redirecturi=http://localhost:8081/profile" + "&authToken=" + localStorage.getItem("token");
+                    tempElement.url = "https://area51.zertus.fr/service/" + element.slug + "/oauth2" + "?redirecturi=http://localhost:8081/profile" + "&authToken=" + localStorage.getItem("token");
                 }
                 tempArray.push(tempElement);
             }
