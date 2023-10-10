@@ -6,14 +6,30 @@ import GetActionService from "../../../service/GetActionService";
 import { Card } from "../interface";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
+import { useRouter } from "next/router";
 
-const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Dispatch<SetStateAction<number>> }) => {
+const Headers = ({ color = "#363841", setPages, back }: { color?: string, setPages: Dispatch<SetStateAction<number>>, back: boolean }) => {
+    const router = useRouter();
+
     const theme = getTheme(color);
 
     return (
         <NavBar color={color.substring(1)} theme={theme}>
             <LeftSection>
-                <CallBackButton text="Back" color={color.substring(1)} func={() => setPages(1)} theme={theme} />
+                <CallBackButton
+                    text="Back"
+                    color={color.substring(1)}
+                    func={() => {
+                        if (back === true) {
+                            router.back();
+                            router.back();
+                            return;
+                        }
+
+                        setPages(1)
+                    }}
+                    theme={theme}
+                />
             </LeftSection>
             <MiddleSection>
                 <Title text="Choose an action" theme={theme} />
@@ -29,7 +45,7 @@ const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Di
     )
 }
 
-const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, setIndex, index, array, setArray } : { service: string, token: string, setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, type: string | undefined, setIndex: Dispatch<SetStateAction<number>>, index: number, array: Card[], setArray: Dispatch<SetStateAction<Card[]>> }) => {
+const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, setIndex, index, back } : { service: string, token: string, setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, type: string | undefined, setIndex: Dispatch<SetStateAction<number>>, index: number, back: boolean }) => {
     const [props, setProps] = useState<any | undefined>(undefined);
     const [actions, setActions] = useState<any[]>([]);
     const [theme, setTheme] = useState<string>("light");
@@ -93,7 +109,7 @@ const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, se
 
     return (
         <>
-            <Headers color={props?.decoration?.backgroundColor} setPages={setPages} />
+            <Headers color={props?.decoration?.backgroundColor} setPages={setPages} back={back} />
             <div className={`min-h-screen flex justify-start items-center flex-col`}>
                 <ServiceInfoContainer color={props?.decoration.backgroundColor} theme={theme} url={props?.decoration.logoUrl} name={props?.name} />
 
@@ -105,21 +121,6 @@ const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, se
                         index={index}
                         callback={(slug: string, description: string, color: string) => {
                             setSlug(slug);
-
-                            /*setArray(array.map((card: Card, id: number) => {
-                                if (id === index)
-                                    return {
-                                        ...card,
-                                        slug: slug,
-                                        service: props?.slug,
-                                        description: description,
-                                        decoration: {
-                                            logoUrl: props?.decoration.logoUrl,
-                                            backgroundColor: color,
-                                        }
-                                    };
-                                return card;
-                            }));*/
 
                             setPages(3);
                         }}

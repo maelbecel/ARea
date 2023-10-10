@@ -24,6 +24,7 @@ const IndexPage: NextPage = () => {
     const [title, setTitle] = useState<string>("");
     const [notif, setNotif] = useState<boolean>(true);
     const [editMode, setEditMode] = useState<boolean>(false);
+    const [back, setBack] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -32,8 +33,10 @@ const IndexPage: NextPage = () => {
 
         if (pageStr === undefined)
             return;
-        else
+        else {
             setPages(parseInt(pageStr));
+            setIndex(0);
+        }
 
         const service = router.query.service as string;
 
@@ -50,6 +53,13 @@ const IndexPage: NextPage = () => {
             setActive(false);
 
         router.push("/create", undefined, { shallow: true });
+
+        const back = router.query.back as string;
+
+        if (back !== undefined)
+            setBack(true);
+        else
+            setBack(false);
     }, [router]);
 
     useEffect(() => {
@@ -75,9 +85,9 @@ const IndexPage: NextPage = () => {
 
     return (
         <>
-            {pages === 0 && <CreatePages setIndex={setIndex} setPages={setPages} token={token} array={actionArray} setArray={setActionArray} setSlug={setCurrentSlug} setService={setCurrentService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} />}
-            {pages === 1 && <SearchServicePages setIndex={setIndex} setPages={setPages} currentIndex={index} token={token} setSlug={setCurrentService} setActive={setActive} />}
-            {pages === 2 && <AllActionFromServicePages service={currentService} token={token} setPages={setPages} type={getType(index)} setSlug={setCurrentSlug} setIndex={setIndex} index={index} array={actionArray} setArray={setActionArray} />}
+            {pages === 0 && <CreatePages setIndex={setIndex} index={index} setPages={setPages} token={token} array={actionArray} setArray={setActionArray} setSlug={setCurrentSlug} setService={setCurrentService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} />}
+            {pages === 1 && <SearchServicePages setIndex={setIndex} setPages={setPages} currentIndex={index} token={token} setSlug={setCurrentService} setActive={setActive} array={actionArray} />}
+            {pages === 2 && <AllActionFromServicePages service={currentService} token={token} setPages={setPages} type={getType(index)} setSlug={setCurrentSlug} setIndex={setIndex} index={index} back={back}/>}
             {pages === 3 && <ServiceConnexionPages setPages={setPages} token={token} service={currentService} slug={currentSlug} array={actionArray} index={index} setArray={setActionArray} />}
             {pages === 4 && <FillActionInputsPages setPages={setPages} token={token} service={currentService} index={index} slug={currentSlug} array={actionArray} setArray={setActionArray} EditMode={editMode} />}
             {pages === 5 && <ValidatePages setPages={setPages} token={token} service={currentService} index={index} slug={currentSlug} array={actionArray} setArray={setActionArray} title={title} setTitle={setTitle} notif={notif} setNotif={setNotif} />}

@@ -13,8 +13,6 @@ const IndexPage: NextPage = () => {
     setTimeout(() => {
       window.close();
     }, 1000);
-
-    router.push("/");
   }, [router])
 
   return ( <></> );

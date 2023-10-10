@@ -6,6 +6,7 @@ import NavBar, { RightSection, LeftSection, MiddleSection } from '../../../NavBa
 import SearchService from '../../../service/SearchService'
 import Title from '../../../NavBar/components/Title'
 import { ButtonIconNavigate, CallBackButton } from '../../../NavBar/components/Button'
+import { Card } from '../interface'
 
 const SearchServiceHeader = ({ callback }: { callback: () => void }) => {
     return (
@@ -27,7 +28,7 @@ const SearchServiceHeader = ({ callback }: { callback: () => void }) => {
     )
 }
 
-const SearchServicePages = ({ currentIndex, setIndex, setPages, token, setSlug, setActive } : { currentIndex: number, setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, setSlug: Dispatch<SetStateAction<string>>, setActive: Dispatch<SetStateAction<boolean>> }) => {
+const SearchServicePages = ({ currentIndex, setIndex, setPages, token, setSlug, setActive, array } : { currentIndex: number, setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, setSlug: Dispatch<SetStateAction<string>>, setActive: Dispatch<SetStateAction<boolean>>, array: Card[] }) => {
   return (
     <>
         <SearchServiceHeader callback={() => {
@@ -45,6 +46,7 @@ const SearchServicePages = ({ currentIndex, setIndex, setPages, token, setSlug, 
                 setSlug(slug);
                 setPages(2);
               }}
+              filterType={array[currentIndex].type}
             />
           </div>
         </div>

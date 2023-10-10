@@ -33,7 +33,7 @@ const ServiceButtonComponent = ({ name, slug, logo, color, callback }: { name: s
 
 const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug: string, logo: string, color: string}) => {
     return (
-        <Link href={`/create?page=2&service=${slug}&active=true`}>
+        <Link href={`/create?page=2&service=${slug}&active=true&back=1`}>
             <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
                  style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
             >
@@ -58,7 +58,7 @@ const ServiceListComponents = ({ serviceList, type, callback } : { serviceList?:
     );
 }
 
-const SearchService = ({ type = 'link', callback = (slug: string) => {} } : { type?: string, callback?: (slug: string) => void }) => {
+const SearchService = ({ type = 'link', callback = (slug: string) => {}, filterType = "action" } : { type?: string, callback?: (slug: string) => void, filterType?: string }) => {
     const [searchValue  , setSearchValue] = useState<string>("");
     const [service      , setService] = useState<ServiceProps[]>([]);
     const [serviceSearch, setServiceSearch] = useState<ServiceProps[]>([]);
@@ -78,8 +78,13 @@ const SearchService = ({ type = 'link', callback = (slug: string) => {} } : { ty
 
                 const data = await response.json();
 
-                setService(data?.data);
-                setServiceSearch(data?.data);
+                if (type === "link" || filterType === "action") {
+                    setService(data?.data.filter((item: any) => item?.actions.length > 0));
+                    setServiceSearch(data?.data.filter((item: any) => item?.actions.length > 0));
+                } else {
+                    setService(data?.data.filter((item: any) => item?.reactions.length > 0));
+                    setServiceSearch(data?.data.filter((item: any) => item?.reactions.length > 0));
+                }
             } catch (error) {
                 console.log(error);
             }
