@@ -60,6 +60,13 @@ const getWriteColor = (color: string): string => {
   }
 };
 
+/* The above code is a TypeScript React component that renders a view for connecting to an
+authentication service. It retrieves information about the service from an API and sets various
+state variables based on the response. It also generates a form based on the inputs array and checks
+if all form fields have been filled. If all form fields are filled, it opens an authentication
+session using the WebBrowser API and navigates to a different screen based on the type of form. The
+view includes a top bar with a title and icons for navigation, an image, and text components for
+displaying the service name, action title, and description */
 const ConnectAuth = ({ navigation, route }) => {
   const { slug, type, actionInput, reactionInput } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
