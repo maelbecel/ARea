@@ -63,12 +63,12 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                 {name}
                 </Text>
             </View>
-            {/* <View style={ styles.card }>
+            <View style={ styles.card }>
                 <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>
                 Enabled:
                 </Text>
                 <Switch isChecked={enabled} isDisabled={enabled} />
-            </View> */}
+            </View>
         </TouchableOpacity>
     );
 };

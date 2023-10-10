@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 
 /* The `interface OutlinedTextBoxProps` defines the props that can be passed to the `OutlinedTextBox`
 component. */
@@ -37,14 +37,13 @@ const OutlinedTextBox: React.FC<OutlinedTextBoxProps> = ({onChangeText, value, s
   displayed on the screen. */
   return (
     <View style={[styles.container, isFocused ? null : styles.focused]}>
-      {/* <TextInput
+      <TextInput
         onChangeText={onChangeText}
         onFocus={handleFocus}
         onBlur={handleBlur}
         style={[styles.textInput, isFocused ? null : styles.focused]} // Si isFocused est vrai, on ne met pas de style, sinon on met le style [styles.focused
         value={value}
-      /> */}
-      <Text>{value}</Text>
+      />
     </View>
   );
 };

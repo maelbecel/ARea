@@ -100,7 +100,7 @@ const Profile: React.FC = () => {
           <SVGImg width={150} height={150} />
         </View>
           <ProfileForm data={data} />
-        {/* <Button
+        <Button
           mode="contained"
           onPress={ handlePress }
           style={[
@@ -110,25 +110,25 @@ const Profile: React.FC = () => {
           disabled={username === data.username && email === data.email}
         >
           Appliquer les changements
-        </Button> */}
+        </Button>
         <View style={styles.separator} />
-        {/* <View style={styles.userInfo}>
+        <View style={styles.userInfo}>
           <View style={{marginBottom: 10}}>
             <Text style={styles.title}>Comptes associés</Text>
           </View>
-          <View style={{marginTop: 10}}>
+          {/* <View style={{marginTop: 10}}>
             <Text style={styles.subtitle}>Google</Text>
             <Text style={styles.link}>Associer un compte Google</Text>
             <Text style={styles.subtitle}>Facebook</Text>
             <Text style={styles.link}>Associer un compte Facebook</Text>
-          </View>
-        </View> */}
-        {/* <View style={styles.separator} /> */}
-        {/* <View style={styles.userInfo}>
+          </View> */}
+        </View>
+        <View style={styles.separator} />
+        <View style={styles.userInfo}>
           <View style={{marginBottom: 20, opacity: 0.5}}>
             <Text style={styles.subtitle}>Conditions et confidentialité</Text>
           </View>
-        </View> */}
+        </View>
         <TouchableOpacity
           onPress={() => {
             handleLogout();
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   profilePicture: {
-    marginTop: Dimensions.get('window').height / 10, // Marge en haut de l'avatar pour l'espace entre l'image et le texte
+    marginTop: Dimensions.get('window').height / 20, // Marge en haut de l'avatar pour l'espace entre l'image et le texte
     marginBottom: (Dimensions.get('window').height / 5 - 75) / 3,
     alignItems: 'center',
     justifyContent: 'center',

@@ -36,23 +36,23 @@ const AppletInfoContainer = ({ name, color, theme, actionSlug, reactionSlug, use
                         </View>
                         <Text style={{ color: 'white', fontSize: 37, fontWeight: 'bold', paddingBottom: '10%' }}>{name}</Text>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={() => console.log("Edit title")}>
+                    <TouchableOpacity onPress={() => console.log("Edit title")}>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                             <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', textDecorationLine: 'underline' }}>Edit title</Text>
                         </View>
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingBottom: '20%' }}>
                         <Text style={{ color: 'white', fontSize: 20 }}>by <Text style={{ fontWeight: 'bold' }}>{user}</Text></Text>
                     </View>
                 </View>
             </View>
-            {/* <View style={{ flexDirection: 'column', alignItems: 'center', marginBottom: '5%' }}>
+            <View style={{ flexDirection: 'column', alignItems: 'center', marginBottom: '5%' }}>
                 <Switch isChecked={enabled} isDisabled={false} />
-            </View> */}
+            </View>
             <View style={{ paddingHorizontal: '35%', marginBottom: '5%' }}>
-                {/* <Text style={{ color: '#B8B9BB', fontWeight: 'bold' }}>
+                <Text style={{ color: '#B8B9BB', fontWeight: 'bold' }}>
                     <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionSlug={reactionSlug} />
-                </Text> */}
+                </Text>
                 <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>
                     {formattedDate ? (
                         `Created at ${formattedDate}`
@@ -67,10 +67,10 @@ const AppletInfoContainer = ({ name, color, theme, actionSlug, reactionSlug, use
                         "Never used yet"
                     )}
                 </Text>
-                {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%' }}>
                     <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22 }}>Notify me</Text>
                     <SwitchNotifyMe isChecked={false} isDisabled={false} />
-                </View> */}
+                </View>
             </View>
         </View>
     );
