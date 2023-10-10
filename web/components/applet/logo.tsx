@@ -22,7 +22,7 @@ const LogoApplet = ({slug, width = 40, height = 40, toogleBackground = true} : L
         const dataFetch = async (slug : string) => {
             try {
                 const data = await (
-                    await fetch(`http://zertus.fr:8001/service/${slug}`, {
+                    await fetch(`https://area51.zertus.fr/service/${slug}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

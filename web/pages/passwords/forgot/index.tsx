@@ -4,9 +4,12 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 // --- Components import --- //
-import NavBar, { Icon, LeftSection, NavBarNavigateButton, RightSection, SimpleLink } from "../../../components/navbar";
+import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/navbar";
+import Icon from "../../../components/NavBar/components/Icon";
 import TextContainer from "../../../components/auth/TextContainer";
 import Footer from "../../../components/footer";
+import SimpleLink from "../../../components/NavBar/components/SimpleLink";
+import { NavigateButton } from "../../../components/NavBar/components/Button";
 
 const IndexPage: NextPage = () => {
     const route = useRouter();
@@ -31,7 +34,7 @@ const IndexPage: NextPage = () => {
                 </LeftSection>
                 <RightSection>
                     <SimpleLink   href="/sign-up" text="Sign up" />
-                    <NavBarNavigateButton href="/login" text="Log in" />
+                    <NavigateButton href="/login" text="Log in" />
                 </RightSection>
             </NavBar>
 

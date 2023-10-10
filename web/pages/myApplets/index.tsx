@@ -3,14 +3,21 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 // --- Components import --- //
-import NavBar, {RightSection, LeftSection, SimpleLink, Icon, NavBarNavigateButton, Profile} from "../../components/navbar";
+import NavBar, {RightSection, LeftSection} from "../../components/NavBar/navbar";
+import Icon from "../../components/NavBar/components/Icon";
 import SearchApplet from "../../components/applet/searchApplet";
 import Footer from '../../components/footer'
+import Profile from "../../components/NavBar/components/Profile";
+import { useUser } from "../../utils/api/user/UserProvider";
+import { GetProfile } from "../../utils/api/user/me";
+import { UserProfile } from "../../utils/api/user/interface";
+import { NavigateButton } from "../../components/NavBar/components/Button";
 
 const IndexPage: NextPage = () => {
 
     const [token, setToken] = useState<string>('');
     const [connected  , setConnected] = useState<boolean>(false);
+    const { user, setUser } = useUser();
 
     useEffect(() => {
         setToken(localStorage.getItem("token") as string);
@@ -22,6 +29,15 @@ const IndexPage: NextPage = () => {
             setConnected(false);
     }, [token]);
 
+    useEffect(() => {
+        const getProfile = async (token: string) => {
+            setUser(await GetProfile(token) as UserProfile);
+        }
+
+        if (user?.email === "" || user?.email === null)
+            getProfile(token);
+    }, [setUser, token, user]);
+
     return (
         <>
             <NavBar>
@@ -29,8 +45,8 @@ const IndexPage: NextPage = () => {
                 <Icon />
             </LeftSection>
             <RightSection>
-                <NavBarNavigateButton href="/create"             text="Create" />
-                <Profile />
+                <NavigateButton href="/create"             text="Create" />
+                <Profile email={user?.email} />
             </RightSection>
             </NavBar>
             <div className="w-full min-h-screen bg-background">

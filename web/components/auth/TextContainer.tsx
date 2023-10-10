@@ -91,5 +91,5 @@ const TextContainer = ({ title, submit, children, handleClick }: ContainerProps)
     )
 }
 
-export { Title, Forgot, RequestButton, InputContainer }
+export { Forgot, RequestButton, InputContainer }
 export default TextContainer

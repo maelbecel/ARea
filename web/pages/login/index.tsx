@@ -3,10 +3,12 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 // --- Components import --- //
-import NavBar, { Icon, LeftSection, NavBarNavigateButton, RightSection } from "../../components/navbar";
+import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
+import Icon from "../../components/NavBar/components/Icon";
 import TextContainer, { Forgot, InputContainer } from "../../components/auth/TextContainer";
 import { useRouter } from "next/router";
 import Footer from "../../components/footer";
+import { NavigateButton } from "../../components/NavBar/components/Button";
 
 const IndexPage: NextPage = () => {
     const [email   , setEmail]    = useState<string>("");
@@ -77,7 +79,7 @@ const IndexPage: NextPage = () => {
                     <Icon />
                 </LeftSection>
                 <RightSection>
-                    <NavBarNavigateButton href="/sign-up" text="Sign up" />
+                    <NavigateButton href="/sign-up" text="Sign up" />
                 </RightSection>
             </NavBar>
 

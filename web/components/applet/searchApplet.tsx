@@ -40,7 +40,7 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
         const dataFetch = async (slug : string) => {
             try {
                 const data = await (
-                    await fetch(`http://zertus.fr:8001/service/${slug}`, {
+                    await fetch(`https://area51.zertus.fr/service/${slug}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const SearchApplet = () => {
         const dataFetch = async () => {
             try {
                 const data = await (
-                    await fetch(`http://zertus.fr:8001/applet/me`, {
+                    await fetch(`https://area51.zertus.fr/applet/me`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
