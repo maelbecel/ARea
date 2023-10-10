@@ -14,6 +14,7 @@ import SubmitButton from '../components/SubmitButton';
 import ServerModal from '../components/ServerModal';
 import LoginAPI from '../api/Login';
 import AutoLoginAPI from '../api/AutoLogin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /* The code is defining a functional component called `Login` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -26,6 +27,13 @@ const Login = ({ navigation }) => {
     code, the `useEffect` hook is used to automatically log in a user if they have already been
     authenticated. */
     useEffect(() => {
+
+        const clearStorage = async () => {
+          await AsyncStorage.setItem('action', "default");
+          await AsyncStorage.setItem('reaction', "default");
+        }
+
+        clearStorage();
         /**
          * The function `autoLogin` checks if the response from the `AutoLoginAPI` is true and
          * navigates to the 'Area 51' page if it is.

@@ -6,6 +6,7 @@ import fr.zertus.area.payload.request.user.LoginDTO;
 import fr.zertus.area.payload.request.user.RegisterDTO;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.utils.JwtTokenProvider;
+import fr.zertus.area.service.AppletService;
 import fr.zertus.area.service.RegisterUserService;
 import fr.zertus.area.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +39,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AppletService appletService;
 
 
     @Operation(summary = "Login", description = "Login to the API", tags = { "User" },
@@ -113,7 +117,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Register", description = "Register to the API", tags = { "User" })
+    @Operation(summary = "Register new user", description = "Register to the API", tags = { "User" })
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                 responseCode = "200",
@@ -170,7 +174,7 @@ public class UserController {
         throw new Exception("Error while registering");
     }
 
-    @Operation(summary = "User info", description = "Get the user information", tags = { "User" })
+    @Operation(summary = "Get current user info", description = "Get the user information", tags = { "User" })
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                 responseCode = "200",
@@ -202,6 +206,97 @@ public class UserController {
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
             throw new IllegalAccessException("Invalid token");
+        }
+    }
+
+    @Operation(summary = "Delete current user", description = "Delete the current user", tags = { "User" })
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "204",
+            description = "User deleted",
+            content = @Content
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "400",
+            description = "Bad request",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Example response",
+                        description = "This is an example with bad user id",
+                        value = "{\"status\":400,\"message\":\"Bad user id\"}"
+                    )
+                }
+            )
+        )
+    })
+    @DeleteMapping("/me")
+    public ResponseEntity<ApiResponse<String>> deleteCurrentUser() {
+        try {
+            appletService.deleteUserApplets(userService.getCurrentUser().getId());
+            userService.delete();
+            return ApiResponse.noContent().toResponseEntity();
+        } catch (Exception e) {
+            return ApiResponse.badRequest(e.getMessage()).toResponseEntity();
+        }
+    }
+
+    @Operation(summary = "Update current user", description = "Update the current user", tags = { "User" })
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "User updated",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = User.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Example response",
+                        description = "This is an example with user information",
+                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":8,\"email\":\"billy.bob@zertus.fr\",\"username\":\"Billy Bob\",\"connectedServices\":[\"twitch\",\"discord\"],\"passwordLength\":12}}"
+                    )
+                }
+            )
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "Current user not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Example response",
+                        description = "This is an example with user not found",
+                        value = "{\"status\":404,\"message\":\"User not found\"}"
+                    )
+                }
+            )
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "400",
+            description = "Bad request",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Example response",
+                        description = "This is an example with bad format email",
+                        value = "{\"status\":400,\"message\":\"Bad format email\"}"
+                    )
+                }
+            )
+        ),
+    })
+    @PatchMapping("/me")
+    public ResponseEntity<?> updateCurrentUser(@RequestBody RegisterDTO user) {
+        try {
+            return ApiResponse.ok(userService.updateCurrentUser(user)).toResponseEntity();
+        } catch (Exception e) {
+            return ApiResponse.badRequest(e.getMessage()).toResponseEntity();
         }
     }
 

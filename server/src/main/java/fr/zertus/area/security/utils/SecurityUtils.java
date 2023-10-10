@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.util.Base64;
 
 public class SecurityUtils {
 
@@ -33,7 +34,10 @@ public class SecurityUtils {
     }
 
     public static String getTempToken(long userId) {
-        return "mysupertokenidisverylongandverysecure-" + userId;
+        String text = "mysupertokenidisverylongandverysecure";
+        byte[] encodedBytes = Base64.getEncoder().encode(text.getBytes());
+        String base64Text = new String(encodedBytes);
+        return base64Text + "-" + userId;
     }
 
     public static long getUserIdFromTempToken(String token) {

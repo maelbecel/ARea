@@ -29,6 +29,7 @@ services:
       - DB_NAME=area51
       - DB_USER=area51
       - DB_PASSWORD=bD8TEW2iwL6WbK
+      - SERVER_BASE_URL=http://localhost:8080
 
   web:
     image: area51/web:latest

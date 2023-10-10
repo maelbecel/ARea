@@ -1,130 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, TextInput, FlatList, TouchableOpacity, Text } from "react-native";
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import * as SecureStore from 'expo-secure-store';
-import ServiceInfo, {Action, Reaction} from '../../api/ServiceInfo';
-import { useNavigation } from '@react-navigation/native';
-import LogoApplet from "./Logo";
-import Switch from "./Switch";
+import { View, StyleSheet, FlatList, TouchableOpacity, Text } from "react-native";
+
 import FormInput from "../FormInput";
+import AppletComponent from "./AppletComponent";
 
-interface AppletProps {
-    id: number;
-    name: string;
-    actionSlug: string;
-    reactionSlug: string;
-    actionTrigger: string;
-    lastTriggerUpdate: string; // date
-    createdAt: number; // date
-    enabled: boolean;
-}
-
-const AppletComponent = ({ id, name, actionSlug, reactionSlug, actionTrigger, lastTriggerUpdate, createdAt, enabled }) => {
-    const [bgColor, setBgColor] = useState<string>("");
-    const [service, setService] = useState<any>({});
-    const navigation = useNavigation();
-
-    // get background color of the action slug
-    useEffect(() => {
-        const dataFetch = async (slug : string) => {
-            try {
-                const token = await SecureStore.getItemAsync("token_api");
-                const data = await (
-                    await fetch(`http://zertus.fr:8001/service/${slug}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                setBgColor(data?.data?.decoration?.backgroundColor);
-            } catch (error) {
-                console.log("error applet component", error);
-            }
-        };
-        dataFetch(actionSlug);
-    }, []);
-
-    useEffect(() => {
-        const ServiceFetch = async (slug: string) => {
-            const service = await ServiceInfo(slug);
-            setBgColor(service?.decoration?.backgroundColor);
-        };
-        ServiceFetch(actionSlug);
-    }, [bgColor]);
-
-    return (
-        <TouchableOpacity
-        style={{
-            backgroundColor: bgColor,
-            borderRadius: 9,
-            padding: 20,
-            margin: 10,
-        }}
-        onPress={() => navigation.navigate('MyApplets', { id: id })}
-        >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {actionSlug && (
-            <LogoApplet
-                slug={actionSlug}
-                width={56}
-                height={56}
-                toggleBackground={false}
-            />
-            )}
-            {reactionSlug && (
-            <LogoApplet
-                slug={reactionSlug}
-                width={56}
-                height={56}
-                toggleBackground={false}
-            />
-            )}
-            <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 28 }}>
-            {name}
-            </Text>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>
-            Enabled:
-            </Text>
-            <Switch isChecked={enabled} isDisabled={true} />
-        </View>
-        </TouchableOpacity>
-    );
-};
+import AppletInfos from "../../api/AppletInfos";
+import { ScrollView } from "react-native-gesture-handler";
 
 const SearchApplet = () => {
-    const [applets, setApplets] = useState([]);
-    const [searchValue, setSearchValue] = useState("");
-    const [dispApplets, setDispApplets] = useState([]); // State to store applets
+    const [applets, setApplets] = useState<any>(null); // State to store applets
+    const [dispApplets, setDispApplets] = useState<any>(null); // State to store applets
+
+    const reduceTitle = (title: string) => {
+        if (title.length > 20) {
+            return title.slice(0, 20) + "...";
+        }
+        return title;
+    };
 
     const filterApplets = (name : string) => {
         if (applets == null) return;
-        let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
-        console.log("OIJHUGYHIJOIHUGYFVUBIHUGYFVHJ",tmp);
+        let tmp = applets.filter((service: any) => service.name.toLowerCase().includes(name.toLowerCase()));
         setDispApplets(tmp);
     }
 
     useEffect(() => {
         const dataFetch = async () => {
             try {
-                const token = await SecureStore.getItemAsync("token_api");
-                const response = await (
-                    await fetch(`http://zertus.fr:8001/applet/me`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                );
-                const data = await response.json();
-                setApplets(data?.data);
-                setDispApplets(data?.data);
+                const data: any = await AppletInfos();
+                setApplets(data.data);
+                setDispApplets(data.data);
             } catch (error) {
-                console.log("error search applet", error);
+                console.log("error applet component", error);
             }
         };
         dataFetch();
@@ -137,30 +44,44 @@ const SearchApplet = () => {
     }, [applets]);
 
     return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            {/* Barre de recherche */}
-            <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
-
-            {/* Liste des applets */}
-            <FlatList
-                style={{ width: "75%" }}
-                data={dispApplets}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <AppletComponent
-                        id={item.id}
-                        name={item.name}
-                        reactionSlug={item.reactionSlug.split(".")[0]}
-                        actionSlug={item.actionSlug.split(".")[0]}
-                        actionTrigger={item.actionTrigger}
-                        lastTriggerUpdate={item.lastTriggerUpdate}
-                        createdAt={item.createdAt}
-                        enabled={item.enabled}
-                    />
-                )}
+        <ScrollView>
+          {/* Barre de recherche */}
+          <View style={styles.input}>
+            <FormInput
+              title="Search"
+              icon={{ name: "search", width: 27, height: 27 }}
+              onChangeText={(text) => {
+                filterApplets(text);
+              }}
+              size="85%"
             />
-        </View>
-    );
+          </View>
+          {/* Liste des applets */}
+          {(dispApplets != null) ? dispApplets.map((item) => (
+            <View style={styles.applet} key={item.id}>
+              <AppletComponent
+                id={item.id}
+                name={reduceTitle(item.name)}
+                reactionSlug={item.reactionSlug.split(".")[0]}
+                actionSlug={item.actionSlug.split(".")[0]}
+                enabled={item.enabled}
+              />
+            </View>
+          )): null}
+        </ScrollView>
+      );
 };
+
+const styles = StyleSheet.create({
+    input: {
+        alignContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    applet: {
+        alignContent: 'center',
+        alignItems: 'center',
+    },
+});
 
 export default SearchApplet;
