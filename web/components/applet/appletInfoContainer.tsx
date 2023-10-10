@@ -6,6 +6,7 @@ import LogoApplet from "./logo";
 import Switch from "./switch";
 import SwitchNotifyMe from "./switchNotifyMe";
 import MoreDetailsButton from "./moreDetails";
+import ToggleSwitch from "../switch/toggleSwitch";
 
 interface ServiceInfoContainerProps {
     id?: number;
@@ -78,7 +79,7 @@ const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user
                 </div>
             </div>
             <div className="flex flex-col items-center my-[5%]">
-                <Switch isCheked={enabled} isDisable={false}/>
+                <ToggleSwitch isCheked={enabled} isDisable={false} yesLabel="Enabled" noLabel="Disabled" bgColor="#363841"/>
             </div>
             <div className="flex flex-col flex-start px-[35%] mb-[5%]">
                 <div className="text-[#B8B9BB] font-bold">
