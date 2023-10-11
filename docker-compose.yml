@@ -45,7 +45,7 @@ services:
   mobile:
     image: area51/mobile:latest
     build: ./mobile/area51
-    restart: always
+    restart: none
     volumes:
       - ./apk:/output
 

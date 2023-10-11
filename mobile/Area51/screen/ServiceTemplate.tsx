@@ -90,6 +90,9 @@ const ServiceTemplate = ({ navigation, route }) => {
   }
 
 
+  /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
+  case, the `useEffect` hook is used to fetch data from a service and update the state variables
+  based on the fetched data. */
   React.useEffect(() => {
     /**
      * The function fetchData fetches data from a service and sets various state variables based on the
@@ -97,6 +100,7 @@ const ServiceTemplate = ({ navigation, route }) => {
      */
     const fetchData = async () => {
       try {
+        const service = await ServiceInfo(slug);
         setColor(service.decoration.backgroundColor);
         setUrl(service.decoration.logoUrl);
         setName(service.name);
