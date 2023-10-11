@@ -16,4 +16,3 @@ public interface IApp {
     List<Reaction> getReactions();
 
 }
-
