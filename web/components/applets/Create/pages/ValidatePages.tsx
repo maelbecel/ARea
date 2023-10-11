@@ -31,7 +31,7 @@ const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?
     )
 };
 
-const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle } : { color: string, theme: string, props: any[], username: string, title: string, setTitle: Dispatch<SetStateAction<string>> }) => {
+const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle } : { color: string, theme: string, props: any[], username: string | undefined, title: string, setTitle: Dispatch<SetStateAction<string>> }) => {
     return (
         <div style={{backgroundColor: `${color}`}} className={`w-full flex justify-center items-center gap-7 p-6 select-none`}>
             <div style={{backgroundColor: `${color}`}} className={`w-[50%] flex-col py-[25px]`}>
