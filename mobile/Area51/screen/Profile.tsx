@@ -70,12 +70,9 @@ const Profile: React.FC = () => {
   };
 
   /**
-   * The function `handlePress` retrieves the values of `username` and `email` from AsyncStorage, logs
-   * them to the console, and then removes the `username` and `email` keys from AsyncStorage.
    */
   const handlePress = async () => {
     try {
-      const username = await AsyncStorage.getItem('username');
       const email = await AsyncStorage.getItem('email');
       console.log(username, email);
       await AsyncStorage.removeItem('username');
