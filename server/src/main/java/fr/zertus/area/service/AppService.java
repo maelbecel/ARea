@@ -4,6 +4,8 @@ import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
+import fr.zertus.area.app.google.GoogleApp;
+import fr.zertus.area.app.notion.NotionApp;
 import fr.zertus.area.app.spotify.SpotifyApp;
 import fr.zertus.area.app.twitch.TwitchApp;
 import fr.zertus.area.entity.ConnectedService;
@@ -44,6 +46,12 @@ public class AppService {
 
         SpotifyApp spotifyApp = new SpotifyApp();
         apps.put(spotifyApp.getSlug(), spotifyApp);
+
+        NotionApp notionApp = new NotionApp();
+        apps.put(notionApp.getSlug(), notionApp);
+
+        GoogleApp googleApp = new GoogleApp();
+        apps.put(googleApp.getSlug(), googleApp);
     }
 
     private static final Map<Long, String> redirectUris = new HashMap<>();
