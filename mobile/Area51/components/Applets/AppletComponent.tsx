@@ -46,8 +46,8 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                     {actionSlug && (
                         <LogoApplet
                         slug={actionSlug}
-                        width={20}
-                        height={20}
+                        width={27}
+                        height={27}
                         toggleBackground={false}
                         />
                     )}
@@ -56,8 +56,8 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                     {reactionSlug && (
                         <LogoApplet
                         slug={reactionSlug}
-                        width={20}
-                        height={20}
+                        width={27}
+                        height={27}
                         toggleBackground={false}
                         />
                     )}

@@ -1,6 +1,6 @@
 // --- Librairies import --- //
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StatusBar, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,9 +14,18 @@ import { useNavigation } from "@react-navigation/native";
 const MyApplet = ({route}) => {
     const [bgColor, setBgColor] = useState('');
     const [dataApplet, setDataApplet] = useState(null);
-    const [theme, setTheme] = useState('');
     const { id } = route.params;
     const navigation = useNavigation();
+    const [statusBarHeight, setStatusBarHeight] = useState(0);
+
+    useEffect(() => {
+      const getStatusbarHeight = () => {
+        setStatusBarHeight(StatusBar.currentHeight + 10 || 0);
+      };
+
+      getStatusbarHeight();
+
+    }, []);
 
     useEffect(() => {
         const dataFetch = async () => {
@@ -80,15 +89,15 @@ const MyApplet = ({route}) => {
 
     return (
         <ScrollView>
-            <View style={{ ...styles.container, backgroundColor: bgColor }}>
-                <TopBar title="My Applet"  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={('white')} />
+            <View style={{ ...styles.container, backgroundColor: bgColor, paddingTop: statusBarHeight }}>
+                {/* TODO: faire l'engrenage de modification etc */}
+                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={('white')} />
             </View>
             <View>
                 {dataApplet &&
                     <AppletInfoContainer
                         name={dataApplet?.data?.name}
                         color={bgColor}
-                        theme={theme}
                         actionSlug={dataApplet?.data?.actionSlug.split('.')[0]}
                         reactionSlug={dataApplet?.data?.reactionSlug.split('.')[0]}
                         user={dataApplet?.data?.user?.username}
@@ -103,7 +112,6 @@ const MyApplet = ({route}) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 30,
         shadowColor: '#000',
           shadowOffset: {
           width: 0,

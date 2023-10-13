@@ -19,7 +19,7 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) 
     return (
         <View>
             {isButtonToggle ? (
-                <View style={{ alignItems: "center" }}>
+                <View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
                         <View style={{ width: "33%", alignItems: "center" }}>
                             <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Action</Text>
@@ -45,11 +45,16 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) 
                             <Text style={{ color: "#363841", fontSize: 22 }}>Description of Reaction</Text>
                         </View>
                     </View>
+                    <TouchableOpacity onPress={handleClick} style={{marginVertical: 10 }}>
+                        <Text style={{ color: "#939596", fontWeight: "bold", fontSize: 18 }}>Fewer Details</Text>
+                    </TouchableOpacity>
                 </View>
-            ) : null}
+
+            ) :
             <TouchableOpacity onPress={handleClick} style={{ alignItems: "center", marginVertical: 10 }}>
-                <Text style={{ color: "blue", fontWeight: "bold", fontSize: 18 }}>More Details</Text>
+                <Text style={{ color: "#939596", fontWeight: "bold", fontSize: 18 }}>More Details</Text>
             </TouchableOpacity>
+            }
         </View>
     );
 };
