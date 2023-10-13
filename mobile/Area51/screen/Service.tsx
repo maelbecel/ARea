@@ -102,8 +102,8 @@ const Service = ({ navigation, route }) => {
     const fetchData = async () => {
       try {
         const service = await ServiceInfo(slug);
-        setColor(service.decoration.backgroundColor);
-        setUrl(service.decoration.logoUrl);
+        (service.decoration.backgroundColor) ? setColor(service.decoration.backgroundColor) : null;
+        (service.decoration.logoUrl != "") ? setUrl(service.decoration.logoUrl) : null;
         setName(service.name);
         setAction(service.actions);
         setReaction(service.reactions);
