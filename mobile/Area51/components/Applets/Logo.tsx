@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Image } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface LogoProps {
     slug: string;
@@ -21,7 +22,8 @@ const LogoApplet = ({ slug, width = 40, height = 40, toggleBackground = true }: 
         const dataFetch = async (slug: string) => {
             try {
                 const token = await SecureStore.getItemAsync("token_api");
-                const response = await fetch(`http://zertus.fr:8001/service/${slug}`, {
+                const serverAddress = await AsyncStorage.getItem("serverAddress");
+                const response = await fetch(`${serverAddress}/service/${slug}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
