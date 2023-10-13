@@ -7,9 +7,13 @@ interface ToggleSwitchProps {
     yesLabel: string;
     noLabel: string;
     bgColor: string;
+    toggleColor?: string;
+    width?: number;
+    height?: number;
+    darkMode?: boolean;
 }
 
-const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor }) => {
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, width, height, darkMode }) => {
 
     const [isChekedState, setIsChecked] = useState<boolean>(false);
     const [color, setColor] = useState<string>("#ffffff");
@@ -32,6 +36,13 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
     }
 
     const darkenColor = (color: string, factor: number): string => {
+        if (!darkMode) {
+            return color;
+        }
+        if (!color) {
+            console.log("no color");
+            return "#FFFFFF";
+        }
         const hexToRgb = (hex: string): number[] =>
             hex.match(/\w\w/g)!.map((x) => parseInt(x, 16));
 
@@ -53,7 +64,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
             disabled={isDisabled}
         >
             <Text style={styles.label}>{isChecked ? yesLabel : noLabel}</Text>
-            <View style={[styles.toggle, isChecked && {backgroundColor: bgColor}]} />
+            <View style={[styles.toggle, isChecked && {backgroundColor: toggleColor ? toggleColor : bgColor}]} />
         </TouchableOpacity>
     );
 };
@@ -77,7 +88,7 @@ const styles = StyleSheet.create({
     toggle: {
         width: 25,
         height: 25,
-        borderRadius: 25 / 2,
+        borderRadius: 15,
         backgroundColor: "grey",
     },
     disabled: {
