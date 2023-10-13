@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import FormInput from "../FormInput";
 import AppletComponent from "./AppletComponent";
@@ -12,8 +12,8 @@ const SearchApplet = () => {
     const [dispApplets, setDispApplets] = useState<any>(null); // State to store applets
 
     const reduceTitle = (title: string) => {
-        if (title.length > 20) {
-            return title.slice(0, 20) + "...";
+        if (title.length > 75) {
+            return title.slice(0, 75) + "...";
         }
         return title;
     };
@@ -57,7 +57,7 @@ const SearchApplet = () => {
             />
           </View>
           {/* Liste des applets */}
-          {(dispApplets != null) ? dispApplets.map((item) => (
+          {(dispApplets != null) ? dispApplets.map((item: any) => (
             <View style={styles.applet} key={item.id}>
               <AppletComponent
                 id={item.id}
@@ -65,6 +65,7 @@ const SearchApplet = () => {
                 reactionSlug={item.reactionSlug.split(".")[0]}
                 actionSlug={item.actionSlug.split(".")[0]}
                 enabled={item.enabled}
+                author={item.user.username}
               />
             </View>
           )): null}

@@ -3,8 +3,8 @@ import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ServiceInfo from '../../api/ServiceInfo';
 import { useNavigation } from '@react-navigation/native';
 import LogoApplet from "./Logo";
-import Switch from "./Switch";
 import AppletDetails from "../../api/AppletDetails";
+import ToggleSwitch from "./Switch";
 
 interface AppletProps {
     id: number;
@@ -12,13 +12,12 @@ interface AppletProps {
     actionSlug: string;
     reactionSlug: string;
     enabled: boolean;
+    author: string;
 }
 
-const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reactionSlug, enabled }) => {
+const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reactionSlug, enabled, author }) => {
     const [bgColor, setBgColor] = useState<string>("");
     const navigation: any = useNavigation();
-
-    console.log("ihugyv", enabled)
 
     useEffect(() => {
         const dataFetch = async (slug : string) => {
@@ -42,32 +41,44 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
 
     return (
         <TouchableOpacity style={{ ...styles.container, backgroundColor: bgColor} } onPress={() => navigation.navigate('MyApplets', { id: id })}>
-            <View style={ styles.card }>
-                {actionSlug && (
-                <LogoApplet
-                    slug={actionSlug}
-                    width={42}
-                    height={42}
-                    toggleBackground={false}
-                />
-                )}
-                {reactionSlug && (
-                <LogoApplet
-                    slug={reactionSlug}
-                    width={42}
-                    height={42}
-                    toggleBackground={false}
-                />
-                )}
+            <View style={ {...styles.card, marginBottom: 10 }}>
+                <View style={{ marginRight: 10 }}>
+                    {actionSlug && (
+                        <LogoApplet
+                        slug={actionSlug}
+                        width={20}
+                        height={20}
+                        toggleBackground={false}
+                        />
+                    )}
+                </View>
+                <View>
+                    {reactionSlug && (
+                        <LogoApplet
+                        slug={reactionSlug}
+                        width={20}
+                        height={20}
+                        toggleBackground={false}
+                        />
+                    )}
+                </View>
+            </View>
+            <View style={ { ...styles.card, marginBottom: 10 } }>
                 <Text style={ styles.title }>
                 {name}
                 </Text>
             </View>
+            <Text style={ styles.author}>
+                par {author}
+            </Text>
             <View style={ styles.card }>
-                <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>
-                Enabled:
-                </Text>
-                <Switch isChecked={enabled} isDisabled={enabled} />
+                <ToggleSwitch
+                    isChecked={enabled}
+                    isDisabled={enabled}
+                    yesLabel="Enabled"
+                    noLabel="Disabled"
+                    bgColor={bgColor}
+                />
             </View>
         </TouchableOpacity>
     );
@@ -79,6 +90,13 @@ const styles = StyleSheet.create({
         padding: 20,
         margin: 10,
         width: '85%',
+        justifyContent: 'space-between', // ou alignItems: 'center' selon votre besoin
+    },
+    author: {
+        color: 'white',
+        fontSize: 16,
+        marginBottom: 10,
+        fontWeight: 'bold',
     },
     card: {
         flexDirection: 'row',
@@ -87,7 +105,7 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: 'bold',
         color: 'white',
-        fontSize: 22
+        fontSize: 26
     },
 });
 
