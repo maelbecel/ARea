@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, DimensionValue } from "react-native";
 
 interface ToggleSwitchProps {
     isChecked: boolean;
@@ -8,12 +8,13 @@ interface ToggleSwitchProps {
     noLabel: string;
     bgColor: string;
     toggleColor?: string;
-    width?: number;
-    height?: number;
+    width?: DimensionValue;
+    height?: DimensionValue;
     darkMode?: boolean;
+    toggleSize?: DimensionValue;
 }
 
-const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, width, height, darkMode }) => {
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, width = '50%', height = '100%', darkMode = true, toggleSize }) => {
 
     const [isChekedState, setIsChecked] = useState<boolean>(false);
     const [color, setColor] = useState<string>("#ffffff");
@@ -60,7 +61,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
     return (
         <TouchableOpacity
             onPress={handleSwitchChange}
-            style={[styles.container, { backgroundColor: darkenColor(bgColor, 50) }, isDisabled && styles.disabled]}
+            style={[styles.container, { backgroundColor: darkenColor(bgColor, 50), width: width, height: height }, isDisabled && styles.disabled]}
             disabled={isDisabled}
         >
             <Text style={styles.label}>{isChecked ? yesLabel : noLabel}</Text>
@@ -74,8 +75,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        width: 160,
-        height: 34,
         borderRadius: 20,
         padding: 4,
     },

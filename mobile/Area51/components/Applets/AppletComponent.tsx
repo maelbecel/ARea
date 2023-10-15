@@ -22,8 +22,8 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
     useEffect(() => {
         const dataFetch = async (slug : string) => {
             try {
-                const bgColor = await AppletDetails(slug);
-                setBgColor(bgColor);
+                const data = await AppletDetails(slug);
+                setBgColor(data?.data?.decoration?.backgroundColor);
             } catch (error) {
                 console.log(error);
             }
