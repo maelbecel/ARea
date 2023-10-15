@@ -73,7 +73,7 @@ const Home = ({ navigation }) => {
       <View style={ styles.input }>
         <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
       </View>
-      <ScrollView style={{ height: 800 }}>
+      <ScrollView style={{ height: '106%'  }}>
         <View style={ styles.services }>
           {displayApplets()}
         </View>

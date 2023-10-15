@@ -44,17 +44,21 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
             console.log("no color");
             return "#FFFFFF";
         }
-        const hexToRgb = (hex: string): number[] =>
-            hex.match(/\w\w/g)!.map((x) => parseInt(x, 16));
-
+        const hexToRgb = (hex: string): number[] => {
+            if (hex) {
+                const match = hex.match(/\w\w/g);
+                if (match) {
+                    return match.map((x) => parseInt(x, 16));
+                }
+            }
+            return [0, 0, 0];
+        };
         const rgbToHex = (r: number, g: number, b: number): string =>
             `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
-
         const [r, g, b] = hexToRgb(color);
         const darkenedR = Math.max(0, Math.floor(r - factor));
         const darkenedG = Math.max(0, Math.floor(g - factor));
         const darkenedB = Math.max(0, Math.floor(b - factor));
-
         return rgbToHex(darkenedR, darkenedG, darkenedB);
     };
 

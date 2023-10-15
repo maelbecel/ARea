@@ -48,6 +48,7 @@ const getWriteColor = (color: string): string => {
 
   /* The code block is determining the appropriate text color based on the luminance of the
   background color. */
+  console.log("Luminace : ", luminance)
   if (luminance > 0.6) {
       return "#000000";
   } else {
@@ -102,7 +103,7 @@ const ServiceTemplate = ({ navigation, route }) => {
       try {
         const service = await ServiceInfo(slug);
         setColor(service.decoration.backgroundColor);
-        setUrl(service.decoration.logoUrl);
+        (service.decoration.logoUrl != "") ? setUrl(service.decoration.logoUrl) : null;
         setName(service.name);
         setAction(service.actions);
         setReaction(service.reactions);
@@ -113,6 +114,8 @@ const ServiceTemplate = ({ navigation, route }) => {
 
     fetchData();
   }, [slug]);
+
+  console.log("URL : " + url);
 
   /* The code block is rendering a view that contains a top bar, an image, and a text component. It
   also includes a scroll view that contains a view with action cards. */
