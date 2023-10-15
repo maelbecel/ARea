@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import LogoApplet from "./Logo";
 
 interface ButtonProps {
@@ -20,38 +20,68 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) 
         <View>
             {isButtonToggle ? (
                 <View style={{ alignItems: "center" }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                        <View style={{ width: "33%", alignItems: "center" }}>
+                    <View style={ styles.section }>
+                        <View style={{ width: "33%", alignItems: "flex-start" }}>
                             <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Action</Text>
                         </View>
-                        <View style={{ width: "33%", alignItems: "center" }}>
-                            {actionSlug && <LogoApplet slug={actionSlug} width={60} height={60} toggleBackground={true} />}
+
+                        <View>
+                            {actionSlug &&
+                            <LogoApplet
+                                slug={actionSlug}
+                                width={60}
+                                height={60}
+                                toggleBackground={true}
+                            />}
                         </View>
-                        <View style={{ width: "33%" }}>
+
+                        <View>
                             <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Name of Action</Text>
                             <Text style={{ color: "#363841", fontSize: 22 }}>Description of Action</Text>
                         </View>
                     </View>
-                    <View style={{ paddingVertical: "8%", paddingHorizontal: 2, backgroundColor: "#36384138" }} />
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
-                        <View style={{ width: "33%", alignItems: "center" }}>
+
+                    <View style={{ paddingVertical: "8%", paddingHorizontal: 2.5, backgroundColor: "#36384138" }} />
+
+                    <View style={ styles.section }>
+                        <View style={{ width: "33%", alignItems: "flex-start" }}>
                             <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Reaction</Text>
                         </View>
-                        <View style={{ width: "33%", alignItems: "center" }}>
-                            {reactionSlug && <LogoApplet slug={reactionSlug} width={60} height={60} toggleBackground={true} />}
+                        <View>
+                            {reactionSlug &&
+                            <LogoApplet
+                                slug={reactionSlug}
+                                width={60}
+                                height={60}
+                                toggleBackground={true}
+                            />}
                         </View>
-                        <View style={{ width: "33%" }}>
+                        <View>
                             <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Name of Reaction</Text>
                             <Text style={{ color: "#363841", fontSize: 22 }}>Description of Reaction</Text>
                         </View>
                     </View>
+                    <TouchableOpacity onPress={handleClick} style={{marginVertical: 10 }}>
+                        <Text style={{ color: "#939596", fontWeight: "bold", fontSize: 18 }}>Fewer Details</Text>
+                    </TouchableOpacity>
                 </View>
-            ) : null}
+
+            ) :
             <TouchableOpacity onPress={handleClick} style={{ alignItems: "center", marginVertical: 10 }}>
-                <Text style={{ color: "blue", fontWeight: "bold", fontSize: 18 }}>More Details</Text>
+                <Text style={{ color: "#939596", fontWeight: "bold", fontSize: 18 }}>More Details</Text>
             </TouchableOpacity>
+            }
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    section : {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%"
+    },
+});
 
 export default MoreDetailsButton;

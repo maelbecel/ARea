@@ -14,7 +14,7 @@ const AppletDetails = async (slug: string) => {
                 }
             });
         const data: any = await response.json();
-        return (data?.data?.decoration?.backgroundColor);
+        return (data);
     } catch (error) {
         console.log("error applet component", error);
         return null;

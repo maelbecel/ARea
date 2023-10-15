@@ -22,8 +22,8 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
     useEffect(() => {
         const dataFetch = async (slug : string) => {
             try {
-                const bgColor = await AppletDetails(slug);
-                setBgColor(bgColor);
+                const data = await AppletDetails(slug);
+                setBgColor(data?.data?.decoration?.backgroundColor);
             } catch (error) {
                 console.log(error);
             }
@@ -46,8 +46,8 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                     {actionSlug && (
                         <LogoApplet
                         slug={actionSlug}
-                        width={20}
-                        height={20}
+                        width={27}
+                        height={27}
                         toggleBackground={false}
                         />
                     )}
@@ -56,8 +56,8 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                     {reactionSlug && (
                         <LogoApplet
                         slug={reactionSlug}
-                        width={20}
-                        height={20}
+                        width={27}
+                        height={27}
                         toggleBackground={false}
                         />
                     )}

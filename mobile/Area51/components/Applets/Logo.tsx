@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Image } from "react-native";
-import * as SecureStore from "expo-secure-store";
+import AppletDetails from "../../api/AppletDetails";
 
 interface LogoProps {
     slug: string;
@@ -20,16 +20,7 @@ const LogoApplet = ({ slug, width = 40, height = 40, toggleBackground = true }: 
     useEffect(() => {
         const dataFetch = async (slug: string) => {
             try {
-                const token = await SecureStore.getItemAsync("token_api");
-                const response = await fetch(`http://zertus.fr:8001/service/${slug}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                const data = await response.json();
+                const data = await AppletDetails(slug);
                 setLogo({
                     logoUrl: data?.data?.decoration?.logoUrl,
                     backgroundColor: data?.data?.decoration?.backgroundColor,
@@ -40,7 +31,7 @@ const LogoApplet = ({ slug, width = 40, height = 40, toggleBackground = true }: 
         };
 
         dataFetch(slug);
-    }, []); // Assurez-vous de gérer correctement les dépendances du useEffect dans React Native
+    }, []);
 
     return (
         <View style={{ borderRadius: toggleBackground ? width / 2 : 0, overflow: 'hidden' }}>

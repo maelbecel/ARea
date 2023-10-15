@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, DimensionValue } from "react-native";
 
 interface ToggleSwitchProps {
     isChecked: boolean;
@@ -7,9 +7,14 @@ interface ToggleSwitchProps {
     yesLabel: string;
     noLabel: string;
     bgColor: string;
+    toggleColor?: string;
+    width?: DimensionValue;
+    height?: DimensionValue;
+    darkMode?: boolean;
+    toggleSize?: DimensionValue;
 }
 
-const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor }) => {
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, width = '50%', height = '100%', darkMode = true, toggleSize }) => {
 
     const [isChekedState, setIsChecked] = useState<boolean>(false);
     const [color, setColor] = useState<string>("#ffffff");
@@ -32,6 +37,13 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
     }
 
     const darkenColor = (color: string, factor: number): string => {
+        if (!darkMode) {
+            return color;
+        }
+        if (!color) {
+            console.log("no color");
+            return "#FFFFFF";
+        }
         const hexToRgb = (hex: string): number[] => {
             if (hex) {
                 const match = hex.match(/\w\w/g);
@@ -53,11 +65,11 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
     return (
         <TouchableOpacity
             onPress={handleSwitchChange}
-            style={[styles.container, { backgroundColor: darkenColor(bgColor, 50) }, isDisabled && styles.disabled]}
+            style={[styles.container, { backgroundColor: darkenColor(bgColor, 50), width: width, height: height }, isDisabled && styles.disabled]}
             disabled={isDisabled}
         >
             <Text style={styles.label}>{isChecked ? yesLabel : noLabel}</Text>
-            <View style={[styles.toggle, isChecked && {backgroundColor: bgColor}]} />
+            <View style={[styles.toggle, isChecked && {backgroundColor: toggleColor ? toggleColor : bgColor}]} />
         </TouchableOpacity>
     );
 };
@@ -67,8 +79,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        width: 160,
-        height: 34,
         borderRadius: 20,
         padding: 4,
     },
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
     toggle: {
         width: 25,
         height: 25,
-        borderRadius: 25 / 2,
+        borderRadius: 15,
         backgroundColor: "grey",
     },
     disabled: {
