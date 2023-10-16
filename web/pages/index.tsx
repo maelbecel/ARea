@@ -32,7 +32,7 @@ const IndexPage: NextPage = () => {
     const getProfile = async (token: string) => {
       setUser(await GetProfile(token) as UserProfile);
     }
-    
+
     if (user?.email === "" || user?.email === null)
       getProfile(token);
   }, [token, user, setUser]);
