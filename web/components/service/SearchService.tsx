@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router";
+import { getTheme } from "../../utils/getTheme";
 
 // --- Interface --- //
 interface ServiceProps {
@@ -32,10 +33,15 @@ const ServiceButtonComponent = ({ name, slug, logo, color, callback }: { name: s
 }
 
 const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug: string, logo: string, color: string}) => {
+    const theme = getTheme(color);
+
     return (
         <Link href={`/create?page=2&service=${slug}&active=true&back=1`}>
             <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
-                 style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
+                 style={{
+                    backgroundColor: (color.length === 0) ? "#363841" : color,
+                    color: (theme === "dark") ? "#ffffff" : "#363841"
+                }}
             >
                 <Image src={logo} width={120} height={120} alt={"Service Logo"} />
                 <span>{name}</span>
