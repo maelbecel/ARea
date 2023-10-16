@@ -34,10 +34,17 @@ const AddServices = ({navigation, route}) => {
     if (title == undefined || action == "default" || actionInputs == undefined || reactionInputs == undefined || reaction == "default") {
       alert("Error")
       return
-    }    AppletApi(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput)
-    await AsyncStorage.setItem('action', "default");
-    await AsyncStorage.setItem('reaction', "default");
-    navigation.navigate("My Applets")
+    }
+    const data = await AppletApi(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput);
+    if (data == false) {
+      alert("Error")
+      return
+    } else {
+
+      await AsyncStorage.setItem('action', "default");
+      await AsyncStorage.setItem('reaction', "default");
+      navigation.navigate("MyApplets", { id: data.id});
+    }
   }
 
   /* The `useFocusEffect` hook is a React Navigation hook that allows you to perform side effects when

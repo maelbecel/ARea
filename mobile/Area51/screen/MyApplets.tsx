@@ -20,7 +20,7 @@ const MyApplet = ({route}) => {
 
     useEffect(() => {
       const getStatusbarHeight = () => {
-        setStatusBarHeight(StatusBar.currentHeight + 10 || 0);
+        setStatusBarHeight(StatusBar.currentHeight + 20 || 0);
       };
 
       getStatusbarHeight();
@@ -91,7 +91,7 @@ const MyApplet = ({route}) => {
         <ScrollView>
             <View style={{ ...styles.container, backgroundColor: bgColor, paddingTop: statusBarHeight }}>
                 {/* TODO: faire l'engrenage de modification etc */}
-                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={('white')} />
+                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.navigate("My Applets")} color={('white')} />
             </View>
             <View>
                 {dataApplet &&
