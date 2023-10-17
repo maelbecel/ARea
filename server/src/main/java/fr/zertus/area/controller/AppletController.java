@@ -103,7 +103,7 @@ public class AppletController {
         )
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteAppletById(@PathVariable long id) {
+    public ResponseEntity<ApiResponse<String>> deleteAppletById(@PathVariable long id) throws DataNotFoundException {
         appletService.delete(id);
         return ApiResponse.noContent().toResponseEntity();
     }

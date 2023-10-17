@@ -64,7 +64,10 @@ public class AppletService {
         return appletRepository.save(appletEntity);
     }
 
-    public void delete(long id) {
+    public void delete(long id) throws DataNotFoundException {
+        Applet applet = getById(id);
+        if (applet.getUser().getId() != userService.getCurrentUser().getId())
+            throw new DataNotFoundException("Applet not found");
         appletRepository.deleteById(id);
     }
 
@@ -81,7 +84,10 @@ public class AppletService {
     }
 
     public Applet getById(Long id) throws DataNotFoundException {
-        return appletRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Applet not found"));
+        Applet applet = appletRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Applet not found"));
+        if (applet.getUser().getId() != userService.getCurrentUser().getId())
+            throw new DataNotFoundException("Applet not found");
+        return applet;
     }
 
     /**
@@ -121,8 +127,8 @@ public class AppletService {
                     applet.addLog("Error while triggering action - " + e.getMessage());
                     log.error("Error while triggering action " + actionSlug + " for applet " + applet.getId() + " - " + e.getMessage());
                 }
-                appletRepository.save(applet); // TODO: Find a way to save all applets at the end of the loop with a single request
             }
+            appletRepository.saveAll(applets);
         }).start();
     }
 

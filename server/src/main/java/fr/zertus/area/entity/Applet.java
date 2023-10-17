@@ -57,7 +57,7 @@ public class Applet {
     @Column(name = "created_at")
     Timestamp createdAt;
 
-    @Column(name = "logs")
+    @Column(name = "logs", columnDefinition = "TEXT")
     String logs;
 
     @Column(name = "notif_user")
