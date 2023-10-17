@@ -9,10 +9,13 @@ import TextContainer, { Forgot, InputContainer } from "../../components/auth/Tex
 import { useRouter } from "next/router";
 import Footer from "../../components/footer";
 import { NavigateButton } from "../../components/NavBar/components/Button";
+import { UserLogin } from "../../utils/api/user/login";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 
 const IndexPage: NextPage = () => {
     const [email   , setEmail]    = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const { setToken } = useToken();
 
     const route = useRouter();
 
@@ -35,41 +38,14 @@ const IndexPage: NextPage = () => {
     }
 
     const handleClick = async () => {
-        if (!email || !password) {
-            // TODO: error
-            return;
-        }
+        const res = await UserLogin(email, password);
 
-        try {
-            const response = await fetch("https://area51.zertus.fr/user/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
-            });
-            const data = await response.json();
+        res === null ? setToken("") : setToken(res);
 
-            console.log(data);
+        clearInputs();
 
-            if (data?.status === 200) {
-                localStorage.setItem("token", data?.data);
-
-                clearInputs();
-
-                route.push("/");
-            } else {
-                clearInputs();
-
-                console.log(data);
-                // TODO: error
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        if (res)
+            route.push("/");
     }
 
     return (

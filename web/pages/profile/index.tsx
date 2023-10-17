@@ -11,9 +11,9 @@ import UpdateButton from "../../components/updateButton/updateButton";
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
 import Icon from "../../components/NavBar/components/Icon";
 import Profile from "../../components/NavBar/components/Profile";
-import { useUser } from "../../utils/api/user/UserProvider";
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
 import { GetProfile } from "../../utils/api/user/me";
-import { UserProfile } from "../../utils/api/user/interface";
+import { UserProfile } from "../../utils/api/user/interface/interface";
 import { NavigateButton } from "../../components/NavBar/components/Button";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
 

@@ -7,7 +7,7 @@ import Switch from "../../../switch";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
 import { GetProfile } from "../../../../utils/api/user/me";
-import { UserProfile } from "../../../../utils/api/user/interface";
+import { UserProfile } from "../../../../utils/api/user/interface/interface";
 
 const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
     const theme = getTheme(color);

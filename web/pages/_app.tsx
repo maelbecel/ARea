@@ -7,14 +7,17 @@ import type { Session } from "next-auth"
 
 // --- Providers --- //
 import { SessionProvider } from "next-auth/react"
-import { UserProviders } from '../utils/api/user/UserProvider'
+import { UserProviders } from '../utils/api/user/Providers/UserProvider'
+import { TokenProviders } from '../utils/api/user/Providers/TokenProvider'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } } : AppProps<{ session: Session }>) {
   return (
     <SessionProvider session={session}>
-      <UserProviders>
-        <Component {...pageProps} />
-      </UserProviders>
+      <TokenProviders>
+        <UserProviders>
+          <Component {...pageProps} />
+        </UserProviders>
+      </TokenProviders>
     </SessionProvider>
   )
 }

@@ -2,7 +2,7 @@
 import { NextRouter } from "next/router";
 
 // --- Interface --- //
-import { UserProfile } from "./interface";
+import { UserProfile } from "./interface/interface";
 
 /**
  * Retrieve the user's profile using a GET request.

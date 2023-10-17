@@ -9,9 +9,9 @@ import SearchService from '../components/service/SearchService';
 import Footer from '../components/footer';
 import SimpleLink from '../components/NavBar/components/SimpleLink';
 import Profile from '../components/NavBar/components/Profile';
-import { useUser } from '../utils/api/user/UserProvider';
+import { useUser } from '../utils/api/user/Providers/UserProvider';
 import { GetProfile } from '../utils/api/user/me';
-import { UserProfile } from '../utils/api/user/interface';
+import { UserProfile } from '../utils/api/user/interface/interface';
 import { NavigateButton } from '../components/NavBar/components/Button';
 
 const IndexPage: NextPage = () => {
@@ -29,13 +29,16 @@ const IndexPage: NextPage = () => {
   }, [token]);
 
   useEffect(() => {
+    if (connected === false)
+      return;
+
     const getProfile = async (token: string) => {
       setUser(await GetProfile(token) as UserProfile);
     }
 
     if (user?.email === "" || user?.email === null)
       getProfile(token);
-  }, [token, user, setUser]);
+  }, [token, user, setUser, connected]);
 
   return (
     <>
