@@ -8,9 +8,9 @@ import Icon from "../../components/NavBar/components/Icon";
 import SearchApplet from "../../components/applet/searchApplet";
 import Footer from '../../components/footer'
 import Profile from "../../components/NavBar/components/Profile";
-import { useUser } from "../../utils/api/user/UserProvider";
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
 import { GetProfile } from "../../utils/api/user/me";
-import { UserProfile } from "../../utils/api/user/interface";
+import { UserProfile } from "../../utils/api/user/interface/interface";
 import { NavigateButton } from "../../components/NavBar/components/Button";
 
 const IndexPage: NextPage = () => {

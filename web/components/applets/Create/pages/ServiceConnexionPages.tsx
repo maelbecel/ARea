@@ -9,6 +9,12 @@ import { ServiceInfoContainer } from "../../../service/template";
 import { Card } from "../interface";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
+import { useRouter } from "next/router";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
+import { GetServices } from "../../../../utils/api/service/service";
+import { Service } from "../../../../utils/api/service/interface/interface";
+import { OAuth2GetToken } from "../../../../utils/api/service/oauth2";
 
 const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Dispatch<SetStateAction<number>> }) => {
     const theme = getTheme(color);
@@ -55,64 +61,67 @@ const ConnexionButton = ({ props, callback } : { props: any | undefined, callbac
     )
 }
 
-const ServiceConnexionPages = ({ setPages, token, service, slug, index, array, setArray }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, slug: string, array: Card[], index: number, setArray: Dispatch<SetStateAction<Card[]>> }) => {
-    const [props, setProps] = useState<any | undefined>(undefined);
+const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray }: { setPages: Dispatch<SetStateAction<number>>, service: string, slug: string, array: Card[], index: number, setArray: Dispatch<SetStateAction<Card[]>> }) => {
+    const [props, setProps] = useState<Service | undefined>(undefined);
     const [theme, setTheme] = useState<string>("");
     const [action, setAction] = useState<any>({});
 
-    //TODO: check if the oauth2 is already done if yes auto redirect to pages(4)
+    const { services, setServices } = useServices();
+    const { token, setToken } = useToken();
+
+    const router = useRouter();
 
     let oauth2Window: Window | null = null;
+
+    const getServices = async (token: string) => {
+        setServices(await GetServices(token));
+    };
 
     useEffect(() => {
         if (props !== undefined)
             return;
 
-        const getService = async (service: string) => {
-            try {
-                const response = await fetch(`https://area51.zertus.fr/service/${service}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization : `Bearer ${token}`
-                    },
-                });
-
-                const data = await response.json();
-
-                setProps(data?.data);
-
-                if (data?.data && data?.data.actions && data?.data.reactions) {
-                    console.log(slug);
-
-                    const findObjectBySlug = (array: any[], slug: string) => {
-                        return array.find(item => item?.slug === slug);
-                    };
-
-                    const actionWithSlug = findObjectBySlug(data.data.actions, slug);
-
-                    if (actionWithSlug) {
-                        setAction(actionWithSlug)
-                        return;
-                    }
-
-                    const reactionWithSlug = findObjectBySlug(data.data.reactions, slug);
-
-                    if (reactionWithSlug) {
-                        setAction(reactionWithSlug);
-                        return;
-                    }
+        if (services.length === 0) {
+            if (token === "") {
+                const tokenStore = localStorage.getItem("token");
+    
+                if (tokenStore === null) {
+                    router.push("/");
+                    return;
                 }
-            } catch (error) {
-                console.log(error);
+                setToken(tokenStore);
             }
-        };
+            getServices(token);
+        }
 
-        getService(service);
+        const Service: Service | undefined = services.find((Service: Service) => Service.slug === service);
+
+        setProps(Service);
+
+        if (Service && Service.actions && Service.reactions) {
+            const findObjectBySlug = (array: any[], slug: string) => {
+                return array.find(item => item?.slug === slug);
+            };
+
+            const actionWithSlug = findObjectBySlug(Service.actions, slug);
+
+            if (actionWithSlug) {
+                setAction(actionWithSlug)
+                return;
+            }
+
+            const reactionWithSlug = findObjectBySlug(Service.reactions, slug);
+
+            if (reactionWithSlug) {
+                setAction(reactionWithSlug);
+                return;
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [service, token, slug, props, action]);
 
     useEffect(() => {
-        setTheme(getTheme(props?.decoration?.backgroundColor));
+        setTheme(getTheme(props?.decoration?.backgroundColor ?? "#ffffff"));
     }, [props, theme]);
 
     const handleClick = async () => {
@@ -123,19 +132,14 @@ const ServiceConnexionPages = ({ setPages, token, service, slug, index, array, s
 
         const openOAuth2Window = async () => {
             try {
-                const response = await fetch(`https://area51.zertus.fr/service/${service}/oauth2/token`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
+                const OAuthToken = await OAuth2GetToken(token, service);
 
-                const data = await response.json();
+                if (!OAuthToken)
+                    return;
 
                 // Open the OAuth2 authorization window
                 oauth2Window = window.open(
-                    `https://area51.zertus.fr/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${data?.data}`,
+                    `https://area51.zertus.fr/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${OAuthToken}`,
                     'OAuth2 Authorization',
                     'width=720,height=480'
                 );

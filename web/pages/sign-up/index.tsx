@@ -9,11 +9,14 @@ import Icon from "../../components/NavBar/components/Icon";
 import TextContainer, { InputContainer } from "../../components/auth/TextContainer";
 import Footer from "../../components/footer";
 import { NavigateButton } from "../../components/NavBar/components/Button";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { UserRegister } from "../../utils/api/user/register";
 
 const IndexPage: NextPage = () => {
     const [username, setUsername] = useState<string>("");
     const [email   , setEmail]    = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const { setToken } = useToken();
 
     const router = useRouter();
 
@@ -37,43 +40,14 @@ const IndexPage: NextPage = () => {
     }
 
     const handleClick = async () => {
-        if (!username || !email || !password) {
-            // TODO: error
-            return;
-        }
+        const res = await UserRegister(email, username, password);
 
-        try {
-            const response = await fetch("https://area51.zertus.fr/user/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email,
-                    username,
-                    password
-                })
-            });
-            const data = await response.json();
+        res === null ? setToken("") : setToken(res);
 
-            if (data?.status === 200) {
-                localStorage.setItem("token", data?.data);
+        clearInputs();
 
-                clearInputs();
-
-                router.push("/");
-            } else if (data?.status === 400) {
-                clearInputs();
-
-                router.push("/login");
-            } else {
-                clearInputs();
-
-                console.log(data);
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        if (res)
+            router.push("/");
     }
 
     return (
