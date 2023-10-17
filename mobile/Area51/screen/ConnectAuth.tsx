@@ -9,6 +9,8 @@ import TokenApi from '../api/ServiceToken'
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import SelectDropdown from 'react-native-select-dropdown'
+import PlaceHolders, {Dict} from '../api/Placeholders';
+import IngredientButton from '../components/IngredientButton';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -86,24 +88,21 @@ const ConnectAuth = ({ navigation, route }) => {
   const [oAuthStatus, setoAuthStatus] = React.useState<boolean>(false);
   const [description, setDescription] = React.useState<string>("");
   const [inputs, setInput] = React.useState<Input[]>([]);
+  const [placeholders, setPlaceholders] = React.useState<Dict>(null);
   const redirectUri = Linking.createURL("/oauth2/" + slug.split(".")[0]);
   const useUrl = Linking.useURL();
   const [loggedIn, setLoggedIn] = React.useState(false);
   let inputsResp = [];
 
-  const displayTextForm = (input : any, index : number) => {
-    return (
-      <View key={input.name} style={{width:"100%"}}>
-        <View >
-          <TextInput placeholder={input.label} textBreakStrategy="highQuality" placeholderTextColor={getWriteColor(color, true)} onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}} style={[styles.input, { backgroundColor: getWriteColor(getWriteColor(color, true)), color: getWriteColor(color, true) }]}/>
-        </View>
-        {(type == "reaction") ? <View style={{alignSelf: "flex-end", marginRight : "15%"}} >
-          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.ingredients]} onPress={redirection}>
-            <Text style={[{color: color}, styles.buttoningr]}>Add Ingredients</Text>
-          </TouchableOpacity>
-        </View> : null}
-     </View>
-    )
+  const displayTextForm = (input : Input, index : number) => {
+    return (<IngredientButton
+      input={input}
+      placeholders={placeholders}
+      type={type}
+      color={color}
+      onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}}
+      onSelect={(text) => {console.log("Select the " + text); isAllFormFill()}}
+    />)
   }
 
   const displayNumberForm = (input : any, index : number) => {
@@ -112,11 +111,6 @@ const ConnectAuth = ({ navigation, route }) => {
         <View >
           <TextInput keyboardType='numeric' placeholder={input.label} textBreakStrategy="highQuality" placeholderTextColor={getWriteColor(color, true)} onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}} style={[styles.input, { backgroundColor: getWriteColor(getWriteColor(color, true)), color: getWriteColor(color, true) }]}/>
         </View>
-        {(type == "reaction") ? <View style={{alignSelf: "flex-end", marginRight : "15%"}} >
-          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.ingredients]} onPress={redirection}>
-            <Text style={[{color: color}, styles.buttoningr]}>Add Ingredients</Text>
-          </TouchableOpacity>
-        </View> : null}
      </View>
     )
   }
@@ -132,11 +126,6 @@ const ConnectAuth = ({ navigation, route }) => {
         <View >
           <SelectDropdown data={input.options} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
         </View>
-        {(type == "reaction") ? <View style={{alignSelf: "flex-end", marginRight : "15%"}} >
-          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.ingredients]} onPress={redirection}>
-            <Text style={[{color: color}, styles.buttoningr]}>Add Ingredients</Text>
-          </TouchableOpacity>
-        </View> : null}
      </View>
     )
   }
@@ -218,6 +207,7 @@ const ConnectAuth = ({ navigation, route }) => {
       const info = await ServiceInfo(slug.split(".")[0])
       const actionSlug = await AsyncStorage.getItem("action");
       const infoInput = (type == "action") ? await ActionApi(slug) : await ReactionApi(slug, actionSlug);
+      const placeHolders = (type == "action") ? null : await PlaceHolders(slug, actionSlug)
 
       if (info == null) return;
       setInput(infoInput);
@@ -226,6 +216,7 @@ const ConnectAuth = ({ navigation, route }) => {
       setName(info.name);
       setAction(info.actions);
       setReaction(info.reactions);
+      setPlaceholders(placeHolders);
       for (let i = 0; i < info.actions.length; i++) {
         inputsResp[i] = null;
       }
