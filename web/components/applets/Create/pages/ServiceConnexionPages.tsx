@@ -14,6 +14,7 @@ import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
 import { GetServices } from "../../../../utils/api/service/service";
 import { Service } from "../../../../utils/api/service/interface/interface";
+import { OAuth2GetToken } from "../../../../utils/api/service/oauth2";
 
 const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Dispatch<SetStateAction<number>> }) => {
     const theme = getTheme(color);
@@ -131,19 +132,14 @@ const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray
 
         const openOAuth2Window = async () => {
             try {
-                const response = await fetch(`https://area51.zertus.fr/service/${service}/oauth2/token`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
+                const OAuthToken = await OAuth2GetToken(token, service);
 
-                const data = await response.json();
+                if (!OAuthToken)
+                    return;
 
                 // Open the OAuth2 authorization window
                 oauth2Window = window.open(
-                    `https://area51.zertus.fr/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${data?.data}`,
+                    `https://area51.zertus.fr/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${OAuthToken}`,
                     'OAuth2 Authorization',
                     'width=720,height=480'
                 );
