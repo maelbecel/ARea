@@ -29,7 +29,7 @@ import {Input} from  './ServiceInfo'
  * creating an applet.
  * @returns a Promise<boolean>.
  */
-const Applet = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string, reactionInputs : Input[], reactionResp : Array<any>): Promise<boolean> => {
+const Applet = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string, reactionInputs : Input[], reactionResp : Array<any>): Promise<boolean | any> => {
     try {
         let inputs : Input[] = [];
         console.log("============= New Applet ====================")
@@ -64,9 +64,8 @@ const Applet = async (name : string, actionSlug : string, actionInputs : Input[]
         });
         console.log(response.status);
         const json = await response.json();
-        console.log("Applet say : ", json)
         if (json.data == undefined) return false;
-        return true;
+        return json.data;
     } catch (error) {
         console.error(error);
         return false;

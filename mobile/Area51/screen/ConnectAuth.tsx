@@ -2,13 +2,15 @@ import * as React from 'react';
 import { Text, View, StatusBar, TouchableOpacity, Image, TextInput, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
 import ServiceInfo, {Action, Reaction, Input} from '../api/ServiceInfo';
-import ActionCard from '../components/ActionCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionApi from '../api/Action';
 import ReactionApi from '../api/Reaction';
 import TokenApi from '../api/ServiceToken'
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
+import SelectDropdown from 'react-native-select-dropdown'
+import PlaceHolders, {Dict} from '../api/Placeholders';
+import IngredientButton from '../components/IngredientButton';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -21,7 +23,7 @@ import * as WebBrowser from 'expo-web-browser';
  * (black), indicating that the text color should be dark. Otherwise, it returns "#FFFFFF" (white),
  * indicating that the text color should be light.
  */
-const getWriteColor = (color: string): string => {
+const getWriteColor = (color: string, attenuation : boolean = false): string => {
   /* The line `const hexColor = color.startsWith("#") ? color : `#`;` is checking if the
   `color` variable starts with a `#` symbol. If it does, then `hexColor` is assigned the value of
   `color`. If it doesn't start with `#`, then `hexColor` is assigned the value of `#`,
@@ -53,10 +55,18 @@ const getWriteColor = (color: string): string => {
 
   /* The code block is determining the appropriate text color based on the luminance of the
   background color. */
-  if (luminance > 0.6) {
-      return "#000000";
+  if (attenuation) {
+    if (luminance > 0.6) {
+        return "#363841";
+    } else {
+        return "#D9D9D9";
+    }
   } else {
-      return "#FFFFFF";
+    if (luminance > 0.6) {
+      return "#000000";
+    } else {
+        return "#FFFFFF";
+    }
   }
 };
 
@@ -75,21 +85,55 @@ const ConnectAuth = ({ navigation, route }) => {
   const [action, setAction] = React.useState<Action[]>([]);
   const [reaction, setReaction] = React.useState<Reaction[]>([]);
   const [title, setTitle] = React.useState<string>("");
+  const [oAuthStatus, setoAuthStatus] = React.useState<boolean>(false);
   const [description, setDescription] = React.useState<string>("");
   const [inputs, setInput] = React.useState<Input[]>([]);
+  const [placeholders, setPlaceholders] = React.useState<Dict>(null);
   const redirectUri = Linking.createURL("/oauth2/" + slug.split(".")[0]);
   const useUrl = Linking.useURL();
   const [loggedIn, setLoggedIn] = React.useState(false);
   let inputsResp = [];
 
+  const displayTextForm = (input : Input, index : number) => {
+    return (<IngredientButton
+      input={input}
+      placeholders={placeholders}
+      type={type}
+      color={color}
+      onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}}
+      onSelect={(text) => {console.log("Select the " + text); isAllFormFill()}}
+    />)
+  }
+
+  const displayNumberForm = (input : any, index : number) => {
+    return (
+      <View key={input.name} style={{width:"100%"}}>
+        <View >
+          <TextInput keyboardType='numeric' placeholder={input.label} textBreakStrategy="highQuality" placeholderTextColor={getWriteColor(color, true)} onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}} style={[styles.input, { backgroundColor: getWriteColor(getWriteColor(color, true)), color: getWriteColor(color, true) }]}/>
+        </View>
+     </View>
+    )
+  }
+
+  const displaySelectForm = (input : any, index : number) => {
+    console.log("Select detected : ", input);
+    if (!input.options) {
+      console.log("No options")
+      return null;
+    }
+    return (
+      <View key={input.name} style={{width:"100%"}}>
+        <View >
+          <SelectDropdown data={input.options} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
+        </View>
+     </View>
+    )
+  }
+
   /* The `showForm` function is a helper function that generates a form based on the `inputs` array. */
   const showForm = () => {
-   return inputs.map((input, index) => (
-     <View key={input.name} style={{width:"100%"}}>
-       <TextInput placeholder={input.label} onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}} style={[styles.input, { backgroundColor: getWriteColor(color) }]}/>
-     </View>
-   ));
-  }
+    console.log("showForm");
+   return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : null))}
 
   /**
    * The function `isAllFormFill` checks if all the form inputs have been filled and returns true if
@@ -120,7 +164,7 @@ const ConnectAuth = ({ navigation, route }) => {
       let result = await WebBrowser.openAuthSessionAsync(
         `${serverAddress}/service/${slug.split(".")[0]}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
       );
-      console.log(result);
+      console.log("OAuth : " ,result);
     } catch (error) {
       alert(error);
       console.log(error);
@@ -135,6 +179,21 @@ const ConnectAuth = ({ navigation, route }) => {
     }
   }, [useUrl]);
 
+  React.useEffect(() => {
+    const callingAction = async () => {
+      const actionSlug = await AsyncStorage.getItem("action");
+      if (type == "reaction" && actionSlug == "default") {
+        navigation.navigate("Create");
+        return;
+      } else {
+        await _openAuthSessionAsync();
+        setoAuthStatus(true);
+      }
+    }
+
+    callingAction();
+  }, []);
+
   /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
   case, the effect is triggered when the component is mounted (since the dependency array `[]` is
   empty). */
@@ -148,6 +207,8 @@ const ConnectAuth = ({ navigation, route }) => {
       const info = await ServiceInfo(slug.split(".")[0])
       const actionSlug = await AsyncStorage.getItem("action");
       const infoInput = (type == "action") ? await ActionApi(slug) : await ReactionApi(slug, actionSlug);
+      const placeHolders = (type == "action") ? null : await PlaceHolders(slug, actionSlug)
+
       if (info == null) return;
       setInput(infoInput);
       setColor(info.decoration.backgroundColor);
@@ -155,13 +216,15 @@ const ConnectAuth = ({ navigation, route }) => {
       setName(info.name);
       setAction(info.actions);
       setReaction(info.reactions);
+      setPlaceholders(placeHolders);
       for (let i = 0; i < info.actions.length; i++) {
         inputsResp[i] = null;
       }
       isAllFormFill();
+      console.log("ServiceInfo", info);
     }
     fetchServiceInfo();
-  }, []);
+  }, [oAuthStatus]);
 
   /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
   case, the effect is triggered when the `action` or `reaction` variables change. */
@@ -201,7 +264,6 @@ const ConnectAuth = ({ navigation, route }) => {
    */
   const redirection = async () => {
     if (isAllFormFill()) {
-      await _openAuthSessionAsync();
       await AsyncStorage.setItem(type, slug);
       if (type == "action")
         navigation.navigate("Create", {actionInput: inputsResp, reactionInput: reactionInput});
@@ -218,20 +280,22 @@ const ConnectAuth = ({ navigation, route }) => {
   URL, and a text component with the value of the "name" variable. */
   if (name != "") {
     return (
-      <View>
-        <View style={[{ backgroundColor: color }, styles.container]}>
-          <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Create")} />
-          <Image source={{ uri: url }} style={styles.logo} />
-          <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
-        </View>
-        <View style={[{ backgroundColor: color },styles.action]}>
-          <Text style={[styles.name, { color: getWriteColor(color) }]}>{title}</Text>
-          <Text style={[styles.desc, { color: getWriteColor(color) }]}>{description}</Text>
-          {showForm()}
-          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.button]} onPress={redirection}>
-            <Text style={[{color: color}, styles.buttonText]}>Connection</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={{backgroundColor: color, height : "100%", paddingTop: 30}}>
+        <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Create")} />
+        <ScrollView style={{width : "100%"}} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+          <View style={[{ backgroundColor: color }]}>
+            <Image source={{ uri: url }} style={styles.logo} />
+            <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
+          </View>
+          <View style={[{ backgroundColor: color },styles.action]}>
+            <Text style={[styles.name, { color: getWriteColor(color) }]}>{title}</Text>
+            <Text style={[styles.desc, { color: getWriteColor(color) }]}>{description}</Text>
+              {oAuthStatus && showForm()}
+              <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.button]} onPress={redirection}>
+                <Text style={[{color: color}, styles.buttonText]}>Connection</Text>
+              </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -249,10 +313,24 @@ const styles = StyleSheet.create({
   button : {
     marginVertical: 10,
     alignItems: 'center',
+    alignSelf: 'center',
     width: '60%',
     padding: 10,
     borderRadius: 90,
     marginTop: 20,
+  },
+  ingredients : {
+    marginVertical: 10,
+    width: '50%',
+    padding: 5,
+    borderRadius: 10,
+    marginBottom: 30,
+  },
+  buttoningr: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    padding: 5,
   },
   buttonText: {
     fontSize: 20,
@@ -262,14 +340,6 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 30,
-    shadowColor: '#000',
-      shadowOffset: {
-      width: 0,
-      height: 2,
-      },
-      shadowOpacity: 0.3,
-      shadowRadius: 3.84,
-      elevation: 5,
   },
   name: {
     fontSize: 30,
@@ -289,14 +359,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '70%',
     borderRadius: 10,
-    textAlign: 'center',
-    marginBottom: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingVertical: 10,
+    flexWrap: 'wrap',
   },
   action: {
     paddingTop: 50,
     alignContent: "center",
     alignItems: "center",
-    height: 1000,
+    height: "100%",
   }
 });
 

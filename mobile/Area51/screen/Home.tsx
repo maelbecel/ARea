@@ -69,11 +69,11 @@ const Home = ({ navigation }) => {
   /* The `return` statement is returning a JSX element that represents the structure and content of the
   Home component. */
   return (
-    <View style={ styles.container }>
+    <View style={ styles.container}>
       <View style={ styles.input }>
         <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
       </View>
-      <ScrollView style={{ height: '106%'  }}>
+      <ScrollView style={{ marginBottom : 50}}>
         <View style={ styles.services }>
           {displayApplets()}
         </View>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 50,
     backgroundColor: '#fff',
-    paddingBottom: 100,
+    paddingBottom: 0,
   },
   input: {
     alignContent: "center",
