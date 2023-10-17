@@ -11,6 +11,8 @@ import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import { GetServices } from "../../../../utils/api/service/service";
 import { Service } from "../../../../utils/api/service/interface/interface";
+import { GetReactionInputs } from "../../../../utils/api/reaction/reaction";
+import { GetActionInputs } from "../../../../utils/api/action/action";
 
 const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
     const theme = getTheme(color);
@@ -192,33 +194,25 @@ const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray
         if (actionProps !== undefined && props !== undefined)
             return;
 
-            const getAction = async (service: string, slug: string) => {
-            try {
-                const response = await fetch(`https://area51.zertus.fr/${index === 0 ? `action/${slug}` : `reaction/${slug}/${array[0].slug}`}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization : `Bearer ${token}`
-                    },
-                });
+        const getAction = async (slug: string) => {
+            let response: any;
 
-                const data = await response.json();
+            if (index === 0)
+                response = await GetActionInputs(token, slug);
+            else
+                response = await GetReactionInputs(token, slug, array[0].slug);
 
-                setActionProps(data?.data);
+            setActionProps(response);
+            setArray((prev) => {
+                const newArray = [...prev];
 
-                setArray((prev) => {
-                    const newArray = [...prev];
+                newArray[index].fields = response?.inputs as inputs[];
 
-                    newArray[index].fields = data?.data?.inputs;
-
-                    return (newArray);
-                });
-            } catch (error) {
-                console.log(error);
-            }
+                return (newArray);
+            });
         };
 
-        getAction(service, slug);
+        getAction(slug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index, service, slug, token, actionProps, array]);
 
