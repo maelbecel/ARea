@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { useRouter } from "next/router";
+import { GetServices } from "../../utils/api/service/service";
 
 interface LinkedAccountProps {
     slug: string
@@ -81,65 +85,60 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
 }
 
 const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
-
-    const [data, setData] = useState<any | undefined>();
     const [linkedAccountsData, setLinkedAccountsData] = useState<linkedAccountData[] | undefined>();
+    const { services, setServices } = useServices();
+    const { token, setToken } = useToken();
+
+    const route = useRouter();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        if (services.length !== 0)
+            return;
 
-        const dataFetch = async () => {
-            try {
-                const data = await (
-                    await fetch("https://area51.zertus.fr/service", {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                setData(data);
-            } catch (error) {
-                console.log(error);
+        if (token === "") {
+            const tokenStore = localStorage.getItem("token");
+
+            if (tokenStore === null) {
+                route.push("/");
+                return;
             }
+            setToken(tokenStore);
+        }
+
+        const getServices = async (token: string) => {
+            setServices(await GetServices(token));
         };
-        dataFetch();
-    }, []);
+
+        getServices(token);
+    }, [services, token, route, setToken, setServices]);
 
     useEffect(() => {
-
+        if (services.length === 0 || token === "")
+            return;
         const tempArray : Array<linkedAccountData> = [];
 
-        if (data != undefined && linkedAccountsDataArray != undefined) {
-            for (const element of data?.data) {
-                console.log(element.slug);
-                const tempElement : linkedAccountData = {
-                    url: "",
-                    islinked: true,
-                };
+        if (linkedAccountsDataArray !== undefined) {
+            for (const element of services) {
+                const tempElement : linkedAccountData = { url: "", islinked: true };
+
                 if (linkedAccountsDataArray.includes(element.slug)) {
                     tempElement.islinked = true;
                     tempElement.url = "#";
                 } else {
                     tempElement.islinked = false;
-                    tempElement.url = "https://area51.zertus.fr/service/" + element.slug + "/oauth2" + "?redirecturi=http://localhost:8081/profile" + "&authToken=" + localStorage.getItem("token");
+                    tempElement.url = "https://area51.zertus.fr/service/" + element.slug + "/oauth2" + "?redirecturi=http://localhost:8081/profile" + "&authToken=" + token;
                 }
                 tempArray.push(tempElement);
             }
             setLinkedAccountsData(tempArray);
         }
-    }, [data]);
-
-    useEffect(() => {
-        console.log(linkedAccountsData);
-    }), [linkedAccountsData];
+    }, [services, token, linkedAccountsDataArray]);
 
     return (
         <div className="flex justify-center flex-col gap-y-10 pb-[10%]">
             <label className="text-[#363841] font-bold text-[42px]">Linked Account</label>
             <div className="flex flex-col items-center gap-y-7">
-                {linkedAccountsData && data?.data.map((item : any, index : any) => {
+                {linkedAccountsData && services.map((item : any, index : any) => {
                     console.log(linkedAccountsData);
                     console.log(linkedAccountsData[index].islinked);
                     console.log("slug " + item.slug + " " + typeof(item.slug));

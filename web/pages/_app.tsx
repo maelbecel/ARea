@@ -9,13 +9,16 @@ import type { Session } from "next-auth"
 import { SessionProvider } from "next-auth/react"
 import { UserProviders } from '../utils/api/user/Providers/UserProvider'
 import { TokenProviders } from '../utils/api/user/Providers/TokenProvider'
+import { ServiceProviders } from '../utils/api/service/Providers/ServiceProvider'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } } : AppProps<{ session: Session }>) {
   return (
     <SessionProvider session={session}>
       <TokenProviders>
         <UserProviders>
-          <Component {...pageProps} />
+          <ServiceProviders>
+            <Component {...pageProps} />
+          </ServiceProviders>
         </UserProviders>
       </TokenProviders>
     </SessionProvider>
