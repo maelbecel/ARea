@@ -31,9 +31,6 @@ public class TwitchWebhook {
     @Autowired
     private AppletService appletService;
 
-    @Autowired
-    private ActionReactionService actionReactionService;
-
     private static final List<String> messagesId = new ArrayList<>();
 
     @Hidden

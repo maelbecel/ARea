@@ -15,7 +15,7 @@ public class DiscordSendMessageWithWebhookReaction extends Reaction {
     public DiscordSendMessageWithWebhookReaction(String app) {
         super(app, "Send message in channel", "Send a message in a channel with a webhook");
 
-        this.inputs.add(FormInput.createTextInput("webhook", "Webhook URL"));
+        this.inputs.add(FormInput.createUrlInput("webhook", "Webhook URL"));
         this.inputs.add(FormInput.createTextInput("username", "Username to display"));
         this.inputs.add(FormInput.createTextInput("message", "Message to send"));
     }
@@ -44,7 +44,12 @@ public class DiscordSendMessageWithWebhookReaction extends Reaction {
             message = message.replace("{" + entry.getKey() + "}", entry.getValue());
 
         String webhook = FormInputUtils.getValue("webhook", inputs);
+        for (Map.Entry<String, String> entry : parameters.entrySet())
+            webhook = webhook.replace("{" + entry.getKey() + "}", entry.getValue());
+
         String username = FormInputUtils.getValue("username", inputs);
+        for (Map.Entry<String, String> entry : parameters.entrySet())
+            username = username.replace("{" + entry.getKey() + "}", entry.getValue());
 
         DiscordWebhookMessage webhookMessage = new DiscordWebhookMessage(message, username, "");
         return webhookMessage.send(webhook);

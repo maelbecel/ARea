@@ -34,7 +34,7 @@ public class NotionApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("", "");
+        return new AppDecoration("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/1024px-Notion-logo.svg.png", "#FFFFFF");
     }
 
     @Override
