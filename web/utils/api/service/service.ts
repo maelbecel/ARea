@@ -41,4 +41,50 @@ const GetServices = async (token: string): Promise<Service[]> => {
     return [];
 };
 
-export { GetServices };
+/**
+ * Fetch a service by its unique slug by sending a GET request to the server.
+ *
+ * @param {string} token - The user's authentication token.
+ * @param {string} slug  - The unique slug of the service to fetch.
+ *
+ * @returns {Promise<Service | null>} A promise that fetches the service with the specified slug.
+ * Returns the service object if successful, or null if there's an error.
+ */
+const GetService = async (token: string, slug: string): Promise<Service | null> => {
+    if (slug === null) {
+        console.log(`[GET] .../service/{slug}: slug is null`);
+        return null;
+    }
+
+    if (token === null) {
+        console.log(`[GET] .../service/${slug}: token is null`);
+        return null;
+    }
+
+    try {
+        const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization : `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (data?.status !== 200) {
+            console.log(`[GET] .../service/${slug} (Error: ${data?.status}): \"${data?.message}\".`);
+            return null;
+        }
+
+        console.log(`[GET] .../service/${slug}: \"Successfully fetched service.\"`);
+        console.log(data);
+
+        return data?.data as Service;
+    } catch (error: any) {
+        console.log(error);
+    }
+    return null;
+};
+
+export { GetServices, GetService };

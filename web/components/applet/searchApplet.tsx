@@ -7,6 +7,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import LogoApplet from "./logo";
 import Switch from "./switch";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
+import { useRouter } from "next/router";
+import { GetServices } from "../../utils/api/service/service";
+import { Service } from "../../utils/api/service/interface/interface";
 
 interface AppletProps {
     id: number;
@@ -30,49 +35,49 @@ interface SwitchProps {
 }
 
 const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
-
     const [bgColor, setBgColor] = useState<string>("");
     const [newName, setNewName] = useState<string>(name);
 
-    // get background color of the action slug
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        const dataFetch = async (slug : string) => {
-            try {
-                const data = await (
-                    await fetch(`https://area51.zertus.fr/service/${slug}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                console.log(data);
-                setBgColor(data?.data?.decoration?.backgroundColor);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        dataFetch(actionSlug);
+    const { services, setServices } = useServices();
+    const { token, setToken } = useToken();
 
-        if (name.length > 50) {
-            setNewName(name.slice(0, 50) + "...");
-            console.log("name -> ", newName);
+    const router = useRouter();
+
+    const getServices = async (token: string) => {
+        setServices(await GetServices(token));
+    }
+
+    useEffect(() => {
+        if (services.length === 0) {
+            if (token === "") {
+                const tokenStore = localStorage.getItem("token");
+    
+                if (tokenStore === null) {
+                    router.push("/");
+                    return;
+                }
+                setToken(tokenStore);
+            }
+            getServices(token);
         }
 
-    }, []);
+        const Service: Service | undefined = services.find((Service: Service) => Service.slug === actionSlug);
+
+        setBgColor(Service?.decoration?.backgroundColor ?? '#ffffff');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [bgColor]);
 
     useEffect(() => {
-        console.log(bgColor);
-    }, [bgColor]);
+        if (name.length > 50)
+            setNewName(name.slice(0, 50) + "...");
+    }, [name]);
 
     return (
         <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between">
             <Link href={`/myApplets/applet/${id}`} style={{ cursor: 'pointer', backgroundColor: bgColor }}>
                 <div className="cursor-pointer">
                     <div className="flex flex-wrap">
-                        {actionSlug && <LogoApplet slug={actionSlug} width={56} height={56} toogleBackground={false}/>}
+                        {actionSlug   && <LogoApplet slug={actionSlug}   width={56} height={56} toogleBackground={false}/>}
                         {reactionSlug && <LogoApplet slug={reactionSlug} width={56} height={56} toogleBackground={false}/>}
                     </div>
                     <div className="font-bold text-white text-[28px] pb-[40%] w-full overflow-hidden break-words">

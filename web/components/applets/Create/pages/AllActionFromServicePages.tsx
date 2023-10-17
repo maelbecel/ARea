@@ -7,6 +7,10 @@ import { Card } from "../interface";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
 import { useRouter } from "next/router";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
+import { GetServices } from "../../../../utils/api/service/service";
+import { Service } from "../../../../utils/api/service/interface/interface";
 
 const Headers = ({ color = "#363841", setPages, back }: { color?: string, setPages: Dispatch<SetStateAction<number>>, back: boolean }) => {
     const router = useRouter();
@@ -45,70 +49,77 @@ const Headers = ({ color = "#363841", setPages, back }: { color?: string, setPag
     )
 }
 
-const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, setIndex, index, back } : { service: string, token: string, setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, type: string | undefined, setIndex: Dispatch<SetStateAction<number>>, index: number, back: boolean }) => {
+const AllActionFromServicePages = ({ service, setPages, setSlug, type, setIndex, index, back } : { service: string, setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, type: string | undefined, setIndex: Dispatch<SetStateAction<number>>, index: number, back: boolean }) => {
     const [props, setProps] = useState<any | undefined>(undefined);
     const [actions, setActions] = useState<any[]>([]);
     const [theme, setTheme] = useState<string>("light");
 
+    const { services, setServices } = useServices();
+    const { token, setToken } = useToken();
+
+    const router = useRouter();
+
+    const getServices = async (token: string) => {
+        setServices(await GetServices(token));
+    };
+
     useEffect(() => {
-        const getService = async (slug: string) => {
-            if (props !== undefined && actions.length !== 0)
-                return;
-
-            try {
-                const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization : `Bearer ${token}`
-                    },
-                });
-
-                const data = await response.json();
-
-                setProps(data?.data);
-
-                if (type === undefined) {
-                    if (data?.data && data?.data.actions && data?.data.reactions) {
-                        const actionsWithType = data.data.actions.map((action: any) => ({
-                            ...action,
-                            type: "action",
-                        }));
-                        const reactionsWithType = data.data.reactions.map((reaction: any) => ({
-                            ...reaction,
-                            type: "reaction",
-                        }));
-
-                        setActions([...actionsWithType, ...reactionsWithType]);
-                    }
-                } else if (type === "action") {
-                    if (data?.data && data?.data.actions) {
-                        const actionsWithType = data.data.actions.map((action: any) => ({
-                            ...action,
-                            type: "action",
-                        }));
-
-                        setActions([...actionsWithType]);
-                    }
-                }  else if (type === "reaction") {
-                    if (data?.data && data?.data.reactions) {
-                        const reactionsWithType = data.data.reactions.map((reaction: any) => ({
-                            ...reaction,
-                            type: "reaction",
-                        }));
-
-                        setActions([...reactionsWithType])
-                    }
+        if (props !== undefined)
+            return;
+        if (services.length === 0) {
+            if (token === "") {
+                const tokenStore = localStorage.getItem("token");
+                
+                if (tokenStore === null) {
+                    router.push("/");
+                    return;
                 }
-            } catch (error) {
-                console.log(error);
+                setToken(tokenStore);
             }
-        };
+            getServices(token);
+        }
+        const Service: Service | undefined = services.find((Service: Service) => Service.slug === service);
 
-        getService(service);
+        setProps(Service);
 
+        if (type === undefined) {
+            if (Service && Service.actions && Service.reactions) {
+                const actionsWithType = Service.actions.map((action: any) => ({
+                    ...action,
+                    type: "action",
+                }));
+                const reactionsWithType = Service.reactions.map((reaction: any) => ({
+                    ...reaction,
+                    type: "reaction",
+                }));
+
+                setActions([...actionsWithType, ...reactionsWithType]);
+            }
+        } else if (type === "action") {
+            if (Service && Service.actions) {
+                const actionsWithType = Service.actions.map((action: any) => ({
+                    ...action,
+                    type: "action",
+                }));
+
+                setActions([...actionsWithType]);
+            }
+        }  else if (type === "reaction") {
+            if (Service && Service.reactions) {
+                const reactionsWithType = Service.reactions.map((reaction: any) => ({
+                    ...reaction,
+                    type: "reaction",
+                }));
+
+                setActions([...reactionsWithType])
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [service, token, type, props, actions, services]);
+
+    useEffect(() => {
         setTheme(getTheme(props?.decoration?.backgroundColor));
-    }, [service, token, type, props, actions]);
+    }, [props]);
 
     return (
         <>

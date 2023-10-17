@@ -6,6 +6,11 @@ import Image from "next/image";
 import { Card, inputs } from "../interface";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
+import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import { useRouter } from "next/router";
+import { GetServices } from "../../../../utils/api/service/service";
+import { Service } from "../../../../utils/api/service/interface/interface";
 
 const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
     const theme = getTheme(color);
@@ -147,35 +152,41 @@ const ValidateTriggersButton = ({ props, callback, text }  : { props: any | unde
     )
 };
 
-const FillActionInputsPages = ({ setPages, token, service, slug, index, array, setArray, EditMode }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, EditMode: boolean }) => {
+const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray, EditMode }: { setPages: Dispatch<SetStateAction<number>>, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, EditMode: boolean }) => {
     const [props, setProps] = useState<any | undefined>(undefined);
     const [actionProps, setActionProps] = useState<any | undefined>(undefined);
     const [theme, setTheme] = useState<string>("light");
 
+    const { services, setServices } = useServices();
+    const { token, setToken } = useToken();
+
+    const router = useRouter();
+
+    const getServices = async (token: string) => {
+        setServices(await GetServices(token));
+    };
+
     useEffect(() => {
         if (props !== undefined)
             return;
-
-        const getService = async (slug: string) => {
-            try {
-                const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization : `Bearer ${token}`
-                    },
-                });
-
-                const data = await response.json();
-
-                setProps(data?.data);
-            } catch (error) {
-                console.log(error);
+        if (services.length === 0) {
+            if (token === "") {
+                const tokenStore = localStorage.getItem("token");
+                
+                if (tokenStore === null) {
+                    router.push("/");
+                    return;
+                }
+                setToken(tokenStore);
             }
-        };
+            getServices(token);
+        }
 
-        getService(service);
-    }, [props, service, token]);
+        const Service: Service | undefined = services.find((Service: Service) => Service.slug === service);
+
+        setProps(Service);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props, services, token, service]);
 
     useEffect(() => {
         if (actionProps !== undefined && props !== undefined)

@@ -8,6 +8,11 @@ import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
 import { GetProfile } from "../../../../utils/api/user/me";
 import { UserProfile } from "../../../../utils/api/user/interface/interface";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
+import { useRouter } from "next/router";
+import { Service } from "../../../../utils/api/service/interface/interface";
+import { GetServices } from "../../../../utils/api/service/service";
 
 const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
     const theme = getTheme(color);
@@ -82,58 +87,80 @@ const ValidateButton = ({ props, callback }  : { props: any | undefined, callbac
     )
 };
 
-const ValidatePages = ({ setPages, token, service, slug, index, array, setArray, title, setTitle, notif, setNotif }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, title: string, setTitle: Dispatch<SetStateAction<string>>, notif: boolean, setNotif: Dispatch<SetStateAction<boolean>> }) => {
-    const [props, setProps] = useState<any[]>([]);
+const ValidatePages = ({ setPages, service, slug, index, array, setArray, title, setTitle, notif, setNotif }: { setPages: Dispatch<SetStateAction<number>>, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, title: string, setTitle: Dispatch<SetStateAction<string>>, notif: boolean, setNotif: Dispatch<SetStateAction<boolean>> }) => {
+    const [props, setProps] = useState<Service[]>([]);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [theme, setTheme] = useState<string>("light");
 
+    const { token, setToken } = useToken();
+    const { services, setServices } = useServices();
+
+    const router = useRouter();
+
+    /**
+     * Fetch user profile
+     */
     useEffect(() => {
         if (profile !== null || profile !== undefined)
             return;
+        if (token === "") {
+            const tokenStore = localStorage.getItem("token");
+            
+            if (tokenStore === null) {
+                router.push("/");
+                return;
+            }
+            setToken(tokenStore);
+        }
 
         const getProfile = async (token: string) => {
             setProfile(await GetProfile(token));
         };
 
         getProfile(token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profile, token]);
 
+    const getServices = async (token: string) => {
+        setServices(await GetServices(token));
+    };
+
+    const getServiceBySlug = (slug: string) => {
+        for (let i = 0; i < services.length; i++) {
+            if (services[i].slug === slug)
+                return (services[i]);
+        }
+        return (null);
+    }
+
+    /**
+     * Fetch service data
+     */
     useEffect(() => {
         if (props.length !== 0)
             return;
-
-        const getService = async (slug: string) => {
-            try {
-                const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+        if (services.length === 0) {
+            if (token === "") {
+                const tokenStore = localStorage.getItem("token");
     
-                const data = await response.json();
-
-                setProps((prev) => [...prev, data?.data]);
-            } catch (error) {
-                console.log(error);
+                if (tokenStore === null) {
+                    router.push("/");
+                    return;
+                }
+                setToken(tokenStore);
             }
-        };
+            getServices(token);
+        }
 
-        if (array.length > 0) {            
-            setProps([]);
+        for (let i = 0; i < array.length; i++) {
+            const service = getServiceBySlug(array[i].service);
 
-            // Create an array of unique service slugs from the 'array' variable
-            const uniqueServiceSlugs = Array.from(new Set(array.map((item) => item.service)));
-
-            // Iterate through unique slugs and fetch data for each
-            uniqueServiceSlugs.forEach((slug) => {
-                if (slug !== "")
-                    getService(slug);
-            });
+            if (service === null)
+                continue;
+            setProps((prev) => [...prev, service]);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [props, services, array, token]);
 
     useEffect(() => {
         setTheme(getTheme(props[0]?.decoration?.backgroundColor));

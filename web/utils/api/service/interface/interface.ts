@@ -1,8 +1,8 @@
 export interface Service {
     name: string;
     slug: string;
-    action: any[];
-    reaction: any[];
+    actions: any[];
+    reactions: any[];
     decoration: {
         logoUrl: string;
         backgroundColor: string;
