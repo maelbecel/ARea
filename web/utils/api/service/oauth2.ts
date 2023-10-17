@@ -53,7 +53,7 @@ const OAuth2GetToken = async (token: string, slug: string): Promise<string | nul
  * @returns {Promise<void>} A promise that sends a DELETE request to delete the OAuth2 token for the specified service.
  * Does not return any specific value but logs success or error messages.
  */
-const DeleteOAuth2Token = async (token: string, slug: string) => {
+const DeleteOAuth2Token = async (token: string, slug: string): Promise<void> => {
     if (slug === null) {
         console.log("[DELETE] .../service/{slug}/oauth2: slug is null.");
         return;

@@ -20,20 +20,19 @@ import { useServices } from "../../../utils/api/service/Providers/ServiceProvide
 import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
 import { GetServices } from "../../../utils/api/service/service";
 import { Service } from "../../../utils/api/service/interface/interface";
+import { GetAppletWithID } from "../../../utils/api/applet/applet";
 
 interface AppletProps {
-    data : {
-        id: number;
-        name: string;
-        actionSlug: string;
-        reactionSlug: string;
-        actionTrigger: string;
-        lastTriggerDate: number;
-        createdAt: number;
-        enabled: boolean;
-        user : {
-            username: string;
-        }
+    id: number;
+    name: string;
+    actionSlug: string;
+    reactionSlug: string;
+    actionTrigger: string;
+    lastTriggerDate: number;
+    createdAt: number;
+    enabled: boolean;
+    user : {
+        username: string;
     }
 }
 
@@ -61,29 +60,23 @@ const IndexPage: NextPage = () => {
     }, [setUser, token, user]);
 
     useEffect(() => {
-        setToken(localStorage.getItem("token") as string);
-
-        if (id == undefined) {
-            console.log("something went wrong");
+        if (id == undefined)
             return;
-        }
-        const dataFetch = async () => {
-            try {
-                const data = await (
-                    await fetch(`https://area51.zertus.fr/applet/${id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                console.log("Applets : ", data?.data);
-                setDataApplet(data);
-            } catch (error) {
-                console.log(error);
+
+        if (token === "") {
+            const tokenStore = localStorage.getItem("token");
+
+            if (tokenStore === null) {
+                router.push("/");
+                return;
             }
+            setToken(tokenStore);
+        }
+
+        const dataFetch = async () => {
+            setDataApplet(await GetAppletWithID(token, id as string));
         };
+
         dataFetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, token]);
@@ -109,7 +102,7 @@ const IndexPage: NextPage = () => {
             getServices(token);
         }
 
-        const Service: Service | undefined = services.find((Service: Service) => Service.slug === dataApplet.data.actionSlug.split('.')[0]);
+        const Service: Service | undefined = services.find((Service: Service) => Service.slug === dataApplet.actionSlug.split('.')[0]);
 
         setBgColor(Service?.decoration?.backgroundColor ?? '#ffffff');
 
@@ -139,14 +132,14 @@ const IndexPage: NextPage = () => {
             <div className={`min-h-screen`}>
                 {dataApplet && 
                     <AppletInfoContainer
-                        name={dataApplet?.data?.name}
+                        name={dataApplet?.name}
                         color={bgColor}
                         theme={theme}
-                        actionSlug={dataApplet?.data?.actionSlug.split('.')[0]}
-                        reactionSlug={dataApplet?.data?.reactionSlug.split('.')[0]}
-                        user={dataApplet?.data?.user?.username}
-                        enabled={dataApplet?.data?.enabled}
-                        createdAt={dataApplet?.data?.createdAt}
+                        actionSlug={dataApplet?.actionSlug.split('.')[0]}
+                        reactionSlug={dataApplet?.reactionSlug.split('.')[0]}
+                        user={dataApplet?.user?.username}
+                        enabled={dataApplet?.enabled}
+                        createdAt={dataApplet?.createdAt}
                     />
                 }
             </div>

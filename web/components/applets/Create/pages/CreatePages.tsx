@@ -12,6 +12,9 @@ import { Card, defaultAction, defaultReaction } from "../interface";
 import { getTheme } from "../../../../utils/getTheme";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
+import { create } from "domain";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import { CreateApplet } from "../../../../utils/api/applet/applet";
 
 const CreateHeader = () => {
     const router = useRouter();
@@ -131,10 +134,22 @@ interface appletsInputs {
     type: string;
 };
 
-const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode, currentIndex }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>>, currentIndex: number }) => {
+const CreateContainerComponent = ({ setIndex, setPages, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode, currentIndex }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>>, currentIndex: number }) => {
+    const { token, setToken } = useToken();
+
     const router = useRouter();
 
     const handleClick = async () => {
+        if (token === "") {
+            const tokenStore = localStorage.getItem("token");
+    
+            if (tokenStore === null) {
+                router.push("/");
+                return;
+            }
+            setToken(tokenStore);
+        }
+
         let actionsInputs = [] as appletsInputs[];
 
         array[0].inputs.forEach((input: string, index: number) => {
@@ -172,27 +187,7 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
 
         console.log(body);
 
-        try {
-            const response = await fetch(`https://area51.zertus.fr/applet`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization : `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
-
-            const data = await response.json();
-
-            console.log(data);
-
-            if (data?.status !== 201)
-                return;
-            
-            router.push("/");
-        } catch (error) {
-            console.log(error);
-        }
+        await CreateApplet(token, body, router);
     };
 
     return (
@@ -230,7 +225,7 @@ const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setS
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} currentIndex={index} />
+            <CreateContainerComponent setIndex={setIndex} setPages={setPages} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} currentIndex={index} />
         </>
     )
 }

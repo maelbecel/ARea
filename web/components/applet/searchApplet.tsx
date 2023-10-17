@@ -12,6 +12,7 @@ import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
 import { useRouter } from "next/router";
 import { GetServices } from "../../utils/api/service/service";
 import { Service } from "../../utils/api/service/interface/interface";
+import { GetMyApplets } from "../../utils/api/applet/me";
 
 interface AppletProps {
     id: number;
@@ -99,27 +100,31 @@ const SearchApplet = () => {
     const [searchApplets, setSearchApplets] = useState<AppletProps[]>([]);
     const [searchValue, setSearchValue] = useState<string>("");
 
+    const { token, setToken } = useToken();
+
+    const router = useRouter();
+
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const dataFetch = async () => {
-            try {
-                const data = await (
-                    await fetch(`https://area51.zertus.fr/applet/me`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                setApplets(data?.data);
-                setSearchApplets(data?.data);
-            } catch (error) {
-                console.log(error);
+        if (applets.length > 0)
+            return;
+
+        if (token === "") {
+            const tokenStore = localStorage.getItem("token");
+
+            if (tokenStore === null) {
+                router.push("/");
+                return;
             }
+            setToken(tokenStore);
+        }
+
+        const dataFetch = async () => {
+            setApplets(await GetMyApplets(token));
+            setSearchApplets(await GetMyApplets(token));
         };
+
         dataFetch();
-    }, []);
+    }, [token, router, applets, setToken]);
 
     useEffect(() => {
         if (applets) {
