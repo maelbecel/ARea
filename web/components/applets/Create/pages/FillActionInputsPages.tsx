@@ -49,7 +49,7 @@ const ActionInfoContainer = ({ color, theme, url, title } : { color: string, the
 
 const TextField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
     return (
-        <div className='flex flex-col w-[50%]'>
+        <div className='flex flex-col w-[90%] lg:w-[50%]'>
             <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
                 {input.label}
             </span>
@@ -71,7 +71,7 @@ const TextField = ({ input, color, theme, array, setArray, index, id }: { input:
 
 const NumberField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
     return (
-        <div className='flex flex-col w-[50%]'>
+        <div className='flex flex-col w-[90%] lg:w-[50%]'>
             <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
                 {input.label}
             </span>
@@ -95,7 +95,7 @@ const NumberField = ({ input, color, theme, array, setArray, index, id }: { inpu
 
 const SelectField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
     return (
-        <div className='flex flex-col w-[50%]'>
+        <div className='flex flex-col w-[90%] lg:w-[50%]'>
             <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
                 {input.label}
             </span>
@@ -137,7 +137,7 @@ const ValidateTriggersButton = ({ props, callback, text }  : { props: any | unde
     const theme = getTheme(props?.decoration?.backgroundColor);
 
     return (
-        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] p-[27px] pl-[130px] pr-[130px]`}
+        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] py-[10px] md:py-[27px] w-[90%] md:w-[75%] lg:w-[50%] xl:w-[25%]`}
             style={{
                 backgroundColor: active ? props?.decoration?.backgroundColor : (theme === 'dark' ? 'white' : '#363841'),
                 color          : active ? (theme === 'dark' ? 'white' : '#363841') : props?.decoration?.backgroundColor,
@@ -231,7 +231,7 @@ const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray
                 }}
                 color={props?.decoration?.backgroundColor}
             />
-            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col`}
+            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col py-[5px]`}
                 style={{
                     backgroundColor: props?.decoration?.backgroundColor,
                     color: theme === 'dark' ? '#ffffff' : '#363841'
@@ -239,7 +239,7 @@ const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray
             >
                 <ActionInfoContainer color={props?.decoration?.backgroundColor} theme={theme} url={props?.decoration?.logoUrl} title={props?.name} />
                 {actionProps?.placeholders &&
-                    <ul className='w-[50%] text-[24px]'>
+                    <ul className='w-[90%] lg:w-[50%] text-[18px]  md:text-[24px]'>
                         {Object.keys(actionProps.placeholders).map((key) => (
                             <li key={key}>
                                 <strong>{key}: </strong> {actionProps.placeholders[key]}
