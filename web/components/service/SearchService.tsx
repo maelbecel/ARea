@@ -14,7 +14,7 @@ import { Service } from "../../utils/api/service/interface/interface";
 // --- Component --- //
 const ServiceButtonComponent = ({ name, slug, logo, color, callback }: { name: string, slug: string, logo: string, color: string, callback: (slug: string) => void}) => {
     return (
-        <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
+        <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col py-[25px]`}
             style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
             onClick={() => {
                 callback(slug);
@@ -31,7 +31,7 @@ const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug:
 
     return (
         <Link href={`/create?page=2&service=${slug}&active=true&back=1`}>
-            <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
+            <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col py-[25px]`}
                  style={{
                     backgroundColor: (color.length === 0) ? "#363841" : color,
                     color: (theme === "dark") ? "#ffffff" : "#363841"
@@ -44,9 +44,9 @@ const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug:
     )
 }
 
-const ServiceListComponents = ({ serviceList, type, callback } : { serviceList?: ServiceProps[], type: string, callback: (slug: string) => void }) => {
+const ServiceListComponents = ({ serviceList, type, callback } : { serviceList?: Service[], type: string, callback: (slug: string) => void }) => {
     return (
-        <div className="font-bold text-[20px] text-white grid grid-cols-4 gap-5 h-auto mb-[5rem]">
+        <div className="font-bold text-[20px] text-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 h-auto mb-[5rem] w-[90%]">
             {serviceList && serviceList.map((service, index) => (
                 type === 'button' ? (
                     <ServiceButtonComponent key={index} name={service.name} slug={service.slug} logo={service.decoration.logoUrl} color={service.decoration.backgroundColor} callback={callback} />
@@ -123,14 +123,14 @@ const SearchService = ({ type = 'link', callback = (slug: string) => {}, filterT
     return (
         <>
             {/* Search bar */}
-            <div className="w-[40%] justify-between items-center flex-row bg-[#D9D9D9] rounded-[15px] flex mb-[5rem]">
-                <div className="m-[10px]">
+            <div className="w-[80%] md:w-[60%] lg:w-[40%] justify-between items-center flex-row bg-[#D9D9D9] rounded-[15px] flex mb-[50px] lg:mb-[5rem]">
+                <div className="m-[5px] md:m-[10px]">
                     <Image src="/Icons/search.svg" width={45} height={45} alt={"Icon"} />
                 </div>
                 <input value={searchValue}
                         placeholder="Search services"
                         onChange={(e) => handleChange(e)}
-                        className="bg-transparent w-full text-[24px] font-bold text-[#363841] outline-none p-[10px]"
+                        className="bg-transparent w-full text-[18px] md:text-[24px] font-bold text-[#363841] outline-none p-[5px] md:p-[10px]"
                 />
             </div>
 

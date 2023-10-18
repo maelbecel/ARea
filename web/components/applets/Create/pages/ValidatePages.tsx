@@ -39,7 +39,7 @@ const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?
 const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle } : { color: string, theme: string, props: any[], username: string | undefined, title: string, setTitle: Dispatch<SetStateAction<string>> }) => {
     return (
         <div style={{backgroundColor: `${color}`}} className={`w-full flex justify-center items-center gap-7 p-6 select-none`}>
-            <div style={{backgroundColor: `${color}`}} className={`w-[50%] flex-col py-[25px]`}>
+            <div style={{backgroundColor: `${color}`}} className={`w-[90%] md:w-[50%] flex-col py-[25px]`}>
                 <div style={{backgroundColor: `${color}`}} className={`flex-row py-[10px]`}>
                     {props && props.map((prop: any, id: number) => {
                         return (
@@ -70,7 +70,7 @@ const ValidateButton = ({ props, callback }  : { props: any | undefined, callbac
     const theme = getTheme(props?.decoration?.backgroundColor);
 
     return (
-        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] p-[27px] pl-[130px] pr-[130px]`}
+        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] py-[10px] md:py-[27px] w-[90%] md:w-[75%] lg:w-[50%] xl:w-[25%]`}
             style={{
                 backgroundColor: !active ? props?.decoration?.backgroundColor : (theme === 'dark' ? 'white' : '#363841'),
                 color          : !active ? (theme === 'dark' ? 'white' : '#363841') : props?.decoration?.backgroundColor,
@@ -175,10 +175,10 @@ const ValidatePages = ({ setPages, service, slug, index, array, setArray, title,
                 }}
                 color={props[0]?.decoration?.backgroundColor}
             />
-            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col bg-white text-[#363841]`}>
+            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col bg-white text-[#363841] pb-[5px]`}>
                 <AppletsInfoContainer color={props[0]?.decoration?.backgroundColor} theme={theme} props={props} username={profile?.username} title={title} setTitle={setTitle} />
-                <div className={`flex-row flex w-[50%] justify-between items-center`}>
-                    <div className="text-[24px] font-bold">Receive a notification when the applet is actived</div>
+                <div className={`flex-row flex w-[90%] md:w-[50%] justify-between items-center`}>
+                    <div className="text-[18px] md:text-[24px] font-bold">Receive a notification when the applet is actived</div>
                     <Switch isCheked={notif} isDisable={false} setChecked={setNotif} />
                 </div>
                 <ValidateButton

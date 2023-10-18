@@ -28,7 +28,7 @@ const ActionButtonComponent = ({ name, description, color, slug, callback, type,
 
 const ActionListComponent = ({ actionList, color, theme, callback, cardIndex, secondaryCallback } : { actionList : ActionProps[], color : string, theme : string, callback: (slug: string, description: string, color: string) => void, cardIndex: number, secondaryCallback: (index: number, type: string) => void }) => {
     return (
-        <div className={`font-bold text-[20px] grid grid-cols-4 gap-5 h-auto mb-[5rem]`}
+        <div className={`font-bold grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 h-auto mb-[5rem]`}
             style={{ color: theme === 'light' ? "#363841" : "#ffffff" }}
         >
             {actionList.map((service, index) => (
