@@ -66,8 +66,8 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
             }}
             className={`w-full flex rounded-[15px] flex-col hover:brightness-110 cursor-pointer`}
         >
-            <div className='w-[95%] flex flex-row gap-[20px] justify-end pt-[8px]'>
-                <div className='font-bold text-[16px] underline'
+            <div className='w-[95%] flex flex-row gap-[20px] justify-end pt-[5px] sm:pt-[8px]'>
+                <div className='font-bold text-[12px] sm:text-[16px] underline'
                     onClick={() => {
                         setSlug(cardProps.slug);
                         setService(cardProps.service);
@@ -78,7 +78,7 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
                 >
                     Edit
                 </div>
-                <div className='font-bold text-[16px] underline'
+                <div className='font-bold text-[12px] sm:text-[16px] underline'
                     onClick={() => {
                         setArray(array.map((card: Card, i: number) => {
                             if (i === index) {
@@ -94,10 +94,10 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
                     Delete
                 </div>
             </div>
-            <div className="flex flex-row justify-start gap-6 px-[40px] pb-[30px] items-center">
-                <div className="font-extrabold text-[62px]">{cardProps.type === 'action' ? 'Action' : 'REAction'}</div>
+            <div className="flex flex-row justify-start gap-6 px-[5px] md:px-[40px] pb-[5px] md:pb-[30px] items-center">
+                <div className="font-extrabold text-[24px] sm:text-[48px] lg:text-[62px]">{cardProps.type === 'action' ? 'Action' : 'REAction'}</div>
                 <Image src={cardProps.decoration.logoUrl} width={100} height={100} alt='' />
-                <div className="font-bold text-[32px]">{cardProps.name}</div>
+                <div className="font-bold text-[18px] sm:text-[24px] lg:text-[32px]">{cardProps.name}</div>
             </div>
         </div>
     );
@@ -192,7 +192,7 @@ const CreateContainerComponent = ({ setIndex, setPages, array, setArray, setSlug
 
     return (
         <div className={`min-h-screen flex justify-center items-center`}>
-            <div className={`max-w-[50%] w-full flex justify-around items-center flex-col gap-[20px]`}>
+            <div className={`lg:max-w-[75%] xl:max-w-[60%] w-[90%] lg:w-full flex justify-around items-center flex-col gap-[20px] py-[10px]`}>
                 {array && array.map((service: Card, index: number) => {
                     return (
                         <>
