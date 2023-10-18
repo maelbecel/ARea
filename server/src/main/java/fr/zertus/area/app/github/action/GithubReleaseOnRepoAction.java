@@ -23,7 +23,7 @@ public class GithubReleaseOnRepoAction extends Action {
     public GithubReleaseOnRepoAction(String appName) {
         super(appName, "Release on repo", "When a new release is published on a repository");
 
-        this.inputs.add(FormInput.createSelectInput("Repository", "repository", new ArrayList<>()));
+        this.inputs.add(FormInput.createSelectInput("repository", "Repository", new ArrayList<>()));
 
         this.placeholders.put("repository", "Repository");
         this.placeholders.put("release_url", "Release URL");
@@ -39,7 +39,7 @@ public class GithubReleaseOnRepoAction extends Action {
         if (options == null)
             return super.getInputs(user);
 
-        return List.of(FormInput.createSelectInput("Repository", "repository", options));
+        return List.of(FormInput.createSelectInput("repository", "Repository", options));
     }
 
     @Override

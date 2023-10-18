@@ -26,7 +26,7 @@ public class GithubPushOnRepoAction extends Action {
     public GithubPushOnRepoAction(String appName) {
         super(appName, "Push on repo", "Push on specified github repository");
 
-        this.inputs.add(FormInput.createSelectInput("Repository", "repository", List.of()));
+        this.inputs.add(FormInput.createSelectInput("repository", "Repository", List.of()));
 
         this.placeholders.put("author", "Author of the commit");
         this.placeholders.put("message", "Message of the commit");
@@ -43,7 +43,7 @@ public class GithubPushOnRepoAction extends Action {
         if (options == null)
             return super.getInputs(user);
 
-        return List.of(FormInput.createSelectInput("Repository", "repository", options));
+        return List.of(FormInput.createSelectInput("repository", "Repository", options));
     }
 
     @Override

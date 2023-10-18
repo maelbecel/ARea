@@ -143,7 +143,7 @@ public class AppService {
         User user = userService.getUser(userId);
         if (user == null)
             throw new DataNotFoundException("User not found");
-        user.addConnectedService(new ConnectedService(slug, token));
+        user.addConnectedService(new ConnectedService(slug, token, ""));
         userService.save(user);
 
         return ResponseEntity.status(302).location(URI.create(redirectUri)).build();

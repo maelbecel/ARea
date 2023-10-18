@@ -82,7 +82,7 @@ public class BasicApiClient {
                 else
                     apiResponse.setData(new Gson().fromJson(responseString, responseType));
             } else {
-                throw new IOException("Empty response entity");
+                apiResponse.setData(null);
             }
         } else {
             if (response.getEntity() != null)

@@ -23,7 +23,7 @@ public class GithubOpenIssueOnRepoAction extends Action {
     public GithubOpenIssueOnRepoAction(String appName) {
         super(appName,"Issue opened on repo", "When an issue is opened on a selected repository");
 
-        this.inputs.add(FormInput.createSelectInput("Repository", "repository", new ArrayList<>()));
+        this.inputs.add(FormInput.createSelectInput("repository", "Repository", new ArrayList<>()));
 
         this.placeholders.put("repository", "Repository");
         this.placeholders.put("issue_title", "Issue title");
@@ -40,7 +40,7 @@ public class GithubOpenIssueOnRepoAction extends Action {
         List<String> options = GithubApp.getRepositories(service.getToken());
         if (options == null)
             return super.getInputs(user);
-        return List.of(FormInput.createSelectInput("Repository", "repository", options));
+        return List.of(FormInput.createSelectInput("repository", "Repository", options));
     }
 
     @Override

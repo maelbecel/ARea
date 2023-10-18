@@ -1,5 +1,6 @@
 package fr.zertus.area.app.discord.model;
 
+import fr.zertus.area.exception.ReactionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.utils.BasicApiClient;
 import lombok.AllArgsConstructor;
@@ -17,12 +18,12 @@ public class DiscordWebhookMessage {
     String username;
     String avatar_url;
 
-    public boolean send(String webhook) {
+    public boolean send(String webhook) throws ReactionTriggerException {
         try {
             ApiResponse<String> response = BasicApiClient.sendPostRequest(webhook, this, String.class);
             return response.getStatus() >= 200 && response.getStatus() < 300;
         } catch (IOException e) {
-            return false;
+            throw new ReactionTriggerException("Failed to send message to discord webhook");
         }
     }
 

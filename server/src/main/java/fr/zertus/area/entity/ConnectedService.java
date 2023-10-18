@@ -13,5 +13,6 @@ public class ConnectedService {
 
     String slug;
     String token;
+    String data;
 
 }

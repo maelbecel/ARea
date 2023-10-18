@@ -3,6 +3,7 @@ package fr.zertus.area.app.google;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
+import fr.zertus.area.app.google.reaction.GoogleSendMailReaction;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import fr.zertus.area.utils.StringUtils;
 
@@ -29,7 +30,7 @@ public class GoogleApp extends App {
 
     @Override
     public List<Reaction> getReactions() {
-        return null;
+        return List.of(new GoogleSendMailReaction(getSlug()));
     }
 
     @Override
