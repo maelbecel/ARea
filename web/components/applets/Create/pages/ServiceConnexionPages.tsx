@@ -44,7 +44,7 @@ const ConnexionButton = ({ props, callback } : { props: any | undefined, callbac
     const theme = getTheme(props?.decoration?.backgroundColor);
 
     return (
-        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] p-[27px] pl-[130px] pr-[130px]`}
+        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] py-[10px] md:py-[27px] w-[90%] md:w-[75%] lg:w-[50%] xl:w-[25%]`}
             style={{
                 backgroundColor: active ? props?.decoration?.backgroundColor : (theme === 'dark' ? 'white' : '#363841'),
                 color          : active ? (theme === 'dark' ? 'white' : '#363841') : props?.decoration?.backgroundColor,
@@ -165,18 +165,22 @@ const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray
     // Ajouter un gestionnaire d'événements pour écouter le signal
     window.addEventListener('message', (event) => {
         if (event.data === 'OAuth2CallbackCompleted') {
-            setArray(array.map((card: Card, id: number) => {
+            setArray((prevArray: Card[]) => prevArray.map((card: Card, id: number) => {
                 if (id === index)
                     return {
                         ...card,
                         slug: slug,
-                        service: props?.slug,
+                        service: props?.slug || '',
                         name: action?.name,
                         description: action?.description,
                         decoration: {
-                            logoUrl: props?.decoration.logoUrl,
-                            backgroundColor: props?.decoration.backgroundColor,
-                        }
+                            logoUrl: props?.decoration?.logoUrl || '',
+                            backgroundColor: props?.decoration?.backgroundColor || '',
+                        },
+                        type: 'action',
+                        fields: action?.fields || [],
+                        inputs: action?.inputs || [],
+                        placeholders: action?.placeholders || {},
                     };
                 return card;
             }));
@@ -193,9 +197,9 @@ const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray
                     color: theme === 'dark' ? '#ffffff' : '#363841'
                 }}
             >
-                <ServiceInfoContainer color={props?.decoration.backgroundColor} theme={theme} url={props?.decoration.logoUrl} name={props?.name} />
+                <ServiceInfoContainer color={props?.decoration.backgroundColor ?? '#fffffff'} theme={theme} url={props?.decoration.logoUrl ?? ''} name={props?.name ?? ''} />
 
-                <div className={`w-full flex justify-center items-center text-[24px]`}>
+                <div className={`w-[90%] flex justify-center items-center text-[24px] text-center`}>
                     {action?.description}
                 </div>
                 <div className={`flex justify-center items-center w-full h-full`}>
