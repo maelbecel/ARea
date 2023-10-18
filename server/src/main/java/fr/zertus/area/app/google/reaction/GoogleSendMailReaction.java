@@ -1,6 +1,7 @@
 package fr.zertus.area.app.google.reaction;
 
 import fr.zertus.area.app.Reaction;
+import fr.zertus.area.app.google.GoogleApp;
 import fr.zertus.area.app.google.utils.EmailCreator;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
@@ -22,13 +23,17 @@ public class GoogleSendMailReaction extends Reaction {
     public GoogleSendMailReaction(String app) {
         super(app, "Send mail", "Send mail to specified address with your google account");
 
-        this.inputs.add(FormInput.createTextInput("to", "To"));
+        this.inputs.add(FormInput.createTextInput("to", "To (email address)"));
+        this.inputs.add(FormInput.createTextInput("toName", "To name (to display in your mail client)"));
         this.inputs.add(FormInput.createTextInput("subject", "Subject"));
         this.inputs.add(FormInput.createTextInput("body", "Body"));
     }
 
     @Override
     public boolean setupReaction(User user, List<FormInput> inputs) throws BadFormInputException {
+        if (user.getConnectedService("google") == null)
+            throw new BadFormInputException("Google service is not connected");
+
         String email = FormInputUtils.getValue("to", inputs);
         if (!RegisterUserService.isEmailValid(email))
             throw new BadFormInputException("Email is not valid");
@@ -44,32 +49,27 @@ public class GoogleSendMailReaction extends Reaction {
         ConnectedService service = user.getConnectedService("google");
         if (service == null)
             throw new ReactionTriggerException("Google service is not connected");
-        String email = FormInputUtils.getValue("to", inputs, parameters);
+        GoogleApp.GoogleUserInfo userInfo = GoogleApp.getUserInfo(service);
+        String destination = FormInputUtils.getValue("to", inputs, parameters);
+        String destinationName = FormInputUtils.getValue("toName", inputs, parameters);
         String subject = FormInputUtils.getValue("subject", inputs, parameters);
         String body = FormInputUtils.getValue("body", inputs, parameters);
 
-        String formatedEmail = EmailCreator.createEmail(email, "zertus2001@gmail.com", subject, body);
-        String base64 = EmailCreator.toBase64(formatedEmail);
+        String email = EmailCreator.createEmail(destination, destinationName, userInfo.getEmail(), userInfo.getGiven_name(), subject, body);
         String url = "https://www.googleapis.com/upload/gmail/v1/users/me/messages/send";
 
         try {
-            ApiResponse<String> response = BasicApiClient.sendPostRequest(url, new Email(base64), String.class, Map.of(
+            ApiResponse<String> response = BasicApiClient.sendPostRequest(url, email, String.class, Map.of(
                 "Authorization", "Bearer " + user.getConnectedService("google").getToken(),
                 "Content-Type", "message/rfc822")
             );
 
             if (response.getStatus() < 200 || response.getStatus() >= 300)
-                throw new ReactionTriggerException("Failed to send mail: " + response.getMessage());
+                throw new ReactionTriggerException("Failed to send mail: " + response.getData());
             return true;
         } catch (Exception e) {
-            throw new ReactionTriggerException("Failed to send mail");
+            throw new ReactionTriggerException(e.getMessage());
         }
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class Email {
-        private String raw;
     }
 
 }

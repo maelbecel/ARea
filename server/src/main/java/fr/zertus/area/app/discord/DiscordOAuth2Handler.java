@@ -1,6 +1,7 @@
 package fr.zertus.area.app.discord;
 
 import fr.zertus.area.app.github.GithubOAuth2Handler;
+import fr.zertus.area.entity.ConnectedService;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.*;
@@ -21,7 +22,7 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
     private static final Logger logger = LoggerFactory.getLogger(DiscordOAuth2Handler.class);
 
     @Override
-    public String getToken(String tokenUrl, MultiValueMap<String, String> body) {
+    public ConnectedService getToken(String tokenUrl, MultiValueMap<String, String> body) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -34,7 +35,7 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             DiscordOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
-            return token.getAccess_token();
+            return new ConnectedService("discord", token.getAccess_token(), null);
         } else {
             System.err.println("Error: " + responseEntity.getStatusCode());
             return null;

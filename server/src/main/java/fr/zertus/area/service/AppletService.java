@@ -41,8 +41,7 @@ public class AppletService {
         if (action == null)
             throw new IllegalArgumentException("Action not found");
         try {
-            if (!action.setupAction(user, applet.getActionInputs()))
-                throw new BadFormInputException("Failed to setup action");
+            action.setupAction(user, applet.getActionInputs());
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to setup action: " + e.getMessage());
         }
@@ -51,8 +50,7 @@ public class AppletService {
         if (reaction == null)
             throw new IllegalArgumentException("Reaction not found");
         try {
-            if (!reaction.setupReaction(user, applet.getReactionInputs()))
-                throw new BadFormInputException("Failed to setup reaction");
+            reaction.setupReaction(user, applet.getReactionInputs());
         } catch (Exception e) {
             action.deleteAction(user, applet.getActionInputs());
             throw new IllegalArgumentException("Failed to setup reaction: " + e.getMessage());

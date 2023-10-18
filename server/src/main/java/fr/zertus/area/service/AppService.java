@@ -137,13 +137,13 @@ public class AppService {
 
         // We need to give a redirect Uri (I don't know why, because token result is the return of this request) so we give the default one
         MultiValueMap<String, String> body = app.getOAuth2Handler().getBody(code, clientId, clientSecret, defaultRedirectUri);
-        String token = app.getOAuth2Handler().getToken(tokenUrl, body);
+        ConnectedService connectedService = app.getOAuth2Handler().getToken(tokenUrl, body);
         long userId = Long.parseLong(state.split("-")[1]);
 
         User user = userService.getUser(userId);
         if (user == null)
             throw new DataNotFoundException("User not found");
-        user.addConnectedService(new ConnectedService(slug, token, ""));
+        user.addConnectedService(connectedService);
         userService.save(user);
 
         return ResponseEntity.status(302).location(URI.create(redirectUri)).build();

@@ -1,5 +1,6 @@
 package fr.zertus.area.app.notion;
 
+import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import lombok.Data;
 import org.springframework.http.HttpEntity;
@@ -29,7 +30,7 @@ public class NotionOAuth2Handler extends OAuth2CodeAuthorizationHandler {
     }
 
     @Override
-    public String getToken(String tokenUrl, MultiValueMap<String, String> body) {
+    public ConnectedService getToken(String tokenUrl, MultiValueMap<String, String> body) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -50,7 +51,7 @@ public class NotionOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             NotionOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
-            return token.getAccess_token();
+            return new ConnectedService("notion", token.getAccess_token(), null);
         } else {
             System.err.println("Error: " + responseEntity.getStatusCode());
             return null;

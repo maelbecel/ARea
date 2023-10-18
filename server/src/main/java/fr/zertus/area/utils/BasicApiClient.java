@@ -73,20 +73,15 @@ public class BasicApiClient {
 
         int statusCode = response.getStatusLine().getStatusCode();
         ApiResponse<T> apiResponse = new ApiResponse<>(statusCode, null);
-        if (statusCode >= 200 && statusCode < 300) {
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                String responseString = EntityUtils.toString(entity);
-                if (responseType == String.class)
-                    apiResponse.setData((T) responseString);
-                else
-                    apiResponse.setData(new Gson().fromJson(responseString, responseType));
-            } else {
-                apiResponse.setData(null);
-            }
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            String responseString = EntityUtils.toString(entity);
+            if (responseType == String.class)
+                apiResponse.setData((T) responseString);
+            else
+                apiResponse.setData(new Gson().fromJson(responseString, responseType));
         } else {
-            if (response.getEntity() != null)
-                apiResponse.setMessage(EntityUtils.toString(response.getEntity()));
+            apiResponse.setData(null);
         }
         return apiResponse;
     }

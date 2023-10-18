@@ -1,7 +1,11 @@
 package fr.zertus.area.app.google;
 
+import com.google.gson.Gson;
 import fr.zertus.area.app.spotify.SpotifyOAuth2Handler;
+import fr.zertus.area.entity.ConnectedService;
+import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.utils.BasicApiClient;
 import lombok.Data;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,12 +15,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Set;
 
 public class GoogleOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
     @Override
-    public String getToken(String tokenUrl, MultiValueMap<String, String> body) {
+    public ConnectedService getToken(String tokenUrl, MultiValueMap<String, String> body) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -29,7 +34,16 @@ public class GoogleOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             GoogleOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
-            return token.getAccess_token();
+            try {
+                ApiResponse<GoogleApp.GoogleUserInfo> userInfo = BasicApiClient.sendGetRequest("https://openidconnect.googleapis.com/v1/userinfo", GoogleApp.GoogleUserInfo.class,
+                    Map.of("Authorization", "Bearer " + token.getAccess_token()));
+
+                if (userInfo.getData() == null)
+                    return new ConnectedService("google", token.getAccess_token(), null);
+                return new ConnectedService("google", token.getAccess_token(), new Gson().toJson(userInfo.getData()));
+            } catch (Exception e) {
+                return new ConnectedService("google", token.getAccess_token(), null);
+            }
         } else {
             System.err.println("Error: " + responseEntity.getStatusCode());
             return null;
@@ -55,7 +69,7 @@ public class GoogleOAuth2Handler extends OAuth2CodeAuthorizationHandler {
     }
 
     @Data
-    public static class GoogleOAuth2Token {
+    private static class GoogleOAuth2Token {
         private String access_token;
         private String refresh_token;
         private String scope;
