@@ -127,7 +127,7 @@ const AllActionFromServicePages = ({ service, setPages, setSlug, type, setIndex,
             <div className={`min-h-screen flex justify-start items-center flex-col`}>
                 <ServiceInfoContainer color={props?.decoration.backgroundColor} theme={theme} url={props?.decoration.logoUrl} name={props?.name} />
 
-                <div className={`p-[55px]`}>
+                <div className={`p-[10px] md:p-[55px]`}>
                     <GetActionService
                         actions={actions}
                         color={props?.decoration?.backgroundColor}
