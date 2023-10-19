@@ -1,6 +1,5 @@
 // --- Librairies import --- //
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import type { NextPage } from "next";
 
 // --- Components import --- //

@@ -1,5 +1,5 @@
 import React, { Children, Dispatch, ReactFragment, SetStateAction, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface InputProps {
     placeholder : string
@@ -16,7 +16,12 @@ interface FormProfileProps {
 }
 
 const Input = ({placeholder, secureMode = false, value, setValue, label } : InputProps) => {
+    const router = useRouter();
 
+    const navigateToChangePassword = () => {
+        router.push("/profile/changePassword");
+    }
+    
     return (
         <div className="flex flex-col">
             <label className="text-[#363841] font-bold text-[28px]">{label}</label>            
@@ -30,7 +35,9 @@ const Input = ({placeholder, secureMode = false, value, setValue, label } : Inpu
                 />
                 { secureMode && 
                     <div className="font-bold text-[18px] text-[#00C2FF] pl-[10px]">
-                        <Link href="#">Change password ?</Link>
+                        <button onClick={navigateToChangePassword}>
+                            Change password ?
+                        </button>
                     </div>
                 }
         </div>
