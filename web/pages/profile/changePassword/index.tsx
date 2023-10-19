@@ -79,15 +79,17 @@ const IndexPage: NextPage = () => {
                             <a className="rounded-[25px] bg-[#363841] py-[1%] px-[4%] ml-[50px] mt-[50px]">Back</a>
                     </Link>
                 </div>
-                <div className="flex flex-col items-center w-full space-y-[3%]">
-                    <label className="text-[#363841] font-bold text-[42px] p-[1%]">Change your actual password</label>
-                    <div className="w-[25%]">
+                <div className="flex flex-col items-center w-full space-y-[8%] lg:space-y-[4%]">
+                    <div className="w-[75%] lg:w-[45%] text-center">
+                        <label className="text-[#363841] font-bold text-[42px] p-[1%] text-left lg:text-center">Change password</label>
+                    </div>
+                    <div className="w-[75%] lg:w-[45%]">
                         <Input placeholder="Current Password" label="Current Password" value={currentPassword} onChangeFunction={handleCurrentPasswordChange}/>
                     </div>
-                    <div className="w-[25%]">
+                    <div className="w-[75%] lg:w-[45%]">
                         <Input placeholder="New Password" secureMode={true} label="New Password" value={newPassword} onChangeFunction={handleNewPasswordChange}/>
                     </div>
-                    <div className="w-[25%]">
+                    <div className="w-[75%] lg:w-[45%]">
                         <Input placeholder="Confirm Password" label="Confirm Password" value={confirmPassword} onChangeFunction={handleConfirmPasswordChange}/>
                     </div>
                     <div className="flex justify-center font-bold text-white text-[24px]">
