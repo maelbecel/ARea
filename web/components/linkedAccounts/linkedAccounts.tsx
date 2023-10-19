@@ -139,9 +139,6 @@ const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
             <label className="text-[#363841] font-bold text-[42px]">Linked Account</label>
             <div className="flex flex-col items-center gap-y-7">
                 {linkedAccountsData && services.map((item : any, index : any) => {
-                    console.log(linkedAccountsData);
-                    console.log(linkedAccountsData[index].islinked);
-                    console.log("slug " + item.slug + " " + typeof(item.slug));
                     return (
                         <LinkedAccount
                             key={index} 

@@ -16,50 +16,24 @@ import { GetProfile } from "../../utils/api/user/me";
 import { UserProfile } from "../../utils/api/user/interface/interface";
 import { NavigateButton } from "../../components/NavBar/components/Button";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 
 const IndexPage: NextPage = () => {
-    const [data, setData] = useState<any | undefined>();
-    const [token, setToken] = useState<string>('');
-    const router = useRouter();
     const { user, setUser } = useUser();
+    const { token, setToken } = useToken();
 
-    useEffect(() => {
-        const token = localStorage.getItem("token") as string;
-
-        if (!token)
-            router.push("/login");
-
-        setToken(token);
-
-        const dataFetch = async () => {
-            try {
-                const data = await (
-                    await fetch("https://area51.zertus.fr/user/me", {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                console.log(data);
-                setData(data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        dataFetch();
-    }, [token, router]);
-
+    /**
+     * Get the user profile
+     */
     useEffect(() => {
         const getProfile = async (token: string) => {
             setUser(await GetProfile(token) as UserProfile);
         }
 
-        if (user?.email === null || user?.email === "")
+        if (user?.email === "" || user?.email === null)
             getProfile(token);
     }, [setUser, token, user]);
-
+        
     return (
         <>
             <NavBar>
@@ -77,9 +51,9 @@ const IndexPage: NextPage = () => {
                     <div className="my-[32px]">
                         <ProfilePicture/>
                     </div>
-                    { data && <FormProfile username={data?.data?.username} mail={data?.data?.email} password="aaaaaaa"/> }
+                    { user && <FormProfile username={user?.username} mail={user?.email} password={"a".repeat(user?.passwordLength)}/> }
                     <UpdateButton/>
-                    <LinkedAccounts linkedAccountsDataArray={data?.data?.connectedServices}/>
+                    <LinkedAccounts linkedAccountsDataArray={user?.connectedServices}/>
                 </div>
             </div>
         </>
