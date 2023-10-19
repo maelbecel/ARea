@@ -23,19 +23,27 @@ const IndexPage: NextPage = () => {
     const { user, setUser } = useUser();
     const { token, setToken } = useToken();
 
+    const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+
     /**
      * Get the user profile
      */
     useEffect(() => {
         const getProfile = async (token: string) => {
-            setUser(await GetProfile(token) as UserProfile);
+            setUser(await GetProfile(token) as UserProfile)
         }
 
         if (user?.email === undefined || user?.email === "" || user?.email === null) {
             getProfile(token);
         }
     }, [setUser, token, user]);
-        
+
+    useEffect(() => {
+        setUsername(user?.username as string);
+        setEmail(user?.email as string);
+    }, [user]);
+
     return (
         <>
             <NavBar>
@@ -53,8 +61,14 @@ const IndexPage: NextPage = () => {
                     <div className="my-[32px]">
                         <ProfilePicture/>
                     </div>
-                    { user && <FormProfile username={user?.username} mail={user?.email} password={"a".repeat(user?.passwordLength)}/> }
-                    <UpdateButton username={user?.username} email={user?.email} token={token}/>
+                    { user && <FormProfile
+                        username={username}
+                        mail={email}
+                        password={"a".repeat(user?.passwordLength)}
+                        setUsernameFunction={setUsername}
+                        setMailFunction={setEmail}
+                    /> }
+                    <UpdateButton username={username} email={email} token={token}/>
                     <LinkedAccounts linkedAccountsDataArray={user?.connectedServices}/>
                 </div>
                 <LogoutButton/>

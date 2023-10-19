@@ -5,7 +5,7 @@ import Link from "next/link";
 
 // --- Components import --- //
 import Input from "../../../components/formProfile/input";
-import { GetProfile } from "../../../utils/api/user/me";
+import { GetProfile, PatchProfilePassword } from "../../../utils/api/user/me";
 import Icon from "../../../components/NavBar/components/Icon";
 import Profile from "../../../components/NavBar/components/Profile";
 import { useUser } from "../../../utils/api/user/Providers/UserProvider";
@@ -54,10 +54,22 @@ const IndexPage: NextPage = () => {
 
         // check if currentPassword is correct
 
-        if (newPassword !== confirmPassword) {
+        console.log("currentPassword -> ", currentPassword);
+        console.log("newPassword -> ", newPassword);
+        console.log("confirmPassword -> ", confirmPassword);
+
+        if (currentPassword === "") {
             console.log("Passwords don't match");
             return;
         }
+
+        if (newPassword !== confirmPassword ||
+            (newPassword === "" && confirmPassword === "") || 
+            (newPassword == currentPassword)) {
+            console.log("Passwords don't match");
+            return;
+        }
+        PatchProfilePassword(token, confirmPassword);
     }
 
     return (

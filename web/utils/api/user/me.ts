@@ -91,19 +91,18 @@ const DeleteProfile = async (token: string, router: NextRouter) => {
  * @param {string} token    - The user's authentication token.
  * @param {string} email    - The user's new email.
  * @param {string} username - The user's new username.
- * @param {string} password - The user's new password.
  *
  * @returns {Promise<UserProfile | null>} A promise that resolves with the updated user profile data or null on error.
  * 
  * @warning Don't forget to check if the result is null, before giving it to the useAuth provider.
  */
-const PatchProfile = async (token: string, email: string, username: string, password: string): Promise<UserProfile | null> => {
+const PatchProfile = async (token: string, email: string, username: string): Promise<UserProfile | null> => {
     if (token === null) {
         console.log("[PATCH] .../user/me: token is null");
         return null;
     }
 
-    if (email === null || username === null || password === null) {
+    if (email === null || username === null) {
         console.log("[PATCH] .../user/me: email, username or password is null");
         return null;
     }
@@ -118,6 +117,58 @@ const PatchProfile = async (token: string, email: string, username: string, pass
             body: JSON.stringify({
                 email   : email,
                 username: username,
+            })
+        });
+
+        const data = await response.json();
+
+        if (data?.status === 400) {
+            console.log("[PATCH] .../user/me (Error: 400): \"Bad format email\".");
+            return null;
+        }
+
+        console.log("email -> ", email);
+        console.log("username -> ", username);
+        console.log("[PATCH] .../user/me: \"User updated\".");
+        console.log(data);
+
+        return data?.data as UserProfile;
+    } catch (error: any) {
+        console.log(error);
+    }
+    return null;
+};
+
+
+/**
+ * Update user profile information using a PATCH request.
+ *
+ * @param {string} token    - The user's authentication token.
+ * @param {string} password - The user's new password.
+ *
+ * @returns {Promise<UserProfile | null>} A promise that resolves with the updated user profile data or null on error.
+ * 
+ * @warning Don't forget to check if the result is null, before giving it to the useAuth provider.
+ */
+const PatchProfilePassword = async (token: string, password: string): Promise<UserProfile | null> => {
+    if (token === null) {
+        console.log("[PATCH] .../user/me: token is null");
+        return null;
+    }
+
+    if (password === null || password === "") {
+        console.log("[PATCH] .../user/me: password is null");
+        return null;
+    }
+
+    try {
+        const response = await fetch(`https://area51.zertus.fr/user/me`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization : `Bearer ${token}`
+            },
+            body: JSON.stringify({
                 password: password
             })
         });
@@ -138,5 +189,4 @@ const PatchProfile = async (token: string, email: string, username: string, pass
     }
     return null;
 };
-
-export { GetProfile, DeleteProfile, PatchProfile };
+export { GetProfile, DeleteProfile, PatchProfile, PatchProfilePassword };

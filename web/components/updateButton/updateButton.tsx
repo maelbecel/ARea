@@ -1,5 +1,9 @@
 import React from "react";
+
 import { PatchProfile } from "../../utils/api/user/me";
+import { UserProfile } from "../../utils/api/user/interface/interface";
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
+
 
 interface UpdateButtonProps {
     token: string;
@@ -10,7 +14,7 @@ interface UpdateButtonProps {
 const UpdateButton = ({token, email, username} : UpdateButtonProps) => {
 
     const handleUpdate = () => {
-        // patchProfile(token, email, username);
+        PatchProfile(token, email, username);
     }
 
     return (
