@@ -35,7 +35,7 @@ const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor } : Togg
             <div className="flex justify-center duration-500 w-[100%] h-[100%]">
                 <button
                     onClick={handleSwitchChange}
-                    className="w-[24%] h-[75px] relative"
+                    className="sm:w-[40%] lg:w-[25%] w-[80%] h-[75px] relative"
                     disabled={isDisable}
                 >
                     <div style={{ backgroundColor: color }} className={`h-[100%] w-[100%] rounded-[50px] duration-500 p-[4px] flex items-center`}>

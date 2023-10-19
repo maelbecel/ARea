@@ -3,7 +3,6 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import LogoApplet from "./logo";
 
-import Switch from "./switch";
 import SwitchNotifyMe from "./switchNotifyMe";
 import MoreDetailsButton from "./moreDetails";
 import ToggleSwitch from "../switch/toggleSwitch";
@@ -47,18 +46,18 @@ const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user
     // TODO: add link on each logo (need to see on each which page to link)
     return (
         <div className="w-full flex flex-col justify-center">
-            <div style={{ backgroundColor: `${color}` }} className="w-full flex flex-row justify-between font-bold text-[#363841] text-[24px]">
+            <div style={{ backgroundColor: `${color}` }} className="w-full flex flex-row justify-around sm:justify-between font-bold text-[#363841] text-[18px] sm:text-[24px] py-[2%]">
                 <Link href="/myApplets/">
                         {/* Add a child element inside the Lipxnk */}
-                        <a className="rounded-[25px] bg-white py-[1%] px-[4%] ml-[50px] mt-[50px]">Back</a>
+                        <a className="rounded-[25px] bg-white py-[1%] px-[4%] ml-[50px] mt-[2%]">Back</a>
                 </Link>
                 <Link href="#">
                         {/* Add a child element inside the Link */}
-                        <a  className="rounded-[25px] bg-white py-[1%] px-[4%] mr-[50px] mt-[50px]" >Edit Applet</a>
+                        <a  className="rounded-[25px] bg-white py-[1%] px-[4%] mr-[50px] mt-[2%]" >Edit Applet</a>
                 </Link>
             </div>
             <div className={`w-full flex justify-center flex-col`} style={{ backgroundColor: `${color}` }}>
-                <div style={{backgroundColor: `${color}` }} className="px-[35%]">
+                <div style={{backgroundColor: `${color}` }} className="px-[15%] lg:px-[35%]">
                     <div className="cursor-pointer">
                         <div className="flex flex-wrap">
                             {actionSlug && <LogoApplet slug={actionSlug} width={56} height={56} toogleBackground={false}/>}
@@ -81,7 +80,7 @@ const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user
             <div className="flex flex-col items-center my-[5%]">
                 <ToggleSwitch isCheked={enabled} isDisable={false} yesLabel="Enabled" noLabel="Disabled" bgColor="#363841"/>
             </div>
-            <div className="flex flex-col flex-start px-[35%] mb-[5%]">
+            <div className="flex flex-col flex-start px-[10%] lg:px-[35%] mb-[5%]">
                 <div className="text-[#B8B9BB] font-bold">
                     <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionSlug={reactionSlug}/>
                 </div>
