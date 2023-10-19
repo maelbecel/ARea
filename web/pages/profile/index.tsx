@@ -3,19 +3,21 @@ import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 
 // --- Components import --- //
-import LinkedAccounts from "../../components/linkedAccounts/linkedAccounts";
-import ProfilePicture from "../../components/profilePicture/profilePicture";
-import FormProfile from "../../components/formProfile/formProfile";
-import UpdateButton from "../../components/updateButton/updateButton";
-import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
+import { GetProfile } from "../../utils/api/user/me";
 import Icon from "../../components/NavBar/components/Icon";
 import Profile from "../../components/NavBar/components/Profile";
+import FormProfile from "../../components/formProfile/formProfile";
+import LogoutButton from "../../components/formProfile/logoutButton";
+import DeleteButton from "../../components/formProfile/deleteButton";
+import UpdateButton from "../../components/updateButton/updateButton";
 import { useUser } from "../../utils/api/user/Providers/UserProvider";
-import { GetProfile } from "../../utils/api/user/me";
-import { UserProfile } from "../../utils/api/user/interface/interface";
-import { NavigateButton } from "../../components/NavBar/components/Button";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
+import { UserProfile } from "../../utils/api/user/interface/interface";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { NavigateButton } from "../../components/NavBar/components/Button";
+import LinkedAccounts from "../../components/linkedAccounts/linkedAccounts";
+import ProfilePicture from "../../components/profilePicture/profilePicture";
+import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
 
 const IndexPage: NextPage = () => {
     const { user, setUser } = useUser();
@@ -29,8 +31,9 @@ const IndexPage: NextPage = () => {
             setUser(await GetProfile(token) as UserProfile);
         }
 
-        if (user?.email === "" || user?.email === null)
+        if (user?.email === undefined || user?.email === "" || user?.email === null) {
             getProfile(token);
+        }
     }, [setUser, token, user]);
         
     return (
@@ -51,9 +54,11 @@ const IndexPage: NextPage = () => {
                         <ProfilePicture/>
                     </div>
                     { user && <FormProfile username={user?.username} mail={user?.email} password={"a".repeat(user?.passwordLength)}/> }
-                    <UpdateButton/>
+                    <UpdateButton username={user?.username} email={user?.email} token={token}/>
                     <LinkedAccounts linkedAccountsDataArray={user?.connectedServices}/>
                 </div>
+                <LogoutButton/>
+                <DeleteButton token={token}/>
             </div>
         </>
     )
