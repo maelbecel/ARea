@@ -152,13 +152,15 @@ const CreateContainerComponent = ({ setIndex, setPages, array, setArray, setSlug
 
         let actionsInputs = [] as appletsInputs[];
 
+        console.log(array);
+
         array[0].inputs.forEach((input: string, index: number) => {
             actionsInputs.push({
-                name: array[0].fields[index].name,
-                label: array[0].fields[index].label,
+                name: array[0]?.fields[index]?.name,
+                label: array[0]?.fields[index]?.label,
                 value: input,
-                options: array[0].fields[index].options,
-                type: array[0].fields[index].type
+                options: array[0]?.fields[index]?.options,
+                type: array[0]?.fields[index]?.type
             });
         });
 

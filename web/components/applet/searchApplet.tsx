@@ -124,7 +124,7 @@ const SearchApplet = () => {
         };
 
         dataFetch();
-    }, [token, router, applets, setToken]);
+    }, [token]);
 
     useEffect(() => {
         if (applets) {
