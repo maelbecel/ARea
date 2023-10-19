@@ -49,7 +49,7 @@ const IndexPage: NextPage = () => {
                 </RightSection>
             </NavBar>
             <div className="min-h-screen flex flex-col items-center">
-                <div className="w-[30%]">
+                <div className="w-[75%] lg:w-[30%]">
                     <div className="my-[32px]">
                         <ProfilePicture/>
                     </div>

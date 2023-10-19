@@ -50,11 +50,17 @@ const FormProfile = ({username, mail, password} : FormProfileProps) => {
     const [UserPassword, setUserPassword] = useState<string>(password ?? '')
 
     return (
-        <div className="flex justify-center flex-col gap-y-10">
-            <label className="text-[#363841] font-bold text-[42px]">Account</label>
-            <Input placeholder="Username" value={UserName} setValue={setUsername} label="Username"/>
-            <Input placeholder="Password" secureMode={true} value={UserPassword} setValue={setUserPassword} label="Password"/>
-            <Input placeholder="Mail" value={UserMail} setValue={setUserMail} label="Mail"/>
+        <div className="flex justify-center flex-col items-center gap-y-10 w-[100%]">
+            <label className="text-[#363841] font-bold text-[42px] text-center">Account</label>
+            <div className="w-[100%]">
+                <Input placeholder="Username" value={UserName} setValue={setUsername} label="Username"/>
+            </div>
+            <div className="w-[100%]">
+                <Input placeholder="Password" secureMode={true} value={UserPassword} setValue={setUserPassword} label="Password"/>
+            </div>
+            <div className="w-[100%]">
+                <Input placeholder="Mail" value={UserMail} setValue={setUserMail} label="Mail"/>
+            </div>
         </div>
     );
 }
