@@ -18,6 +18,7 @@ const UserInfosAPI  = async (token: string, serverAddress : string) => {
                 }
             })
         ).json();
+        console.log("UserInfosAPI ", data)
         return data;
     } catch (error) {
         console.log(error);

@@ -1,6 +1,6 @@
 // --- Libraires --- //
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, Alert, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Button } from "react-native-paper";
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
@@ -8,16 +8,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserInfosAPI from "../api/UserInfos";
 import ProfileForm from "../components/ProfileForm";
 import SVGImg from '../assets/svg/iconProfile.svg'
+import PatchUser from "../api/PatchUser";
+import ServiceLogo from "../components/ServiceLogo";
 
 /* The above code is a TypeScript React component called "Profile". It is responsible for rendering a
 user profile screen. */
-const Profile: React.FC = () => {
-  const navigation = useNavigation();
+const Profile = ({navigation}) => {
 
   const [data, setData] = useState<any>([]);
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [services, setServices] = useState<string[]>([]);
 
   /* The `useEffect` hook in this code is used to fetch user information from an API and update the
   component's state with the retrieved data. */
@@ -42,6 +44,7 @@ const Profile: React.FC = () => {
         }
 
         const response = await UserInfosAPI(token, serverAddress);
+        setServices(response.data.connectedServices);
         setData(response.data);
         await AsyncStorage.setItem('username', response.data.username);
         await AsyncStorage.setItem('email', response.data.email);
@@ -74,12 +77,25 @@ const Profile: React.FC = () => {
   const handlePress = async () => {
     try {
       const email = await AsyncStorage.getItem('email');
-      console.log(username, email);
+      const username = await AsyncStorage.getItem('username');
+      const res = await PatchUser(email, null, username);
+      await SecureStore.setItemAsync('token_api', res.data);
+      if (!res) {
+        Alert.alert('Error', 'An error occurred while updating your profile.');
+      }
       await AsyncStorage.removeItem('username');
       await AsyncStorage.removeItem('email');
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const displayServices = () => {
+    console.log("Services : ", services);
+    if (services == undefined || services == null) return;
+    return services.map((service) => (
+      <ServiceLogo key={service} slug={service} onPress={() => navigation.navigate('Service', { slug: service })} />
+    ));
   };
 
   /* The `return` statement in the code is rendering the JSX elements that make up the Profile
@@ -113,12 +129,12 @@ const Profile: React.FC = () => {
           <View style={{marginBottom: 10}}>
             <Text style={styles.title}>Comptes associés</Text>
           </View>
-          {/* <View style={{marginTop: 10}}>
-            <Text style={styles.subtitle}>Google</Text>
-            <Text style={styles.link}>Associer un compte Google</Text>
-            <Text style={styles.subtitle}>Facebook</Text>
-            <Text style={styles.link}>Associer un compte Facebook</Text>
-          </View> */}
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={true}
+          >
+            {displayServices()}
+          </ScrollView>
         </View>
         <View style={styles.separator} />
         <View style={styles.userInfo}>
