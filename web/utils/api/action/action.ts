@@ -29,6 +29,8 @@ const GetActionInputs = async (token: string, slug: string): Promise<any | null>
 
         const data = await response.json();
 
+        console.log("DATA -> ",     data);
+
         if (data?.status !== 200) {
             console.log(`[GET] .../action/${slug} (Error: ${data?.status}): \"${data?.message}\".`);
             return null;

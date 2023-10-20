@@ -63,7 +63,6 @@ const DeleteProfile = async (token: string, router: NextRouter) => {
         const response = await fetch(`https://area51.zertus.fr/user/me`, {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json",
                 Authorization : `Bearer ${token}`
             }
         });
@@ -127,8 +126,6 @@ const PatchProfile = async (token: string, email: string, username: string): Pro
             return null;
         }
 
-        console.log("email -> ", email);
-        console.log("username -> ", username);
         console.log("[PATCH] .../user/me: \"User updated\".");
         console.log(data);
 

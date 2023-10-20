@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { UpdateAppletWithID } from "../../utils/api/applet/applet";
 
 interface ToggleSwitchProps {
     isCheked: boolean;
@@ -6,12 +8,14 @@ interface ToggleSwitchProps {
     yesLabel: string;
     noLabel: string;
     bgColor: string;
+    id: string;
 }
 
-const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor } : ToggleSwitchProps) => {
+const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor, id } : ToggleSwitchProps) => {
     
     const [isChekedState, setIsChecked] = useState<boolean>(false);
     const [color, setColor] = useState<string>("#ffffff");
+    const { token, setToken } = useToken();
 
     useEffect(() => {
         setIsChecked(isCheked);
@@ -21,12 +25,16 @@ const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor } : Togg
 
     const handleSwitchChange = () => {
 
-        setIsChecked(!isChekedState);
-
         if (isChekedState == true) {
             console.log("disabled");
+            const value = {enabled: false};
+            setIsChecked(false);
+            UpdateAppletWithID(token, id, value);
         } else {
             console.log("enabled");
+            const value = {enabled: true};
+            setIsChecked(true);
+            UpdateAppletWithID(token, id, value);
         }
     }
   

@@ -1,14 +1,15 @@
 // --- Librairies import --- //
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import LogoApplet from "./logo";
 
+import LogoApplet from "./logo";
 import SwitchNotifyMe from "./switchNotifyMe";
 import MoreDetailsButton from "./moreDetails";
 import ToggleSwitch from "../switch/toggleSwitch";
 
 interface ServiceInfoContainerProps {
-    id?: number;
+    id: number;
     name: string;
     color: string;
     theme: string;
@@ -19,12 +20,14 @@ interface ServiceInfoContainerProps {
     lastTriggerDate?: number; // date
     createdAt?: number; // date
     enabled: boolean;
+    notifUser: boolean;
 }
 
-const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user, enabled, createdAt = 0, lastTriggerDate = 0} : ServiceInfoContainerProps) => {
+const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactionSlug, user, enabled, createdAt = 0, lastTriggerDate = 0, notifUser} : ServiceInfoContainerProps) => {
 
     const [formattedDate, setFormattedDate] = useState<string>("");
     const [LastUseDate, setLastUseDate] = useState<string>("");
+    const router = useRouter();
     
     useEffect(() => {
         console.log("enabled -> ", enabled);
@@ -39,10 +42,11 @@ const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user
         }
     }, []);
 
-    // TODO: add a link to the edit title
+    const handleTitleChange = () => {
+        console.log("title changed");
+    }
+
     // TODO: add a link to the edit applet
-    // TODO: rework front switch
-    // TODO: link notif switch to the backend
     // TODO: add link on each logo (need to see on each which page to link)
     return (
         <div className="w-full flex flex-col justify-center">
@@ -51,7 +55,7 @@ const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user
                         {/* Add a child element inside the Lipxnk */}
                         <a className="rounded-[25px] bg-white py-[1%] px-[4%] ml-[50px] mt-[2%]">Back</a>
                 </Link>
-                <Link href="#">
+                <Link href={`/myApplets/applet/modifyApplet/${id}`}>
                         {/* Add a child element inside the Link */}
                         <a  className="rounded-[25px] bg-white py-[1%] px-[4%] mr-[50px] mt-[2%]" >Edit Applet</a>
                 </Link>
@@ -60,25 +64,27 @@ const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user
                 <div style={{backgroundColor: `${color}` }} className="px-[15%] lg:px-[35%]">
                     <div className="cursor-pointer">
                         <div className="flex flex-wrap">
-                            {actionSlug && <LogoApplet slug={actionSlug} width={56} height={56} toogleBackground={false}/>}
-                            {reactionSlug && <LogoApplet slug={reactionSlug} width={56} height={56} toogleBackground={false}/>}
+                            {actionSlug && <LogoApplet slug={actionSlug.split('.')[0]} width={56} height={56} toogleBackground={false}/>}
+                            {reactionSlug && <LogoApplet slug={reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={false}/>}
                         </div>
                         <div className="font-bold text-white text-[37px] pb-[10%] overflow-hidden break-words">
                             {name}
                         </div>
-                        <Link href="#">
+                        <Link href={`/myApplets/applet/modifyTitle/${id}`}>
                             <div className="font-bold text-white text-[20px] flex justify-end underline">
-                                <div>Edit title</div>
+                                <button onClick={handleTitleChange}>
+                                    Edit title
+                                </button>
                             </div>
                         </Link>
                         <div className="text-white text-[20px] flex flex-row justify-start pb-[20%]">
-                            <div><span>by </span><span className="font-bold">{user}</span></div>
+                            <div><span>by</span><span className="font-bold">{user}</span></div>
                         </div>
                     </div>
                 </div>
             </div>
             <div className="flex flex-col items-center my-[5%]">
-                <ToggleSwitch isCheked={enabled} isDisable={false} yesLabel="Enabled" noLabel="Disabled" bgColor="#363841"/>
+                <ToggleSwitch isCheked={enabled} isDisable={false} yesLabel="Enabled" noLabel="Disabled" bgColor="#363841" id={id?.toString()}/>
             </div>
             <div className="flex flex-col flex-start px-[10%] lg:px-[35%] mb-[5%]">
                 <div className="text-[#B8B9BB] font-bold">
@@ -103,7 +109,7 @@ const AppletInfoContainer = ({name, color, theme, actionSlug, reactionSlug, user
                         Notify me
                     </div>
                     <div className="text-[#363841] font-bold text-[22px] my-[1%]">
-                        <SwitchNotifyMe isCheked={false} isDisable={false}/>
+                        <SwitchNotifyMe isCheked={notifUser} isDisable={false} id={id?.toString()}/>
                     </div>
                 </div>
             </div>

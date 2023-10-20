@@ -34,6 +34,7 @@ interface AppletProps {
     user : {
         username: string;
     }
+    notifUser: boolean;
 }
 
 const IndexPage: NextPage = () => {
@@ -102,7 +103,7 @@ const IndexPage: NextPage = () => {
             getServices(token);
         }
 
-        const Service: Service | undefined = services.find((Service: Service) => Service.slug === dataApplet.actionSlug.split('.')[0]);
+        const Service: Service | undefined = services.find((Service: Service) => Service?.slug === dataApplet?.actionSlug.split('.')[0]);
 
         setBgColor(Service?.decoration?.backgroundColor ?? '#ffffff');
 
@@ -132,14 +133,16 @@ const IndexPage: NextPage = () => {
             <div className={`min-h-screen`}>
                 {dataApplet && 
                     <AppletInfoContainer
+                        id={dataApplet?.id}
                         name={dataApplet?.name}
                         color={bgColor}
                         theme={theme}
-                        actionSlug={dataApplet?.actionSlug.split('.')[0]}
-                        reactionSlug={dataApplet?.reactionSlug.split('.')[0]}
+                        actionSlug={dataApplet?.actionSlug}
+                        reactionSlug={dataApplet?.reactionSlug}
                         user={dataApplet?.user?.username}
                         enabled={dataApplet?.enabled}
                         createdAt={dataApplet?.createdAt}
+                        notifUser={dataApplet?.notifUser}
                     />
                 }
             </div>
