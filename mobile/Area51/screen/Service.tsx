@@ -125,7 +125,7 @@ const Service = ({ navigation, route }) => {
         <Image source={{ uri: url }} style={styles.logo} />
         <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
       </View>
-      <ScrollView >
+      <ScrollView>
         <View style={styles.action}>
           {displayActions()}
           {displayReactions()}
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     marginBottom: 60,
+    paddingBottom: 250,
   }
 });
 
