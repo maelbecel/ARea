@@ -3,7 +3,6 @@
 `ServiceInfo` file in the current directory. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Input} from  './ServiceInfo'
 
 
 /**
@@ -13,9 +12,9 @@ import {Input} from  './ServiceInfo'
  * action. It is used to construct the URL for the API request.
  * @returns The function `Action` returns a Promise that resolves to an array of `Input` objects.
  */
-const Action = async (slug : string): Promise<Input[]> => {
+const Action = async (slug : string): Promise<any[]> => {
     try {
-        let inputs : Input[] = [];
+        let inputs : any[] = [];
         const token = await SecureStore.getItemAsync('token_api');
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const response = await fetch(`${serverAddress}/action/${slug}`, {
@@ -25,12 +24,13 @@ const Action = async (slug : string): Promise<Input[]> => {
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log(response.status);
+        console.log("slug : ", response.status);
         const json = await response.json();
+        console.log("slug : ", json.data.inputs);
         if (json.data == undefined) return null;
         for (let i = 0; i < json.data.inputs.length; i++)
         {
-            let tmp : Input = {name : json.data.inputs[i].name, label : json.data.inputs[i].label, type : json.data.inputs[i].type};
+            let tmp  = {name : json.data.inputs[i].name, label : json.data.inputs[i].label, type : json.data.inputs[i].type, options : json.data.inputs[i].options};
             inputs.push(tmp);
         }
         return inputs;

@@ -95,7 +95,7 @@ const ConnectAuth = ({ navigation, route }) => {
   let inputsResp = [];
 
   const displayTextForm = (input : Input, index : number) => {
-    return (<IngredientButton
+    return (<IngredientButton key={input.name}
       input={input}
       placeholders={placeholders}
       type={type}
@@ -146,7 +146,7 @@ const ConnectAuth = ({ navigation, route }) => {
   const isAllFormFill = () : boolean => {
     for (let i = 0; i < inputs.length; i++) {
       console.log("Form ", i, " : ", inputsResp[i])
-      if (inputsResp[i] == null)
+      if (inputsResp[i] == null || inputsResp[i] == "" || inputsResp[i] == undefined)
         return false;
     }
     console.log("All form fill")
@@ -183,6 +183,7 @@ const ConnectAuth = ({ navigation, route }) => {
     const callingAction = async () => {
       const actionSlug = await AsyncStorage.getItem("action");
       if (type == "reaction" && actionSlug == "default") {
+        navigation.removeListener
         navigation.navigate("Create");
         return;
       } else {
