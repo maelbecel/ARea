@@ -52,6 +52,9 @@ const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, se
 
     useEffect(() => {
         const getService = async (slug: string) => {
+            if (props !== undefined && actions.length !== 0)
+                return;
+
             try {
                 const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
                     method: "GET",
@@ -105,7 +108,7 @@ const AllActionFromServicePages = ({ service, token, setPages, setSlug, type, se
         getService(service);
 
         setTheme(getTheme(props?.decoration?.backgroundColor));
-    }, [service, token, type, props]);
+    }, [service, token, type, props, actions]);
 
     return (
         <>

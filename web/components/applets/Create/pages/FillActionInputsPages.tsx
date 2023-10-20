@@ -62,13 +62,66 @@ const TextField = ({ input, color, theme, array, setArray, index, id }: { input:
     );
 };
 
+const NumberField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
+    return (
+        <div className='flex flex-col w-[50%]'>
+            <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
+                {input.label}
+            </span>
+            <input
+                type="text"
+                className={`rounded-[10px] p-2 text-[#363841] font-bold text-[20px]`}
+                value={array[index].inputs[id]}
+                onChange={(e) => {
+                    if (e.target.value.match(/^[0-9]+$/) !== null)
+                        return;
+                    const newArray = [...array];
+
+                    newArray[index].inputs[id] = e.target.value;
+
+                    setArray(newArray);
+                }}
+            />
+        </div>
+    );
+};
+
+const SelectField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
+    return (
+        <div className='flex flex-col w-[50%]'>
+            <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
+                {input.label}
+            </span>
+            <select
+                className={`rounded-[10px] p-2 text-[#363841] font-bold text-[20px]`}
+                value={array[index].inputs[id]}
+                onChange={(e) => {
+                    const newArray = [...array];
+
+                    newArray[index].inputs[id] = e.target.value;
+
+                    setArray(newArray);
+                }}
+
+            >
+                {input.options?.map((option: string, id: number) => {
+                    return (
+                        <option key={id} value={option}>
+                            {option}
+                        </option>
+                    );
+                })}
+            </select>
+        </div>
+    );
+};
+
 const Field = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
     if (input.type === "TEXT" || input.type === "URL")
         return (<TextField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
-    return (
-        <>
-        </>
-    );
+    if (input.type === "NUMBER")
+        return (<NumberField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
+    return (<SelectField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
 };
 
 const ValidateTriggersButton = ({ props, callback, text }  : { props: any | undefined, callback: () => void, text: string }) => {
@@ -125,7 +178,7 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
     }, [props, service, token]);
 
     useEffect(() => {
-        if (actionProps !== undefined)
+        if (actionProps !== undefined && props !== undefined)
             return;
 
             const getAction = async (service: string, slug: string) => {
@@ -149,8 +202,6 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
 
                     return (newArray);
                 });
-
-                console.log(data?.data);
             } catch (error) {
                 console.log(error);
             }
@@ -182,6 +233,15 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
                 }}
             >
                 <ActionInfoContainer color={props?.decoration?.backgroundColor} theme={theme} url={props?.decoration?.logoUrl} title={props?.name} />
+                {actionProps?.placeholders &&
+                    <ul className='w-[50%] text-[24px]'>
+                        {Object.keys(actionProps.placeholders).map((key) => (
+                            <li key={key}>
+                                <strong>{key}: </strong> {actionProps.placeholders[key]}
+                            </li>
+                        ))}
+                    </ul>
+                }
                 {actionProps?.inputs?.map((input: inputs, id: number) => {
                     return (
                         <Field key={id} input={input} color={props?.decoration?.backgroundColor} theme={theme} array={array} setArray={setArray} index={index} id={id} />
