@@ -11,6 +11,8 @@ import * as WebBrowser from 'expo-web-browser';
 import SelectDropdown from 'react-native-select-dropdown'
 import PlaceHolders, {Dict} from '../api/Placeholders';
 import IngredientButton from '../components/IngredientButton';
+import UserInfosAPI from '../api/UserInfos';
+import * as SecureStore from 'expo-secure-store';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -100,7 +102,7 @@ const ConnectAuth = ({ navigation, route }) => {
       placeholders={placeholders}
       type={type}
       color={color}
-      onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}}
+      onChangeText={(text) => {inputsResp[index] = text; console.log(`at index ${index} add ${inputsResp[index]}`); isAllFormFill()}}
       onSelect={(text) => {console.log("Select the " + text); isAllFormFill()}}
     />)
   }
@@ -115,6 +117,14 @@ const ConnectAuth = ({ navigation, route }) => {
     )
   }
 
+  const displayOther = (input : any, index : number) => {
+    console.error("###############")
+    console.error("Unknown type : ", input.type);
+    console.error("At index : ", index);
+    console.error("###############")
+    return null;
+  }
+
   const displaySelectForm = (input : any, index : number) => {
     console.log("Select detected : ", input);
     if (!input.options) {
@@ -122,9 +132,9 @@ const ConnectAuth = ({ navigation, route }) => {
       return null;
     }
     return (
-      <View key={input.name} style={{width:"100%"}}>
+      <View key={input.name} style={{marginBottom : 30, width:"100%"}}>
         <View >
-          <SelectDropdown data={input.options} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
+          <SelectDropdown defaultValue={input.options[0]} data={input.options.sort((a : string, b : string) => a.toLowerCase().localeCompare(b.toLowerCase()))} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
         </View>
      </View>
     )
@@ -133,7 +143,8 @@ const ConnectAuth = ({ navigation, route }) => {
   /* The `showForm` function is a helper function that generates a form based on the `inputs` array. */
   const showForm = () => {
     console.log("showForm");
-   return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : null))}
+    console.log("Inputs : ", inputs);
+   return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : displayOther(input, index)))}
 
   /**
    * The function `isAllFormFill` checks if all the form inputs have been filled and returns true if
@@ -144,13 +155,33 @@ const ConnectAuth = ({ navigation, route }) => {
    * there are still empty form fields.
    */
   const isAllFormFill = () : boolean => {
+    console.log("isAllFormFill of ", inputsResp)
     for (let i = 0; i < inputs.length; i++) {
-      console.log("Form ", i, " : ", inputsResp[i])
+      console.log("Form ", i + 1, "/", inputs.length, " : ", inputsResp[i])
       if (inputsResp[i] == null || inputsResp[i] == "" || inputsResp[i] == undefined)
         return false;
     }
     console.log("All form fill")
     return true;
+  }
+
+  const isConnected = async (slug : string) : Promise<boolean> => {
+    const serverAddress = await AsyncStorage.getItem('serverAddress');
+    const token = await SecureStore.getItemAsync('token_api');
+
+    if (!token || !serverAddress) {
+      navigation.navigate('Login');
+      return;
+    }
+
+    const response = await UserInfosAPI(token, serverAddress);
+    const services = response.data.connectedServices;
+
+    console.log(slug, " is in ", services)
+    if (services.includes(slug)) {
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -187,7 +218,9 @@ const ConnectAuth = ({ navigation, route }) => {
         navigation.navigate("Create");
         return;
       } else {
+        if (! await isConnected(slug.split(".")[0])) {
         await _openAuthSessionAsync();
+        }
         setoAuthStatus(true);
       }
     }

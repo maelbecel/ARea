@@ -4,7 +4,6 @@
 functions and variables exported by the `expo-secure-store` module using the `SecureStore` variable. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Input} from  './ServiceInfo'
 
 
 /**
@@ -16,9 +15,9 @@ import {Input} from  './ServiceInfo'
  * performed. It is used in the URL to specify the specific action for the reaction.
  * @returns The function `Reaction` returns a Promise that resolves to an array of `Input` objects.
  */
-const Reaction = async (slug : string, actionSlug : string): Promise<Input[]> => {
+const Reaction = async (slug : string, actionSlug : string): Promise<any[]> => {
     try {
-        let inputs : Input[] = [];
+        let inputs : any[] = [];
         const token = await SecureStore.getItemAsync('token_api');
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const response = await fetch(`${serverAddress}/reaction/${slug}/${actionSlug}`, {
@@ -33,7 +32,7 @@ const Reaction = async (slug : string, actionSlug : string): Promise<Input[]> =>
         if (json.data == undefined) return null;
         for (let i = 0; i < json.data.inputs.length; i++)
         {
-            let tmp : Input = {name : json.data.inputs[i].name, label : json.data.inputs[i].label, type : json.data.inputs[i].type};
+            let tmp : any = {name : json.data.inputs[i].name, label : json.data.inputs[i].label, type : json.data.inputs[i].type, options : json.data.inputs[i].options};
             inputs.push(tmp);
         }
         return inputs;
