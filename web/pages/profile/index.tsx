@@ -68,7 +68,7 @@ const IndexPage: NextPage = () => {
                         setUsernameFunction={setUsername}
                         setMailFunction={setEmail}
                     /> }
-                    <UpdateButton username={username} email={email} token={token}/>
+                    <UpdateButton username={username} email={email} token={token} setToken={setToken}/>
                     <LinkedAccounts linkedAccountsDataArray={user?.connectedServices}/>
                 </div>
                 <LogoutButton/>

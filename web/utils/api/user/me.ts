@@ -129,7 +129,7 @@ const PatchProfile = async (token: string, email: string, username: string): Pro
         console.log("[PATCH] .../user/me: \"User updated\".");
         console.log(data);
 
-        return data?.data as UserProfile;
+        return data?.data;
     } catch (error: any) {
         console.log(error);
     }
