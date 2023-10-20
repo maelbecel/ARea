@@ -26,6 +26,7 @@ const PlaceHolders = async (slug : string, actionSlug : string): Promise<Dict> =
         });
         console.log("Placeholders : ", response.status);
         const json = await response.json();
+        if (json.data == undefined) return null;
         return createDictionary(json.data.placeholders);
     } catch (error) {
         console.error(error);
