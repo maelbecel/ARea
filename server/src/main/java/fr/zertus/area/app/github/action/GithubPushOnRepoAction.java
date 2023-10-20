@@ -7,6 +7,7 @@ import fr.zertus.area.app.github.model.GithubRepository;
 import fr.zertus.area.app.github.model.GithubWebhookSetup;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
+import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
@@ -26,7 +27,7 @@ public class GithubPushOnRepoAction extends Action {
     public GithubPushOnRepoAction(String appName) {
         super(appName, "Push on repo", "Push on specified github repository");
 
-        this.inputs.add(FormInput.createSelectInput("Repository", "repository", List.of()));
+        this.inputs.add(FormInput.createSelectInput("repository", "Repository", List.of()));
 
         this.placeholders.put("author", "Author of the commit");
         this.placeholders.put("message", "Message of the commit");
@@ -43,20 +44,20 @@ public class GithubPushOnRepoAction extends Action {
         if (options == null)
             return super.getInputs(user);
 
-        return List.of(FormInput.createSelectInput("Repository", "repository", options));
+        return List.of(FormInput.createSelectInput("repository", "Repository", options));
     }
 
     @Override
-    public boolean setupAction(User user, List<FormInput> inputs) {
+    public void setupAction(User user, List<FormInput> inputs) throws ActionTriggerException {
         ConnectedService service = user.getConnectedService("github");
         if (service == null)
-            return false;
+            throw new ActionTriggerException("You need to connect your Github account first");
         String input = FormInputUtils.getValue("repository", inputs);
         String url = "https://api.github.com/repos/" + input + "/hooks";
         GithubWebhookSetup body = new GithubWebhookSetup("web", true, List.of("push"),
             new GithubWebhookSetup.Config("https://area51.zertus.fr/webhook/github", "json", "0"));
 
-        return GithubApp.setupWebhook(url, service.getToken(), body);
+        GithubApp.setupWebhook(url, service.getToken(), body);
     }
 
     @Override

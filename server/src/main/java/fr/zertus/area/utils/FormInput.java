@@ -44,7 +44,7 @@ public class FormInput {
                 }
             }
             case URL -> {
-                if (!value.startsWith("http://") || !value.startsWith("https://")) {
+                if (!value.startsWith("http://") && !value.startsWith("https://")) {
                     throw new BadFormInputException("The value of the input " + name + " is not an url");
                 }
             }

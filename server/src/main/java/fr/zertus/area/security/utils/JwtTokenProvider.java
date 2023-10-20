@@ -38,6 +38,18 @@ public class JwtTokenProvider {
             .compact();
     }
 
+    public static String createToken(String email) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + Long.parseLong("2419000000")); // 4 weeks
+
+        return Jwts.builder()
+            .setSubject(email)
+            .setIssuedAt(new Date())
+            .setExpiration(expiryDate)
+            .signWith(key)
+            .compact();
+    }
+
     /**
      * Create a JWT token from an authentication object.
      * @param authentication the authentication object to create the token from

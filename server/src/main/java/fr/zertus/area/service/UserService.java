@@ -103,7 +103,7 @@ public class UserService {
         }
     }
 
-    public void delete() throws DataNotFoundException {
+    public void deleteCurrentUser() throws DataNotFoundException {
         User user = getCurrentUser();
         if (user == null)
             return;

@@ -9,10 +9,14 @@ import fr.zertus.area.app.github.action.GithubPushOnRepoAction;
 import fr.zertus.area.app.github.action.GithubReleaseOnRepoAction;
 import fr.zertus.area.app.github.model.GithubRepository;
 import fr.zertus.area.app.github.model.GithubWebhookSetup;
+import fr.zertus.area.app.github.reaction.GithubCommentIssueReaction;
+import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -43,7 +47,9 @@ public class GithubApp extends App {
 
     @Override
     public List<Reaction> getReactions() {
-        return new ArrayList<>();
+        return List.of(
+            new GithubCommentIssueReaction(getName())
+        );
     }
 
     @Override
@@ -86,20 +92,37 @@ public class GithubApp extends App {
         }
     }
 
-    public static boolean setupWebhook(String url, String token, GithubWebhookSetup body) {
+    public static void setupWebhook(String url, String token, GithubWebhookSetup body) throws ActionTriggerException {
         try {
-            ApiResponse<String> response = BasicApiClient.sendPostRequest(url, body, String.class, Map.of(
+            ApiResponse<GithubWebhookSetupCallback> response = BasicApiClient.sendPostRequest(url, body, GithubWebhookSetupCallback.class, Map.of(
                 "Authorization", "Bearer " + token,
                 "X-GitHub-Api-Version", "2022-11-28")
             );
 
-            if (response.getStatus() >= 200 && response.getStatus() < 300)
-                return true;
-            System.out.println(response.getMessage() + "--" + response.getStatus());
+            if ((response.getStatus() < 200 || response.getStatus() >= 300)) {
+                if (response.getData() != null && response.getData().getErrors() != null && !response.getData().getErrors().isEmpty()) {
+                    GithubWebhookSetupCallback.Error error = response.getData().getErrors().get(0);
+                    if (error.getMessage().contains("Hook already exists on this repository"))
+                        return;
+                }
+                throw new ActionTriggerException("Error while setting up webhook: " + response.getMessage());
+            }
         } catch (IOException e) {
-            return false;
+            throw new ActionTriggerException("Error while setting up webhook: " + e.getMessage());
         }
-        return false;
+    }
+
+    @Data
+    private static class GithubWebhookSetupCallback {
+        private String message;
+        private List<Error> errors;
+
+        @Data
+        private static class Error {
+            private String resource;
+            private String code;
+            private String message;
+        }
     }
 
 }

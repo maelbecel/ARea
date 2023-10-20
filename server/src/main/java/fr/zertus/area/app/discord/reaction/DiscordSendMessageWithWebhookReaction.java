@@ -4,6 +4,7 @@ import fr.zertus.area.app.Reaction;
 import fr.zertus.area.app.discord.model.DiscordWebhookMessage;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.BadFormInputException;
+import fr.zertus.area.exception.ReactionTriggerException;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
 
@@ -36,7 +37,7 @@ public class DiscordSendMessageWithWebhookReaction extends Reaction {
     }
 
     @Override
-    public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws BadFormInputException {
+    public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws ReactionTriggerException {
         super.trigger(user, inputs, parameters);
 
         String message = FormInputUtils.getValue("message", inputs);

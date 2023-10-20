@@ -1,10 +1,14 @@
 package fr.zertus.area.app.google;
 
+import com.google.gson.Gson;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
+import fr.zertus.area.app.google.model.GoogleUserInfo;
+import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import fr.zertus.area.utils.StringUtils;
+import lombok.Data;
 
 import java.util.List;
 
@@ -46,4 +50,14 @@ public class GoogleApp extends App {
     public boolean isOAuth2() {
         return true;
     }
+
+    public static GoogleUserInfo getUserInfo(ConnectedService service) {
+        if (service == null)
+            return null;
+        if (service.getData() == null)
+            return null;
+
+        return new Gson().fromJson(service.getData(), GoogleUserInfo.class);
+    }
+
 }

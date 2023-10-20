@@ -1,6 +1,7 @@
 package fr.zertus.area.app.twitch;
 
 import fr.zertus.area.app.github.GithubOAuth2Handler;
+import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -12,15 +13,13 @@ import java.util.Set;
 
 public class TwitchOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
-
-
     @Override
-    public String getToken(String tokenUrl, MultiValueMap<String, String> body) {
+    public ConnectedService getToken(String tokenUrl, MultiValueMap<String, String> body) {
         RestTemplate restTemplate = new RestTemplate();
         TwitchOAuth2Token token = restTemplate.postForObject(tokenUrl, body, TwitchOAuth2Token.class);
         if (token == null || token.getAccess_token() == null)
             return null;
-        return token.getAccess_token();
+        return new ConnectedService("twitch", token.getAccess_token(), null);
     }
 
     @Override
@@ -37,6 +36,11 @@ public class TwitchOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             "&state=" + state +
             "&response_type=code"
         );
+    }
+
+    @Override
+    public String getClientRegistrationId() {
+        return "twitch";
     }
 
     @Data

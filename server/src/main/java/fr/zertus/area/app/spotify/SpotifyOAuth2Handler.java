@@ -1,5 +1,6 @@
 package fr.zertus.area.app.spotify;
 
+import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import lombok.Data;
 import org.springframework.http.HttpEntity;
@@ -16,7 +17,7 @@ import java.util.Set;
 public class SpotifyOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
     @Override
-    public String getToken(String tokenUrl, MultiValueMap<String, String> body) {
+    public ConnectedService getToken(String tokenUrl, MultiValueMap<String, String> body) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -34,7 +35,7 @@ public class SpotifyOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             SpotifyOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
-            return token.getAccess_token();
+            return new ConnectedService("spotify", token.getAccess_token(), null);
         } else {
             System.err.println("Error: " + responseEntity.getStatusCode());
             return null;
@@ -55,6 +56,11 @@ public class SpotifyOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             "&scope=" + String.join("%20", scope) +
             "&state=" + state
         );
+    }
+
+    @Override
+    public String getClientRegistrationId() {
+        return "spotify";
     }
 
     @Data

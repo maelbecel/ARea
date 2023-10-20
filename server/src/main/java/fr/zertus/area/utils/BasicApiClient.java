@@ -38,9 +38,11 @@ public class BasicApiClient {
     public static <T> ApiResponse<T> sendPostRequest(String url, Object requestBody, Class<T> responseType, Map<String, String> headers) throws IOException {
         HttpPost request = new HttpPost(url);
         addHeadersToRequest(request, headers);
-        if (headers.containsKey("Content-Type") && !headers.get("Content-Type").equals("application/json"))
-            request.setEntity(new StringEntity(requestBody.toString()));
-        else
+        if (headers.containsKey("Content-Type") && !headers.get("Content-Type").equals("application/json")) {
+            StringEntity entity = new StringEntity(requestBody.toString());
+            entity.setContentType(headers.get("Content-Type"));
+            request.setEntity(entity);
+        } else
             setJsonRequestBody(request, requestBody);
         return executeRequest(request, responseType);
     }
@@ -54,9 +56,11 @@ public class BasicApiClient {
     public static <T> ApiResponse<T> sendPatchRequest(String url, Object requestBody, Class<T> responseType, Map<String, String> headers) throws IOException {
         HttpPatch request = new HttpPatch(url);
         addHeadersToRequest(request, headers);
-        if (headers.containsKey("Content-Type") && !headers.get("Content-Type").equals("application/json"))
-            request.setEntity(new StringEntity(requestBody.toString()));
-        else
+        if (headers.containsKey("Content-Type") && !headers.get("Content-Type").equals("application/json")) {
+            StringEntity entity = new StringEntity(requestBody.toString());
+            entity.setContentType(headers.get("Content-Type"));
+            request.setEntity(entity);
+        } else
             setJsonRequestBody(request, requestBody);
         return executeRequest(request, responseType);
     }
@@ -69,24 +73,20 @@ public class BasicApiClient {
     }
 
     private static <T> ApiResponse<T> executeRequest(HttpUriRequest request, Class<T> responseType) throws IOException {
+        System.out.println(request.toString());
         HttpResponse response = httpClient.execute(request);
 
         int statusCode = response.getStatusLine().getStatusCode();
         ApiResponse<T> apiResponse = new ApiResponse<>(statusCode, null);
-        if (statusCode >= 200 && statusCode < 300) {
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                String responseString = EntityUtils.toString(entity);
-                if (responseType == String.class)
-                    apiResponse.setData((T) responseString);
-                else
-                    apiResponse.setData(new Gson().fromJson(responseString, responseType));
-            } else {
-                throw new IOException("Empty response entity");
-            }
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            String responseString = EntityUtils.toString(entity);
+            if (responseType == String.class)
+                apiResponse.setData((T) responseString);
+            else
+                apiResponse.setData(new Gson().fromJson(responseString, responseType));
         } else {
-            if (response.getEntity() != null)
-                apiResponse.setMessage(EntityUtils.toString(response.getEntity()));
+            apiResponse.setData(null);
         }
         return apiResponse;
     }

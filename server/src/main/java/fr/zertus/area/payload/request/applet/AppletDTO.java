@@ -15,6 +15,7 @@ public class AppletDTO {
     List<FormInput> actionInputs;
     String reactionSlug;
     List<FormInput> reactionInputs;
-    boolean notifUser;
+    Boolean notifUser;
+    Boolean enabled;
 
 }

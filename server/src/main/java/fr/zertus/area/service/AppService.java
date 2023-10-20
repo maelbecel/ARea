@@ -4,10 +4,12 @@ import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
+import fr.zertus.area.app.gmail.GmailApp;
 import fr.zertus.area.app.google.GoogleApp;
 import fr.zertus.area.app.notion.NotionApp;
 import fr.zertus.area.app.spotify.SpotifyApp;
 import fr.zertus.area.app.twitch.TwitchApp;
+import fr.zertus.area.app.youtube.YoutubeApp;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.DataNotFoundException;
@@ -52,6 +54,12 @@ public class AppService {
 
         GoogleApp googleApp = new GoogleApp();
         apps.put(googleApp.getSlug(), googleApp);
+
+        YoutubeApp youtubeApp = new YoutubeApp();
+        apps.put(youtubeApp.getSlug(), youtubeApp);
+
+        GmailApp gmailApp = new GmailApp();
+        apps.put(gmailApp.getSlug(), gmailApp);
     }
 
     private static final Map<Long, String> redirectUris = new HashMap<>();
@@ -76,7 +84,8 @@ public class AppService {
             return ApiResponse.notFound("Service not found").toResponseEntity();
         if (!app.isOAuth2() || app.getOAuth2Handler() == null)
             return ApiResponse.badRequest("Service is not OAuth2, you can't call this").toResponseEntity();
-        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(slug);
+        String clientRegistrationId = app.getOAuth2Handler().getClientRegistrationId();
+        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(clientRegistrationId);
         if (clientRegistration == null)
             return ApiResponse.internalServerError("Service OAuth2 is not configure").toResponseEntity();
 
@@ -137,13 +146,13 @@ public class AppService {
 
         // We need to give a redirect Uri (I don't know why, because token result is the return of this request) so we give the default one
         MultiValueMap<String, String> body = app.getOAuth2Handler().getBody(code, clientId, clientSecret, defaultRedirectUri);
-        String token = app.getOAuth2Handler().getToken(tokenUrl, body);
+        ConnectedService connectedService = app.getOAuth2Handler().getToken(tokenUrl, body);
         long userId = Long.parseLong(state.split("-")[1]);
 
         User user = userService.getUser(userId);
         if (user == null)
             throw new DataNotFoundException("User not found");
-        user.addConnectedService(new ConnectedService(slug, token));
+        user.addConnectedService(connectedService);
         userService.save(user);
 
         return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
