@@ -9,6 +9,7 @@ import fr.zertus.area.security.utils.SecurityUtils;
 import fr.zertus.area.service.AppletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -84,7 +85,19 @@ public class AppletController {
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = Applet.class),
                 examples = @ExampleObject(
                     name = "Example with applet created",
-                    value = ""
+                    value = "{\"status\":201,\"message\":\"Created\",\"data\":{\"id\":34,\"user\":{\"id\":8,\"email\":\"billy.bob@zertus.fr\",\"username\":\"BillyBob\",\"connectedServices\":[\"spotify\",\"notion\",\"discord\",\"github\",\"twitch\",\"google\"],\"passwordLength\":12},\"name\":\"Issue on repo lucasdpt/sockets-c - Send mail\",\"actionSlug\":\"github.issue-opened-on-repo\",\"actionData\":\"[{\\\"name\\\":\\\"repository\\\",\\\"label\\\":\\\"Repository\\\",\\\"type\\\":\\\"SELECT\\\",\\\"value\\\":\\\"lucasdpt/sockets-c\\\",\\\"options\\\":[\\\"lucasdpt/sockets-c\\\"]}]\",\"actionTrigger\":\"\",\"reactionSlug\":\"google.send-mail\",\"reactionData\":\"[{\\\"name\\\":\\\"to\\\",\\\"label\\\":\\\"To\\\",\\\"type\\\":\\\"TEXT\\\",\\\"value\\\":\\\"lh.dupont@gmail.com\\\"},{\\\"name\\\":\\\"subject\\\",\\\"label\\\":\\\"Subject\\\",\\\"type\\\":\\\"TEXT\\\",\\\"value\\\":\\\"{repository}\\\"},{\\\"name\\\":\\\"body\\\",\\\"label\\\":\\\"Body\\\",\\\"type\\\":\\\"TEXT\\\",\\\"value\\\":\\\"**Issue ID**: {issue_id}\\\\n**Issue body**: {issue_body}\\\\n**Go to**: {issue_url}\\\"}]\",\"createdAt\":1697786674,\"logs\":\"[]\",\"notifUser\":true,\"enabled\":true}}"
+                )
+            )
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "400",
+            description = "Bad form input",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = String.class),
+                examples = @ExampleObject(
+                    name = "Example with bad form input",
+                    value = "{\"code\":400,\"message\":\"Bad form input\"}"
                 )
             )
         )
@@ -107,5 +120,42 @@ public class AppletController {
         appletService.delete(id);
         return ApiResponse.noContent().toResponseEntity();
     }
+
+    @Operation(summary = "Update an applet", description = "Update an applet by its id", tags = { "Applet" },
+         parameters = {
+            @Parameter(name = "id", description = "Applet id", required = true),
+            @Parameter(name = "applet", description = "Applet to update", required = true)
+         })
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "Applet updated",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = Applet.class),
+                examples = @ExampleObject(
+                    name = "Example with applet updated",
+                    value = "{\"status\":201,\"message\":\"Created\",\"data\":{\"id\":34,\"user\":{\"id\":8,\"email\":\"billy.bob@zertus.fr\",\"username\":\"BillyBob\",\"connectedServices\":[\"spotify\",\"notion\",\"discord\",\"github\",\"twitch\",\"google\"],\"passwordLength\":12},\"name\":\"Issue on repo lucasdpt/sockets-c - Send mail\",\"actionSlug\":\"github.issue-opened-on-repo\",\"actionData\":\"[{\\\"name\\\":\\\"repository\\\",\\\"label\\\":\\\"Repository\\\",\\\"type\\\":\\\"SELECT\\\",\\\"value\\\":\\\"lucasdpt/sockets-c\\\",\\\"options\\\":[\\\"lucasdpt/sockets-c\\\"]}]\",\"actionTrigger\":\"\",\"reactionSlug\":\"google.send-mail\",\"reactionData\":\"[{\\\"name\\\":\\\"to\\\",\\\"label\\\":\\\"To\\\",\\\"type\\\":\\\"TEXT\\\",\\\"value\\\":\\\"lh.dupont@gmail.com\\\"},{\\\"name\\\":\\\"subject\\\",\\\"label\\\":\\\"Subject\\\",\\\"type\\\":\\\"TEXT\\\",\\\"value\\\":\\\"{repository}\\\"},{\\\"name\\\":\\\"body\\\",\\\"label\\\":\\\"Body\\\",\\\"type\\\":\\\"TEXT\\\",\\\"value\\\":\\\"**Issue ID**: {issue_id}\\\\n**Issue body**: {issue_body}\\\\n**Go to**: {issue_url}\\\"}]\",\"createdAt\":1697786674,\"logs\":\"[]\",\"notifUser\":true,\"enabled\":true}}"
+                )
+            )
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "404",
+            description = "Applet not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = String.class),
+                examples = @ExampleObject(
+                    name = "Example with applet not found",
+                    value = "{\"code\":404,\"message\":\"Applet not found\"}"
+                )
+            )
+        )
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<Applet>> updateApplet(@PathVariable long id, @RequestBody AppletDTO dto) throws DataNotFoundException {
+        return ApiResponse.ok(appletService.update(id, dto)).toResponseEntity();
+    }
+
 
 }

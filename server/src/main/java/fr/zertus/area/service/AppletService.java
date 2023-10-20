@@ -57,8 +57,48 @@ public class AppletService {
         }
 
         Applet appletEntity = new Applet(user, applet.getName(), applet.getActionSlug(), applet.getActionInputs(), "",
-            applet.getReactionSlug(), applet.getReactionInputs(), applet.isNotifUser());
+            applet.getReactionSlug(), applet.getReactionInputs(), applet.getNotifUser());
         return appletRepository.save(appletEntity);
+    }
+
+    public Applet update(long id, AppletDTO dto) throws DataNotFoundException {
+        Applet applet = getById(id);
+        User user = userService.getCurrentUser();
+
+        if (dto.getName() != null) {
+            if (dto.getName().length() > 140) {
+                throw new IllegalArgumentException("Applet name is too long (max 140 characters)");
+            }
+            applet.setName(dto.getName());
+        }
+        if (dto.getActionSlug() != null && dto.getActionInputs() != null) {
+            Action action = actionReactionService.getAction(dto.getActionSlug());
+            if (action == null)
+                throw new IllegalArgumentException("Action not found");
+            try {
+                action.setupAction(user, dto.getActionInputs());
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Failed to setup action: " + e.getMessage());
+            }
+            applet.setActionSlug(dto.getActionSlug());
+            applet.setActionData(dto.getActionInputs());
+        }
+        if (dto.getReactionSlug() != null && dto.getReactionInputs() != null) {
+            Reaction reaction = actionReactionService.getReaction(dto.getReactionSlug());
+            if (reaction == null)
+                throw new IllegalArgumentException("Reaction not found");
+            try {
+                reaction.setupReaction(user, dto.getReactionInputs());
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Failed to setup reaction: " + e.getMessage());
+            }
+            applet.setReactionSlug(dto.getReactionSlug());
+            applet.setReactionData(dto.getReactionInputs());
+        }
+        if (dto.getNotifUser() != null) {
+            applet.setNotifUser(dto.getNotifUser());
+        }
+        return appletRepository.save(applet);
     }
 
     public void delete(long id) throws DataNotFoundException {

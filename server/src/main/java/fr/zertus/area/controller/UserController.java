@@ -107,16 +107,6 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "Logout", description = "Logout from the API", tags = { "User" })
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No content", content = @Content),
-    })
-    @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout() {
-        SecurityContextHolder.clearContext();
-        return ResponseEntity.noContent().build();
-    }
-
     @Operation(summary = "Register new user", description = "Register to the API", tags = { "User" })
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -236,7 +226,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> deleteCurrentUser() {
         try {
             appletService.deleteUserApplets(userService.getCurrentUser().getId());
-            userService.delete();
+            userService.deleteCurrentUser();
             return ApiResponse.noContent().toResponseEntity();
         } catch (Exception e) {
             return ApiResponse.badRequest(e.getMessage()).toResponseEntity();

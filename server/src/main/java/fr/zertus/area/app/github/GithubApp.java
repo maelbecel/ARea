@@ -9,6 +9,7 @@ import fr.zertus.area.app.github.action.GithubPushOnRepoAction;
 import fr.zertus.area.app.github.action.GithubReleaseOnRepoAction;
 import fr.zertus.area.app.github.model.GithubRepository;
 import fr.zertus.area.app.github.model.GithubWebhookSetup;
+import fr.zertus.area.app.github.reaction.GithubCommentIssueReaction;
 import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
@@ -46,7 +47,9 @@ public class GithubApp extends App {
 
     @Override
     public List<Reaction> getReactions() {
-        return new ArrayList<>();
+        return List.of(
+            new GithubCommentIssueReaction(getName())
+        );
     }
 
     @Override

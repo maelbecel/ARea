@@ -156,7 +156,7 @@ public class AppController {
         return appService.redirectOAuth2App(slug, userId, redirecturi);
     }
 
-    @Operation(summary = "Delete OAuth2", description = "This call is use to delete OAuth2 token for current user from given service", tags = { "Service" },
+    @Operation(summary = "Delete OAuth2 user token", description = "This call is use to delete OAuth2 token for current user from given service", tags = { "Service" },
         parameters = @Parameter(name = "slug", description = "Slug of the service", required = true, example = "github"))
     @ApiResponses(value = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(
