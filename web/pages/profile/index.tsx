@@ -1,64 +1,48 @@
 // --- Librairies import --- //
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import type { NextPage } from "next";
 
 // --- Components import --- //
-import LinkedAccounts from "../../components/linkedAccounts/linkedAccounts";
-import ProfilePicture from "../../components/profilePicture/profilePicture";
-import FormProfile from "../../components/formProfile/formProfile";
-import UpdateButton from "../../components/updateButton/updateButton";
-import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
+import { GetProfile } from "../../utils/api/user/me";
 import Icon from "../../components/NavBar/components/Icon";
 import Profile from "../../components/NavBar/components/Profile";
+import FormProfile from "../../components/formProfile/formProfile";
+import LogoutButton from "../../components/formProfile/logoutButton";
+import DeleteButton from "../../components/formProfile/deleteButton";
+import UpdateButton from "../../components/updateButton/updateButton";
 import { useUser } from "../../utils/api/user/Providers/UserProvider";
-import { GetProfile } from "../../utils/api/user/me";
-import { UserProfile } from "../../utils/api/user/interface/interface";
-import { NavigateButton } from "../../components/NavBar/components/Button";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
+import { UserProfile } from "../../utils/api/user/interface/interface";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { NavigateButton } from "../../components/NavBar/components/Button";
+import LinkedAccounts from "../../components/linkedAccounts/linkedAccounts";
+import ProfilePicture from "../../components/profilePicture/profilePicture";
+import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
 
 const IndexPage: NextPage = () => {
-    const [data, setData] = useState<any | undefined>();
-    const [token, setToken] = useState<string>('');
-    const router = useRouter();
     const { user, setUser } = useUser();
+    const { token, setToken } = useToken();
 
-    useEffect(() => {
-        const token = localStorage.getItem("token") as string;
+    const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
 
-        if (!token)
-            router.push("/login");
-
-        setToken(token);
-
-        const dataFetch = async () => {
-            try {
-                const data = await (
-                    await fetch("https://area51.zertus.fr/user/me", {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                console.log(data);
-                setData(data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        dataFetch();
-    }, [token, router]);
-
+    /**
+     * Get the user profile
+     */
     useEffect(() => {
         const getProfile = async (token: string) => {
-            setUser(await GetProfile(token) as UserProfile);
+            setUser(await GetProfile(token) as UserProfile)
         }
 
-        if (user?.email === null || user?.email === "")
+        if (user?.email === undefined || user?.email === "" || user?.email === null) {
             getProfile(token);
+        }
     }, [setUser, token, user]);
+
+    useEffect(() => {
+        setUsername(user?.username as string);
+        setEmail(user?.email as string);
+    }, [user]);
 
     return (
         <>
@@ -73,14 +57,22 @@ const IndexPage: NextPage = () => {
                 </RightSection>
             </NavBar>
             <div className="min-h-screen flex flex-col items-center">
-                <div className="w-[30%]">
+                <div className="w-[75%] lg:w-[30%]">
                     <div className="my-[32px]">
                         <ProfilePicture/>
                     </div>
-                    { data && <FormProfile username={data?.data?.username} mail={data?.data?.email} password="aaaaaaa"/> }
-                    <UpdateButton/>
-                    <LinkedAccounts linkedAccountsDataArray={data?.data?.connectedServices}/>
+                    { user && <FormProfile
+                        username={username}
+                        mail={email}
+                        password={"a".repeat(user?.passwordLength)}
+                        setUsernameFunction={setUsername}
+                        setMailFunction={setEmail}
+                    /> }
+                    <UpdateButton username={username} email={email} token={token} setToken={setToken}/>
+                    <LinkedAccounts linkedAccountsDataArray={user?.connectedServices}/>
                 </div>
+                <LogoutButton/>
+                <DeleteButton token={token}/>
             </div>
         </>
     )

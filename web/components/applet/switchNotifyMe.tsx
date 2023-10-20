@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { UpdateAppletWithID } from "../../utils/api/applet/applet";
 
 interface SwitchProps {
     isCheked: boolean;
     isDisable: boolean;
+    id: string;
 }
 
-const SwitchNotifyMe = ({isCheked, isDisable} : SwitchProps) => {
+const SwitchNotifyMe = ({isCheked, isDisable, id} : SwitchProps) => {
 
     const [isChekedState, setIsChecked] = useState<boolean>(false);
+    const { token, setToken } = useToken();
 
     useEffect(() => {
         setIsChecked(isCheked);
@@ -15,13 +19,21 @@ const SwitchNotifyMe = ({isCheked, isDisable} : SwitchProps) => {
     }, []);
 
     const handleSwitchChange = () => {
-
         if (isChekedState == true) {
             setIsChecked(false);
+
+            const value = {notifUser: false};
+            UpdateAppletWithID(token, id, value);
+
             console.log("disabled");
         } else {
             setIsChecked(true);
+
+            const value = {notifUser: true};
+            UpdateAppletWithID(token, id, value);
+
             console.log("enabled");
+
         }
     }
 

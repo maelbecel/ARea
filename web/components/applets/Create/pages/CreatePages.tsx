@@ -8,13 +8,12 @@ import CreateButton from "../components/CreateButton";
 import Image from "next/image";
 
 // --- Interface --- //
+import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { Card, defaultAction, defaultReaction } from "../interface";
+import { CreateApplet } from "../../../../utils/api/applet/applet";
 import { getTheme } from "../../../../utils/getTheme";
 import Title from "../../../NavBar/components/Title";
-import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
-import { create } from "domain";
-import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
-import { CreateApplet } from "../../../../utils/api/applet/applet";
 
 const CreateHeader = () => {
     const router = useRouter();
@@ -152,13 +151,15 @@ const CreateContainerComponent = ({ setIndex, setPages, array, setArray, setSlug
 
         let actionsInputs = [] as appletsInputs[];
 
+        console.log(array);
+
         array[0].inputs.forEach((input: string, index: number) => {
             actionsInputs.push({
-                name: array[0].fields[index].name,
-                label: array[0].fields[index].label,
+                name: array[0]?.fields[index]?.name,
+                label: array[0]?.fields[index]?.label,
                 value: input,
-                options: array[0].fields[index].options,
-                type: array[0].fields[index].type
+                options: array[0]?.fields[index]?.options,
+                type: array[0]?.fields[index]?.type
             });
         });
 

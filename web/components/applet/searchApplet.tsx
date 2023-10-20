@@ -124,7 +124,7 @@ const SearchApplet = () => {
         };
 
         dataFetch();
-    }, [token, router, applets, setToken]);
+    }, [token]);
 
     useEffect(() => {
         if (applets) {
@@ -147,7 +147,7 @@ const SearchApplet = () => {
         <div className="flex flex-col justify-center items-center">
 
             {/* Search bar */}
-            <div className="w-[40%] justify-between items-center flex-row bg-[#D9D9D9] rounded-[15px] flex mb-[5rem]">
+            <div className="w-[75%] lg:w-[40%] justify-between items-center flex-row bg-[#D9D9D9] rounded-[15px] flex mb-[5rem]">
                 <div className="m-[10px]">
                     <Image src="/Icons/search.svg" width={45} height={45} alt={"Icon"} />
                 </div>
@@ -157,7 +157,7 @@ const SearchApplet = () => {
                         className="bg-transparent w-full text-[24px] font-bold text-[#363841] outline-none p-[10px]"
                 />
             </div>
-            <div className="w-[75%] grid grid-cols-3 gap-8 h-auto">
+            <div className="w-[75%] grid grid-cols-1 lg:grid-cols-3 gap-8 h-auto">
                 {searchApplets && searchApplets.map((applet) => {
                     return (
                         <div key={applet.id}>

@@ -133,4 +133,103 @@ const DeleteAppletWithID = async (token: string, id: string): Promise<void> => {
     return;
 };
 
-export { CreateApplet, GetAppletWithID, DeleteAppletWithID };
+/**
+ * Update an applet with a specific ID by sending a PATCH request to the server.
+ *
+ * @param {string} token - The user's authentication token.
+ * @param {string} id    - The ID of the applet to delete.
+ * @param {string} title - The new title of the applet.
+ *
+ * @returns {Promise<void>} A promise that sends a PATCH request to patch an applet.
+ * Logs success or error messages. Does not return data.
+ */
+const UpdateAppletTitleWithID = async (token: string, id: string, title: string ): Promise<void> => {
+    if (id === null) {
+        console.log(`[PATCH] .../applet/{id}: id is null`);
+        return;
+    }
+
+    if (token === null) {
+        console.log(`[PATCH] .../applet/${id}: token is null`);
+        return;
+    }
+
+    if (title === null) {
+        console.log(`[PATCH] .../applet/${id}: title is null`);
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://area51.zertus.fr/applet/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization : `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name   : title,
+            })
+        });
+
+        const data = await response.json();
+
+        if (data?.status !== 200) {
+            console.log(`[PATCH] .../applet/${id} (Error: ${data?.status}): \"${data?.message}\".`);
+            return;
+        }
+
+        console.log(`[PATCH] .../applet/${id}: \"Successfully patched applet.\"`);
+        console.log(data);
+    } catch (error: any) {
+        console.log(error);
+    }
+    return;
+};
+
+/**
+ * Update an applet with a specific ID by sending a PATCH request to the server.
+ *
+ * @param {string} token - The user's authentication token.
+ * @param {string} id    - The ID of the applet to delete.
+ * @param {object} body - The new content of the applet.
+ *
+ * @returns {Promise<void>} A promise that sends a PATCH request to patch an applet.
+ * Logs success or error messages. Does not return data.
+ */
+const UpdateAppletWithID = async (token: string, id: string, body: object): Promise<void> => {
+    if (id === null) {
+        console.log(`[PATCH] .../applet/{id}: id is null`);
+        return;
+    }
+
+    if (token === null) {
+        console.log(`[PATCH] .../applet/${id}: token is null`);
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://area51.zertus.fr/applet/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization : `Bearer ${token}`
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (data?.status !== 200) {
+            console.log(`[PATCH] .../applet/${id} (Error: ${data?.status}): \"${data?.message}\".`);
+            return;
+        }
+
+        console.log(`[PATCH] .../applet/${id}: \"Successfully patched applet.\"`);
+        console.log(data);
+    } catch (error: any) {
+        console.log(error);
+    }
+    return;
+};
+
+export { CreateApplet, GetAppletWithID, DeleteAppletWithID, UpdateAppletTitleWithID, UpdateAppletWithID };

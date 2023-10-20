@@ -69,11 +69,11 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
     }), [oauth2Token];
 
     return (
-        <div className="w-[100%] flex flex-row justify-between items-center">
-            <div style={{backgroundColor : bgColor}} className="rounded-lg w-[50px] h-[50px] p-[8px]">
+        <div className="w-[100%] flex flex-col lg:flex-row justify-between items-center">
+            <div style={{backgroundColor : bgColor}} className="flex justify-center rounded-lg w-[50px] h-[50px] p-[8px] text-center">
                 <Image src={urlImg} width={50} height={50} alt={"Logo"}/>   
             </div>
-            <div className="font-bold text-[28px] text-[#00C2FF] pl-[10px]">
+            <div className="flex justify-center text-center font-bold text-[28px] text-[#00C2FF]">
                 { islinked ? (
                     <a onClick={() => requestoauth2()} className="cursor-pointer">Unlike your account</a>
                 ) : (
@@ -136,12 +136,11 @@ const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
 
     return (
         <div className="flex justify-center flex-col gap-y-10 pb-[10%]">
-            <label className="text-[#363841] font-bold text-[42px]">Linked Account</label>
+            <div className="w-[100%] flex justify-center lg:justify-start">
+                <label className="text-[#363841] font-bold text-[42px] sm:text-center">Linked Account</label>
+            </div>
             <div className="flex flex-col items-center gap-y-7">
                 {linkedAccountsData && services.map((item : any, index : any) => {
-                    console.log(linkedAccountsData);
-                    console.log(linkedAccountsData[index].islinked);
-                    console.log("slug " + item.slug + " " + typeof(item.slug));
                     return (
                         <LinkedAccount
                             key={index} 
