@@ -1,6 +1,7 @@
 package fr.zertus.area.app.google;
 
 import com.google.gson.Gson;
+import fr.zertus.area.app.google.model.GoogleUserInfo;
 import fr.zertus.area.app.spotify.SpotifyOAuth2Handler;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.payload.response.ApiResponse;
@@ -35,7 +36,7 @@ public class GoogleOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             if (token == null || token.getAccess_token() == null)
                 return null;
             try {
-                ApiResponse<GoogleApp.GoogleUserInfo> userInfo = BasicApiClient.sendGetRequest("https://openidconnect.googleapis.com/v1/userinfo", GoogleApp.GoogleUserInfo.class,
+                ApiResponse<GoogleUserInfo> userInfo = BasicApiClient.sendGetRequest("https://openidconnect.googleapis.com/v1/userinfo", GoogleUserInfo.class,
                     Map.of("Authorization", "Bearer " + token.getAccess_token()));
 
                 if (userInfo.getData() == null)
@@ -53,6 +54,11 @@ public class GoogleOAuth2Handler extends OAuth2CodeAuthorizationHandler {
     @Override
     public String getState() {
         return "sqkfigsigohraihahzrghzhatrtgrpi13456YTGFSDFA43565UTHyzerahrtçgufji";
+    }
+
+    @Override
+    public String getClientRegistrationId() {
+        return "google";
     }
 
     @Override

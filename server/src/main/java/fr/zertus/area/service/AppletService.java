@@ -98,6 +98,9 @@ public class AppletService {
         if (dto.getNotifUser() != null) {
             applet.setNotifUser(dto.getNotifUser());
         }
+        if (dto.getEnabled() != null) {
+            applet.setEnabled(dto.getEnabled());
+        }
         return appletRepository.save(applet);
     }
 

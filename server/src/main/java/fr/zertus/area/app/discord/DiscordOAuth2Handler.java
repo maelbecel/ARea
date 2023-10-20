@@ -59,6 +59,11 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
         return "J4doreM4angerDesraviolisM4sansBeurredeCacahuEteDonVoilactop";
     };
 
+    @Override
+    public String getClientRegistrationId() {
+        return "discord";
+    }
+
     /* here is the response that we will receive and convert into this object */
     @Data
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)

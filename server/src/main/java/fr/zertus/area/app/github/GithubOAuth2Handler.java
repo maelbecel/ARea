@@ -24,6 +24,11 @@ public class GithubOAuth2Handler extends OAuth2CodeAuthorizationHandler {
         return "42jador3l3audans2030ans1ly3nauraplussaufs1j3mang3monp13dd3vantunf1lmavecun3p1zzaaup3p3ron1p3ndantqu3chant3doral3xploratr1c3";
     }
 
+    @Override
+    public String getClientRegistrationId() {
+        return "github";
+    }
+
     @Data
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
     public static class GithubOAuth2Token {

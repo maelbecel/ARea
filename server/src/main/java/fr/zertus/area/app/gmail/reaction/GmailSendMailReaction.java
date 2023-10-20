@@ -1,8 +1,9 @@
-package fr.zertus.area.app.google.reaction;
+package fr.zertus.area.app.gmail.reaction;
 
 import fr.zertus.area.app.Reaction;
 import fr.zertus.area.app.google.GoogleApp;
-import fr.zertus.area.app.google.utils.EmailCreator;
+import fr.zertus.area.app.gmail.utils.EmailCreator;
+import fr.zertus.area.app.google.model.GoogleUserInfo;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.BadFormInputException;
@@ -12,19 +13,17 @@ import fr.zertus.area.service.RegisterUserService;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
 
-public class GoogleSendMailReaction extends Reaction {
+public class GmailSendMailReaction extends Reaction {
 
-    public GoogleSendMailReaction(String app) {
+    public GmailSendMailReaction(String app) {
         super(app, "Send mail", "Send mail to specified address with your google account");
 
-        this.inputs.add(FormInput.createTextInput("to", "To (email address)"));
-        this.inputs.add(FormInput.createTextInput("toName", "To name (to display in your mail client)"));
+        this.inputs.add(FormInput.createTextInput("to", "Recipient email address"));
+        this.inputs.add(FormInput.createTextInput("toName", "Recipient name (to display in your mail client)"));
         this.inputs.add(FormInput.createTextInput("subject", "Subject"));
         this.inputs.add(FormInput.createTextInput("body", "Body"));
     }
@@ -49,7 +48,7 @@ public class GoogleSendMailReaction extends Reaction {
         ConnectedService service = user.getConnectedService("google");
         if (service == null)
             throw new ReactionTriggerException("Google service is not connected");
-        GoogleApp.GoogleUserInfo userInfo = GoogleApp.getUserInfo(service);
+        GoogleUserInfo userInfo = GoogleApp.getUserInfo(service);
         String destination = FormInputUtils.getValue("to", inputs, parameters);
         String destinationName = FormInputUtils.getValue("toName", inputs, parameters);
         String subject = FormInputUtils.getValue("subject", inputs, parameters);

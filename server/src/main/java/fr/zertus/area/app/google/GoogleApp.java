@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
-import fr.zertus.area.app.google.reaction.GoogleSendMailReaction;
+import fr.zertus.area.app.google.model.GoogleUserInfo;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import fr.zertus.area.utils.StringUtils;
@@ -33,7 +33,7 @@ public class GoogleApp extends App {
 
     @Override
     public List<Reaction> getReactions() {
-        return List.of(new GoogleSendMailReaction(getSlug()));
+        return null;
     }
 
     @Override
@@ -49,12 +49,6 @@ public class GoogleApp extends App {
     @Override
     public boolean isOAuth2() {
         return true;
-    }
-
-    @Data
-    public static class GoogleUserInfo {
-        private String email;
-        private String given_name;
     }
 
     public static GoogleUserInfo getUserInfo(ConnectedService service) {

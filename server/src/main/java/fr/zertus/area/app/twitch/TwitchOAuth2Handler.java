@@ -13,8 +13,6 @@ import java.util.Set;
 
 public class TwitchOAuth2Handler extends OAuth2CodeAuthorizationHandler {
 
-
-
     @Override
     public ConnectedService getToken(String tokenUrl, MultiValueMap<String, String> body) {
         RestTemplate restTemplate = new RestTemplate();
@@ -38,6 +36,11 @@ public class TwitchOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             "&state=" + state +
             "&response_type=code"
         );
+    }
+
+    @Override
+    public String getClientRegistrationId() {
+        return "twitch";
     }
 
     @Data

@@ -44,4 +44,6 @@ public abstract class OAuth2CodeAuthorizationHandler {
         return state.equals(getState());
     }
 
+    public abstract String getClientRegistrationId();
+
 }

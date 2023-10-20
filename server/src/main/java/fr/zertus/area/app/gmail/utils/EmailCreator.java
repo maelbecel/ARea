@@ -1,4 +1,4 @@
-package fr.zertus.area.app.google.utils;
+package fr.zertus.area.app.gmail.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

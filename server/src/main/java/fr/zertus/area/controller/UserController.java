@@ -284,7 +284,8 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<?> updateCurrentUser(@RequestBody RegisterDTO user) {
         try {
-            return ApiResponse.ok(userService.updateCurrentUser(user)).toResponseEntity();
+            User newUser = userService.updateCurrentUser(user);
+            return ApiResponse.ok(JwtTokenProvider.createToken(newUser.getEmail())).toResponseEntity();
         } catch (Exception e) {
             return ApiResponse.badRequest(e.getMessage()).toResponseEntity();
         }

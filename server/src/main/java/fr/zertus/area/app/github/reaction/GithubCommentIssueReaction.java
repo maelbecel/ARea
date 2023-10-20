@@ -10,6 +10,8 @@ import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,17 +41,6 @@ public class GithubCommentIssueReaction extends Reaction {
     }
 
     @Override
-    public boolean setupReaction(User user, List<FormInput> inputs) throws BadFormInputException {
-        String issueId = FormInputUtils.getValue("issue_id", inputs);
-        try {
-            long id = Long.parseLong(issueId);
-        } catch (NumberFormatException e) {
-            throw new BadFormInputException("The issue id must be a number");
-        }
-        return super.setupReaction(user, inputs);
-    }
-
-    @Override
     public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws ReactionTriggerException {
         ConnectedService service = user.getConnectedService("github");
         if (service == null)
@@ -60,10 +51,9 @@ public class GithubCommentIssueReaction extends Reaction {
         String comment = FormInputUtils.getValue("comment", inputs, parameters);
 
         String url = "https://api.github.com/repos/" + repository + "/issues/" + issueId + "/comments";
-        String body = "{\"body\": \"" + comment + "\"}";
 
         try {
-            ApiResponse<String> response = BasicApiClient.sendPostRequest(url, body, String.class, Map.of(
+            ApiResponse<String> response = BasicApiClient.sendPostRequest(url, new GithubCommentIssueReactionBody(comment), String.class, Map.of(
                 "Authorization", "Bearer " + service.getToken(),
                 "X-GitHub-Api-Version", "2022-11-28"
             ));
@@ -75,10 +65,17 @@ public class GithubCommentIssueReaction extends Reaction {
             if (response.getStatus() == 404) {
                 throw new ReactionTriggerException("The issue " + issueId + " doesn't exist");
             }
+            System.out.println(response.getStatus() + " " + response.getMessage() + " " + response.getData());
             throw new ReactionTriggerException("An error occured while sending the request");
         } catch (IOException e) {
             throw new ReactionTriggerException("An error occured while sending the request");
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class GithubCommentIssueReactionBody {
+        private String body;
     }
 
 }

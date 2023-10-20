@@ -63,6 +63,11 @@ public class NotionOAuth2Handler extends OAuth2CodeAuthorizationHandler {
         return "fdshgqjlbgrzqbjEARBJI23fdnjgsbjjefbjebjehbegrhkvzhvezUOT4894U38FGLJZalbjgqobARZ3";
     }
 
+    @Override
+    public String getClientRegistrationId() {
+        return "notion";
+    }
+
     @Data
     public static class NotionOAuth2Token {
         private String access_token;

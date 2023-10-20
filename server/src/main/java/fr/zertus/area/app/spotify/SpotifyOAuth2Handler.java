@@ -58,6 +58,11 @@ public class SpotifyOAuth2Handler extends OAuth2CodeAuthorizationHandler {
         );
     }
 
+    @Override
+    public String getClientRegistrationId() {
+        return "spotify";
+    }
+
     @Data
     public static class SpotifyOAuth2Token {
         private String access_token;
