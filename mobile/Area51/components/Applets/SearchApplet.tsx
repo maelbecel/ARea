@@ -35,16 +35,10 @@ const SearchApplet = () => {
             }
         };
         dataFetch();
-    }, []);
-
-    useEffect(() => {
-        if (applets) {
-            console.log("applets", applets);
-        }
     }, [applets]);
 
     return (
-        <ScrollView>
+        <ScrollView style={{ height: "100%" }}>
           {/* Barre de recherche */}
           <View style={styles.input}>
             <FormInput

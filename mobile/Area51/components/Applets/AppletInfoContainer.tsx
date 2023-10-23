@@ -5,6 +5,7 @@ import ToggleSwitch from "./Switch";
 import SwitchNotifyMe from "./SwitchNotifyMe";
 import MoreDetailsButton from "./MoreDetails";
 import { useNavigation } from '@react-navigation/native';
+import DeleteApplet from "../../api/DeleteApplet";
 
 /* The `AppletInfoContainerProps` interface is defining the type of props that the
 `AppletInfoContainer` component expects to receive. It specifies the names and
@@ -20,11 +21,12 @@ interface AppletInfoContainerProps {
     reactionSlug: string;
     user: string;
     enabled: boolean;
+    id: number;
     createdAt?: number;
     lastTriggerDate?: number;
 }
 
-const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionSlug, user, enabled, createdAt = 0, lastTriggerDate = 0 }) => {
+const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionSlug, user, enabled, id, createdAt = 0, lastTriggerDate = 0 }) => {
     const [formattedDate, setFormattedDate] = useState<string>("");
     const [LastUseDate, setLastUseDate] = useState<string>("");
 
@@ -44,6 +46,12 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
             setFormattedDate(formattedDate);
         }
     }, []);
+
+    const handleDeleteApplet = () => {
+        console.log("Delete applet");
+        DeleteApplet(id);
+        navigation.navigate('My Applets');
+    };
 
     return (
         <View style={ styles.container }>
@@ -115,6 +123,9 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                     <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22 }}>Notify me</Text>
                     <SwitchNotifyMe isChecked={false} isDisabled={false} />
                 </View>
+                <TouchableOpacity onPress={handleDeleteApplet}>
+                    <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>Delete applet</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
