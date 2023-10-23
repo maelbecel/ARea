@@ -10,6 +10,9 @@ import ProfileForm from "../components/ProfileForm";
 import SVGImg from '../assets/svg/iconProfile.svg'
 import PatchUser from "../api/PatchUser";
 import ServiceLogo from "../components/ServiceLogo";
+import Services, {Applet} from "../api/Services";
+import OAuthLogin from "../api/OAuth";
+import OAuthLogout from "../api/OAuthLogout";
 
 /* The above code is a TypeScript React component called "Profile". It is responsible for rendering a
 user profile screen. */
@@ -19,7 +22,27 @@ const Profile = ({navigation}) => {
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(true);
   const [services, setServices] = useState<string[]>([]);
+  const [servicesCon, setServicesCon] = useState<string[]>([]);
+
+  const orderByFirstConnected = (connected : string[], allserv : string[]) => {
+    console.log("##########################")
+    let tmp : string[] = [];
+    for (let i = 0; i < connected.length; i++) {
+      if (allserv.includes(connected[i])) {
+        tmp.push(connected[i]);
+      }
+    }
+    for (let i = 0; i < allserv.length; i++) {
+      if (!tmp.includes(allserv[i])) {
+        tmp.push(allserv[i]);
+      }
+    }
+    console.log("tmp : ", tmp)
+    console.log("##########################")
+    return tmp;
+  }
 
   /* The `useEffect` hook in this code is used to fetch user information from an API and update the
   component's state with the retrieved data. */
@@ -42,13 +65,20 @@ const Profile = ({navigation}) => {
           navigation.navigate('Login');
           return;
         }
-
         const response = await UserInfosAPI(token, serverAddress);
-        setServices(response.data.connectedServices);
         setData(response.data);
+        const serv : Applet[] = await Services();
+        let tmp : string[] = [];
+        for (let i = 0; i < serv.length; i++) {
+          tmp.push(serv[i].slug);
+        }
+        console.log("Resp : ", response.data.connectedServices)
+        setServicesCon(response.data.connectedServices);
+        setServices(orderByFirstConnected(response.data.connectedServices, tmp));
         await AsyncStorage.setItem('username', response.data.username);
         await AsyncStorage.setItem('email', response.data.email);
         setLoading(false); // Mettez à jour l'état de chargement une fois les données disponibles
+        setReload(false);
       } catch (error) {
         console.error(error);
         setLoading(false); // Mettez à jour l'état de chargement en cas d'erreur
@@ -56,7 +86,7 @@ const Profile = ({navigation}) => {
     };
 
     fetchData();
-  }, []); // Assurez-vous de passer un tableau vide de dépendances pour exécuter l'effet uniquement après le premier rendu
+  }, [reload]); // Assurez-vous de passer un tableau vide de dépendances pour exécuter l'effet uniquement après le premier rendu
 
 
   /**
@@ -92,9 +122,11 @@ const Profile = ({navigation}) => {
 
   const displayServices = () => {
     console.log("Services : ", services);
+    console.log("ServicesCon : ", servicesCon);
     if (services == undefined || services == null) return;
-    return services.map((service) => (
-      <ServiceLogo key={service} slug={service} onPress={() => navigation.navigate('Service', { slug: service })} />
+    return services.map((service) => ((servicesCon.includes(service)) ?
+      <ServiceLogo key={service} slug={service} onPress={ async () =>  {await OAuthLogout(service); setReload(true)}} />
+      : <ServiceLogo key={service} slug={service} onPress={async () => {await OAuthLogin(service); setReload(true)}} disabled={true}/>
     ));
   };
 
