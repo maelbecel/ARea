@@ -83,10 +83,6 @@ const MyApplet = ({route}) => {
             return;
     }, [bgColor]);
 
-    function getWriteColor(bgColor: string): string {
-        throw new Error("Function not implemented.");
-    }
-
     return (
         <ScrollView>
             <View style={{ ...styles.container, backgroundColor: bgColor, paddingTop: statusBarHeight }}>
@@ -103,6 +99,7 @@ const MyApplet = ({route}) => {
                         user={dataApplet?.data?.user?.username}
                         enabled={dataApplet?.data?.enabled}
                         createdAt={dataApplet?.data?.createdAt}
+                        id={dataApplet?.data?.id}
                     />
                 }
             </View>
