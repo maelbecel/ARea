@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  * @property {string} name - The name property is a string that represents the name of the applet.
  * @property decoration - The `decoration` property is an object that contains two properties:
  */
-type Applet = {
+export type Applet = {
     slug: string;
     name: string;
     action : boolean;

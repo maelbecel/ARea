@@ -5,7 +5,7 @@ import ServiceInfo, {Action, Reaction, Input} from '../api/ServiceInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionApi from '../api/Action';
 import ReactionApi from '../api/Reaction';
-import TokenApi from '../api/ServiceToken'
+import TokenApi from '../api/ServiceToken';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import SelectDropdown from 'react-native-select-dropdown'
