@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MaterialIcons} from '@expo/vector-icons';
 
@@ -33,14 +33,50 @@ const ServerModal: React.FC = () => {
      */
     const saveServerAddress = async () => {
         // Enregistrez l'adresse du serveur dans le stockage local
-        try {
-          await fetch(`${serverAddress}/about.json`);
+        // use this regex ^((?!-)[A-Za-z0-9-]{1,63}(?<!-).)+[A-Za-z]{2,6}$
+        if (!serverAddress.match(/^(http:\/\/|https:\/\/)?([a-zA-Z0-9][a-zA-Z0-9_-]*(\.[a-zA-Z0-9_-]*)+)(\/.*)?$/)) {
+          Alert.alert(
+            'Attention',
+            'Le serveur n\'est pas sur un nom de domaine valide. Par conséquent, il est possible que l\'application ne fonctionne pas correctement. En cliquant sur OK, vous acceptez d\'utiliser l\'application à vos risques et périls.',
+            [
+              {
+                text: 'Annuler',
+                onPress: () => {
+                  console.log('L\'utilisateur a annulé. Vous pouvez effectuer des actions en conséquence.');
+                  return;
+                },
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: async () => {
+                  try {
+                    await fetch(`${serverAddress}/about.json`);
 
-          await AsyncStorage.setItem('serverAddress', serverAddress);
-          setModalVisible(false);
-          console.log('Adresse du serveur enregistrée :', serverAddress);
-        } catch (error) {
-          alert('Impossible de se connecter au serveur. Veuillez vérifier l\'adresse du serveur.');
+                    await AsyncStorage.setItem('serverAddress', serverAddress);
+                    await AsyncStorage.setItem('serverAddressWarning', 'true');
+                    setModalVisible(false);
+                    console.log('Adresse du serveur enregistrée :', serverAddress);
+                  } catch (error) {
+                    alert('Impossible de se connecter au serveur. Veuillez vérifier l\'adresse du serveur.');
+                  }
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        } else {
+          try {
+            await fetch(`${serverAddress}/about.json`);
+
+            await AsyncStorage.setItem('serverAddress', serverAddress);
+            await AsyncStorage.setItem('serverAddressWarning', 'false');
+            setModalVisible(false);
+            console.log('Adresse du serveur enregistrée :', serverAddress);
+          } catch (error) {
+            alert('Impossible de se connecter au serveur. Veuillez vérifier l\'adresse du serveur.');
+          }
+          return;
         }
     };
 
