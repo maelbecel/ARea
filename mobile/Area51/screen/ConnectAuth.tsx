@@ -97,6 +97,7 @@ const ConnectAuth = ({ navigation, route }) => {
   let inputsResp = [];
 
   const displayTextForm = (input : Input, index : number) => {
+    console.log("input", input)
     return (<IngredientButton key={input.name}
       input={input}
       placeholders={placeholders}
@@ -180,6 +181,7 @@ const ConnectAuth = ({ navigation, route }) => {
     
     console.log(slug, " is in ", services)
     if (services.includes(slug)) {
+      setoAuthStatus(true);
       return true;
     }
     if (await AsyncStorage.getItem('serverAddressWarning') == 'true') {
@@ -189,8 +191,8 @@ const ConnectAuth = ({ navigation, route }) => {
     } else {
       await _openAuthSessionAsync();
       setoAuthStatus(true);
+      return true;
     }
-    return false;
   }
 
   /**
