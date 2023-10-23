@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StatusBar, TouchableOpacity, Image, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, Alert, StatusBar, TouchableOpacity, Image, TextInput, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
 import ServiceInfo, {Action, Reaction, Input} from '../api/ServiceInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -169,17 +169,26 @@ const ConnectAuth = ({ navigation, route }) => {
     const serverAddress = await AsyncStorage.getItem('serverAddress');
     const token = await SecureStore.getItemAsync('token_api');
 
+    
     if (!token || !serverAddress) {
       navigation.navigate('Login');
       return;
     }
-
+    
     const response = await UserInfosAPI(token, serverAddress);
     const services = response.data.connectedServices;
-
+    
     console.log(slug, " is in ", services)
     if (services.includes(slug)) {
       return true;
+    }
+    if (await AsyncStorage.getItem('serverAddressWarning') == 'true') {
+      Alert.alert("Warning", "You need to set a server address in the settings to use this app");
+      navigation.goBack();
+      return false;
+    } else {
+      await _openAuthSessionAsync();
+      setoAuthStatus(true);
     }
     return false;
   }
@@ -218,10 +227,7 @@ const ConnectAuth = ({ navigation, route }) => {
         navigation.navigate("Create");
         return;
       } else {
-        if (! await isConnected(slug.split(".")[0])) {
-        await _openAuthSessionAsync();
-        }
-        setoAuthStatus(true);
+        await isConnected(slug.split(".")[0])
       }
     }
 

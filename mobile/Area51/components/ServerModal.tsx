@@ -54,7 +54,7 @@ const ServerModal: React.FC = () => {
                     await fetch(`${serverAddress}/about.json`);
 
                     await AsyncStorage.setItem('serverAddress', serverAddress);
-                    await AsyncStorage.setItem('serverAddressWarning', 'true');
+                    await AsyncStorage.setItem('serverAddressWarning', 'false');
                     setModalVisible(false);
                     console.log('Adresse du serveur enregistrée :', serverAddress);
                   } catch (error) {
@@ -70,7 +70,7 @@ const ServerModal: React.FC = () => {
             await fetch(`${serverAddress}/about.json`);
 
             await AsyncStorage.setItem('serverAddress', serverAddress);
-            await AsyncStorage.setItem('serverAddressWarning', 'false');
+            await AsyncStorage.setItem('serverAddressWarning', 'true');
             setModalVisible(false);
             console.log('Adresse du serveur enregistrée :', serverAddress);
           } catch (error) {

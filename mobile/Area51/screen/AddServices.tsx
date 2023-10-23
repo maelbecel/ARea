@@ -1,7 +1,7 @@
 /* The code is importing various modules and components that are needed for the functionality of the
 `AddServices` component. */
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Alert } from 'react-native';
 import ActionChoose from '../components/ActionChoose';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SubmitButton from '../components/SubmitButton';
