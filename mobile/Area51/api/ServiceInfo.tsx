@@ -162,6 +162,7 @@ const ServiceInfo = async (slug : string): Promise<Service> => {
             return null;
         }
         const json = await response.json();
+        if (json.data == null) return null;
         let service : Service = {slug : json.data.slug, name : json.data.name, actions : null, reactions : null, decoration : {backgroundColor : json.data.decoration.backgroundColor, logoUrl : json.data.decoration.logoUrl}};
         service.actions = getAction(json.data.actions);
         service.reactions = getReaction(json.data.reactions);
