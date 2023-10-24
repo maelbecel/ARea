@@ -95,14 +95,33 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
             >
                 <Link href="/myApplets/">
                         {/* Add a child element inside the Lipxnk */}
-                        <a className="rounded-[25px] bg-white py-[1%] px-[4%] ml-[50px] mt-[2%]">Back</a>
+                        <a className="rounded-[25px] py-[1%] px-[4%] ml-[50px] mt-[2%]"
+                            style={{
+                                backgroundColor: theme === "light" ? "#363841" : "#ffffff",
+                                color: theme === "light" ? "#ffffff" : color,
+                            }}
+                        >
+                            Back
+                        </a>
                 </Link>
                 <Link href={`/myApplets/applet/modifyApplet/${id}`}>
                         {/* Add a child element inside the Link */}
-                        <a  className="rounded-[25px] bg-white py-[1%] px-[4%] mr-[50px] mt-[2%]" >Edit Applet</a>
+                        <a className="rounded-[25px] py-[1%] px-[4%] mr-[50px] mt-[2%]"
+                            style={{
+                                backgroundColor: theme === "light" ? "#363841" : "#ffffff",
+                                color: theme === "light" ? "#ffffff" : color,
+                            }}
+                        >
+                            Edit Applet
+                        </a>
                 </Link>
             </div>
-            <div className={`w-full flex justify-center flex-col`} style={{ backgroundColor: `${color}` }}>
+            <div className={`w-full flex justify-center flex-col`}
+                style={{
+                    backgroundColor: `${color}`,
+                    color: theme === "light" ? "#363841" : "#ffffff"
+                }}
+            >
                 <div style={{backgroundColor: `${color}` }} className="px-[15%] lg:px-[35%]">
                     <div className="cursor-pointer">
                         <div className="flex flex-wrap space-x-[3%]">
