@@ -15,6 +15,7 @@ import ExploreScreen from './screen/Home';
 import CreateScreen from './screen/AddServices';
 import ActivityScreen from './screen/Activity';
 import ProfileScreen from './screen/Profile';
+import InfoScreen from './screen/InfoScreen';
 
 import Login from './screen/LogIn';
 import SignUp from './screen/SignUp';
@@ -122,6 +123,7 @@ export default function App() {
         <Stack.Screen name="ConnectAuth" component={ConnectAuth} options={{ headerShown: false }} />
         <Stack.Screen name="Area 51" component={Tabs} options={{ headerShown: false }} />
         <Stack.Screen name="MyApplets" component={MyApplets} options={{ headerShown: false }} />
+        <Stack.Screen name="Info" component={InfoScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
