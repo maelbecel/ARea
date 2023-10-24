@@ -69,7 +69,7 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                 </Text>
             </View>
             <Text style={ styles.author}>
-                par {author}
+                by {author}
             </Text>
             <View style={ styles.card }>
                 <ToggleSwitch

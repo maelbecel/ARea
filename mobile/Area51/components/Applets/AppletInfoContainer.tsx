@@ -89,20 +89,21 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                 </View>
             </View>
 
-            {/* The toggle switch that enables or disables the applet */}
-            <View style={ styles.toggleSwitch }>
-                <ToggleSwitch
-                    isChecked={enabled}
-                    isDisabled={false}
-                    yesLabel="Enabled"
-                    noLabel="Disabled"
-                    bgColor='#121212'
-                    toggleColor={color}
-                    darkMode={false}
-                />
-            </View>
-
             <View style={ styles.body }>
+                {/* The toggle switch that enables or disables the applet */}
+                <View style={ styles.toggleSwitch }>
+                    <ToggleSwitch
+                        isChecked={enabled}
+                        isDisabled={false}
+                        yesLabel="Enabled"
+                        noLabel="Disabled"
+                        bgColor='#121212'
+                        toggleColor={color}
+                        darkMode={false}
+                        bigSwitch={true}
+                    />
+                </View>
+
                 <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionSlug={reactionSlug} />
 
                 <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>
