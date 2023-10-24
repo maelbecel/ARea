@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { GetServices } from "../../utils/api/service/service";
 import { Service } from "../../utils/api/service/interface/interface";
 import { GetMyApplets } from "../../utils/api/applet/me";
+import { getTheme } from "../../utils/getTheme";
 
 interface AppletProps {
     id: number;
@@ -38,6 +39,7 @@ interface SwitchProps {
 const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
     const [bgColor, setBgColor] = useState<string>("");
     const [newName, setNewName] = useState<string>(name);
+    const [theme, setTheme] = useState<string>("light");
 
     const { services, setServices } = useServices();
     const { token, setToken } = useToken();
@@ -69,26 +71,35 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
     }, [bgColor]);
 
     useEffect(() => {
+        setTheme(getTheme(bgColor));
+    }, [bgColor]);
+
+    useEffect(() => {
         if (name.length > 50)
             setNewName(name.slice(0, 50) + "...");
     }, [name]);
 
     return (
-        <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between">
+        <div style={{
+                backgroundColor: bgColor,
+                color: theme === "light" ? "#363841" : "#ffffff",
+            }}
+            className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between"
+        >
             <Link href={`/myApplets/applet/${id}`} style={{ cursor: 'pointer', backgroundColor: bgColor }}>
                 <div className="cursor-pointer">
                     <div className="flex flex-wrap">
                         {actionSlug   && <LogoApplet slug={actionSlug}   width={56} height={56} toogleBackground={false}/>}
                         {reactionSlug && <LogoApplet slug={reactionSlug} width={56} height={56} toogleBackground={false}/>}
                     </div>
-                    <div className="font-bold text-white text-[28px] pb-[40%] w-full overflow-hidden break-words">
+                    <div className="font-bold text-[28px] pb-[40%] w-full overflow-hidden break-words">
                         <div>
                            {newName}
                         </div>
                     </div>
                 </div>
             </Link>
-            <div className="flex justify-end font-bold text-white text-[18px]">
+            <div className="flex justify-end font-bold text-[18px]">
                 <Switch isCheked={enabled} isDisable={true}/>
             </div>
         </div>
@@ -180,4 +191,3 @@ const SearchApplet = () => {
 }
 
 export default SearchApplet;
-  

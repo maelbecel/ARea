@@ -7,6 +7,9 @@ import LogoApplet from "./logo";
 import SwitchNotifyMe from "./switchNotifyMe";
 import MoreDetailsButton from "./moreDetails";
 import ToggleSwitch from "../switch/toggleSwitch";
+import { Service } from "../../utils/api/service/interface/interface";
+import { GetServices } from "../../utils/api/service/service";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 
 interface ServiceInfoContainerProps {
     id: number;
@@ -27,7 +30,11 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactionSlug, 
 
     const [formattedDate, setFormattedDate] = useState<string>("");
     const [LastUseDate, setLastUseDate] = useState<string>("");
+    const [toggleBg, setToggleBg] = useState<boolean>(false);
+    const [services, setServices] = useState<Service[]>([]);
     const router = useRouter();
+
+    const { token } = useToken();
     
     useEffect(() => {
         console.log("enabled -> ", enabled);
@@ -42,6 +49,24 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactionSlug, 
         }
     }, []);
 
+    useEffect(() => {
+        const getServices = async (token: string) => {
+            setServices(await GetServices(token));
+        }
+
+        getServices(token);
+
+        const Service: Service | undefined = services.find((Service: Service) => Service.slug === actionSlug.split('.')[0]);
+
+        if (Service?.decoration.backgroundColor.toLowerCase() === "#ffffff")
+            setToggleBg(true);
+        else
+            setToggleBg(false);
+
+        console.log("Service -> ", Service);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleTitleChange = () => {
         console.log("title changed");
     }
@@ -50,7 +75,12 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactionSlug, 
     // TODO: add link on each logo (need to see on each which page to link)
     return (
         <div className="w-full flex flex-col justify-center">
-            <div style={{ backgroundColor: `${color}` }} className="w-full flex flex-row justify-around sm:justify-between font-bold text-[#363841] text-[18px] sm:text-[24px] py-[2%]">
+            <div style={{
+                    backgroundColor: `${color}`,
+                    color: theme === "light" ? "#363841" : "#ffffff"
+                }}
+                className="w-full flex flex-row justify-around sm:justify-between font-bold text-[18px] sm:text-[24px] py-[2%]"
+            >
                 <Link href="/myApplets/">
                         {/* Add a child element inside the Lipxnk */}
                         <a className="rounded-[25px] bg-white py-[1%] px-[4%] ml-[50px] mt-[2%]">Back</a>
@@ -64,21 +94,21 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactionSlug, 
                 <div style={{backgroundColor: `${color}` }} className="px-[15%] lg:px-[35%]">
                     <div className="cursor-pointer">
                         <div className="flex flex-wrap">
-                            {actionSlug && <LogoApplet slug={actionSlug.split('.')[0]} width={56} height={56} toogleBackground={false}/>}
-                            {reactionSlug && <LogoApplet slug={reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={false}/>}
+                            {actionSlug && <LogoApplet slug={actionSlug.split('.')[0]} width={56} height={56} toogleBackground={toggleBg} />}
+                            {reactionSlug && <LogoApplet slug={reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={toggleBg} />}
                         </div>
-                        <div className="font-bold text-white text-[37px] pb-[10%] overflow-hidden break-words">
+                        <div className="font-bold text-[37px] pb-[10%] overflow-hidden break-words">
                             {name}
                         </div>
                         <Link href={`/myApplets/applet/modifyTitle/${id}`}>
-                            <div className="font-bold text-white text-[20px] flex justify-end underline">
+                            <div className="font-bold text-[20px] flex justify-end underline">
                                 <button onClick={handleTitleChange}>
                                     Edit title
                                 </button>
                             </div>
                         </Link>
-                        <div className="text-white text-[20px] flex flex-row justify-start pb-[20%]">
-                            <div><span>by</span><span className="font-bold">{user}</span></div>
+                        <div className="text-[20px] flex flex-row justify-start pb-[20%]">
+                            <div><span>by </span><span className="font-bold">{user}</span></div>
                         </div>
                     </div>
                 </div>

@@ -13,9 +13,14 @@ import { Service } from "../../utils/api/service/interface/interface";
 
 // --- Component --- //
 const ServiceButtonComponent = ({ name, slug, logo, color, callback }: { name: string, slug: string, logo: string, color: string, callback: (slug: string) => void}) => {
+    const theme = getTheme(color);
+
     return (
         <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col py-[25px]`}
-            style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
+            style={{
+                backgroundColor: (color.length === 0) ? "#363841" : color,
+                color: (theme === "dark") ? "#ffffff" : "#363841"
+            }}
             onClick={() => {
                 callback(slug);
             }}
