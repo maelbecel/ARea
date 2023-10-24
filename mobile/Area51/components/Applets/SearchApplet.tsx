@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import FormInput from "../FormInput";
 import AppletComponent from "./AppletComponent";
@@ -24,7 +25,7 @@ const SearchApplet = () => {
         setDispApplets(tmp);
     }
 
-    useEffect(() => {
+    useFocusEffect(() => {
         const dataFetch = async () => {
             try {
                 const data: any = await AppletInfos();
@@ -35,7 +36,7 @@ const SearchApplet = () => {
             }
         };
         dataFetch();
-    }, [applets]);
+    });
 
     return (
         <ScrollView style={{ height: "100%" }}>

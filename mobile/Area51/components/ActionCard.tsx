@@ -24,7 +24,7 @@ interface CardProps extends TouchableOpacityProps {
  * (black), indicating that the text color should be dark. Otherwise, it returns "#FFFFFF" (white),
  * indicating that the text color should be light.
  */
-const getWriteColor = (color: string): string => {
+export const getWriteColor = (color: string): string => {
     /* The line `const hexColor = color.startsWith("#") ? color : `#`;` is checking if the
     `color` variable starts with a `#` symbol. If it does, then `hexColor` is assigned the value of
     `color`. If it doesn't start with `#`, then `hexColor` is assigned the value of `#`,
