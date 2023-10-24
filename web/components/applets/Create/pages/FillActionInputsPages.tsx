@@ -131,7 +131,9 @@ const Field = ({ input, color, theme, array, setArray, index, id }: { input: inp
         return (<TextField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
     if (input.type === "NUMBER")
         return (<NumberField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
-    return (<SelectField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
+    if (input.type === "SELECT")
+        return (<SelectField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
+    return (<></>);
 };
 
 const ValidateTriggersButton = ({ props, callback, text }  : { props: any | undefined, callback: () => void, text: string }) => {
