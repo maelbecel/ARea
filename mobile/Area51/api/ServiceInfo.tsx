@@ -27,6 +27,8 @@ export type Service = {
     decoration: {
         backgroundColor: string;
         logoUrl: string;
+        description: string;
+        websiteUrl: string;
     }
 }
 
@@ -162,8 +164,9 @@ const ServiceInfo = async (slug : string): Promise<Service> => {
             return null;
         }
         const json = await response.json();
+        console.log("Jej : ", json.data.decoration);
         if (json.data == null) return null;
-        let service : Service = {slug : json.data.slug, name : json.data.name, actions : null, reactions : null, decoration : {backgroundColor : json.data.decoration.backgroundColor, logoUrl : json.data.decoration.logoUrl}};
+        let service : Service = {slug : json.data.slug, name : json.data.name, actions : null, reactions : null, decoration : {backgroundColor : json.data.decoration.backgroundColor, logoUrl : json.data.decoration.logoUrl, description: json.data.decoration.description, websiteUrl: json.data.decoration.websiteUrl}};
         service.actions = getAction(json.data.actions);
         service.reactions = getReaction(json.data.reactions);
         console.log(`Service `, service);
