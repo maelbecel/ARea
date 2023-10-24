@@ -40,6 +40,8 @@ public class AppTypeAdapter extends TypeAdapter<App> {
         jsonWriter.name("decoration").beginObject();
         jsonWriter.name("logoUrl").value(app.getDecoration().getLogoUrl());
         jsonWriter.name("backgroundColor").value(app.getDecoration().getBackgroundColor());
+        jsonWriter.name("description").value(app.getDecoration().getDescription());
+        jsonWriter.name("websiteUrl").value(app.getDecoration().getLinkUrl());
         jsonWriter.endObject();
         jsonWriter.endObject();
     }

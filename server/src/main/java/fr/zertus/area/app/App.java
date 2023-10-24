@@ -34,6 +34,15 @@ public abstract class App implements IApp {
     public static class AppDecoration {
         private String logoUrl;
         private String backgroundColor;
+        private String description;
+        private String linkUrl;
+
+        public AppDecoration(String logoUrl, String backgroundColor) {
+            this.logoUrl = logoUrl;
+            this.backgroundColor = backgroundColor;
+            this.description = "";
+            this.linkUrl = "";
+        }
     }
 
 }

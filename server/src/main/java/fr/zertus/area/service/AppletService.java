@@ -9,11 +9,13 @@ import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.exception.ReactionTriggerException;
 import fr.zertus.area.payload.request.applet.AppletDTO;
 import fr.zertus.area.repository.AppletRepository;
+import fr.zertus.area.utils.FormInputUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,17 @@ public class AppletService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ThreadedAppletService threadedAppletService;
+
+    public void updateThreadAppletService() {
+        for (Applet applet : appletRepository.findAll()) {
+            if (FormInputUtils.hasInput("trigger", applet.getActionData())) {
+                threadedAppletService.addApplet(applet);
+            }
+        }
+    }
 
     public Applet save(AppletDTO applet) throws DataNotFoundException {
         if (applet.getName().length() > 140) {
@@ -56,8 +69,11 @@ public class AppletService {
             throw new IllegalArgumentException("Failed to setup reaction: " + e.getMessage());
         }
 
-        Applet appletEntity = new Applet(user, applet.getName(), applet.getActionSlug(), applet.getActionInputs(), "",
+        Applet appletEntity = new Applet(user, applet.getName(), applet.getActionSlug(), applet.getActionInputs(),
             applet.getReactionSlug(), applet.getReactionInputs(), applet.getNotifUser());
+        if (FormInputUtils.hasInput("trigger", applet.getActionInputs())) {
+            threadedAppletService.addApplet(appletEntity);
+        }
         return appletRepository.save(appletEntity);
     }
 
@@ -65,6 +81,7 @@ public class AppletService {
         Applet applet = getById(id);
         User user = userService.getCurrentUser();
 
+        threadedAppletService.removeApplet(applet);
         if (dto.getName() != null) {
             if (dto.getName().length() > 140) {
                 throw new IllegalArgumentException("Applet name is too long (max 140 characters)");
@@ -101,6 +118,9 @@ public class AppletService {
         if (dto.getEnabled() != null) {
             applet.setEnabled(dto.getEnabled());
         }
+        if (FormInputUtils.hasInput("trigger", applet.getActionData())) {
+            threadedAppletService.addApplet(applet);
+        }
         return appletRepository.save(applet);
     }
 
@@ -108,6 +128,7 @@ public class AppletService {
         Applet applet = getById(id);
         if (applet.getUser().getId() != userService.getCurrentUser().getId())
             throw new DataNotFoundException("Applet not found");
+        threadedAppletService.removeApplet(applet);
         appletRepository.deleteById(id);
     }
 

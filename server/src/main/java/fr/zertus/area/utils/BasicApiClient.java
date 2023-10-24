@@ -73,19 +73,21 @@ public class BasicApiClient {
     }
 
     private static <T> ApiResponse<T> executeRequest(HttpUriRequest request, Class<T> responseType) throws IOException {
-        System.out.println(request.toString());
         HttpResponse response = httpClient.execute(request);
 
         int statusCode = response.getStatusLine().getStatusCode();
         ApiResponse<T> apiResponse = new ApiResponse<>(statusCode, null);
         HttpEntity entity = response.getEntity();
+        System.out.print(request.toString() + " " + statusCode);
         if (entity != null) {
             String responseString = EntityUtils.toString(entity);
+            System.out.println(" - " + responseString);
             if (responseType == String.class)
                 apiResponse.setData((T) responseString);
             else
                 apiResponse.setData(new Gson().fromJson(responseString, responseType));
         } else {
+            System.out.println(" - No response body");
             apiResponse.setData(null);
         }
         return apiResponse;

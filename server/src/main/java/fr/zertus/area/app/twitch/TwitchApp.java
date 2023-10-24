@@ -56,7 +56,9 @@ public class TwitchApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://i.imgur.com/ah2XKZW.png", "#A970FF");
+        return new AppDecoration("https://i.imgur.com/ah2XKZW.png", "#A970FF",
+            "Twitch is the world’s leading social video platform and community for gamers, video game culture, and the creative arts. Turn on Applets to grow your Twitch audience, and keep up with your favorite broadcasters' videos and livestreams.",
+            "https://www.twitch.tv/");
     }
 
 

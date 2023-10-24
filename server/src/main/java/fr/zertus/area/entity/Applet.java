@@ -42,9 +42,6 @@ public class Applet {
     @Column(name = "action_data", columnDefinition = "TEXT")
     String actionData;
 
-    @Column(name = "action_trigger", columnDefinition = "TEXT")
-    String actionTrigger;
-
     @Column(name = "reaction_slug")
     String reactionSlug;
 
@@ -66,13 +63,12 @@ public class Applet {
     @Column(name = "enabled")
     boolean enabled;
 
-    public Applet(User user, String name, String actionSlug, List<FormInput> actionData, String actionTrigger,
+    public Applet(User user, String name, String actionSlug, List<FormInput> actionData,
                   String reactionSlug, List<FormInput> reactionData, boolean notifUser) {
         this.user = user;
         this.name = name;
         this.actionSlug = actionSlug;
         this.actionData = gson.toJson(actionData);
-        this.actionTrigger = actionTrigger;
         this.reactionSlug = reactionSlug;
         this.reactionData = gson.toJson(reactionData);
         this.notifUser = notifUser;
