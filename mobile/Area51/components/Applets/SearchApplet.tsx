@@ -25,7 +25,7 @@ const SearchApplet = () => {
         setDispApplets(tmp);
     }
 
-    useFocusEffect(() => {
+    useEffect(() => {
         const dataFetch = async () => {
             try {
                 const data: any = await AppletInfos();
@@ -36,7 +36,7 @@ const SearchApplet = () => {
             }
         };
         dataFetch();
-    });
+    }, []);
 
     return (
         <ScrollView style={{ height: "100%" }}>

@@ -13,6 +13,7 @@ const AppletInfos = async () => {
                 }
             });
         const data = await response.json();
+        console.log("AppletInfos :")
         return data;
     } catch (error) {
         console.log("error search applet", error);

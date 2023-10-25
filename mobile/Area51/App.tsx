@@ -85,6 +85,7 @@ function Tabs() {
         tabBarActiveBackgroundColor: 'transparent',
         tabBarInactiveBackgroundColor: 'transparent',
         tabBarShowLabel: false,
+        backgroundColor: '#FFFFFF',
         tabBarStyle: {
           elevation: 0,
           shadowOpacity: 0,
