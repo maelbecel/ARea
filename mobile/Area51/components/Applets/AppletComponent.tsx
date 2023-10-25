@@ -25,6 +25,7 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
             try {
                 const data = await AppletDetails(slug);
                 setBgColor(data?.data?.decoration?.backgroundColor);
+                console.log("aAAAAAAAAAAAAAAAAAAAAAAAAAA", bgColor);
             } catch (error) {
                 console.log(error);
             }

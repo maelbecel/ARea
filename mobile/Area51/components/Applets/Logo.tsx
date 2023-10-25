@@ -1,7 +1,6 @@
 import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
 import React from 'react';
 import ServiceInfo from '../../api/ServiceInfo';
-import { getWriteColor } from '../ActionCard';
 
 interface CardProps extends TouchableOpacityProps {
     slug    : string;
@@ -9,7 +8,7 @@ interface CardProps extends TouchableOpacityProps {
     color   ?: string;
 }
 
-const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#000000"}) => {
+const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) => {
 
     const [bgColor, setColor] = React.useState<string>("EEEEEE");
     const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
@@ -32,8 +31,7 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#000000"}) =
         if (color.length === 3) {
             color = color.charAt(0) + color.charAt(0) + color.charAt(1) + color.charAt(1) + color.charAt(2) + color.charAt(2);
         }
-        const rgb = parseInt(color, 16);
-        if (rgb > 0xffffff / 2) {
+        if (color === 'ffffff') {
             return false;
         }
         return true;
@@ -41,7 +39,7 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#000000"}) =
 
     if (!loading) {
         return (
-            <TouchableOpacity onPress={onPress} style={[{backgroundColor: isLight(getWriteColor(color)) ? bgColor : null}, styles.container]}>
+            <TouchableOpacity onPress={onPress} style={[{backgroundColor: isLight(color) ? null : bgColor}, styles.container]}>
                 <Image source={{ uri: logo }} style={[styles.logopti]}/>
             </TouchableOpacity>
         );

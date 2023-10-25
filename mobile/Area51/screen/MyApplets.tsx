@@ -87,7 +87,7 @@ const MyApplet = ({route}) => {
         <ScrollView>
             <View style={{ ...styles.container, backgroundColor: bgColor, paddingTop: statusBarHeight }}>
                 {/* TODO: faire l'engrenage de modification etc */}
-                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={('white')} />
+                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={('white')} iconRight='settings' onPressRight={() => console.log("settings")} />
             </View>
             <View>
                 {dataApplet &&
@@ -110,13 +110,14 @@ const MyApplet = ({route}) => {
 const styles = StyleSheet.create({
     container: {
         shadowColor: '#000',
-          shadowOffset: {
-          width: 0,
-          height: 2,
-          },
-          shadowOpacity: 0.3,
-          shadowRadius: 3.84,
-          elevation: 5,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+        paddingRight: 10,
       },
 });
 

@@ -35,22 +35,22 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) 
     return (
         <View>
             {isButtonToggle ? (
-                <View style={{ alignItems: "center" }}>
+                <View>
                     <View style={ styles.section }>
-                        <View style={{ width: "50%" }}>
+                        <View>
                             {actionSlug &&
                             <LogoApplet
                                 slug={actionSlug}
                             />}
                         </View>
 
-                        <View style={{ width: "50%" }}>
+                        <View style={{ marginLeft: 30 }}>
                             <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Name of Action</Text>
                             <Text style={{ color: "#363841", fontSize: 22 }}>Description of Action</Text>
                         </View>
                     </View>
 
-                    <View style={{ paddingVertical: "8%", paddingHorizontal: 2.5, backgroundColor: "#36384138" }} />
+                    <View style={ styles.separator } />
 
                     <View style={ styles.section }>
                         <View>
@@ -59,18 +59,18 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) 
                                 slug={reactionSlug}
                             />}
                         </View>
-                        <View>
+                        <View style={{ marginLeft: 30 }}>
                             <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Name of Reaction</Text>
                             <Text style={{ color: "#363841", fontSize: 22 }}>Description of Reaction</Text>
                         </View>
                     </View>
-                    <TouchableOpacity onPress={handleClick} style={{marginVertical: 10 }}>
+                    <TouchableOpacity onPress={handleClick} style={{ alignItems: "center", marginTop: 30, marginBottom: 20 }}>
                         <Text style={{ color: "#939596", fontWeight: "bold", fontSize: 18 }}>Fewer Details</Text>
                     </TouchableOpacity>
                 </View>
 
             ) :
-            <TouchableOpacity onPress={handleClick} style={{ alignItems: "center", marginVertical: 10 }}>
+            <TouchableOpacity onPress={handleClick} style={{ alignItems: "center", marginTop: 10, marginBottom: 20 }}>
                 <Text style={{ color: "#939596", fontWeight: "bold", fontSize: 18 }}>More Details</Text>
             </TouchableOpacity>
             }
@@ -81,9 +81,13 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) 
 const styles = StyleSheet.create({
     section : {
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
-        width: "100%"
+    },
+    separator: {
+        paddingVertical: "8%",
+        backgroundColor: "#36384138",
+        marginRight: "92.5%",
+        marginLeft: "6.5%",
     },
 });
 
