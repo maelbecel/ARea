@@ -12,14 +12,15 @@ import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navba
 import Profile from "../../components/NavBar/components/Profile";
 import Footer from "../../components/footer";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
-import { Button } from "../../components/service/CreateService";
-
+import Button from "../../components/Button/Button";
+import { useRouter } from "next/router";
 
 const IndexPage: NextPage = () => {
     
     const [token, setToken] = useState<string>('');
     const [connected  , setConnected] = useState<boolean>(false);
     const { user, setUser } = useUser();
+    const router = useRouter();
 
     useEffect(() => {
         setToken(localStorage.getItem("token") as string);
@@ -39,6 +40,14 @@ const IndexPage: NextPage = () => {
         if (user?.email === "" || user?.email === null)
             getProfile(token);
     }, [setUser, token, user]);
+
+    const handleClick = () => {
+        router.push("/help")
+    }
+
+    const handleDownloadApk = () => {
+        console.log("download apk");
+    }
 
     return (
         <>
@@ -65,12 +74,12 @@ const IndexPage: NextPage = () => {
                 </NavBar>
             )}
             <div className="min-h-screen flex flex-col w-3/5 mx-auto justify-start py-[2%]">
-                <div className="text-[48px] font-bold text-[#363841] flex justify-center text-center pb-[10%]">
+                <div className="text-[28px] md:text-[48px] font-bold text-[#363841] flex justify-center text-center pb-[10%]">
                     <div>Area51 helps all your apps and devices work better together</div>
                 </div>
-                <div className="flex justify-center">
-                    <div className="grid grid-cols-4 w-[100%]">
-                        <div className="flex flex-col justify-start p-[5%]">
+                <div className="flex flex-col justify-center">
+                    <div className="flex flex-col md:grid md:grid-cols-4 w-[100%]">
+                        <div className="flex flex-col justify-start p-[5%] h-[50%]">
                             <div className="flex flex-col">
                                 <div className="text-[18px] font-bold text-[#363841] pb-[10%]">
                                     what are
@@ -83,7 +92,7 @@ const IndexPage: NextPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex justify-start p-[5%] w-auto h-[50%]">
+                        <div className="flex justify-center p-[5%] w-auto h-[50%]">
                             <img src="/Images/applet.svg" alt="applet"/>
                         </div>
                         <div className="flex flex-col justify-start p-[5%]">
@@ -101,9 +110,15 @@ const IndexPage: NextPage = () => {
                             <img src="/Images/service.svg" alt="service"/>
                         </div>
                     </div>
-                </div>
-                <div className="flex justify-center">
-                    <Button href="/create" text="Create your first applet"/>
+                    <div className="flex flex-col items-center py-[10%]">
+                        <div className="flex justify-center w-[80%] sm:w-[40%] md:w-[30%] lg:w-[25%]">
+                            <Button callBack={handleClick} text="Learn more" backgroundColor="#363841" textColor="#ffffff" size={false}/>
+                        </div>
+                        <div className="flex flex-wrap gap-x-[1%] justify-center py-[10%] sm:py-[5%]">
+                            <div className="text-[18px] font-bold text-[#363841] text-center">You want to use mobile version ? You can download it</div>
+                            <button onClick={handleDownloadApk} className="text-[18px] font-bold text-[#00B2FF]">here</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <Footer/>
