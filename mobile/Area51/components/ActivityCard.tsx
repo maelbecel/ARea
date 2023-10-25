@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServiceInfo from '../api/ServiceInfo';
 import AppletID from '../api/AppletID';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+
 
 /* The `interface CardProps` is defining a new interface called `CardProps` that extends the
 `TouchableOpacityProps` interface. It specifies the expected props for the `ActionCard` component. */
@@ -96,6 +98,7 @@ const ActionCard: React.FC<CardProps> = ({ type, id }) => {
     const [color, setcolor] = React.useState<string>("#FFFFFF");
     const [logo, setlogo] = React.useState<string>("");
     const [name, setname] = React.useState<string>("");
+    const navigation: any = useNavigation();
 
     React.useEffect(() => {
         const getApplet = async () => {
@@ -117,7 +120,7 @@ const ActionCard: React.FC<CardProps> = ({ type, id }) => {
     return (
     <View style={[styles.box]}>
         {displayType(type)}
-        <TouchableOpacity onPress={() => {null}} style={[{backgroundColor: color, alignSelf: 'flex-end'}, styles.container]} >
+        <TouchableOpacity onPress={() => {navigation.navigate('MyApplets', { id: id })}} style={[{backgroundColor: color, alignSelf: 'flex-end'}, styles.container]} >
             <View style={{flex: 1, flexDirection: "row", paddingVertical: 20, marginHorizontal: 10, marginRight: 60}}>
                 <Image source={{ uri: logo }} style={styles.logo}/>
                 <Text style={[styles.desc, {color: getWriteColor(color)}]}>{name}</Text>
