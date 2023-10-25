@@ -10,7 +10,7 @@ import Image from "next/image";
 const Profile = ({ url, theme = "light", email }: { url ?: string, theme ?: string, email: string }) => {
     return (
         <>
-            <div className='hidden md:flex'>
+            <div className='hidden md:flex w-[20%] h-[70px] justify-end'>
                 <Link href={`/profile/`}>
                     <div className="flex-row items-center">
                         <Image src={url ? url : "/Icons/profile.svg"} width={70} height={70} alt="Profile" className="object-cover" />
