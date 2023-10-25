@@ -2,7 +2,10 @@
 files. In this case, it is importing various components and types from the `react-native` and
 `react-native-gesture-handler` libraries. */
 import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import ServiceInfo from '../api/ServiceInfo';
+import AppletID from '../api/AppletID';
+import React from 'react';
 
 /* The `interface CardProps` is defining a new interface called `CardProps` that extends the
 `TouchableOpacityProps` interface. It specifies the expected props for the `ActionCard` component. */
@@ -61,16 +64,66 @@ export const getWriteColor = (color: string): string => {
     }
 };
 
+const displayType = (type: string) => {
+    if (type == "ran") {
+        return (
+            <View style={{flex: 1, flexDirection: "row"}}>
+                    <Icon name="check-circle" size={30} color={'#363841'} style={styles.icon} />
+                    <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet ran</Text>
+            </View>
+        )
+    } else if (type == "on") {
+        return (
+            <View style={{flex: 1, flexDirection: "row"}}>
+                    <Icon name="power-settings-new" size={30} color={'#33cc00'} style={styles.icon} />
+                    <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet turned on</Text>
+            </View>
+        )
+    } else if (type == "off") {
+        return (
+            <View style={{flex: 1, flexDirection: "row"}}>
+                    <Icon name="power-settings-new" size={30} color={'#e60000'} style={styles.icon} />
+                    <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet turned off</Text>
+            </View>
+        )
+    }
+}
+
 /* The code `const ActionCard: React.FC<CardProps> = ({ title, color, slug, onPress, logo }) => { ...
 }` is defining a functional component called `ActionCard`. */
 const ActionCard: React.FC<CardProps> = ({ type, id }) => {
-    const color = "#EEEEEE";
+    const [load, setload] = React.useState<boolean>(false);
+    const [color, setcolor] = React.useState<string>("#FFFFFF");
+    const [logo, setlogo] = React.useState<string>("");
+    const [name, setname] = React.useState<string>("");
+
+    React.useEffect(() => {
+        const getApplet = async () => {
+            try {
+                const applet = await AppletID(id);
+                setname(applet.name);
+                const data = await ServiceInfo(applet.actionSlug.split(".")[0]);
+                setcolor(data.decoration.backgroundColor);
+                setlogo(data.decoration.logoUrl);
+                setload(true);
+            } catch (error) {
+                console.log("error search applet", error);
+            }
+        }
+        getApplet();
+    }, []);
+
+    if (!load) return null;
     return (
-    <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
-        <View>
-            <Text style={[styles.desc, {color: getWriteColor(color)}]}>Jej</Text>
-        </View>
-    </TouchableOpacity>
+    <View style={[styles.box]}>
+        {displayType(type)}
+        <TouchableOpacity onPress={() => {null}} style={[{backgroundColor: color, alignSelf: 'flex-end'}, styles.container]} >
+            <View style={{flex: 1, flexDirection: "row", paddingVertical: 20, marginHorizontal: 10, marginRight: 60}}>
+                <Image source={{ uri: logo }} style={styles.logo}/>
+                <Text style={[styles.desc, {color: getWriteColor(color)}]}>{name}</Text>
+            </View>
+        </TouchableOpacity>
+    </View>
   );
 }
 
@@ -80,10 +133,7 @@ the `styles` object represents a different style rule, such as `container`, `log
 These style rules define the visual appearance of the `ActionCard` component. */
 const styles = StyleSheet.create({
     container: {
-      paddingTop: 20,
-      paddingHorizontal: 20,
-      marginVertical: 15,
-      width: '85%',
+      width: '90%',
       borderRadius: 10,
       shadowColor: '#000',
         shadowOffset: {
@@ -94,11 +144,20 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
+    box: {
+        marginBottom: 50,
+        paddingHorizontal: 20,
+        width: '95%',
+      },
     logo: {
-        height: 70,
-        width: 70,
-        marginVertical: 10,
+        height: 50,
+        width: 50,
         alignSelf: 'center',
+        marginRight: 5
+    },
+    icon: {
+        height: 50,
+        width: 50,
     },
     name: {
       fontSize: 25,
@@ -108,9 +167,8 @@ const styles = StyleSheet.create({
     },
     desc: {
         fontSize: 20,
-        marginTop: 5,
-        marginBottom: 20,
-      }
+        alignSelf: 'center',
+    }
   });
 
 /* The line `export default ActionCard;` is exporting the `ActionCard` component as the default
