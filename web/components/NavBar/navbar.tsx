@@ -45,7 +45,7 @@ const RightSection = ({ children, color = "ffffff", theme = 'light' }: { childre
     return (
         <>
             {/* Desktop View */}
-            <div className="flex-row hidden md:flex min-w-[50%] items-end justify-end gap-7">
+            <div className="flex-row hidden md:flex min-w-[50%] items-center justify-end gap-7">
                 {children}
             </div>
 
@@ -64,7 +64,7 @@ const RightSection = ({ children, color = "ffffff", theme = 'light' }: { childre
                         {children}
                     </div>
                 ) : (
-                    <div></div>
+                    <></>
                 )}
             </div>
         </>
