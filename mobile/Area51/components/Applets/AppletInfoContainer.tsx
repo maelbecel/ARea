@@ -58,21 +58,20 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
             <View style={{ ...styles.header, backgroundColor: `${color}` }}>
                 {/* The applet's logo */}
                 <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity onPress={() => console.log("Details Applet")} style={{ marginRight: 10, marginLeft: -10 }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug})} style={{ marginRight: 10, marginLeft: -10 }}>
                         {actionSlug &&
                         <LogoApplet
                             slug={actionSlug}
-                            width={52}
-                            height={52}
-                            toggleBackground={false}
+                            onPress={() => console.log("Action")}
+                            color={color}
                         />}
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => console.log("Details Applet")} style={{ marginRight: 10 }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reactionSlug})} style={{ marginRight: 10 }}>
                         {reactionSlug &&
                         <LogoApplet
                         slug={reactionSlug}
-                        width={52} height={52}
-                        toggleBackground={false}
+                        onPress={() => console.log("Reaction")}
+                        color={color}
                         />}
                     </TouchableOpacity>
                 </View>

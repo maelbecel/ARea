@@ -1,48 +1,67 @@
-import React, { useEffect, useState } from "react";
-import { View, Image } from "react-native";
-import AppletDetails from "../../api/AppletDetails";
+import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
+import React from 'react';
+import ServiceInfo from '../../api/ServiceInfo';
+import { getWriteColor } from '../ActionCard';
 
-interface LogoProps {
-    slug: string;
-    width?: number;
-    height?: number;
-    toggleBackground: boolean;
+interface CardProps extends TouchableOpacityProps {
+    slug    : string;
+    onPress ?: () => void;
+    color   ?: string;
 }
 
-interface Logo {
-    logoUrl: string;
-    backgroundColor?: string;
-}
+const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#000000"}) => {
 
-const LogoApplet = ({ slug, width = 40, height = 40, toggleBackground = true }: LogoProps) => {
-    const [logo, setLogo] = useState<Logo | null>(null);
+    const [bgColor, setColor] = React.useState<string>("EEEEEE");
+    const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
+    const [loading, setLoading] = React.useState<boolean>(true);
 
-    useEffect(() => {
-        const dataFetch = async (slug: string) => {
-            try {
-                const data = await AppletDetails(slug);
-                setLogo({
-                    logoUrl: data?.data?.decoration?.logoUrl,
-                    backgroundColor: data?.data?.decoration?.backgroundColor,
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        dataFetch(slug);
+    React.useEffect(() => {
+        const fetchInfos = async () => {
+            const res = await ServiceInfo(slug);
+            setColor(res.decoration.backgroundColor);
+            setLogo(res.decoration.logoUrl);
+            setLoading(false);
+        }
+        fetchInfos();
     }, []);
 
-    return (
-        <View style={{ borderRadius: toggleBackground ? width / 2 : 0, overflow: 'hidden' }}>
-            {logo && logo.logoUrl && (
-                <Image
-                    source={{ uri: logo.logoUrl }}
-                    style={{ width: width, height: height, backgroundColor: toggleBackground ? logo.backgroundColor : 'transparent' }}
-                />
-            )}
-        </View>
-    );
-};
+    const isLight = (color: string) => {
+        if (color.charAt(0) === '#') {
+            color = color.substr(1);
+        }
+        if (color.length === 3) {
+            color = color.charAt(0) + color.charAt(0) + color.charAt(1) + color.charAt(1) + color.charAt(2) + color.charAt(2);
+        }
+        const rgb = parseInt(color, 16);
+        if (rgb > 0xffffff / 2) {
+            return false;
+        }
+        return true;
+    }
+
+    if (!loading) {
+        return (
+            <TouchableOpacity onPress={onPress} style={[{backgroundColor: isLight(getWriteColor(color)) ? bgColor : null}, styles.container]}>
+                <Image source={{ uri: logo }} style={[styles.logopti]}/>
+            </TouchableOpacity>
+        );
+    }
+}
+
+
+const styles = StyleSheet.create({
+    container: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        height: 50,
+        width: 50,
+        borderRadius: 10,
+    },
+    logopti: {
+        height: 40,
+        width: 40,
+        alignSelf: 'center',
+    }
+  });
 
 export default LogoApplet;
