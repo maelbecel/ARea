@@ -87,7 +87,7 @@ const MyApplet = ({route}) => {
         <ScrollView>
             <View style={{ ...styles.container, backgroundColor: bgColor, paddingTop: statusBarHeight }}>
                 {/* TODO: faire l'engrenage de modification etc */}
-                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.navigate("My Applets")} color={('white')} />
+                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={('white')} />
             </View>
             <View>
                 {dataApplet &&
