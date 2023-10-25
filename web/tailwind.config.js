@@ -3,6 +3,10 @@ module.exports = {
     "./pages/**/*.tsx",
     "./components/**/*.tsx",
   ],
-  theme: {},
+  theme: {
+    borderRadius: {
+      default: '50px'
+    },
+  },
   plugins: [],
 }
