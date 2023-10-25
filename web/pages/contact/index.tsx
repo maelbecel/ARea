@@ -63,7 +63,7 @@ const IndexPage: NextPage = () => {
                 </RightSection>
                 </NavBar>
             )}
-            <div className="flex flex-col w-3/5 mx-auto justify-start py-[2%]">
+            <div className="min-h-screen flex flex-col w-3/5 mx-auto justify-start py-[2%]">
                 <div className="pb-[15%] sm:pb-[2%] text-[48px] font-bold text-[#363841] flex flex-col items-center sm:items-start">
                     <div>Contact</div>
                 </div>
