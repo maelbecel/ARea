@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import LogoApplet from "./Logo";
 
@@ -10,32 +10,41 @@ interface ButtonProps {
 
 const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) => {
     const [isButtonToggle, setIsButtonToggle] = useState<boolean>(isToggle);
+    const [actionInfos, setActionInfos] = useState<any>("");
+    const [reactionInfos, setReactionInfos] = useState<any>("");
 
     const handleClick = () => {
         setIsButtonToggle(!isButtonToggle);
         console.log(isButtonToggle ? "disabled" : "enabled");
     };
 
+    useEffect(() => {
+        const dataFetch = async () => {
+            try {
+                // const actionInfos = await ActionInfos(actionSlug);
+                // const reactionInfos = await ReactionInfos(reactionSlug);
+                // setActionInfos(actionInfos);
+                // setReactionInfos(reactionInfos);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        dataFetch();
+    }, []);
+
     return (
         <View>
             {isButtonToggle ? (
                 <View style={{ alignItems: "center" }}>
                     <View style={ styles.section }>
-                        <View style={{ width: "33%", alignItems: "flex-start" }}>
-                            <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Action</Text>
-                        </View>
-
-                        <View>
+                        <View style={{ width: "50%" }}>
                             {actionSlug &&
                             <LogoApplet
                                 slug={actionSlug}
-                                width={60}
-                                height={60}
-                                toggleBackground={true}
                             />}
                         </View>
 
-                        <View>
+                        <View style={{ width: "50%" }}>
                             <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Name of Action</Text>
                             <Text style={{ color: "#363841", fontSize: 22 }}>Description of Action</Text>
                         </View>
@@ -44,16 +53,10 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) 
                     <View style={{ paddingVertical: "8%", paddingHorizontal: 2.5, backgroundColor: "#36384138" }} />
 
                     <View style={ styles.section }>
-                        <View style={{ width: "33%", alignItems: "flex-start" }}>
-                            <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Reaction</Text>
-                        </View>
                         <View>
                             {reactionSlug &&
                             <LogoApplet
                                 slug={reactionSlug}
-                                width={60}
-                                height={60}
-                                toggleBackground={true}
                             />}
                         </View>
                         <View>

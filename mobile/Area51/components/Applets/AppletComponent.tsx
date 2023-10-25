@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import LogoApplet from "./Logo";
 import AppletDetails from "../../api/AppletDetails";
 import ToggleSwitch from "./Switch";
+import { getWriteColor } from "../ActionCard";
 
 interface AppletProps {
     id: number;
@@ -46,9 +47,7 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                     {actionSlug && (
                         <LogoApplet
                         slug={actionSlug}
-                        width={27}
-                        height={27}
-                        toggleBackground={false}
+                        color={bgColor}
                         />
                     )}
                 </View>
@@ -56,22 +55,20 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                     {reactionSlug && (
                         <LogoApplet
                         slug={reactionSlug}
-                        width={27}
-                        height={27}
-                        toggleBackground={false}
+                        color={bgColor}
                         />
                     )}
                 </View>
             </View>
             <View style={ { ...styles.card, marginBottom: 10 } }>
-                <Text style={ styles.title }>
+                <Text style={ [ styles.title, { color: getWriteColor(bgColor) }] }>
                 {name}
                 </Text>
             </View>
-            <Text style={ styles.author}>
+            <Text style={ styles.author }>
                 by {author}
             </Text>
-            <View style={ styles.card }>
+            <View style={[ styles.card, { marginTop: '3%'}] }>
                 <ToggleSwitch
                     isChecked={enabled}
                     isDisabled={enabled}
@@ -86,11 +83,19 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 9,
+        borderRadius: 10,
         padding: 20,
-        margin: 10,
+        margin: 15,
         width: '85%',
-        justifyContent: 'space-between', // ou alignItems: 'center' selon votre besoin
+        justifyContent: 'space-between',
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        elevation: 5,
     },
     author: {
         color: 'white',
