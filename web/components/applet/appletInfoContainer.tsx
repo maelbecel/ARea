@@ -8,13 +8,23 @@ import SwitchNotifyMe from "./switchNotifyMe";
 import MoreDetailsButton from "./moreDetails";
 import ToggleSwitch from "../switch/toggleSwitch";
 
+interface reactionDataProps {
+    name: string;
+    description: string;
+}
+
+interface ReactionProps {
+    reactionSlug: string;
+    reactionData: reactionDataProps[];
+}
+
 interface ServiceInfoContainerProps {
     id: number;
     name: string;
     color: string;
     theme: string;
     actionSlug: string;
-    reactionSlug: string;
+    reactions: ReactionProps[];
     user: string;
     actionTrigger?: string;
     lastTriggerDate?: number; // date
@@ -23,7 +33,7 @@ interface ServiceInfoContainerProps {
     notifUser: boolean;
 }
 
-const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactionSlug, user, enabled, createdAt = 0, lastTriggerDate = 0, notifUser} : ServiceInfoContainerProps) => {
+const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, user, enabled, createdAt = 0, lastTriggerDate = 0, notifUser} : ServiceInfoContainerProps) => {
 
     const [formattedDate, setFormattedDate] = useState<string>("");
     const [LastUseDate, setLastUseDate] = useState<string>("");
@@ -63,9 +73,13 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactionSlug, 
             <div className={`w-full flex justify-center flex-col`} style={{ backgroundColor: `${color}` }}>
                 <div style={{backgroundColor: `${color}` }} className="px-[15%] lg:px-[35%]">
                     <div className="cursor-pointer">
-                        <div className="flex flex-wrap">
+                        <div className="flex flex-wrap space-x-[3%]">
                             {actionSlug && <LogoApplet slug={actionSlug.split('.')[0]} width={56} height={56} toogleBackground={false}/>}
-                            {reactionSlug && <LogoApplet slug={reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={false}/>}
+                            {reactions && Array.isArray(reactions) && reactions.map((reaction: ReactionProps, index: number) => {
+                                return (
+                                    <LogoApplet key={index} slug={reaction.reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={false} />
+                                );
+                            })}
                         </div>
                         <div className="font-bold text-white text-[37px] pb-[10%] overflow-hidden break-words">
                             {name}
@@ -88,7 +102,7 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactionSlug, 
             </div>
             <div className="flex flex-col flex-start px-[10%] lg:px-[35%] mb-[5%]">
                 <div className="text-[#B8B9BB] font-bold">
-                    <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionSlug={reactionSlug}/>
+                    <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactions={reactions}/>
                 </div>
                 <div className="text-[#363841] font-bold text-[22px] my-[1%]">
                     {formattedDate ? (
