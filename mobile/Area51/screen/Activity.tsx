@@ -24,7 +24,7 @@ const Activity = ({ navigation }) => {
       try {
         setActivity([{ id: '33', type: 'ran' }, { id: '46', type: 'on' }, { id: '46', type: 'off'}, { id: '46', type: 'ran'}, { id: '33', type: 'ran'}, { id: '33', type: 'ran'}, { id: '33', type: 'ran'}]);
       } catch (error) {
-          console.log('Error fetching activity:', error);
+          console.error('Error fetching activity:', error);
       }
     };
 

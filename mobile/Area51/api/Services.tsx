@@ -41,7 +41,6 @@ const Services = async (): Promise<Applet[]> => {
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log(response.status);
         const json = await response.json();
         if (json.data == undefined) return null;
         for (let i = 0; i < json.data.length; i++) {

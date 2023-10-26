@@ -47,7 +47,7 @@ const MyApplet = ({route}) => {
                 ).json();
                 setDataApplet(data);
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         };
         dataFetch();
@@ -70,10 +70,9 @@ const MyApplet = ({route}) => {
                     ).json();
                     setBgColor(dataFetched?.data?.decoration?.backgroundColor);
                 } catch (error) {
-                    console.log(error);
+                    console.error(error);
                 }
             };
-            console.log("test enable " + dataApplet?.data?.enabled);
             dataFetch(dataApplet?.data?.actionSlug.split('.')[0]);
         }
     }, [dataApplet]);

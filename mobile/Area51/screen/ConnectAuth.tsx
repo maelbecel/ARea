@@ -97,7 +97,6 @@ const ConnectAuth = ({ navigation, route }) => {
   let inputsResp = [];
 
   const displayTextForm = (input : Input, index : number) => {
-    console.log("input", input)
     return (<IngredientButton key={input.name}
       input={input}
       placeholders={placeholders}
@@ -127,9 +126,7 @@ const ConnectAuth = ({ navigation, route }) => {
   }
 
   const displaySelectForm = (input : any, index : number) => {
-    console.log("Select detected : ", input);
     if (!input.options) {
-      console.log("No options")
       return null;
     }
     return (
@@ -143,8 +140,6 @@ const ConnectAuth = ({ navigation, route }) => {
 
   /* The `showForm` function is a helper function that generates a form based on the `inputs` array. */
   const showForm = () => {
-    console.log("showForm");
-    console.log("Inputs : ", inputs);
    return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : displayOther(input, index)))}
 
   /**
@@ -156,13 +151,10 @@ const ConnectAuth = ({ navigation, route }) => {
    * there are still empty form fields.
    */
   const isAllFormFill = () : boolean => {
-    console.log("isAllFormFill of ", inputsResp)
     for (let i = 0; i < inputs.length; i++) {
-      console.log("Form ", i + 1, "/", inputs.length, " : ", inputsResp[i])
       if (inputsResp[i] == null || inputsResp[i] == "" || inputsResp[i] == undefined)
         return false;
     }
-    console.log("All form fill")
     return true;
   }
 
@@ -170,16 +162,15 @@ const ConnectAuth = ({ navigation, route }) => {
     const serverAddress = await AsyncStorage.getItem('serverAddress');
     const token = await SecureStore.getItemAsync('token_api');
 
-    
+
     if (!token || !serverAddress) {
       navigation.navigate('Login');
       return;
     }
-    
+
     const response = await UserInfosAPI(token, serverAddress);
     const services = response.data.connectedServices;
-    
-    console.log(slug, " is in ", services)
+
     if (services.includes(slug)) {
       setoAuthStatus(true);
       return true;
@@ -206,10 +197,9 @@ const ConnectAuth = ({ navigation, route }) => {
       let result = await WebBrowser.openAuthSessionAsync(
         `${serverAddress}/service/${slug.split(".")[0]}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
       );
-      console.log("OAuth : " ,result);
     } catch (error) {
       alert(error);
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -263,7 +253,6 @@ const ConnectAuth = ({ navigation, route }) => {
         inputsResp[i] = null;
       }
       isAllFormFill();
-      console.log("ServiceInfo", info);
     }
     fetchServiceInfo();
   }, [oAuthStatus]);
@@ -292,9 +281,6 @@ const ConnectAuth = ({ navigation, route }) => {
           return;
         }
       }
-      console.log( action.length, " Actions")
-      console.log( reaction.length, " Reactions")
-      console.log("Nothing look like this : ", slug)
     }
     findAction();
   }

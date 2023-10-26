@@ -155,7 +155,7 @@ const ActionChoose: React.FC<CardProps> = ({ type, slug , onPress }) => {
           setInfo(serviceInfo);
           setAction(getActionName(serviceInfo, slug));
         } catch (error) {
-          console.log("Error while getting info : ", error);
+          console.error("Error while getting info : ", error);
         }
       };
 

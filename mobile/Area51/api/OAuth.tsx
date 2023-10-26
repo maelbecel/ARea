@@ -17,10 +17,9 @@ const OAuthLogin = async (service: string) => {
         let result = await WebBrowser.openAuthSessionAsync(
             `${serverAddress}/service/${service}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
         );
-        console.log("OAuth : " ,result);
         } catch (error) {
-        alert(error);
-        console.log(error);
+            alert(error);
+            console.error(error);
         }
     };
     _openAuthSessionAsync();

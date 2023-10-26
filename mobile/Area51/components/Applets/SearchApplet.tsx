@@ -29,10 +29,11 @@ const SearchApplet = () => {
         const dataFetch = async () => {
             try {
                 const data: any = await AppletInfos();
+                console.log("data applet component", data);
                 setApplets(data.data);
                 setDispApplets(data.data);
             } catch (error) {
-                console.log("error applet component", error);
+                console.error("error applet component", error);
             }
         };
         dataFetch();
@@ -51,8 +52,9 @@ const SearchApplet = () => {
               size="85%"
             />
           </View>
+
           {/* Liste des applets */}
-          {(dispApplets != null) ? dispApplets.map((item: any) => (
+          {(dispApplets !== null) && dispApplets.length > 0 ? dispApplets.map((item: any) => (
             <View style={styles.applet} key={item.id}>
               <AppletComponent
                 id={item.id}

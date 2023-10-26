@@ -35,9 +35,7 @@ const PatchUser = async (email: string, password : string, username : string) =>
             },
             body: JSON.stringify(data),
         });
-        console.log("Patch ", data)
         const json = await response.json();
-        console.log("Patch ", response.status , " say : " + json.data)
         return json;
     } catch (error) {
         console.error(error);

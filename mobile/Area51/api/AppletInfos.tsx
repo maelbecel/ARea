@@ -16,7 +16,7 @@ const AppletInfos = async () => {
         console.log("APPLET INFOS");
         return data;
     } catch (error) {
-        console.log("error search applet", error);
+        console.error("error search applet", error);
         return null;
     }
 };

@@ -23,7 +23,6 @@ const ActionInfo = async (slug : string): Promise<any> => {
                 'Authorization': 'Bearer ' + token
             },
         });
-        console.log(response.status);
         const json = await response.json();
         if (json.data == undefined) return null;
         return json.data;

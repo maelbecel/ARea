@@ -32,15 +32,6 @@ import {Input} from  './ServiceInfo'
 const Applet = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string, reactionInputs : Input[], reactionResp : Array<any>): Promise<boolean | any> => {
     try {
         let inputs : Input[] = [];
-        console.log("============= New Applet ====================")
-        console.log("Name: " + name)
-        console.log("Action: " + actionSlug)
-        console.log("Action Inputs: ", actionInputs)
-        console.log("Action Response: ", actionResp)
-        console.log("Reaction: " + reactionSlug)
-        console.log("Reaction Inputs: ", reactionInputs)
-        console.log("Reaction Response: ", reactionResp)
-        console.log("=============================================")
         const token = await SecureStore.getItemAsync('token_api');
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const response = await fetch(`${serverAddress}/applet`, {
@@ -62,7 +53,6 @@ const Applet = async (name : string, actionSlug : string, actionInputs : Input[]
                 })
             })
         });
-        console.log(response.status);
         const json = await response.json();
         if (json.data == undefined) return false;
         return json.data;
