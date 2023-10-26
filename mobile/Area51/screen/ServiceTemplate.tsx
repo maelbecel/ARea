@@ -59,7 +59,7 @@ const getWriteColor = (color: string): string => {
 template. It takes in `navigation` and `route` as props, which are provided by React Navigation. The
 `route` prop contains the parameters passed to the component. */
 const ServiceTemplate = ({ navigation, route }) => {
-  const { slug, type, actionInput, reactionInput } = route.params;
+  const { slug, type, actionInput, reactionInput, index } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
@@ -74,7 +74,7 @@ const ServiceTemplate = ({ navigation, route }) => {
    */
   const displayActions = () => {
     return action.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput})}/>
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index})}/>
     ));
   };
 
@@ -85,7 +85,7 @@ const ServiceTemplate = ({ navigation, route }) => {
    */
   const displayReactions = () => {
     return reaction.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput })}/>
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index })}/>
     ));
   }
 

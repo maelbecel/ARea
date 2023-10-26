@@ -29,7 +29,7 @@ import {Input} from  './ServiceInfo'
  * creating an applet.
  * @returns a Promise<boolean>.
  */
-const Applet = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string, reactionInputs : Input[], reactionResp : Array<any>): Promise<boolean | any> => {
+const Applet = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string[], reactionInputs : Input[][], reactionResp : Array<any>): Promise<boolean | any> => {
     try {
         let inputs : Input[] = [];
         const token = await SecureStore.getItemAsync('token_api');
@@ -44,16 +44,20 @@ const Applet = async (name : string, actionSlug : string, actionInputs : Input[]
                 notifUser: true,
                 name: name,
                 actionSlug: actionSlug,
-                reactionSlug: reactionSlug,
+                enabled: true,
                 actionInputs: actionInputs.map((input, index) => {
                     return {name: input.name, label : input.label, type : input.type, value : actionResp[index], valid : true}
                 }),
-                reactionInputs: reactionInputs.map((input, index) => {
-                    return {name: input.name, label : input.label, type : input.type, value : reactionResp[index], valid : true}
-                })
+                reactions: reactionSlug.map((reaction, index) => { return {
+                    reactionSlug: reaction,
+                    reactionInputs: reactionInputs[index].map((input, index) => {
+                        return {name: input.name, label : input.label, type : input.type, value : reactionResp[index], valid : true}
+                    })
+                }})
             })
         });
         const json = await response.json();
+        console.log("Error ", response.status, json.detail)
         if (json.data == undefined) return false;
         return json.data;
     } catch (error) {

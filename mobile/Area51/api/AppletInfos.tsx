@@ -12,8 +12,8 @@ const AppletInfos = async () => {
                     'Authorization': `Bearer ${token}`,
                 }
             });
+        console.log(response);
         const data = await response.json();
-        console.log("APPLET INFOS");
         return data;
     } catch (error) {
         console.error("error search applet", error);

@@ -30,7 +30,7 @@ const Login = ({ navigation }) => {
 
         const clearStorage = async () => {
           await AsyncStorage.setItem('action', "default");
-          await AsyncStorage.setItem('reaction', "default");
+          await AsyncStorage.setItem('reaction', "[]");
         }
 
         clearStorage();

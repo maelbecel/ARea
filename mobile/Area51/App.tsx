@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /* The code is importing different screen components from their respective files. These screen
 components are used in the `Tabs` component to define the screens for each tab in the bottom tab
@@ -113,6 +114,14 @@ function Tabs() {
  * "Login", "SignUp", and "Area 51". Each Stack.Screen component has a name prop and a component prop
  */
 export default function App() {
+  React.useEffect(() => {
+    const reset = async (): Promise<void> => {
+      await AsyncStorage.setItem('action', "default");
+      await AsyncStorage.setItem('reaction', "[]");
+    }
+    reset();
+  }, [])
+  
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ cardStyle: {backgroundColor: "#FFF"}}}>
