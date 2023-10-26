@@ -6,6 +6,17 @@ import SwitchNotifyMe from "./SwitchNotifyMe";
 import MoreDetailsButton from "./MoreDetails";
 import { useNavigation } from '@react-navigation/native';
 import DeleteApplet from "../../api/DeleteApplet";
+import { getWriteColor } from "../ActionCard";
+
+interface ReactionListProps {
+    reactionSlug: string;
+    reactionData: any[];
+}
+
+interface ReactionProps {
+    reaction: ReactionListProps;
+    bgColor: string;
+}
 
 /* The `AppletInfoContainerProps` interface is defining the type of props that the
 `AppletInfoContainer` component expects to receive. It specifies the names and
@@ -18,7 +29,7 @@ interface AppletInfoContainerProps {
     name: string;
     color: string;
     actionSlug: string;
-    reactionSlug: string;
+    reactionsList: ReactionListProps[];
     user: string;
     enabled: boolean;
     id: number;
@@ -26,7 +37,7 @@ interface AppletInfoContainerProps {
     lastTriggerDate?: number;
 }
 
-const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionSlug, user, enabled, id, createdAt = 0, lastTriggerDate = 0 }) => {
+const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionsList, user, enabled, id, createdAt = 0, lastTriggerDate = 0 }) => {
     const [formattedDate, setFormattedDate] = useState<string>("");
     const [LastUseDate, setLastUseDate] = useState<string>("");
 
@@ -53,35 +64,37 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
 
     return (
         <View style={ styles.container }>
-            <View style={{ ...styles.header, backgroundColor: `${color}` }}>
+            <View style={{ ...styles.header, backgroundColor: color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color }}>
                 {/* The applet's logo */}
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug})} style={{ marginRight: 10, marginLeft: -10 }}>
                         {actionSlug &&
                         <LogoApplet
                             slug={actionSlug}
-                            onPress={() => console.log("Action")}
                             color={color}
                         />}
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reactionSlug})} style={{ marginRight: 10 }}>
-                        {reactionSlug &&
-                        <LogoApplet
-                        slug={reactionSlug}
-                        onPress={() => console.log("Reaction")}
-                        color={color}
-                        />}
-                    </TouchableOpacity>
+                    {/* Loop through reactionsList */}
+                    {reactionsList && reactionsList.map((reaction: any, index: number) => (
+                        <View key={index}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reaction.reactionSlug.split('.')[0]})} style={{ marginRight: 10 }}>
+                                <LogoApplet
+                                slug={reaction.reactionSlug.split('.')[0]}
+                                color={color}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ))}
                 </View>
 
                 {/* The title of the applet */}
-                <Text style={ styles.title }>{name}</Text>
+                <Text style={ [styles.title, { color: getWriteColor(color)}] }>{name}</Text>
 
                 {/* The user who created the applet and the button to edit the title */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{...styles.text, fontWeight: 'bold' }}>by {user}</Text>
+                    <Text style={{...styles.text, fontWeight: 'bold', color: getWriteColor(color) }}>by {user}</Text>
                     <TouchableOpacity onPress={() => console.log("Edit title")}>
-                        <Text style={{...styles.text, fontWeight: 'bold' }}>Edit title</Text>
+                        <Text style={{...styles.text, fontWeight: 'bold', color: getWriteColor(color) }}>Edit title</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -95,13 +108,13 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                         yesLabel="Enabled"
                         noLabel="Disabled"
                         bgColor='#121212'
-                        toggleColor={color}
+                        toggleColor={color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color}
                         darkMode={false}
                         bigSwitch={true}
                     />
                 </View>
 
-                <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionSlug={reactionSlug} />
+                <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionsList={reactionsList} />
 
                 <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>
                     {formattedDate ? (
@@ -140,7 +153,6 @@ const styles = StyleSheet.create({
         marginBottom: '5%',
     },
     title: {
-        color: 'white',
         fontSize: 32,
         fontWeight: 'bold',
         paddingBottom: '1%',
@@ -148,7 +160,6 @@ const styles = StyleSheet.create({
         marginBottom: '2%',
     },
     text: {
-        color: 'white',
         fontSize: 16,
     },
     toggleSwitch: {

@@ -7,16 +7,36 @@ import AppletDetails from "../../api/AppletDetails";
 import ToggleSwitch from "./Switch";
 import { getWriteColor } from "../ActionCard";
 
+interface ReactionListProps {
+    reactionSlug: string;
+    reactionData: any[];
+}
+
+interface ReactionProps {
+    reaction: ReactionListProps;
+    bgColor: string;
+}
+
 interface AppletProps {
     id: number;
     name: string;
     actionSlug: string;
-    reactionSlug: string;
+    reactionsList: ReactionListProps[];
     enabled: boolean;
     author: string;
 }
 
-const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reactionSlug, enabled, author }) => {
+const ReactionLogo: React.FC<ReactionProps> = ({ reaction, bgColor }) => {
+    return (
+        console.log("color", bgColor),
+        <LogoApplet
+            slug={reaction.reactionSlug.split(".")[0]}
+            color={bgColor}
+        />
+    );
+};
+
+const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reactionsList, enabled, author }) => {
     const [bgColor, setBgColor] = useState<string>("");
     const navigation: any = useNavigation();
 
@@ -32,17 +52,9 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
         dataFetch(actionSlug);
     }, []);
 
-    useEffect(() => {
-        const ServiceFetch = async (slug: string) => {
-            const service = await ServiceInfo(slug);
-            setBgColor(service?.decoration?.backgroundColor);
-        };
-        ServiceFetch(actionSlug);
-    }, [bgColor]);
-
     return (
         <TouchableOpacity style={{ ...styles.container, backgroundColor: bgColor} } onPress={() => navigation.navigate('MyApplets', { id: id })}>
-            <View style={ {...styles.card, marginBottom: 10 }}>
+            <View style={ {...styles.card, marginBottom: 10, flexWrap: "wrap" }}>
                 <View style={{ marginRight: 10 }}>
                     {actionSlug && (
                         <LogoApplet
@@ -51,13 +63,17 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                         />
                     )}
                 </View>
-                <View>
-                    {reactionSlug && (
-                        <LogoApplet
-                        slug={reactionSlug}
-                        color={bgColor}
-                        />
-                    )}
+                <View style={{ flexDirection: 'row' }}>
+                    {/* Loop through reactionsList */}
+                    {reactionsList && reactionsList.map((reaction: any, index: number) => (
+                        console.log(actionSlug),
+                        <View key={index} style={{ marginRight: 10 }}>
+                            <ReactionLogo
+                                reaction={reaction}
+                                bgColor={bgColor}
+                            />
+                        </View>
+                    ))}
                 </View>
             </View>
             <View style={ { ...styles.card, marginBottom: 10 } }>
