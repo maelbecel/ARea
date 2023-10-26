@@ -53,8 +53,7 @@ const SearchApplet = () => {
           </View>
 
           {/* Liste des applets */}
-          {(dispApplets !== null) && dispApplets.length > 0 ? dispApplets.map((item: any) => (
-            console.log(item.reactions),
+          {(dispApplets !== null) ? dispApplets.map((item: any) => (
             <View style={styles.applet} key={item.id}>
               <AppletComponent
                 id={item.id}

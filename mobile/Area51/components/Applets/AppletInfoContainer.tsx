@@ -7,6 +7,16 @@ import MoreDetailsButton from "./MoreDetails";
 import { useNavigation } from '@react-navigation/native';
 import DeleteApplet from "../../api/DeleteApplet";
 
+interface ReactionListProps {
+    reactionSlug: string;
+    reactionData: any[];
+}
+
+interface ReactionProps {
+    reaction: ReactionListProps;
+    bgColor: string;
+}
+
 /* The `AppletInfoContainerProps` interface is defining the type of props that the
 `AppletInfoContainer` component expects to receive. It specifies the names and
 types of the props, such as `name` (a string), `color` (a string), `actionSlug`
@@ -18,7 +28,7 @@ interface AppletInfoContainerProps {
     name: string;
     color: string;
     actionSlug: string;
-    reactionSlug: string;
+    reactionsList: ReactionListProps[];
     user: string;
     enabled: boolean;
     id: number;
@@ -26,7 +36,7 @@ interface AppletInfoContainerProps {
     lastTriggerDate?: number;
 }
 
-const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionSlug, user, enabled, id, createdAt = 0, lastTriggerDate = 0 }) => {
+const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionsList, user, enabled, id, createdAt = 0, lastTriggerDate = 0 }) => {
     const [formattedDate, setFormattedDate] = useState<string>("");
     const [LastUseDate, setLastUseDate] = useState<string>("");
 
@@ -60,18 +70,20 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                         {actionSlug &&
                         <LogoApplet
                             slug={actionSlug}
-                            onPress={() => console.log("Action")}
                             color={color}
                         />}
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reactionSlug})} style={{ marginRight: 10 }}>
-                        {reactionSlug &&
-                        <LogoApplet
-                        slug={reactionSlug}
-                        onPress={() => console.log("Reaction")}
-                        color={color}
-                        />}
-                    </TouchableOpacity>
+                    {/* Loop through reactionsList */}
+                    {reactionsList && reactionsList.map((reaction: any, index: number) => (
+                        <View key={index}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reaction.reactionSlug})} style={{ marginRight: 10 }}>
+                                <LogoApplet
+                                slug={reaction.reactionSlug.split('.')[0]}
+                                color={color}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ))}
                 </View>
 
                 {/* The title of the applet */}
@@ -101,7 +113,7 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                     />
                 </View>
 
-                <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionSlug={reactionSlug} />
+                <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionsList={reactionsList} />
 
                 <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>
                     {formattedDate ? (

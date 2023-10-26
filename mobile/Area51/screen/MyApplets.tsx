@@ -94,7 +94,7 @@ const MyApplet = ({route}) => {
                         name={dataApplet?.data?.name}
                         color={bgColor}
                         actionSlug={dataApplet?.data?.actionSlug.split('.')[0]}
-                        reactionSlug={dataApplet?.data?.reactionSlug.split('.')[0]}
+                        reactionsList={dataApplet?.data?.reactions}
                         user={dataApplet?.data?.user?.username}
                         enabled={dataApplet?.data?.enabled}
                         createdAt={dataApplet?.data?.createdAt}
