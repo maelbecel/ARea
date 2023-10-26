@@ -6,6 +6,7 @@ import SwitchNotifyMe from "./SwitchNotifyMe";
 import MoreDetailsButton from "./MoreDetails";
 import { useNavigation } from '@react-navigation/native';
 import DeleteApplet from "../../api/DeleteApplet";
+import { getWriteColor } from "../ActionCard";
 
 interface ReactionListProps {
     reactionSlug: string;
@@ -63,7 +64,7 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
 
     return (
         <View style={ styles.container }>
-            <View style={{ ...styles.header, backgroundColor: `${color}` }}>
+            <View style={{ ...styles.header, backgroundColor: color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color }}>
                 {/* The applet's logo */}
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug})} style={{ marginRight: 10, marginLeft: -10 }}>
@@ -76,7 +77,7 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                     {/* Loop through reactionsList */}
                     {reactionsList && reactionsList.map((reaction: any, index: number) => (
                         <View key={index}>
-                            <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reaction.reactionSlug})} style={{ marginRight: 10 }}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reaction.reactionSlug.split('.')[0]})} style={{ marginRight: 10 }}>
                                 <LogoApplet
                                 slug={reaction.reactionSlug.split('.')[0]}
                                 color={color}
@@ -87,13 +88,13 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                 </View>
 
                 {/* The title of the applet */}
-                <Text style={ styles.title }>{name}</Text>
+                <Text style={ [styles.title, { color: getWriteColor(color)}] }>{name}</Text>
 
                 {/* The user who created the applet and the button to edit the title */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{...styles.text, fontWeight: 'bold' }}>by {user}</Text>
+                    <Text style={{...styles.text, fontWeight: 'bold', color: getWriteColor(color) }}>by {user}</Text>
                     <TouchableOpacity onPress={() => console.log("Edit title")}>
-                        <Text style={{...styles.text, fontWeight: 'bold' }}>Edit title</Text>
+                        <Text style={{...styles.text, fontWeight: 'bold', color: getWriteColor(color) }}>Edit title</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -107,7 +108,7 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                         yesLabel="Enabled"
                         noLabel="Disabled"
                         bgColor='#121212'
-                        toggleColor={color}
+                        toggleColor={color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color}
                         darkMode={false}
                         bigSwitch={true}
                     />
@@ -152,7 +153,6 @@ const styles = StyleSheet.create({
         marginBottom: '5%',
     },
     title: {
-        color: 'white',
         fontSize: 32,
         fontWeight: 'bold',
         paddingBottom: '1%',
@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
         marginBottom: '2%',
     },
     text: {
-        color: 'white',
         fontSize: 16,
     },
     toggleSwitch: {

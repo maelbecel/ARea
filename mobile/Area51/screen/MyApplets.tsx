@@ -10,6 +10,7 @@ import AppletInfoContainer from "../components/Applets/AppletInfoContainer";
 import { ScrollView } from "react-native-gesture-handler";
 import TopBar from "../components/TopBar";
 import { useNavigation } from "@react-navigation/native";
+import { getWriteColor } from "../components/ActionCard";
 
 const MyApplet = ({route}) => {
     const [bgColor, setBgColor] = useState('');
@@ -84,9 +85,9 @@ const MyApplet = ({route}) => {
 
     return (
         <ScrollView>
-            <View style={{ ...styles.container, backgroundColor: bgColor, paddingTop: statusBarHeight }}>
+            <View style={{ ...styles.container, backgroundColor: bgColor.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : bgColor, paddingTop: statusBarHeight }}>
                 {/* TODO: faire l'engrenage de modification etc */}
-                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={('white')} iconRight='settings' onPressRight={() => console.log("settings")} />
+                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={getWriteColor(bgColor)} iconRight='settings' onPressRight={() => console.log("settings")} />
             </View>
             <View>
                 {dataApplet &&

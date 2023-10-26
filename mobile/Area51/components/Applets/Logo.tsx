@@ -25,13 +25,14 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) =
     }, []);
 
     const isLight = (color: string) => {
+        console.log(color);
         if (color.charAt(0) === '#') {
             color = color.substr(1);
         }
         if (color.length === 3) {
             color = color.charAt(0) + color.charAt(0) + color.charAt(1) + color.charAt(1) + color.charAt(2) + color.charAt(2);
         }
-        if (color === 'ffffff') {
+        if (color.toLocaleLowerCase() === 'ffffff') {
             return false;
         }
         return true;

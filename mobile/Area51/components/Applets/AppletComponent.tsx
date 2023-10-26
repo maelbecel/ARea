@@ -28,6 +28,7 @@ interface AppletProps {
 
 const ReactionLogo: React.FC<ReactionProps> = ({ reaction, bgColor }) => {
     return (
+        console.log("color", bgColor),
         <LogoApplet
             slug={reaction.reactionSlug.split(".")[0]}
             color={bgColor}
