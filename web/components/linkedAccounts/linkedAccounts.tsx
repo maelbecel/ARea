@@ -75,7 +75,7 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
             </div>
             <div className="flex justify-center text-center font-bold text-[28px] text-[#00C2FF]">
                 { islinked ? (
-                    <a onClick={() => requestoauth2()} className="cursor-pointer">Unlike your account</a>
+                    <a onClick={() => requestoauth2()} className="cursor-pointer">Unlink your account</a>
                 ) : (
                     <a onClick={() => requestoauth2()} className="cursor-pointer">Link your account</a>
                 ) }

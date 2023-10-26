@@ -20,7 +20,7 @@ const LogoutButton = () => {
 
     return (
         <button className="text-[#363841] font-bold text-[24px] p-[1%]" onClick={handleLogout}>
-            Lougout
+            Logout
         </button>
     )
 }

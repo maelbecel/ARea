@@ -8,14 +8,16 @@ import SwitchNotifyMe from "./switchNotifyMe";
 import MoreDetailsButton from "./moreDetails";
 import ToggleSwitch from "../switch/toggleSwitch";
 
-interface reactionDataProps {
+interface ReactionDataProps {
     name: string;
+    label: string;
+    value: string;
     description: string;
 }
 
 interface ReactionProps {
     reactionSlug: string;
-    reactionData: reactionDataProps[];
+    reactionData: ReactionDataProps[];
 }
 
 interface ServiceInfoContainerProps {

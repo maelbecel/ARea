@@ -22,15 +22,18 @@ import { GetServices } from "../../../utils/api/service/service";
 import { Service } from "../../../utils/api/service/interface/interface";
 import { GetAppletWithID } from "../../../utils/api/applet/applet";
 
-interface reactionDataProps {
+interface ReactionDataProps {
     name: string;
+    label: string;
+    value: string;
     description: string;
 }
 
 interface ReactionProps {
     reactionSlug: string;
-    reactionData: reactionDataProps[];
+    reactionData: ReactionDataProps[];
 }
+
 interface AppletProps {
     id: number;
     name: string;
