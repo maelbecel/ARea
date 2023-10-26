@@ -69,10 +69,10 @@ const InfoService = ({ navigation, route }) => {
 
   const openPage = async () => {
     try {
-        await WebBrowser.openBrowserAsync(link);
-        } catch (error) {
-        alert(error);
-        console.log(error);
+      await WebBrowser.openBrowserAsync(link);
+    } catch (error) {
+      alert(error);
+      console.error(error);
     }
   }
 

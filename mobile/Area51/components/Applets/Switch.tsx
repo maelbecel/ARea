@@ -8,7 +8,6 @@ export const darkenColor = (color: string, factor: number, darkMode: boolean): s
         return color;
     }
     if (!color) {
-        console.log("no color");
         return "#FFFFFF";
     }
     const hexToRgb = (hex: string): number[] => {
@@ -27,7 +26,6 @@ export const darkenColor = (color: string, factor: number, darkMode: boolean): s
     const darkenedG = Math.max(0, Math.floor(g / factor));
     const darkenedB = Math.max(0, Math.floor(b / factor));
     const darkenedHex = rgbToHex(darkenedR, darkenedG, darkenedB);
-    console.log("darkenedHex -> ", darkenedHex);
     return rgbToHex(darkenedR, darkenedG, darkenedB);
 };
 
@@ -50,18 +48,12 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
     useEffect(() => {
         setIsChecked(isChecked);
         setDarkenColor(darkenColor(bgColor, 1.2, darkMode));
-        console.log("isChecked -> ", isChecked);
     }, [bgColor]);
 
     const handleSwitchChange = () => {
 
         setIsChecked(!isChekedState);
         AsyncStorage.setItem("switchState", JSON.stringify(!isChekedState));
-        if (isChekedState == true) {
-            console.log("disabled");
-        } else {
-            console.log("enabled");
-        }
     }
 
 

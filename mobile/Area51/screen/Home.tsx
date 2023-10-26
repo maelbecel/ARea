@@ -34,7 +34,7 @@ const Home = ({ navigation }) => {
         setApplets(services);
         setDispApplets(services);
       } catch (error) {
-          console.log('Error fetching applets:', error);
+          console.error('Error fetching applets:', error);
       }
     };
 
@@ -50,7 +50,6 @@ const Home = ({ navigation }) => {
   const filterApplets = (name : string) => {
     if (applets == null) return;
     let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
-    console.log(tmp);
     setDispApplets(tmp);
   }
 

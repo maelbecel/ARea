@@ -58,7 +58,7 @@ const AddServices = ({navigation, route}) => {
         setAction((action === null) ? "default" : action);
         setReaction((reaction === null) ? "default" : reaction);
       } catch (error) {
-        console.log("Error while getting info : ", error);
+        console.error("Error while getting info : ", error);
       }
     };
     fetchData();

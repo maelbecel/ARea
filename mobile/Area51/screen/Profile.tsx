@@ -27,7 +27,6 @@ const Profile = ({navigation}) => {
   const [servicesCon, setServicesCon] = useState<string[]>([]);
 
   const orderByFirstConnected = (connected : string[], allserv : string[]) => {
-    console.log("##########################")
     let tmp : string[] = [];
     for (let i = 0; i < connected.length; i++) {
       if (allserv.includes(connected[i])) {
@@ -39,8 +38,6 @@ const Profile = ({navigation}) => {
         tmp.push(allserv[i]);
       }
     }
-    console.log("tmp : ", tmp)
-    console.log("##########################")
     return tmp;
   }
 
@@ -72,7 +69,6 @@ const Profile = ({navigation}) => {
         for (let i = 0; i < serv.length; i++) {
           tmp.push(serv[i].slug);
         }
-        console.log("Resp : ", response.data.connectedServices)
         setServicesCon(response.data.connectedServices);
         setServices(orderByFirstConnected(response.data.connectedServices, tmp));
         await AsyncStorage.setItem('username', response.data.username);
@@ -121,8 +117,6 @@ const Profile = ({navigation}) => {
   };
 
   const displayServices = () => {
-    console.log("Services : ", services);
-    console.log("ServicesCon : ", servicesCon);
     if (services == undefined || services == null) return;
     return services.map((service) => ((servicesCon.includes(service)) ?
       <ServiceLogo key={service} slug={service} onPress={ async () =>  {await OAuthLogout(service); setReload(true)}} />

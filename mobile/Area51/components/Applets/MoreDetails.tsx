@@ -26,7 +26,7 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionSlug }: ButtonProps) 
                 // setActionInfos(actionInfos);
                 // setReactionInfos(reactionInfos);
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         };
         dataFetch();

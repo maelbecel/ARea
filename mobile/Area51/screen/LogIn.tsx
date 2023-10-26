@@ -40,7 +40,6 @@ const Login = ({ navigation }) => {
          */
         const autoLogin = async () => {
             const response = await AutoLoginAPI();
-            console.log(response);
             if (response == true) {
                 navigation.navigate('Area 51');
             }
@@ -58,7 +57,6 @@ const Login = ({ navigation }) => {
         if (response == null) {
             alert("An Error occcur");
         } else if (response.status == 200) {
-            console.log("Token :" + response.data);
             navigation.navigate('Area 51');
         } else {
             alert("Error " + response.status + "\n" + response.message);

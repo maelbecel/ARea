@@ -27,7 +27,6 @@ const ServiceToken = async (slug : string): Promise<string> => {
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log(`/service/${slug}/oauth2/token :`, response.status);
         if (response.status != 200) {
             return null;
         }

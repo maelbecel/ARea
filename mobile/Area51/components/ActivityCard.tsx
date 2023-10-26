@@ -110,7 +110,7 @@ const ActionCard: React.FC<CardProps> = ({ type, id }) => {
                 setlogo(data.decoration.logoUrl);
                 setload(true);
             } catch (error) {
-                console.log("error search applet", error);
+                console.error("error search applet", error);
             }
         }
         getApplet();

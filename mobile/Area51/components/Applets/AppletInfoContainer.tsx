@@ -36,7 +36,6 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
     functional component. It takes two arguments: a callback function and an array
     of dependencies. */
     useEffect(() => {
-        console.log("The applet is enabled ?", enabled);
         if (createdAt !== 0) {
             const createdAtDate = new Date(createdAt * 1000);
             const lastUpdateDate = new Date(lastTriggerDate * 1000);
@@ -48,7 +47,6 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
     }, []);
 
     const handleDeleteApplet = () => {
-        console.log("Delete applet");
         DeleteApplet(id);
         navigation.navigate('My Applets');
     };

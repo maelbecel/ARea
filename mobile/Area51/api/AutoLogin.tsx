@@ -26,11 +26,9 @@ const AutoLoginAPI  = async (): Promise<boolean> => {
                 'Content-Type': 'application/json',
             },
         });
-        console.log(response.status);
         if (response.status == 204) {
             return true;
         } else
-            console.log('Verify return ' + response.status)
             return false;
     } catch (error) {
         console.error(error);

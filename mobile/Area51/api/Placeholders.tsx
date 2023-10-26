@@ -9,7 +9,6 @@ const createDictionary = (placeholders : any) : Dict => {
     for (let key in placeholders) {
         dict[key] = placeholders[key]
     }
-    console.log("PlaceHolders dict :", dict);
     return dict;
 }
 
@@ -24,7 +23,6 @@ const PlaceHolders = async (slug : string, actionSlug : string): Promise<Dict> =
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log("Placeholders : ", response.status);
         const json = await response.json();
         if (json.data == undefined) return null;
         return createDictionary(json.data.placeholders);

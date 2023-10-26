@@ -16,7 +16,6 @@ const OAuthLogout = async (service: string) => {
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log(response.status);
         return true;
     } catch (error) {
         console.error(error);
