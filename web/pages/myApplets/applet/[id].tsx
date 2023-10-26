@@ -22,11 +22,20 @@ import { GetServices } from "../../../utils/api/service/service";
 import { Service } from "../../../utils/api/service/interface/interface";
 import { GetAppletWithID } from "../../../utils/api/applet/applet";
 
+interface reactionDataProps {
+    name: string;
+    description: string;
+}
+
+interface ReactionProps {
+    reactionSlug: string;
+    reactionData: reactionDataProps[];
+}
 interface AppletProps {
     id: number;
     name: string;
     actionSlug: string;
-    reactionSlug: string;
+    reactions: ReactionProps[];
     actionTrigger: string;
     lastTriggerDate: number;
     createdAt: number;
@@ -138,7 +147,7 @@ const IndexPage: NextPage = () => {
                         color={bgColor}
                         theme={theme}
                         actionSlug={dataApplet?.actionSlug}
-                        reactionSlug={dataApplet?.reactionSlug}
+                        reactions={dataApplet?.reactions}
                         user={dataApplet?.user?.username}
                         enabled={dataApplet?.enabled}
                         createdAt={dataApplet?.createdAt}

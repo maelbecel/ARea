@@ -4,9 +4,6 @@ module.exports = {
     "./components/**/*.tsx",
   ],
   theme: {
-    borderRadius: {
-      default: '50px'
-    },
   },
   plugins: [],
 }

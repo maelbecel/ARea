@@ -14,28 +14,22 @@ import { GetServices } from "../../utils/api/service/service";
 import { Service } from "../../utils/api/service/interface/interface";
 import { GetMyApplets } from "../../utils/api/applet/me";
 
+interface ReactionProps {
+    reactionSlug: string;
+}
+
 interface AppletProps {
     id: number;
     name: string;
     actionSlug: string;
-    reactionSlug: string;
     actionTrigger: string;
     lastTriggerUpdate: string; // date
     createdAt: number; // date
     enabled: boolean;
+    reactions: ReactionProps[];
 }
 
-interface logo {
-    logoUrl: string;
-    backgroundColor?: string;
-}
-
-interface SwitchProps {
-    isCheked: boolean;
-    isDisable: boolean;
-}
-
-const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
+const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
     const [bgColor, setBgColor] = useState<string>("");
     const [newName, setNewName] = useState<string>(name);
 
@@ -73,13 +67,26 @@ const AppletComponent = ({id, name, actionSlug, reactionSlug , actionTrigger, la
             setNewName(name.slice(0, 50) + "...");
     }, [name]);
 
+    // debug all info received
+    useEffect(() => {
+        if (reactions === undefined)
+            return;
+        for (let i = 0; i < reactions.length; i++) {
+            console.log(reactions[i].reactionSlug);
+        }
+    }, [id, name, actionSlug, reactions, actionTrigger, lastTriggerUpdate, createdAt, enabled]);  
+
     return (
-        <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between">
+        <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between shadow-xl">
             <Link href={`/myApplets/applet/${id}`} style={{ cursor: 'pointer', backgroundColor: bgColor }}>
                 <div className="cursor-pointer">
-                    <div className="flex flex-wrap">
+                    <div className="flex flex-wrap space-x-[3%]">
                         {actionSlug   && <LogoApplet slug={actionSlug}   width={56} height={56} toogleBackground={false}/>}
-                        {reactionSlug && <LogoApplet slug={reactionSlug} width={56} height={56} toogleBackground={false}/>}
+                        {reactions && Array.isArray(reactions) && reactions.map((reaction, index: number) => {
+                            return (
+                                <LogoApplet key={index} slug={reaction.reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={false} />
+                            );
+                        })}
                     </div>
                     <div className="font-bold text-white text-[28px] pb-[40%] w-full overflow-hidden break-words">
                         <div>
@@ -120,17 +127,11 @@ const SearchApplet = () => {
 
         const dataFetch = async () => {
             setApplets(await GetMyApplets(token));
-            setSearchApplets(await GetMyApplets(token));
+            setSearchApplets(await GetMyApplets(token))
         };
 
         dataFetch();
     }, [token]);
-
-    useEffect(() => {
-        if (applets) {
-            console.log(applets);
-        }
-    }, [applets]);
 
     const findObjectsBySlug = (array: any[], name: string) => {
         return array.filter(item => item?.name.toLowerCase().includes(name.toLowerCase()));
@@ -142,6 +143,17 @@ const SearchApplet = () => {
         setSearchValue(newValue);
         setSearchApplets(findObjectsBySlug(applets, newValue));
     };
+
+    useEffect(() => {
+
+        for (let i = 0; i < applets.length; i++) {
+            console.log(applets[i].reactions);
+            for (let j = 0; j < applets[i].reactions.length; j++) {
+                console.log(applets[i].reactions[j].reactionSlug);
+            }   
+        }
+
+    }, [searchApplets]);
 
     return (
         <div className="flex flex-col justify-center items-center">
@@ -164,7 +176,7 @@ const SearchApplet = () => {
                             <AppletComponent
                                 id={applet.id}
                                 name={applet.name}
-                                reactionSlug={applet.reactionSlug.split('.')[0]}
+                                reactions={applet.reactions}
                                 actionSlug={applet.actionSlug.split('.')[0]}
                                 actionTrigger={applet.actionTrigger}
                                 lastTriggerUpdate={applet.lastTriggerUpdate}

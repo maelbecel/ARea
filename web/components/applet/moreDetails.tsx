@@ -2,15 +2,28 @@ import React, { useEffect, useState } from "react";
 import LogoApplet from "./logo";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { GetActionInfo } from "../../utils/api/action/info";
-import { GetReactionInfo } from "../../utils/api/reaction/info";
+
+import DetailLogo from "./detailLogo";
+
+interface reactionDataProps {
+    name: string;
+    label: string;
+    value: string;
+    description: string;
+}
+
+interface ReactionProps {
+    reactionSlug: string;
+    reactionData: reactionDataProps[];
+}
 
 interface ButtonProps {
     isToggle: boolean;
     actionSlug: string;
-    reactionSlug: string;
+    reactions: ReactionProps[];
 }
 
-const MoreDetailsButton = ({isToggle, actionSlug, reactionSlug } : ButtonProps) => {
+const MoreDetailsButton = ({isToggle, actionSlug, reactions } : ButtonProps) => {
 
     const [isButtonToggle, setIsButtonToggle] = useState<boolean>(false);
     const { token, setToken } = useToken();
@@ -20,7 +33,6 @@ const MoreDetailsButton = ({isToggle, actionSlug, reactionSlug } : ButtonProps) 
     useEffect(() => {
         setIsButtonToggle(isToggle);
         fetchData();
-        console.log("isCheked -> ", isToggle);
     }, []);
 
     const fetchData = async () => {
@@ -28,11 +40,9 @@ const MoreDetailsButton = ({isToggle, actionSlug, reactionSlug } : ButtonProps) 
             const actionInfo = await GetActionInfo(token, actionSlug);
             setActionData(actionInfo);
 
-            const reactionInfo = await GetReactionInfo(token, reactionSlug);
-            setReactionData(reactionInfo);
+            // const reactionInfo = await GetReactionInfo(token, reactionSlug);
+            // setReactionData(reactionInfo);
 
-            console.log("actionData -> ", actionInfo);
-            console.log("reactionData -> ", reactionInfo);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -60,43 +70,34 @@ const MoreDetailsButton = ({isToggle, actionSlug, reactionSlug } : ButtonProps) 
         <div>
             {isButtonToggle ? (
                 <div className="flex flex-col items-center">
-                    <div className="flex justify-between text-[#363841] font-bold text-[22px] w-[100%]">
-                        <div className="w-[33%] flex items-center">
+                    <div className="flex flex:row justify-start sm:justify-between text-[#363841] font-bold text-[22px] w-[100%]">
+                        <div className="hidden sm:visible w-[33%] sm:flex items-center">
                             Action
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center pr-[10%] sm:pr-[0%]">
                             <div className="rounded-full w-[60px] h-[60px]">
                                 {actionSlug && <LogoApplet slug={actionSlug.split('.')[0]} width={60} height={60} toogleBackground={true}/>}
                             </div>
                         </div>
-                        <div className="w-[33%]">
-                            <div className="text-[#363841] font-bold text-[22px]">
-                                {actionSlug}
+                        <div className="sm:w-[33%] w-[100%]">
+                            <div className="text-[#363841] font-bold text-[18px] sm:text-[22px]">
+                                {actionData?.name}
                             </div>
-                            <div className="text-[#363841] font text-[22px]">
+                            <div className="text-[#363841] font-medium text-[18px] sm:text-[22px]">
                                 {actionData?.description}
                             </div>
                         </div>
                     </div>
-                    <div className="py-[8%] px-[2px] bg-[#36384138]">
-                    </div>
-                    <div className="flex justify-between w-[100%]">
-                        <div className="w-[33%] flex items-center text-[#363841] font-bold text-[22px]">
-                            REAction
+                    <div className="flex flex-col w-[100%]">
+                        <div className="flex flex-col">
+                            {reactions && Array.isArray(reactions) && reactions.map((reaction) => {
+                                console.log("reaction -> ", reaction);
+                                return (
+                                    <DetailLogo slug={reaction.reactionSlug}/>
+                                );
+                            })}
                         </div>
-                        <div className="flex items-center">
-                            <div className="rounded-full w-[60px] h-[60px]">
-                                {reactionSlug && <LogoApplet slug={reactionSlug.split('.')[0]} width={60} height={60} toogleBackground={true}/>}
-                            </div>
-                        </div>
-                        <div className="w-[33%]">
-                            <div className="text-[#363841] font-bold text-[22px]">
-                                {reactionSlug}
-                            </div>
-                            <div className="text-[#363841] font text-[22px]">
-                                {reactionData?.description}
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             ) : (
