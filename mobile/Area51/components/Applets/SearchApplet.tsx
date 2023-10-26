@@ -29,7 +29,6 @@ const SearchApplet = () => {
         const dataFetch = async () => {
             try {
                 const data: any = await AppletInfos();
-                console.log("data applet component", data);
                 setApplets(data.data);
                 setDispApplets(data.data);
             } catch (error) {
@@ -55,11 +54,12 @@ const SearchApplet = () => {
 
           {/* Liste des applets */}
           {(dispApplets !== null) && dispApplets.length > 0 ? dispApplets.map((item: any) => (
+            console.log(item.reactions),
             <View style={styles.applet} key={item.id}>
               <AppletComponent
                 id={item.id}
                 name={reduceTitle(item.name)}
-                reactionSlug={item.reactionSlug.split(".")[0]}
+                reactionsList={item.reactions}
                 actionSlug={item.actionSlug.split(".")[0]}
                 enabled={item.enabled}
                 author={item.user.username}
