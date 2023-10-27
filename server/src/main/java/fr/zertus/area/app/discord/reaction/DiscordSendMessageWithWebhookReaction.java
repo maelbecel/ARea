@@ -33,6 +33,11 @@ public class DiscordSendMessageWithWebhookReaction extends Reaction {
         String webhook = FormInputUtils.getValue("webhook", inputs);
         if (!webhook.contains("https://discord.com/api/webhooks"))
             throw new BadFormInputException("Webhook URL is not valid");
+
+        String content = FormInputUtils.getValue("message", inputs);
+        if (content.length() > 1200)
+            throw new BadFormInputException("Message is too long (max 1200 characters)");
+
         return true;
     }
 
@@ -40,17 +45,9 @@ public class DiscordSendMessageWithWebhookReaction extends Reaction {
     public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws ReactionTriggerException {
         super.trigger(user, inputs, parameters);
 
-        String message = FormInputUtils.getValue("message", inputs);
-        for (Map.Entry<String, String> entry : parameters.entrySet())
-            message = message.replace("{" + entry.getKey() + "}", entry.getValue());
-
-        String webhook = FormInputUtils.getValue("webhook", inputs);
-        for (Map.Entry<String, String> entry : parameters.entrySet())
-            webhook = webhook.replace("{" + entry.getKey() + "}", entry.getValue());
-
-        String username = FormInputUtils.getValue("username", inputs);
-        for (Map.Entry<String, String> entry : parameters.entrySet())
-            username = username.replace("{" + entry.getKey() + "}", entry.getValue());
+        String message = FormInputUtils.getValue("message", inputs, parameters);
+        String webhook = FormInputUtils.getValue("webhook", inputs, parameters);
+        String username = FormInputUtils.getValue("username", inputs, parameters);
 
         DiscordWebhookMessage webhookMessage = new DiscordWebhookMessage(message, username, "");
         return webhookMessage.send(webhook);

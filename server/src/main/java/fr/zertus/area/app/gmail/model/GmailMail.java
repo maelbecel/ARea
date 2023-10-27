@@ -18,12 +18,14 @@ public class GmailMail {
     public static class Payload {
         List<MailHeader> headers;
         List<Part> parts;
+        Part.Body body;
     }
 
     @Data
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
     public static class Part {
         String partId;
+        String mimeType;
         List<MailHeader> headers;
         Body body;
 
@@ -77,8 +79,15 @@ public class GmailMail {
 
     public String getContent() {
         StringBuilder content = new StringBuilder();
-        for (Part part : payload.getParts()) {
-            content.append(part.getBody().getDecodedData());
+        if (payload.getParts() == null && payload.getBody() != null) {
+            content.append(payload.getBody().getDecodedData());
+            return content.toString();
+        } else if (payload.getParts() != null)   {
+            for (Part part : payload.getParts()) {
+                if (!part.getMimeType().equalsIgnoreCase("text/plain"))
+                    continue;
+                content.append(part.getBody().getDecodedData());
+            }
         }
         return content.toString();
     }

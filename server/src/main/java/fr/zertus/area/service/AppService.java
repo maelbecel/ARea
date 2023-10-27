@@ -8,6 +8,7 @@ import fr.zertus.area.app.google.GoogleApp;
 import fr.zertus.area.app.notion.NotionApp;
 import fr.zertus.area.app.spotify.SpotifyApp;
 import fr.zertus.area.app.twitch.TwitchApp;
+import fr.zertus.area.app.weather.WeatherApp;
 import fr.zertus.area.app.youtube.YoutubeApp;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
@@ -57,6 +58,9 @@ public class AppService {
 
         GmailApp gmailApp = new GmailApp();
         apps.put(gmailApp.getSlug(), gmailApp);
+
+        WeatherApp weatherApp = new WeatherApp();
+        apps.put(weatherApp.getSlug(), weatherApp);
     }
 
     private static final Map<Long, String> redirectUris = new HashMap<>();
@@ -67,7 +71,7 @@ public class AppService {
 
     public List<App> getApps() {
         List<App> tmp = new ArrayList<>(apps.values());
-        tmp.remove(apps.get("google"));
+        tmp.remove(apps.get("google")); // Google is not an app, it's a group of apps, maybe I will change this later
         return tmp;
     }
 

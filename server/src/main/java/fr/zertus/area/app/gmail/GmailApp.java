@@ -35,7 +35,7 @@ public class GmailApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/1280px-Gmail_icon_%282020%29.svg.png", "#FFFFFF",
+        return new AppDecoration("https://area51.zertus.fr/service/gmail/image", "#FFFFFF",
             "Connect Gmail to send emails to yourself and others.", "https://www.google.com/gmail/about/");
     }
 

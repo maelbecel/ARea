@@ -64,7 +64,7 @@ public class GithubApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://i.imgur.com/dy2uNAS.png", "#1B1F23",
+        return new AppDecoration("https://area51.zertus.fr/service/github/image", "#1B1F23",
             "GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Turn on Applets to automatically track issues, pull requests, repositories.", "https://github.com");
     }
 

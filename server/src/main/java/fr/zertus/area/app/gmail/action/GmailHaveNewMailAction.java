@@ -91,6 +91,9 @@ public class GmailHaveNewMailAction extends Action implements ManualTrigger {
                 "Authorization", "Bearer " + service.getToken()
             ));
 
+            if (response.getStatus() == 401) {
+                throw new ActionTriggerException("Google service is not connected");
+            }
             if (response.getStatus() < 200 || response.getStatus() >= 300)
                 throw new ActionTriggerException("Error while getting the historyId: " + response.getData().toString());
             FormInputUtils.remove("historyId", inputs);

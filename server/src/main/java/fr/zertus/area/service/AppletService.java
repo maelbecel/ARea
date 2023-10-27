@@ -1,6 +1,7 @@
 package fr.zertus.area.service;
 
 import fr.zertus.area.app.Action;
+import fr.zertus.area.app.ManualTrigger;
 import fr.zertus.area.app.Reaction;
 import fr.zertus.area.entity.Applet;
 import fr.zertus.area.entity.User;
@@ -32,17 +33,6 @@ public class AppletService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private ThreadedAppletService threadedAppletService;
-
-    public void updateThreadAppletService() {
-        for (Applet applet : appletRepository.findAll()) {
-            if (FormInputUtils.hasInput("trigger", applet.getActionData())) {
-                threadedAppletService.addApplet(applet);
-            }
-        }
-    }
-
     public Applet save(AppletDTO applet) throws DataNotFoundException {
         if (applet.getName().length() > 140) {
             throw new IllegalArgumentException("Applet name is too long (max 140 characters)");
@@ -51,29 +41,37 @@ public class AppletService {
         User user = userService.getCurrentUser();
 
         Action action = actionReactionService.getAction(applet.getActionSlug());
+        boolean hasManualTrigger = false;
         if (action == null)
             throw new IllegalArgumentException("Action not found");
         try {
             action.setupAction(user, applet.getActionInputs());
+            if (action instanceof ManualTrigger) {
+                hasManualTrigger = true;
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to setup action: " + e.getMessage());
         }
 
-        Reaction reaction = actionReactionService.getReaction(applet.getReactionSlug());
-        if (reaction == null)
-            throw new IllegalArgumentException("Reaction not found");
-        try {
-            reaction.setupReaction(user, applet.getReactionInputs());
-        } catch (Exception e) {
-            action.deleteAction(user, applet.getActionInputs());
-            throw new IllegalArgumentException("Failed to setup reaction: " + e.getMessage());
+        List<Applet.StockReaction> reactions = new ArrayList<>();
+        for (AppletDTO.StockReactionDto reactionDto : applet.getReactions()) {
+            Reaction reaction = actionReactionService.getReaction(reactionDto.getReactionSlug());
+            if (reaction == null)
+                throw new IllegalArgumentException("Reaction not found");
+            try {
+                reaction.setupReaction(user, reactionDto.getReactionInputs());
+            } catch (Exception e) {
+                action.deleteAction(user, applet.getActionInputs());
+                throw new IllegalArgumentException("Failed to setup reaction: " + e.getMessage());
+            }
+            Applet.StockReaction stockReaction = new Applet.StockReaction();
+            stockReaction.setReactionSlug(reactionDto.getReactionSlug());
+            stockReaction.setReactionData(reactionDto.getReactionInputs());
+            reactions.add(stockReaction);
         }
 
-        Applet appletEntity = new Applet(user, applet.getName(), applet.getActionSlug(), applet.getActionInputs(),
-            applet.getReactionSlug(), applet.getReactionInputs(), applet.getNotifUser());
-        if (FormInputUtils.hasInput("trigger", applet.getActionInputs())) {
-            threadedAppletService.addApplet(appletEntity);
-        }
+        Applet appletEntity = new Applet(user, applet.getName(), applet.getActionSlug(), applet.getActionInputs(), hasManualTrigger,
+            reactions, applet.getNotifUser());
         return appletRepository.save(appletEntity);
     }
 
@@ -81,7 +79,6 @@ public class AppletService {
         Applet applet = getById(id);
         User user = userService.getCurrentUser();
 
-        threadedAppletService.removeApplet(applet);
         if (dto.getName() != null) {
             if (dto.getName().length() > 140) {
                 throw new IllegalArgumentException("Applet name is too long (max 140 characters)");
@@ -97,29 +94,35 @@ public class AppletService {
             } catch (Exception e) {
                 throw new IllegalArgumentException("Failed to setup action: " + e.getMessage());
             }
+            if (action instanceof ManualTrigger) {
+                applet.setActionManualTrigger(true);
+            }
             applet.setActionSlug(dto.getActionSlug());
             applet.setActionData(dto.getActionInputs());
         }
-        if (dto.getReactionSlug() != null && dto.getReactionInputs() != null) {
-            Reaction reaction = actionReactionService.getReaction(dto.getReactionSlug());
-            if (reaction == null)
-                throw new IllegalArgumentException("Reaction not found");
-            try {
-                reaction.setupReaction(user, dto.getReactionInputs());
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Failed to setup reaction: " + e.getMessage());
+        if (dto.getReactions() != null && !dto.getReactions().isEmpty()) {
+            List<Applet.StockReaction> reactions = new ArrayList<>();
+            for (AppletDTO.StockReactionDto reactionDto : dto.getReactions()) {
+                Reaction reaction = actionReactionService.getReaction(reactionDto.getReactionSlug());
+                if (reaction == null)
+                    throw new IllegalArgumentException("Reaction not found");
+                try {
+                    reaction.setupReaction(user, reactionDto.getReactionInputs());
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Failed to setup reaction: " + e.getMessage());
+                }
+                Applet.StockReaction stockReaction = new Applet.StockReaction();
+                stockReaction.setReactionSlug(reactionDto.getReactionSlug());
+                stockReaction.setReactionData(reactionDto.getReactionInputs());
+                reactions.add(stockReaction);
             }
-            applet.setReactionSlug(dto.getReactionSlug());
-            applet.setReactionData(dto.getReactionInputs());
+            applet.setReactions(reactions);
         }
         if (dto.getNotifUser() != null) {
             applet.setNotifUser(dto.getNotifUser());
         }
         if (dto.getEnabled() != null) {
             applet.setEnabled(dto.getEnabled());
-        }
-        if (FormInputUtils.hasInput("trigger", applet.getActionData())) {
-            threadedAppletService.addApplet(applet);
         }
         return appletRepository.save(applet);
     }
@@ -128,20 +131,11 @@ public class AppletService {
         Applet applet = getById(id);
         if (applet.getUser().getId() != userService.getCurrentUser().getId())
             throw new DataNotFoundException("Applet not found");
-        threadedAppletService.removeApplet(applet);
         appletRepository.deleteById(id);
     }
 
     public List<Applet> getForUser(Long userId) {
         return appletRepository.findByUserId(userId);
-    }
-
-    public List<Applet> getForAction(String action_slug) {
-        return appletRepository.findByActionSlug(action_slug);
-    }
-
-    public List<Applet> getForReaction(String reaction_slug) {
-        return appletRepository.findByReactionSlug(reaction_slug);
     }
 
     public Applet getById(Long id) throws DataNotFoundException {
@@ -168,25 +162,25 @@ public class AppletService {
 
                 User user = applet.getUser();
                 Action action = actionReactionService.getAction(applet.getActionSlug());
-                Reaction reaction = actionReactionService.getReaction(applet.getReactionSlug());
-                if (reaction == null) {
-                    applet.addLog("Reaction not found");
-                    log.error("Reaction " + applet.getReactionSlug() + " not found");
-                    continue;
-                }
                 try {
                     if (action.isTrigger(user, applet.getActionData(), values)) {
                         applet.setLastTriggerDate(new Timestamp(System.currentTimeMillis()));
                         applet.addLog("Action triggered");
-                        reaction.trigger(user, applet.getReactionData(), parameters);
-                        applet.addLog("Reaction triggered");
+                        for (Applet.StockReaction reaction : applet.getReactions()) {
+                            try {
+                                Reaction r = actionReactionService.getReaction(reaction.getReactionSlug());
+                                if (r == null)
+                                    throw new ReactionTriggerException("Reaction not found");
+                                r.trigger(user, reaction.getReactionData(), parameters);
+                            } catch (Exception e) {
+                                applet.addLog("Error while triggering reaction " + reaction.getReactionSlug() + " - " + e.getMessage());
+                                log.error("Error while triggering reaction " + reaction.getReactionSlug() + " for applet " + applet.getId() + " - " + e.getMessage());
+                            }
+                        }
                         if (applet.isNotifUser()) {
                             // TODO: Add notification to user if needed
                         }
                     }
-                } catch (ReactionTriggerException e) {
-                    applet.addLog("Error while triggering reaction - " + e.getMessage());
-                    log.error("Error while triggering action " + actionSlug + " for applet " + applet.getId() + " - " + e.getMessage());
                 } catch (Exception e) {
                     applet.addLog("Error while triggering action - " + e.getMessage());
                     log.error("Error while triggering action " + actionSlug + " for applet " + applet.getId() + " - " + e.getMessage());

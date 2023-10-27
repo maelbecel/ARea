@@ -32,7 +32,7 @@ public class YoutubeApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/YouTube_social_white_squircle.svg/800px-YouTube_social_white_squircle.svg.png", "#FFFFFF",
+        return new AppDecoration("https://area51.zertus.fr/service/youtube/image", "#FF0000",
             "YouTube is a video-sharing website on which users can upload, share, and view videos.", "https://www.youtube.com/");
     }
 

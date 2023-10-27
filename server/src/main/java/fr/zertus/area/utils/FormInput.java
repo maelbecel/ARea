@@ -33,15 +33,15 @@ public class FormInput {
         switch (type) {
             case NUMBER -> {
                 try {
-                    Integer.parseInt(value);
+                    Double.parseDouble(value);
                 } catch (NumberFormatException e) {
                     throw new BadFormInputException("The value of the input " + name + " is not a number");
                 }
             }
             case SELECT -> {
-                if (options == null || !options.contains(value)) {
-                    throw new BadFormInputException("The value of the input " + name + " is not in the options");
-                }
+//                if (options == null || !options.contains(value)) {
+//                    throw new BadFormInputException("The value of the input " + name + " is not in the options");
+//                }
             }
             case URL -> {
                 if (!value.startsWith("http://") && !value.startsWith("https://")) {

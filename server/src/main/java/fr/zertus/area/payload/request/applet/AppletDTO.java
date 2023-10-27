@@ -13,9 +13,15 @@ public class AppletDTO {
     String name;
     String actionSlug;
     List<FormInput> actionInputs;
-    String reactionSlug;
-    List<FormInput> reactionInputs;
+    List<StockReactionDto> reactions;
     Boolean notifUser;
     Boolean enabled;
+
+    @Data
+    @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+    public static class StockReactionDto {
+        String reactionSlug;
+        List<FormInput> reactionInputs;
+    }
 
 }

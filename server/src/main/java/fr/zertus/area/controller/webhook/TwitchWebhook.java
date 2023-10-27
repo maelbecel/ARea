@@ -86,6 +86,23 @@ public class TwitchWebhook {
                     )
                 );
             }
+            case "channel.follow" -> {
+                appletService.triggerAction("twitch.new-follower",
+                    Map.of("broadcaster_user_id", body.getEvent().getBroadcaster_user_id()),
+                    Map.of(
+                        "username", body.getEvent().getUser_name()
+                    )
+                );
+            }
+            case "channel.subscribe" -> {
+                appletService.triggerAction("twitch.new-subscriber",
+                    Map.of("broadcaster_user_id", body.getEvent().getBroadcaster_user_id()),
+                    Map.of(
+                        "username", body.getEvent().getUser_name(),
+                        "tier", body.getEvent().getTier()
+                    )
+                );
+            }
             default -> {
                 log.info("Unknown type: " + type);
             }

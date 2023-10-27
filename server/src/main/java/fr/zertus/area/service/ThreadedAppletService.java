@@ -5,6 +5,7 @@ import fr.zertus.area.app.ManualTrigger;
 import fr.zertus.area.app.Reaction;
 import fr.zertus.area.entity.Applet;
 import fr.zertus.area.exception.ActionTriggerException;
+import fr.zertus.area.exception.ReactionTriggerException;
 import fr.zertus.area.repository.AppletRepository;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
@@ -28,7 +29,7 @@ public class ThreadedAppletService {
     @Autowired
     private ActionReactionService actionReactionService;
 
-    private final Map<Applet, Long> threadedApplets;
+    private final Map<Long, Long> threadedApplets;
     private boolean running;
 
     public ThreadedAppletService() {
@@ -40,61 +41,65 @@ public class ThreadedAppletService {
 
         new Thread(() -> {
             while (running) {
-                for (Map.Entry<Applet, Long> entry : threadedApplets.entrySet()) {
-                    Applet applet = entry.getKey();
-                    Long lastCheck = entry.getValue();
+                List<Applet> applets = appletRepository.findByActionManualTrigger(true);
+
+                for (Applet applet : applets) {
+                    Long lastCheck = this.threadedApplets.get(applet.getId());
+                    if (lastCheck == null) {
+                        lastCheck = 0L;
+                    }
                     long checkTime = Long.parseLong(FormInputUtils.getValue("trigger", applet.getActionData()));
 
                     if ((System.currentTimeMillis() - lastCheck) / 1000 >= checkTime) { // Check if the time between each check is passed (in seconds)
-                        entry.setValue(System.currentTimeMillis());
-                        try {
-                            Action action = actionReactionService.getAction(applet.getActionSlug());
-                            Reaction reaction = actionReactionService.getReaction(applet.getReactionSlug());
-                            if (action == null) {
-                                log.error("Action not found: " + applet.getActionSlug());
-                                continue;
-                            }
-                            if (reaction == null) {
-                                log.error("Reaction not found: " + applet.getReactionSlug());
-                                continue;
-                            }
-                            if (!(action instanceof ManualTrigger manualTrigger)) {
-                                log.error("Action is not a manual trigger: " + applet.getActionSlug());
-                                continue;
-                            }
-                            try {
-                                List<FormInput> inputs = new ArrayList<>(applet.getActionData());
-                                List<Map<String, String>> list = manualTrigger.manualTrigger(applet.getUser(), inputs);
-                                applet.setActionData(inputs);
-                                for (Map<String, String> map : list) {
-                                    reaction.trigger(applet.getUser(), applet.getReactionData(), map);
-                                    applet.setLastTriggerDate(new Timestamp(System.currentTimeMillis()));
-                                }
-                            } catch (ActionTriggerException e) {
-                                applet.addLog("Error while triggering action - " + e.getMessage());
-                                log.error("Error while triggering action " + applet.getActionSlug() + " for applet " + applet.getId() + " - " + e.getMessage());
-                            }
-                            appletRepository.save(applet);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        this.threadedApplets.put(applet.getId(), System.currentTimeMillis()); // Update the last check time
+                        Action action = actionReactionService.getAction(applet.getActionSlug());
+                        if (action == null) {
+                            log.error("Action not found: " + applet.getActionSlug());
+                            continue;
                         }
+                        if (!(action instanceof ManualTrigger manualTrigger)) {
+                            log.error("Action is not a manual trigger: " + applet.getActionSlug());
+                            continue;
+                        }
+                        try {
+                            List<FormInput> actionInputs = applet.getActionData();
+                            List<Map<String, String>> values = manualTrigger.manualTrigger(applet.getUser(), actionInputs);
+                            applet.setActionData(actionInputs);
+                            if (values == null) {
+                                log.error("Action returned null: " + applet.getActionSlug());
+                                continue;
+                            }
+                            for (Map<String, String> value : values) {
+                                for (Applet.StockReaction reaction : applet.getReactions()) {
+                                    Reaction r = actionReactionService.getReaction(reaction.getReactionSlug());
+                                    if (r == null) {
+                                        log.error("Reaction not found: " + reaction.getReactionSlug());
+                                        continue;
+                                    }
+                                    r.trigger(applet.getUser(), reaction.getReactionData(), value);
+                                }
+                            }
+                        } catch (ActionTriggerException e) {
+                            log.error("Failed to trigger action: " + e.getMessage());
+                            if (!(applet.getLogs().size() > 1 && applet.getLogs().get(applet.getLogs().size() - 1).equals("Failed to trigger action: " + e.getMessage())))
+                                applet.addLog("Failed to trigger action: " + e.getMessage());
+                        } catch (ReactionTriggerException e) {
+                            log.error("Failed to trigger reaction: " + e.getMessage());
+                            if (!(applet.getLogs().size() > 1 && applet.getLogs().get(applet.getLogs().size() - 1).equals("Failed to trigger reaction: " + e.getMessage())))
+                                applet.addLog("Failed to trigger reaction: " + e.getMessage());
+                        } catch (Exception e) {
+                            log.error("This should not happen: " + e.getMessage());
+                        }
+                        appletRepository.save(applet);
                     }
                 }
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(25000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
         }).start();
-    }
-
-    public void addApplet(Applet applet) {
-        this.threadedApplets.put(applet, (long) 0);
-    }
-
-    public void removeApplet(Applet applet) {
-        this.threadedApplets.remove(applet);
     }
 
 }
