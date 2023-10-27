@@ -4,6 +4,7 @@ import { PatchProfile } from "../../utils/api/user/me";
 import { UserProfile } from "../../utils/api/user/interface/interface";
 import { useUser } from "../../utils/api/user/Providers/UserProvider";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import ModalError from "../modalErrorNotif";
 
 
 interface UpdateButtonProps {
@@ -16,9 +17,25 @@ interface UpdateButtonProps {
 const UpdateButton = ({token, email, username, setToken} : UpdateButtonProps) => {
 
     const [data, setData] = useState<any>();
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
 
     const handleUpdate = async () => {
         const data = await PatchProfile(token, email, username);
+
+        console.log("data -> ", data);
+
+        if (data == null)
+            openModalError();
+        else
+            closeModalError();
         if (data != undefined)
             setData(data);
     }
@@ -43,13 +60,17 @@ const UpdateButton = ({token, email, username, setToken} : UpdateButtonProps) =>
     }, [token]);
 
     return (
-        <div className="flex justify-center mt-[20%] mb-[40%] lg:mt-[5%] lg:mb-[20%]">
-            <div className="font-bold text-[36px] py-[1%] px-[20%] rounded-[50px] cursor-pointer bg-[#363841] text-white my-[10%]"
-                onClick={handleUpdate}
-            >
-                Update
+        <div>
+            <div className="flex justify-center mt-[20%] mb-[40%] lg:mt-[5%] lg:mb-[20%]">
+                <div className="font-bold text-[36px] py-[1%] px-[20%] rounded-[50px] cursor-pointer bg-[#363841] text-white my-[10%]"
+                    onClick={handleUpdate}
+                >
+                    Update
+                </div>
             </div>
+            <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </div>
+
     );
 }
 
