@@ -103,6 +103,7 @@ const ActionCard: React.FC<CardProps> = ({ type, id }) => {
         const getApplet = async () => {
             try {
                 const applet = await AppletID(id);
+                if (applet == null) return null;
                 setname(applet.name);
                 const data = await ServiceInfo(applet.actionSlug.split(".")[0]);
                 setcolor(data.decoration.backgroundColor);

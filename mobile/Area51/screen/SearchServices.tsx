@@ -13,7 +13,7 @@ const SearchServices = ({ navigation, route }) => {
   const [applets, setApplets] = useState([]); // State to store applets
   const [dispApplets, setDispApplets] = useState([]); // State to store applets
 
-  const { type, actionInput, reactionInput }  = route.params;
+  const { type, actionInput, reactionInput, index }  = route.params;
 
   /* The `useEffect` hook is used to perform side effects in functional components. In this case, the
   `useEffect` hook is used to fetch applets from a service and set them in state. */
@@ -69,7 +69,7 @@ const SearchServices = ({ navigation, route }) => {
           <View style={styles.services}>
             {filteredApplets == null || filteredApplets.length === 0 ? <Text>No result</Text> : (
               filteredApplets.map((service) => (
-                <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('ServiceTemplate', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
+                <ServiceCard key={service.slug} logo={service.decoration.logoUrl} onPress={() => navigation.navigate('ServiceTemplate', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index })} title={service.name} slug={service.slug} color={service.decoration.backgroundColor} />
               ))
             )}
           </View>

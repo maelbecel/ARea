@@ -80,7 +80,8 @@ session using the WebBrowser API and navigates to a different screen based on th
 view includes a top bar with a title and icons for navigation, an image, and text components for
 displaying the service name, action title, and description */
 const ConnectAuth = ({ navigation, route }) => {
-  const { slug, type, actionInput, reactionInput } = route.params;
+  const { slug, type, actionInput, reactionInput, index } = route.params;
+  console.log("Params ConnectAuth:", route.params);
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
@@ -102,8 +103,8 @@ const ConnectAuth = ({ navigation, route }) => {
       placeholders={placeholders}
       type={type}
       color={color}
-      onChangeText={(text) => {inputsResp[index] = text; console.log(`at index ${index} add ${inputsResp[index]}`); isAllFormFill()}}
-      onSelect={(text) => {console.log("Select the " + text); isAllFormFill()}}
+      onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}}
+      onSelect={(text) => {isAllFormFill()}}
     />)
   }
 
@@ -129,6 +130,7 @@ const ConnectAuth = ({ navigation, route }) => {
     if (!input.options) {
       return null;
     }
+    inputsResp[index] = input.options[0];
     return (
       <View key={input.name} style={{marginBottom : 30, width:"100%"}}>
         <View >
@@ -292,11 +294,20 @@ const ConnectAuth = ({ navigation, route }) => {
    */
   const redirection = async () => {
     if (isAllFormFill()) {
-      await AsyncStorage.setItem(type, slug);
+      if (type == "action")
+        await AsyncStorage.setItem(type, slug);
+      else {
+        let tmp : Array<any> = JSON.parse(await AsyncStorage.getItem(type));
+        tmp[index] = slug;
+        await AsyncStorage.setItem(type, JSON.stringify(tmp));
+      }
       if (type == "action")
         navigation.navigate("Create", {actionInput: inputsResp, reactionInput: reactionInput});
-      else
-        navigation.navigate("Create", {actionInput: actionInput, reactionInput: inputsResp});
+      else {
+        let res : Array<any> = (reactionInput != undefined) ? reactionInput : [];
+        res[index] = inputsResp;
+        navigation.navigate("Create", {actionInput: actionInput, reactionInput: res});
+      }
     }
   }
 

@@ -4,6 +4,7 @@ files. In this case, it is importing various components and types from the `reac
 import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
 import ServiceInfo, {Service, Action, Reaction} from '../api/ServiceInfo';
 import React, { useEffect, useState } from 'react';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 /* The `interface CardProps` is defining a new interface called `CardProps` that extends the
 `TouchableOpacityProps` interface. It specifies the expected props for the `ActionCard` component. */
@@ -11,6 +12,7 @@ interface CardProps extends TouchableOpacityProps {
     slug    : string;
     type    : string;
     onPress : () => void;
+    onPressCross ?: () => void;
 }
 
 /**
@@ -135,7 +137,7 @@ const ActionCard = (name : string, onPress : any) => {
 
 /* The `ActionChoose` function is a React functional component that renders an action card based on the
 provided `type`, `slug`, and `onPress` props. */
-const ActionChoose: React.FC<CardProps> = ({ type, slug , onPress }) => {
+const ActionChoose: React.FC<CardProps> = ({ type, slug , onPress, onPressCross=null }) => {
     const [info, setInfo] = React.useState<any>(null);
     const [action, setAction] = React.useState<string>("");
 
@@ -180,13 +182,17 @@ const ActionChoose: React.FC<CardProps> = ({ type, slug , onPress }) => {
     and content based on the value of the `info` variable. */
     if (info) {
         return (
-            <TouchableOpacity onPress={onPress} style={[{backgroundColor: info.decoration.backgroundColor }, styles.container]}>
-                <View style={{flex:1, alignItems: 'center', width: width ,flexDirection: 'row'}}>
-                    <Text style={[styles.ifthen, {color: getWriteColor(info.decoration.backgroundColor)}]}>{(type === "action") ? "If" : "Then"}</Text>
-                    <Image source={{ uri: info.decoration.logoUrl }} style={styles.logo} />
-                    <Text style={[styles.desc, {color: getWriteColor(info.decoration.backgroundColor)}]}>{action}</Text>
+            <TouchableOpacity onPress={onPress} style={[{ backgroundColor: info.decoration.backgroundColor }, styles.container]}>
+                <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+                    <Text style={[styles.ifthen, { color: getWriteColor(info.decoration.backgroundColor) }]}>{(type === "action") ? "If" : "Then"}</Text>
+                    <View style={{flexDirection: 'row', alignItems: "center"}}>
+                        <Image source={{ uri: info.decoration.logoUrl }} style={styles.logo} />
+                        <Text style={[styles.desc, { color: getWriteColor(info.decoration.backgroundColor) }]}>{action}</Text>
+                    </View>
+                    <Icon name="close" size={30} color={getWriteColor(info.decoration.backgroundColor)} onPress={onPressCross} />
                 </View>
             </TouchableOpacity>
+
         );
     }
 }
@@ -197,11 +203,12 @@ the `styles` object represents a different style rule, such as `container`, `log
 These style rules define the visual appearance of the `ActionCard` component. */
 const styles = StyleSheet.create({
     container: {
-      paddingTop: 10,
       paddingHorizontal: 20,
       marginVertical: 15,
       width: '85%',
       height: 85,
+      alignContent: 'center',
+      justifyContent: 'center',
       borderRadius: 10,
       shadowColor: '#000',
         shadowOffset: {
@@ -228,11 +235,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
       },
     ifthen: {
-        paddingTop: 5,
         fontSize: 30,
         fontWeight: 'bold',
-        marginTop: 2,
-        marginBottom: 20,
     },
     name: {
       fontSize: 25,
@@ -245,9 +249,6 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         fontSize: 20,
         fontWeight: 'bold',
-        marginTop: 2,
-        marginBottom: 20,
-        marginRight: 10,
       }
   });
 
