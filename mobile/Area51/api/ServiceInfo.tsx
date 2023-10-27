@@ -1,10 +1,9 @@
-
 /* The statement `import * as SecureStore from 'expo-secure-store';` is importing the entire module
 `expo-secure-store` and assigning it to the variable `SecureStore`. This allows you to access the
 functions and variables exported by the `expo-secure-store` module using the `SecureStore` variable. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Alert } from 'react-native';
 
 /**
  * The above type represents a service with a slug, name, action and reaction arrays, and decoration
@@ -169,6 +168,11 @@ const ServiceInfo = async (slug : string): Promise<Service> => {
         service.reactions = getReaction(json.data.reactions);
         return service;
     } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+            Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
         console.error("An error occur : ", error);
         return null;
     }

@@ -71,6 +71,11 @@ const AddServices = ({navigation, route}) => {
         setAction((action === null) ? "default" : action);
         setReaction((reaction === null) ? [] : JSON.parse(reaction));
       } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+          Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
         console.error("Error while getting info : ", error);
       }
     };

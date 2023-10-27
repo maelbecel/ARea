@@ -1,7 +1,7 @@
 /* The code `import * as React from 'react';` is importing the entire React library and assigning it to
 the variable `React`. This allows us to use React components and functions in our code. */
 import * as React from 'react';
-import { Text, View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
+import { Alert, View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
 import FormInput from '../components/FormInput';
 import Services from '../api/Services';
 import { useState, useEffect } from 'react';
@@ -34,6 +34,11 @@ const Home = ({ navigation }) => {
         setApplets(services);
         setDispApplets(services);
       } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+          Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
           console.error('Error fetching applets:', error);
       }
     };
