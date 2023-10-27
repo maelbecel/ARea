@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Text, View, StatusBar, Image, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
-import ServiceInfo, {Action, Reaction} from '../api/ServiceInfo';
+import ServiceInfo, {Action, Reaction, Service} from '../api/ServiceInfo';
 import ActionCard from '../components/ActionCard';
 
 /**
@@ -73,7 +73,7 @@ const ServiceTemplate = ({ navigation, route }) => {
    * @returns The `displayActions` function is returning an array of `ActionCard` components.
    */
   const displayActions = () => {
-    return action.map((service) => (
+    return action.map((service: any) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index})}/>
     ));
   };
@@ -84,7 +84,7 @@ const ServiceTemplate = ({ navigation, route }) => {
    * @returns The `displayReactions` function is returning an array of `ActionCard` components.
    */
   const displayReactions = () => {
-    return reaction.map((service) => (
+    return reaction.map((service: any) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index })}/>
     ));
   }

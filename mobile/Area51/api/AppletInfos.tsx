@@ -12,7 +12,6 @@ const AppletInfos = async () => {
                     'Authorization': `Bearer ${token}`,
                 }
             });
-        console.log(response);
         const data = await response.json();
         return data;
     } catch (error) {

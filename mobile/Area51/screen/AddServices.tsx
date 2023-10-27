@@ -18,8 +18,8 @@ import ReactionInfo from '../api/ReactionInfo';
 const AddServices = ({navigation, route}) => {
   const [action, setAction] = React.useState("default");
   const [reaction, setReaction] = React.useState<string[]>([]);
-  const {actionInput} = (route.params != undefined ? route.params : "")
-  const {reactionInput} = (route.params != undefined ? route.params : [])
+  let {actionInput} = (route.params != undefined ? route.params : "")
+  let {reactionInput} = (route.params != undefined ? route.params : [])
 
   /**
    * The function `newApplet` creates a new applet by getting action and reaction inputs, calling the
@@ -51,7 +51,6 @@ const AddServices = ({navigation, route}) => {
     }
     const data = await AppletApi(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput);
     if (data == false) {
-      alert("Error")
       return
     } else {
 
@@ -78,6 +77,12 @@ const AddServices = ({navigation, route}) => {
     fetchData();
   });
 
+  const removeItem = async (item : number) => {
+    const tmp = [...reactionInput];
+    tmp.splice(item, 1);
+    reactionInput = tmp;
+  };
+
   const showReactions = () => {
     if (reaction.length == 0) {
       return (null)
@@ -85,8 +90,7 @@ const AddServices = ({navigation, route}) => {
     return reaction.map((item, index) => {
       return (
         <View key={index} style={{ alignItems: 'center', backgroundColor: "#FFF", width: "100%"}}>
-          <ActionChoose  type="reaction" slug={item} onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : index})} />
-          <Icon name="add-circle" size={40} color="#363841" />
+          <ActionChoose  type="reaction" slug={item} onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : index})}  onPressCross={() => {removeItem(item)}}/>
         </View>
       )
     })
@@ -95,13 +99,21 @@ const AddServices = ({navigation, route}) => {
   /* The `return` statement in the code is rendering the JSX elements that will be displayed on the
   screen when the `AddServices` component is rendered. */
   return (
-      <ScrollView style={{ backgroundColor: "#FFF", height: "90%", paddingTop: 50}} contentContainerStyle={{flex : 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} />
-        <Icon name="add-circle" size={40} color="#363841" />
+      <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 0, marginTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
+        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})}/>
         {showReactions()}
-        <ActionChoose type="reaction" slug="default" onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : reaction.length})} />
+        {
+          (reaction.length >= 9) ? null : (
+            <Icon name="add-circle" size={40} color="#363841" />
+          )
+        }
+        {
+          (reaction.length >= 9) ? null : (
+            <ActionChoose type="reaction" slug="default" onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : reaction.length})} />
+          )
+        }
         {(action != "default" && reaction.length > 0) ?
-          <SubmitButton title="Continuer" onPress={newApplet} textcolor='#FFF' style={{paddingBottom: 200}}/>
+          <SubmitButton title="Continuer" onPress={newApplet} textcolor='#FFF' style={{}}/>
           : null
         }
       </ScrollView>

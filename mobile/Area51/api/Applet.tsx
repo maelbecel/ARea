@@ -46,19 +46,21 @@ const Applet = async (name : string, actionSlug : string, actionInputs : Input[]
                 actionSlug: actionSlug,
                 enabled: true,
                 actionInputs: actionInputs.map((input, index) => {
-                    return {name: input.name, label : input.label, type : input.type, value : actionResp[index], valid : true}
+                    return {name: input.name, label : input.label, type : input.type, value : actionResp[index]}
                 }),
                 reactions: reactionSlug.map((reaction, index) => { return {
                     reactionSlug: reaction,
-                    reactionInputs: reactionInputs[index].map((input, index) => {
-                        return {name: input.name, label : input.label, type : input.type, value : reactionResp[index], valid : true}
+                    reactionInputs: reactionInputs[index].map((input, indexr) => {
+                        return {name: input.name, label : input.label, type : input.type, value : reactionResp[index][indexr]}
                     })
                 }})
-            })
+            }, null, 4)
         });
         const json = await response.json();
-        console.log("Error ", response.status, json.detail)
-        if (json.data == undefined) return false;
+        if (json.data == undefined) {
+            alert("Error " + response.status + " : " + json.detail)
+            return false;
+        }
         return json.data;
     } catch (error) {
         console.error(error);
