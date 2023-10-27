@@ -28,7 +28,6 @@ interface AppletProps {
 
 const ReactionLogo: React.FC<ReactionProps> = ({ reaction, bgColor }) => {
     return (
-        console.log("color", bgColor),
         <LogoApplet
             slug={reaction.reactionSlug.split(".")[0]}
             color={bgColor}
@@ -66,7 +65,6 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
                 <View style={{ flexDirection: 'row' }}>
                     {/* Loop through reactionsList */}
                     {reactionsList && reactionsList.map((reaction: any, index: number) => (
-                        console.log(actionSlug),
                         <View key={index} style={{ marginRight: 10 }}>
                             <ReactionLogo
                                 reaction={reaction}

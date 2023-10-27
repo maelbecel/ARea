@@ -2,6 +2,7 @@
 `AsyncStorage` from the `@react-native-async-storage/async-storage` package. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 /**
  * The function `PatchUser` is an asynchronous function that sends a PATCH request to update user
@@ -38,6 +39,11 @@ const PatchUser = async (email: string, password : string, username : string) =>
         const json = await response.json();
         return json;
     } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+            Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
         console.error(error);
         return null;
     }
