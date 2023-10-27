@@ -23,4 +23,15 @@ public class FormInputUtils {
         return input;
     }
 
+    public static boolean hasInput(String name, List<FormInput> inputList) {
+        return getByName(name, inputList) != null;
+    }
+
+    public static void remove(String name, List<FormInput> inputList) {
+        FormInput input = getByName(name, inputList);
+        if (input == null)
+            throw new IllegalArgumentException("Input " + name + " not found");
+        inputList.remove(input);
+    }
+
 }

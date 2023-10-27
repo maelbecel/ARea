@@ -3,6 +3,7 @@ package fr.zertus.area.app.gmail;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
+import fr.zertus.area.app.gmail.action.GmailHaveNewMailAction;
 import fr.zertus.area.app.gmail.reaction.GmailSendMailReaction;
 import fr.zertus.area.app.google.GoogleOAuth2Handler;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
@@ -20,7 +21,9 @@ public class GmailApp extends App {
 
     @Override
     public List<Action> getActions() {
-        return null;
+        return List.of(
+            new GmailHaveNewMailAction(getName())
+        );
     }
 
     @Override
@@ -32,7 +35,8 @@ public class GmailApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/1280px-Gmail_icon_%282020%29.svg.png", "#EAEAEA");
+        return new AppDecoration("https://area51.zertus.fr/service/gmail/image", "#FFFFFF",
+            "Connect Gmail to send emails to yourself and others.", "https://www.google.com/gmail/about/");
     }
 
     @Override

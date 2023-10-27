@@ -17,10 +17,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -221,6 +224,17 @@ public class AppController {
     public ResponseEntity<ApiResponse<String>> handleOAuth2Callback(@PathVariable String slug, @RequestParam(required = false) String error,
                                                                     @RequestParam(required = false) String code, @RequestParam String state) throws DataNotFoundException {
         return appService.callbackOAuth2App(slug, code, state, error);
+    }
+
+    @Hidden
+    @GetMapping("/{slug}/image")
+    public ResponseEntity<?> getImage(@PathVariable String slug) throws DataNotFoundException {
+        InputStream in = getClass().getResourceAsStream("/static/images/" + slug + ".png");
+        if (in == null)
+            throw new DataNotFoundException("Image not found");
+        return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_PNG)
+            .body(new InputStreamResource(in));
     }
 
 }

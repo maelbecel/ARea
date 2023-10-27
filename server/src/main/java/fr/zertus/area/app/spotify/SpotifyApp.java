@@ -34,7 +34,8 @@ public class SpotifyApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://i.imgur.com/U73FbAf.png", "#18D860");
+        return new AppDecoration("https://area51.zertus.fr/service/spotify/image", "#18D860",
+            "Spotify is a digital music service that gives you access to millions of songs.", "https://www.spotify.com/");
     }
 
     @Override

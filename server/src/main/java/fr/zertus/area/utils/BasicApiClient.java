@@ -10,9 +10,13 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BasicApiClient {
 
@@ -69,23 +73,26 @@ public class BasicApiClient {
         String jsonBody = new Gson().toJson(requestBody);
         StringEntity entity = new StringEntity(jsonBody);
         entity.setContentType("application/json");
+        entity.setContentEncoding(StandardCharsets.UTF_8.name());
         request.setEntity(entity);
     }
 
     private static <T> ApiResponse<T> executeRequest(HttpUriRequest request, Class<T> responseType) throws IOException {
-        System.out.println(request.toString());
         HttpResponse response = httpClient.execute(request);
 
         int statusCode = response.getStatusLine().getStatusCode();
         ApiResponse<T> apiResponse = new ApiResponse<>(statusCode, null);
         HttpEntity entity = response.getEntity();
+        System.out.print(request.toString() + " " + statusCode);
         if (entity != null) {
             String responseString = EntityUtils.toString(entity);
+            System.out.println(" - " + responseString);
             if (responseType == String.class)
                 apiResponse.setData((T) responseString);
             else
                 apiResponse.setData(new Gson().fromJson(responseString, responseType));
         } else {
+            System.out.println(" - No response body");
             apiResponse.setData(null);
         }
         return apiResponse;

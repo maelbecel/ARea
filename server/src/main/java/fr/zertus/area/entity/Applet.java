@@ -42,14 +42,11 @@ public class Applet {
     @Column(name = "action_data", columnDefinition = "TEXT")
     String actionData;
 
-    @Column(name = "action_trigger", columnDefinition = "TEXT")
-    String actionTrigger;
+    @Column(name = "action_manual_trigger")
+    boolean actionManualTrigger;
 
-    @Column(name = "reaction_slug")
-    String reactionSlug;
-
-    @Column(name = "reaction_data", columnDefinition = "TEXT")
-    String reactionData;
+    @Column(name = "reactions", columnDefinition = "LONGTEXT")
+    String reactions;
 
     @Column(name = "last_trigger_date")
     Timestamp lastTriggerDate;
@@ -66,15 +63,13 @@ public class Applet {
     @Column(name = "enabled")
     boolean enabled;
 
-    public Applet(User user, String name, String actionSlug, List<FormInput> actionData, String actionTrigger,
-                  String reactionSlug, List<FormInput> reactionData, boolean notifUser) {
+    public Applet(User user, String name, String actionSlug, List<FormInput> actionData, boolean actionManualTrigger, List<StockReaction> reactions, boolean notifUser) {
         this.user = user;
         this.name = name;
         this.actionSlug = actionSlug;
         this.actionData = gson.toJson(actionData);
-        this.actionTrigger = actionTrigger;
-        this.reactionSlug = reactionSlug;
-        this.reactionData = gson.toJson(reactionData);
+        this.actionManualTrigger = actionManualTrigger;
+        setReactions(reactions);
         this.notifUser = notifUser;
         this.enabled = true;
         this.createdAt = new Timestamp(System.currentTimeMillis());
@@ -100,17 +95,36 @@ public class Applet {
         return gson.fromJson(this.actionData, type);
     }
 
-    public List<FormInput> getReactionData() {
-        Type type = new TypeToken<List<FormInput>>(){}.getType();
-        return gson.fromJson(this.reactionData, type);
-    }
-
     public void setActionData(List<FormInput> actionData) {
         this.actionData = gson.toJson(actionData);
     }
 
-    public void setReactionData(List<FormInput> reactionData) {
-        this.reactionData = gson.toJson(reactionData);
+    public List<StockReaction> getReactions() {
+        Type type = new TypeToken<List<StockReaction>>(){}.getType();
+        return gson.fromJson(this.reactions, type);
+    }
+
+    public void setReactions(List<StockReaction> reactions) {
+        this.reactions = gson.toJson(reactions);
+    }
+
+
+    @Data
+    @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StockReaction {
+        String reactionSlug;
+        String reactionData;
+
+        public List<FormInput> getReactionData() {
+            Type type = new TypeToken<List<FormInput>>(){}.getType();
+            return gson.fromJson(this.reactionData, type);
+        }
+
+        public void setReactionData(List<FormInput> reactionData) {
+            this.reactionData = gson.toJson(reactionData);
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package fr.zertus.area.service;
 
-import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
@@ -9,14 +8,13 @@ import fr.zertus.area.app.google.GoogleApp;
 import fr.zertus.area.app.notion.NotionApp;
 import fr.zertus.area.app.spotify.SpotifyApp;
 import fr.zertus.area.app.twitch.TwitchApp;
+import fr.zertus.area.app.weather.WeatherApp;
 import fr.zertus.area.app.youtube.YoutubeApp;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
-import fr.zertus.area.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -60,6 +58,9 @@ public class AppService {
 
         GmailApp gmailApp = new GmailApp();
         apps.put(gmailApp.getSlug(), gmailApp);
+
+        WeatherApp weatherApp = new WeatherApp();
+        apps.put(weatherApp.getSlug(), weatherApp);
     }
 
     private static final Map<Long, String> redirectUris = new HashMap<>();
@@ -69,7 +70,9 @@ public class AppService {
     }
 
     public List<App> getApps() {
-        return new ArrayList<>(apps.values());
+        List<App> tmp = new ArrayList<>(apps.values());
+        tmp.remove(apps.get("google")); // Google is not an app, it's a group of apps, maybe I will change this later
+        return tmp;
     }
 
     /**
@@ -153,6 +156,10 @@ public class AppService {
         if (user == null)
             throw new DataNotFoundException("User not found");
         user.addConnectedService(connectedService);
+        if (connectedService.getSlug().equals("google")) {
+            user.addConnectedService(new ConnectedService("gmail", connectedService.getToken(), connectedService.getData()));
+            user.addConnectedService(new ConnectedService("youtube", connectedService.getToken(), connectedService.getData()));
+        }
         userService.save(user);
 
         return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
@@ -164,6 +171,7 @@ public class AppService {
             throw new DataNotFoundException("User is not connected to this service");
         }
         user.removeConnectedService(slug);
+        userService.save(user);
         return true;
     }
 
