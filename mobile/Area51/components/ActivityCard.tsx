@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 interface CardProps extends TouchableOpacityProps {
     type: string,
     id: string,
+    date: string,
 }
 
 /**
@@ -65,26 +66,35 @@ export const getWriteColor = (color: string): string => {
     }
 };
 
-const displayType = (type: string) => {
+const displayType = (type: string, date : string) => {
     if (type == "ran") {
         return (
-            <View style={{flex: 1, flexDirection: "row"}}>
-                    <Icon name="check-circle" size={30} color={'#363841'} style={styles.icon} />
-                    <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet ran</Text>
-            </View>
+                <View>
+                    <View style={{flex: 1, flexDirection: "row"}}>
+                            <Icon name="check-circle" size={30} color={'#363841'} style={styles.icon} />
+                            <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet ran</Text>
+                            <Text style={{fontSize: 12, fontWeight: 'normal', color: '#363841', paddingTop: 10, paddingLeft : 20}}>{date}</Text>
+                    </View>
+                </View>
         )
     } else if (type == "on") {
         return (
-            <View style={{flex: 1, flexDirection: "row"}}>
-                    <Icon name="power-settings-new" size={30} color={'#33cc00'} style={styles.icon} />
-                    <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet turned on</Text>
+            <View>
+                <View style={{flex: 1, flexDirection: "row"}}>
+                        <Icon name="power-settings-new" size={30} color={'#33cc00'} style={styles.icon} />
+                        <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet turned on</Text>
+                        <Text style={{fontSize: 12, fontWeight: 'normal', color: '#363841', paddingTop: 10, paddingLeft : 20}}>{date}</Text>
+                </View>
             </View>
         )
     } else if (type == "off") {
         return (
-            <View style={{flex: 1, flexDirection: "row"}}>
-                    <Icon name="power-settings-new" size={30} color={'#e60000'} style={styles.icon} />
-                    <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet turned off</Text>
+            <View>
+                <View style={{flex: 1, flexDirection: "row"}}>
+                        <Icon name="power-settings-new" size={30} color={'#e60000'} style={styles.icon} />
+                        <Text style={{fontSize: 18, fontWeight: 'bold', color: '#363841', paddingTop: 5}}>Applet turned off</Text>
+                        <Text style={{fontSize: 12, fontWeight: 'normal', color: '#363841', paddingTop: 10, paddingLeft : 20}}>{date}</Text>
+                </View>
             </View>
         )
     }
@@ -92,7 +102,7 @@ const displayType = (type: string) => {
 
 /* The code `const ActionCard: React.FC<CardProps> = ({ title, color, slug, onPress, logo }) => { ...
 }` is defining a functional component called `ActionCard`. */
-const ActionCard: React.FC<CardProps> = ({ type, id }) => {
+const ActionCard: React.FC<CardProps> = ({ type, id, date }) => {
     const [load, setload] = React.useState<boolean>(false);
     const [color, setcolor] = React.useState<string>("#FFFFFF");
     const [logo, setlogo] = React.useState<string>("");
@@ -124,7 +134,7 @@ const ActionCard: React.FC<CardProps> = ({ type, id }) => {
     if (!load) return null;
     return (
     <View style={[styles.box]}>
-        {displayType(type)}
+        {displayType(type, date)}
         <TouchableOpacity onPress={() => {navigation.navigate('MyApplets', { id: id })}} style={[{backgroundColor: color, alignSelf: 'flex-end'}, styles.container]} >
             <View style={{flex: 1, flexDirection: "row", paddingVertical: 20, marginHorizontal: 10, marginRight: 60}}>
                 <Image source={{ uri: logo }} style={styles.logo}/>

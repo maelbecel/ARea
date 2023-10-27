@@ -8,6 +8,7 @@ import ActivityCard from '../components/ActivityCard';
 type Activity = {
   id: string,
   type: string,
+  date: string,
 }
 
 const Activity = ({ navigation }) => {
@@ -20,7 +21,7 @@ const Activity = ({ navigation }) => {
      */
     const fetchApplets = async () => {
       try {
-        setActivity([{ id: '33', type: 'ran' }, { id: '46', type: 'on' }, { id: '46', type: 'off'}, { id: '46', type: 'ran'}, { id: '33', type: 'ran'}, { id: '33', type: 'ran'}, { id: '33', type: 'ran'}]);
+        setActivity([{ id: '403', type: 'ran', date: 'Mon 26. Jan - 22:03' }, { id: '404', type: 'on', date: 'Mon 26. Jan - 22:03' }, { id: '404', type: 'off', date: 'Mon 26. Jan - 22:03'}, { id: '405', type: 'ran', date: 'Mon 26. Jan - 22:03'}, { id: '403', type: 'ran', date: 'Mon 26. Jan - 22:03'}, { id: '403', type: 'ran', date: 'Mon 26. Jan - 22:03'}, { id: '403', type: 'ran', date: 'Mon 26. Jan - 22:03'}]);
       } catch (error) {
         if (error == 'TypeError: Network request failed') {
           Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
@@ -42,7 +43,7 @@ const Activity = ({ navigation }) => {
   const displayApplets = () => {
     if (activity == null) return;
     return activity.map((activity, index) => (
-      <ActivityCard key={index} type={activity.type} id={activity.id} />
+      <ActivityCard key={index} type={activity.type} id={activity.id} date={activity.date}/>
     ));
   };
 
