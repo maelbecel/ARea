@@ -30,7 +30,6 @@ const SearchApplet = () => {
 		const dataFetch = async () => {
 		  try {
 			const data: any = await AppletMe();
-			console.log("data applet component", data);
 			setApplets(data.data);
 			setDispApplets(data.data);
 			setLoading(false);
