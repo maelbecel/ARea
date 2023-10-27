@@ -1,13 +1,12 @@
 /* The `import` statement is used to import specific modules or components from external libraries or
 files. In this case, it is importing various components and types from the `react-native` and
 `react-native-gesture-handler` libraries. */
-import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
+import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, Alert, Image, DimensionValue } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServiceInfo from '../api/ServiceInfo';
 import AppletID from '../api/AppletID';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-
 
 /* The `interface CardProps` is defining a new interface called `CardProps` that extends the
 `TouchableOpacityProps` interface. It specifies the expected props for the `ActionCard` component. */
@@ -110,6 +109,11 @@ const ActionCard: React.FC<CardProps> = ({ type, id }) => {
                 setlogo(data.decoration.logoUrl);
                 setload(true);
             } catch (error) {
+                if (error == 'TypeError: Network request failed') {
+                    Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+                } else {
+                    Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+                }
                 console.error("error search applet", error);
             }
         }

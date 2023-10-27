@@ -25,7 +25,6 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) =
     }, []);
 
     const isLight = (color: string) => {
-        console.log(color);
         if (color.charAt(0) === '#') {
             color = color.substr(1);
         }
