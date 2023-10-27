@@ -139,7 +139,7 @@ const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray
 
                 // Open the OAuth2 authorization window
                 oauth2Window = window.open(
-                    `https://area51.zertus.fr/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${OAuthToken}`,
+                    `${localStorage.getItem("address") as string}/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${OAuthToken}`,
                     'OAuth2 Authorization',
                     'width=720,height=480'
                 );

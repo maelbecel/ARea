@@ -13,7 +13,7 @@ const VerifyUserToken = async (token: string): Promise<string | null> => {
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/user/verify`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/user/verify`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
