@@ -1,9 +1,6 @@
 // --- Librairies import --- //
 import React, { useEffect, useState } from "react";
-import { View, StatusBar, StyleSheet } from "react-native";
-import { useRoute } from "@react-navigation/native";
-import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, StatusBar, StyleSheet, Alert } from "react-native";
 
 // --- Components import --- //
 import AppletInfoContainer from "../components/Applets/AppletInfoContainer";
@@ -11,6 +8,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import TopBar from "../components/TopBar";
 import { useNavigation } from "@react-navigation/native";
 import { getWriteColor } from "../components/ActionCard";
+import AppletInfos from "../api/AppletInfos";
+import ServiceInfo from "../api/ServiceInfo";
 
 const MyApplet = ({route}) => {
     const [bgColor, setBgColor] = useState('');
@@ -31,21 +30,7 @@ const MyApplet = ({route}) => {
     useEffect(() => {
         const dataFetch = async () => {
             try {
-                const token = await SecureStore.getItemAsync("token_api");
-                if (id === undefined) {
-                    console.log("something went wrong");
-                    return;
-                }
-                const serverAddress = await AsyncStorage.getItem('serverAddress');
-                const data = await (
-                    await fetch(`${serverAddress}/applet/${id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
+                const data = await AppletInfos(id);
                 setDataApplet(data);
             } catch (error) {
                 console.error(error);
@@ -55,21 +40,11 @@ const MyApplet = ({route}) => {
     }, [id]);
 
     useEffect(() => {
-      if (dataApplet) {
-        const dataFetch = async (slug : string) => {
-          try {
-                  const token = await SecureStore.getItemAsync("token_api");
-                  const serverAddress = await AsyncStorage.getItem('serverAddress');
-                    const dataFetched = await (
-                        await fetch(`${serverAddress}/service/${slug}`, {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`,
-                            }
-                        })
-                    ).json();
-                    setBgColor(dataFetched?.data?.decoration?.backgroundColor);
+        if (dataApplet) {
+            const dataFetch = async (slug : string) => {
+                try {
+                    const data = await ServiceInfo(slug);
+                    setBgColor(data?.decoration?.backgroundColor);
                 } catch (error) {
                     console.error(error);
                 }

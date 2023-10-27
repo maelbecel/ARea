@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TokenApi from '../api/ServiceToken';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
-import * as SecureStore from 'expo-secure-store';
 
 const OAuthLogin = async (service: string) => {
     const redirectUri = Linking.createURL("/oauth2/" + service);
@@ -14,7 +13,7 @@ const OAuthLogin = async (service: string) => {
         try {
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const token = await TokenApi(service)
-        let result = await WebBrowser.openAuthSessionAsync(
+        await WebBrowser.openAuthSessionAsync(
             `${serverAddress}/service/${service}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
         );
         } catch (error) {
