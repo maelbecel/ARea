@@ -3,7 +3,7 @@
 `ServiceInfo` file in the current directory. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Alert } from 'react-native';
 
 /**
  * The function `Action` is an asynchronous function that takes a `slug` parameter and returns a
@@ -33,6 +33,11 @@ const Action = async (slug : string): Promise<any[]> => {
         }
         return inputs;
     } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+            Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
         console.error(error);
         return null;
     }

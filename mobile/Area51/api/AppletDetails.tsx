@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from 'react-native';
 
 const AppletDetails = async (slug: string) => {
     try {
@@ -16,7 +17,12 @@ const AppletDetails = async (slug: string) => {
         const data: any = await response.json();
         return (data);
     } catch (error) {
-        console.error("error applet component", error);
+        if (error == 'TypeError: Network request failed') {
+            Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
+        console.error(error);
         return null;
     }
 };
