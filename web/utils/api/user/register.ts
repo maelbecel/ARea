@@ -15,7 +15,7 @@ const UserRegister = async (email: string, username: string, password: string): 
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/user/register`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/user/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

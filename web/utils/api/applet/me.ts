@@ -13,7 +13,7 @@ const GetMyApplets = async (token: string): Promise<any[]> => {
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/applet/me`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/applet/me`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
