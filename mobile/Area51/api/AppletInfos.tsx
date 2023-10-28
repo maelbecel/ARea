@@ -17,7 +17,6 @@ const AppletInfos = async (id: number) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
-
             })
         ).json();
         return data;
