@@ -90,10 +90,10 @@ const MoreDetailsButton = ({isToggle, actionSlug, reactions } : ButtonProps) => 
                     </div>
                     <div className="flex flex-col w-[100%]">
                         <div className="flex flex-col">
-                            {reactions && Array.isArray(reactions) && reactions.map((reaction) => {
+                            {reactions && Array.isArray(reactions) && reactions.map((reaction, key) => {
                                 console.log("reaction -> ", reaction);
                                 return (
-                                    <DetailLogo slug={reaction.reactionSlug}/>
+                                    <DetailLogo slug={reaction.reactionSlug} key={key} />
                                 );
                             })}
                         </div>

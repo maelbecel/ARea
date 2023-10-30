@@ -10,7 +10,6 @@ import ToggleSwitch from "../switch/toggleSwitch";
 import { Service } from "../../utils/api/service/interface/interface";
 import { GetServices } from "../../utils/api/service/service";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
-<<<<<<< HEAD
 
 interface ReactionDataProps {
     name: string;
@@ -23,8 +22,6 @@ interface ReactionProps {
     reactionSlug: string;
     reactionData: ReactionDataProps[];
 }
-=======
->>>>>>> e18eb20f8b1118066b818e49ae56c4277d84fa4d
 
 interface ServiceInfoContainerProps {
     id: number;
