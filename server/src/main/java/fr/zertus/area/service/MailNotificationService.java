@@ -18,22 +18,28 @@ import java.util.Map;
 @Slf4j
 public class MailNotificationService {
 
-    public void sendAppletTriggerMail() {
-
+    public void sendAppletTriggerMail(String email, String username, String appletName) {
+        sendMail(new Mail(
+            "no-reply@zertus.fr",
+            "Area51",
+            "Your applet " + appletName + " has been triggered",
+            "Hi " + username + ", your applet " + appletName + " has been triggered with success ! It's time to celebrate !",
+            "<h3>Hi " + username + ",<br> Your applet <strong>" + appletName + "</strong> has been triggered with success !</h3><h5><strong>It's time to celebrate !</strong></h5>",
+            List.of(new Mail.Recipient(email))
+        ));
     }
 
     public void sendAuthErrorMail(String email, String appName) {
-        Mail mail = new Mail(
+        sendMail(new Mail(
             "no-reply@zertus.fr",
             "Area51",
             "Error with your " + appName + " account",
             "Hey, we can't connect to your " + appName + " account. It could be because of an update you made, or improvements on the service’s end. We invite you to reconnect your " + appName + " account on Area51.",
             "<h3>Hey !</h3><br /><br /><h6>We can't connect to your <strong>" + appName + "</strong> account.</h6><br><h6>" +
-            "It could be because of an update you made, or improvements on the service’s end.</h6><br /><h6>We invite you to reconnect your <strong>" + appName + "</strong> account on Area51.</h6>" +
-            "<h3><a href=\"https://area51.zertus.fr\">Click here to fix that !</a></h3>",
+                "It could be because of an update you made, or improvements on the service’s end.</h6><br /><h6>We invite you to reconnect your <strong>" + appName + "</strong> account on Area51.</h6>" +
+                "<h3><a href=\"https://area51.zertus.fr\">Click here to fix that !</a></h3>",
             List.of(new Mail.Recipient(email))
-        );
-        sendMail(mail);
+        ));
     }
 
     /**
@@ -54,7 +60,7 @@ public class MailNotificationService {
             ));
 
             if (response.getStatus() < 200 || response.getStatus() >= 300)
-                throw new Exception("Error while sending mail: " + response.getData());
+                throw new Exception(response.getData());
         } catch (Exception e) {
             log.error("Error while sending mail: " + e.getMessage());
         }
@@ -64,7 +70,7 @@ public class MailNotificationService {
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
     @AllArgsConstructor
     private static class Mail {
-        String FromMail;
+        String FromEmail;
         String FromName;
         String Subject;
         @SerializedName("Text-part") String Text;

@@ -33,6 +33,9 @@ public class AppletService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MailNotificationService mailNotificationService;
+
     public Applet save(AppletDTO applet) throws DataNotFoundException {
         if (applet.getName().length() > 140) {
             throw new IllegalArgumentException("Applet name is too long (max 140 characters)");
@@ -165,7 +168,7 @@ public class AppletService {
                 try {
                     if (action.isTrigger(user, applet.getActionData(), values)) {
                         applet.setLastTriggerDate(new Timestamp(System.currentTimeMillis()));
-                        applet.addLog("Action triggered");
+                        applet.addLog("Applet triggered");
                         for (Applet.StockReaction reaction : applet.getReactions()) {
                             try {
                                 Reaction r = actionReactionService.getReaction(reaction.getReactionSlug());
@@ -173,16 +176,14 @@ public class AppletService {
                                     throw new ReactionTriggerException("Reaction not found");
                                 r.trigger(user, reaction.getReactionData(), parameters);
                             } catch (Exception e) {
-                                applet.addLog("Error while triggering reaction " + reaction.getReactionSlug() + " - " + e.getMessage());
                                 log.error("Error while triggering reaction " + reaction.getReactionSlug() + " for applet " + applet.getId() + " - " + e.getMessage());
                             }
                         }
                         if (applet.isNotifUser()) {
-                            // TODO: Add notification to user if needed
+                            mailNotificationService.sendAppletTriggerMail(user.getEmail(), user.getUsername(), applet.getName());
                         }
                     }
                 } catch (Exception e) {
-                    applet.addLog("Error while triggering action - " + e.getMessage());
                     log.error("Error while triggering action " + actionSlug + " for applet " + applet.getId() + " - " + e.getMessage());
                 }
             }
