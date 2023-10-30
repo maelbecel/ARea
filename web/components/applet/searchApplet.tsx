@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { GetServices } from "../../utils/api/service/service";
 import { Service } from "../../utils/api/service/interface/interface";
 import { GetMyApplets } from "../../utils/api/applet/me";
+import { getTheme } from "../../utils/getTheme";
 
 interface ReactionProps {
     reactionSlug: string;
@@ -32,6 +33,7 @@ interface AppletProps {
 const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
     const [bgColor, setBgColor] = useState<string>("");
     const [newName, setNewName] = useState<string>(name);
+    const [theme, setTheme] = useState<string>("light");
 
     const { services, setServices } = useServices();
     const { token, setToken } = useToken();
@@ -63,6 +65,10 @@ const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastT
     }, [bgColor]);
 
     useEffect(() => {
+        setTheme(getTheme(bgColor));
+    }, [bgColor]);
+
+    useEffect(() => {
         if (name.length > 50)
             setNewName(name.slice(0, 50) + "...");
     }, [name]);
@@ -77,7 +83,12 @@ const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastT
     }, [id, name, actionSlug, reactions, actionTrigger, lastTriggerUpdate, createdAt, enabled]);  
 
     return (
-        <div style={{backgroundColor: bgColor}} className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between shadow-xl">
+        <div style={{
+                backgroundColor: bgColor,
+                color: theme === "light" ? "#363841" : "#ffffff",
+            }}
+            className="rounded-[9px] p-[20px] h-[100%] flex flex-col justify-between"
+        >
             <Link href={`/myApplets/applet/${id}`} style={{ cursor: 'pointer', backgroundColor: bgColor }}>
                 <div className="cursor-pointer">
                     <div className="flex flex-wrap space-x-[3%]">
@@ -88,14 +99,14 @@ const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastT
                             );
                         })}
                     </div>
-                    <div className="font-bold text-white text-[28px] pb-[40%] w-full overflow-hidden break-words">
+                    <div className="font-bold text-[28px] pb-[40%] w-full overflow-hidden break-words">
                         <div>
                            {newName}
                         </div>
                     </div>
                 </div>
             </Link>
-            <div className="flex justify-end font-bold text-white text-[18px]">
+            <div className="flex justify-end font-bold text-[18px]">
                 <Switch isCheked={enabled} isDisable={true}/>
             </div>
         </div>
@@ -192,4 +203,3 @@ const SearchApplet = () => {
 }
 
 export default SearchApplet;
-  

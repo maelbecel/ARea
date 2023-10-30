@@ -167,7 +167,7 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
                 Authorization : `Bearer ${token}`
             },
             body: JSON.stringify({
-                name   : title,
+                name: title,
             })
         });
 
