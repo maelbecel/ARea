@@ -127,7 +127,6 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
             >
                 <div style={{backgroundColor: `${color}` }} className="px-[15%] lg:px-[35%]">
                     <div className="cursor-pointer">
-<<<<<<< HEAD
                         <div className="flex flex-wrap space-x-[3%]">
                             {actionSlug && <LogoApplet slug={actionSlug.split('.')[0]} width={56} height={56} toogleBackground={false}/>}
                             {reactions && Array.isArray(reactions) && reactions.map((reaction: ReactionProps, index: number) => {
@@ -135,11 +134,6 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
                                     <LogoApplet key={index} slug={reaction.reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={false} />
                                 );
                             })}
-=======
-                        <div className="flex flex-wrap">
-                            {actionSlug && <LogoApplet slug={actionSlug.split('.')[0]} width={56} height={56} toogleBackground={toggleBg} />}
-                            {reactionSlug && <LogoApplet slug={reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={toggleBg} />}
->>>>>>> e18eb20f8b1118066b818e49ae56c4277d84fa4d
                         </div>
                         <div className="font-bold text-[37px] pb-[10%] overflow-hidden break-words">
                             {name}

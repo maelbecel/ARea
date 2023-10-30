@@ -14,13 +14,10 @@ import { GetServices } from "../../utils/api/service/service";
 import { Service } from "../../utils/api/service/interface/interface";
 import { GetMyApplets } from "../../utils/api/applet/me";
 import { getTheme } from "../../utils/getTheme";
-<<<<<<< HEAD
 
 interface ReactionProps {
     reactionSlug: string;
 }
-=======
->>>>>>> e18eb20f8b1118066b818e49ae56c4277d84fa4d
 
 interface AppletProps {
     id: number;
