@@ -5,7 +5,8 @@ const nextConfig = {
     domains: [
       'imgur.com',
       'i.imgur.com',
-      'upload.wikimedia.org'
+      'upload.wikimedia.org',
+      'area51.zertus.fr'
   ]},
 }
 

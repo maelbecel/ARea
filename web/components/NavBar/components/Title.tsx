@@ -5,7 +5,7 @@
  */
 const Title = ({ text, theme = 'light' }: { text: string, theme?: string }) => {
     return (
-        <div className={`${theme === 'light' ? 'text-[#363841]' : 'text-white'} font-bold text-[48px] hidden md:flex`}>
+        <div className={`${theme === 'light' ? 'text-[#363841]' : 'text-white'} font-bold text-[32px] xl:text-[48px] hidden md:flex`}>
             {text}
         </div>
     )

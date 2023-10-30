@@ -1,12 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const UpdateButton = () => {
+import { PatchProfile } from "../../utils/api/user/me";
+import { UserProfile } from "../../utils/api/user/interface/interface";
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 
-    // TODO: Add update button logic
+
+interface UpdateButtonProps {
+    token: string;
+    email: string;
+    username: string;
+    setToken: (token: string) => void;
+}
+
+const UpdateButton = ({token, email, username, setToken} : UpdateButtonProps) => {
+
+    const [data, setData] = useState<any>();
+
+    const handleUpdate = async () => {
+        const data = await PatchProfile(token, email, username);
+        if (data != undefined)
+            setData(data);
+    }
+
+    useEffect(() => {
+        if (data === undefined)
+            return;
+        console.log("data -> ", data);
+        // write the new token in the local storage
+        localStorage.removeItem("token");
+        if (data) {
+            localStorage.setItem("token", data);
+
+            setToken(localStorage.getItem("token") as string);
+        }
+    }, [data]);
+
+    useEffect(() => {
+
+        console.log("token -> ", token);
+
+    }, [token]);
 
     return (
-        <div className="flex justify-center">
-            <div className="font-bold text-[36px] py-[1%] px-[20%] rounded-[50px] cursor-pointer bg-[#363841] text-white my-[10%]">
+        <div className="flex justify-center mt-[20%] mb-[40%] lg:mt-[5%] lg:mb-[20%]">
+            <div className="font-bold text-[36px] py-[1%] px-[20%] rounded-[50px] cursor-pointer bg-[#363841] text-white my-[10%]"
+                onClick={handleUpdate}
+            >
                 Update
             </div>
         </div>

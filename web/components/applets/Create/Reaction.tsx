@@ -1,4 +1,5 @@
 // --- Interface --- //
+import { GetReactionInputs } from "../../../utils/api/reaction/reaction";
 import { Card, defaultReaction } from "./interface";
 import { Dispatch, SetStateAction } from "react";
 
@@ -15,7 +16,7 @@ export const getReaction = async (setArray: Dispatch<SetStateAction<Card[]>>, to
     const slug = newReaction.slug?.split(".")[0] as string;
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/service/${slug}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -31,21 +32,14 @@ export const getReaction = async (setArray: Dispatch<SetStateAction<Card[]>>, to
         return;
     }
 
-    try {
-        const response = await fetch(`https://area51.zertus.fr/reaction/${slug}/${newReaction.slug}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization : `Bearer ${token}`
-            }
-        });
-        const data = await response.json();
+    const response = await GetReactionInputs(token, slug, newReaction.slug);
 
-        newReaction.description = data?.data?.description as string;
-    } catch (error) {
+    if (response === null) {
         setArray((prevActionArray) => [...prevActionArray, defaultReaction]);
         return;
     }
+
+    newReaction.description = response?.description as string;
 
     setArray((prevActionArray) => [...prevActionArray, newReaction]);
 };

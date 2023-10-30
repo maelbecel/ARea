@@ -8,10 +8,12 @@ import CreateButton from "../components/CreateButton";
 import Image from "next/image";
 
 // --- Interface --- //
+import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { Card, defaultAction, defaultReaction } from "../interface";
+import { CreateApplet } from "../../../../utils/api/applet/applet";
 import { getTheme } from "../../../../utils/getTheme";
 import Title from "../../../NavBar/components/Title";
-import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
 
 const CreateHeader = () => {
     const router = useRouter();
@@ -63,8 +65,8 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
             }}
             className={`w-full flex rounded-[15px] flex-col hover:brightness-110 cursor-pointer`}
         >
-            <div className='w-[95%] flex flex-row gap-[20px] justify-end pt-[8px]'>
-                <div className='font-bold text-[16px] underline'
+            <div className='w-[95%] flex flex-row gap-[20px] justify-end pt-[5px] sm:pt-[8px]'>
+                <div className='font-bold text-[12px] sm:text-[16px] underline'
                     onClick={() => {
                         setSlug(cardProps.slug);
                         setService(cardProps.service);
@@ -75,7 +77,7 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
                 >
                     Edit
                 </div>
-                <div className='font-bold text-[16px] underline'
+                <div className='font-bold text-[12px] sm:text-[16px] underline'
                     onClick={() => {
                         setArray(array.map((card: Card, i: number) => {
                             if (i === index) {
@@ -91,10 +93,10 @@ const CardComponent = ({ cardProps, index, setArray, array, setPages, setSlug, s
                     Delete
                 </div>
             </div>
-            <div className="flex flex-row justify-start gap-6 px-[40px] pb-[30px] items-center">
-                <div className="font-extrabold text-[62px]">{cardProps.type === 'action' ? 'Action' : 'REAction'}</div>
+            <div className="flex flex-row justify-start gap-6 px-[5px] md:px-[40px] pb-[5px] md:pb-[30px] items-center">
+                <div className="font-extrabold text-[24px] sm:text-[48px] lg:text-[62px]">{cardProps.type === 'action' ? 'Action' : 'REAction'}</div>
                 <Image src={cardProps.decoration.logoUrl} width={100} height={100} alt='' />
-                <div className="font-bold text-[32px]">{cardProps.name}</div>
+                <div className="font-bold text-[18px] sm:text-[24px] lg:text-[32px]">{cardProps.name}</div>
             </div>
         </div>
     );
@@ -131,19 +133,33 @@ interface appletsInputs {
     type: string;
 };
 
-const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode, currentIndex }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>>, currentIndex: number }) => {
+const CreateContainerComponent = ({ setIndex, setPages, array, setArray, setSlug, setService, active, setActive, title, notif, setEditMode, currentIndex }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>>, currentIndex: number }) => {
+    const { token, setToken } = useToken();
+
     const router = useRouter();
 
     const handleClick = async () => {
+        if (token === "") {
+            const tokenStore = localStorage.getItem("token");
+    
+            if (tokenStore === null) {
+                router.push("/");
+                return;
+            }
+            setToken(tokenStore);
+        }
+
         let actionsInputs = [] as appletsInputs[];
+
+        console.log(array);
 
         array[0].inputs.forEach((input: string, index: number) => {
             actionsInputs.push({
-                name: array[0].fields[index].name,
-                label: array[0].fields[index].label,
+                name: array[0]?.fields[index]?.name,
+                label: array[0]?.fields[index]?.label,
                 value: input,
-                options: array[0].fields[index].options,
-                type: array[0].fields[index].type
+                options: array[0]?.fields[index]?.options,
+                type: array[0]?.fields[index]?.type
             });
         });
 
@@ -172,32 +188,12 @@ const CreateContainerComponent = ({ setIndex, setPages, token, array, setArray, 
 
         console.log(body);
 
-        try {
-            const response = await fetch(`https://area51.zertus.fr/applet`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization : `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
-
-            const data = await response.json();
-
-            console.log(data);
-
-            if (data?.status !== 201)
-                return;
-            
-            router.push("/");
-        } catch (error) {
-            console.log(error);
-        }
+        await CreateApplet(token, body, router);
     };
 
     return (
         <div className={`min-h-screen flex justify-center items-center`}>
-            <div className={`max-w-[50%] w-full flex justify-around items-center flex-col gap-[20px]`}>
+            <div className={`lg:max-w-[75%] xl:max-w-[60%] w-[90%] lg:w-full flex justify-around items-center flex-col gap-[20px] py-[10px]`}>
                 {array && array.map((service: Card, index: number) => {
                     return (
                         <>
@@ -230,7 +226,7 @@ const CreatePages = ({ setIndex, setPages, token, array, setArray, setSlug, setS
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setIndex={setIndex} setPages={setPages} token={token} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} currentIndex={index} />
+            <CreateContainerComponent setIndex={setIndex} setPages={setPages} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} currentIndex={index} />
         </>
     )
 }
