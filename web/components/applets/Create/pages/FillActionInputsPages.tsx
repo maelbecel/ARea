@@ -227,7 +227,7 @@ const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray
                     if (EditMode === true)
                         setPages(0);
                     else
-                        setPages(3);
+                        setPages(2);
                 }}
                 color={props?.decoration?.backgroundColor}
             />
