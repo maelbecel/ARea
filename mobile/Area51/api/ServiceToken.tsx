@@ -1,9 +1,9 @@
-
 /* The statement `import * as SecureStore from 'expo-secure-store';` is importing the entire module
 `expo-secure-store` and assigning it to the variable `SecureStore`. This allows you to access the
 functions and variables exported by the `expo-secure-store` module using the `SecureStore` variable. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 /**
  * The function `ServiceToken` is an asynchronous function that retrieves a service token from an API
@@ -27,7 +27,6 @@ const ServiceToken = async (slug : string): Promise<string> => {
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log(`/service/${slug}/oauth2/token :`, response.status);
         if (response.status != 200) {
             return null;
         }

@@ -1,24 +1,20 @@
-import { Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from 'react-native';
 
-const AppletInfos = async (id: number) => {
+const AppletMe = async () => {
     try {
         const token = await SecureStore.getItemAsync("token_api");
-        if (id === undefined) {
-            console.log("something went wrong");
-            return;
-        }
         const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const data = await (
-            await fetch(`${serverAddress}/applet/${id}`, {
+        const response = await fetch(`${serverAddress}/applet/me`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
-            })
-        ).json();
+            });
+        const data = await response.json();
+        console.log("APPLET INFOS");
         return data;
     } catch (error) {
         if (error == 'TypeError: Network request failed') {
@@ -31,4 +27,4 @@ const AppletInfos = async (id: number) => {
     }
 };
 
-export default AppletInfos;
+export default AppletMe;

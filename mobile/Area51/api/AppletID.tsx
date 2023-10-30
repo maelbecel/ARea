@@ -2,11 +2,11 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 
-const MyApplets  = async () => {
+const AppletID  = async (id : string) => {
     try {
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const token = await SecureStore.getItemAsync('token_api');
-        const response = await fetch(`${serverAddress}/applet/me`, {
+        const response = await fetch(`${serverAddress}/applet/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -22,8 +22,9 @@ const MyApplets  = async () => {
         } else {
             Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
         }
+        console.error(error);
         return null;
     }
 }
 
-export default MyApplets;
+export default AppletID;

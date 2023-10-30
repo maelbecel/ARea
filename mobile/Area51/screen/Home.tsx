@@ -1,7 +1,7 @@
 /* The code `import * as React from 'react';` is importing the entire React library and assigning it to
 the variable `React`. This allows us to use React components and functions in our code. */
 import * as React from 'react';
-import { Text, View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
+import { Alert, View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
 import FormInput from '../components/FormInput';
 import Services from '../api/Services';
 import { useState, useEffect } from 'react';
@@ -34,7 +34,12 @@ const Home = ({ navigation }) => {
         setApplets(services);
         setDispApplets(services);
       } catch (error) {
-          console.log('Error fetching applets:', error);
+        if (error == 'TypeError: Network request failed') {
+          Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
+          console.error('Error fetching applets:', error);
       }
     };
 
@@ -50,7 +55,6 @@ const Home = ({ navigation }) => {
   const filterApplets = (name : string) => {
     if (applets == null) return;
     let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
-    console.log(tmp);
     setDispApplets(tmp);
   }
 
@@ -69,11 +73,11 @@ const Home = ({ navigation }) => {
   /* The `return` statement is returning a JSX element that represents the structure and content of the
   Home component. */
   return (
-    <View style={ styles.container }>
+    <View style={ styles.container}>
       <View style={ styles.input }>
         <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
       </View>
-      <ScrollView style={{ height: 800 }}>
+      <ScrollView style={{ marginBottom : 50}}>
         <View style={ styles.services }>
           {displayApplets()}
         </View>
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 50,
     backgroundColor: '#fff',
-    paddingBottom: 100,
+    paddingBottom: 0,
   },
   input: {
     alignContent: "center",

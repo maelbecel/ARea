@@ -28,12 +28,11 @@ const Signup = ({ navigation }) => {
     const connect = async () => {
       const response = await RegisterAPI(email, password, username);
       if (response == null) {
-          alert("An Error occcur");
+        alert("An Error occcur");
       } else if (response.status == 200) {
-        console.log("Token :" + response.data);
-          navigation.navigate('Area 51');
+        navigation.navigate('Area 51');
       } else {
-          alert(response.message);
+        alert(response.message);
       }
   }
 
