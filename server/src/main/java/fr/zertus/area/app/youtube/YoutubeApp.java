@@ -6,6 +6,7 @@ import fr.zertus.area.app.Reaction;
 import fr.zertus.area.app.google.GoogleOAuth2Handler;
 import fr.zertus.area.app.youtube.action.YoutubeNewVideoAction;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.utils.IPGetter;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class YoutubeApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://area51.zertus.fr/service/youtube/image", "#FF0000",
+        return new AppDecoration(IPGetter.getServerBaseAddress() + "/service/youtube/image", "#FF0000",
             "YouTube is a video-sharing website on which users can upload, share, and view videos.", "https://www.youtube.com/");
     }
 

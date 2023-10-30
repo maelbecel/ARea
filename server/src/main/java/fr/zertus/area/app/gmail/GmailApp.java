@@ -7,6 +7,7 @@ import fr.zertus.area.app.gmail.action.GmailHaveNewMailAction;
 import fr.zertus.area.app.gmail.reaction.GmailSendMailReaction;
 import fr.zertus.area.app.google.GoogleOAuth2Handler;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.utils.IPGetter;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class GmailApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://area51.zertus.fr/service/gmail/image", "#FFFFFF",
+        return new AppDecoration(IPGetter.getServerBaseAddress() + "/service/gmail/image", "#FFFFFF",
             "Connect Gmail to send emails to yourself and others.", "https://www.google.com/gmail/about/");
     }
 

@@ -5,6 +5,7 @@ import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
 import fr.zertus.area.app.spotify.action.SpotifyNewTrackInPlaylistAction;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.utils.IPGetter;
 import fr.zertus.area.utils.StringUtils;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class SpotifyApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://area51.zertus.fr/service/spotify/image", "#18D860",
+        return new AppDecoration(IPGetter.getServerBaseAddress() + "/service/spotify/image", "#18D860",
             "Spotify is a digital music service that gives you access to millions of songs.", "https://www.spotify.com/");
     }
 

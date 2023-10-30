@@ -12,6 +12,7 @@ import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
+import fr.zertus.area.utils.IPGetter;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -51,7 +52,7 @@ public class GithubReleaseOnRepoAction extends Action {
         String input = FormInputUtils.getValue("repository", inputs);
         String url = "https://api.github.com/repos/" + input + "/hooks";
         GithubWebhookSetup body = new GithubWebhookSetup("web", true, List.of("release"),
-            new GithubWebhookSetup.Config("https://area51.zertus.fr/webhook/github", "json", "0"));
+            new GithubWebhookSetup.Config(IPGetter.getServerBaseAddress() + "/webhook/github", "json", "0"));
 
         GithubApp.setupWebhook(url, service.getToken(), body);
     }

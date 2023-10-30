@@ -15,6 +15,7 @@ import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
+import fr.zertus.area.utils.IPGetter;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
@@ -64,7 +65,7 @@ public class GithubApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://area51.zertus.fr/service/github/image", "#1B1F23",
+        return new AppDecoration(IPGetter.getServerBaseAddress() + "/service/github/image", "#1B1F23",
             "GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Turn on Applets to automatically track issues, pull requests, repositories.", "https://github.com");
     }
 
