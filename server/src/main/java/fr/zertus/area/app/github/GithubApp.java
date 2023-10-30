@@ -10,9 +10,11 @@ import fr.zertus.area.app.github.action.GithubReleaseOnRepoAction;
 import fr.zertus.area.app.github.model.GithubRepository;
 import fr.zertus.area.app.github.model.GithubWebhookSetup;
 import fr.zertus.area.app.github.reaction.GithubCommentIssueReaction;
+import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.IPGetter;
@@ -79,6 +81,10 @@ public class GithubApp extends App {
                 "Authorization", "Bearer " + token,
                 "X-GitHub-Api-Version", "2022-11-28"));
 
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                throw new IllegalArgumentException("App is not connected to Github");
+            }
+
             if (response.getStatus() >= 200 && response.getStatus() < 300) {
                 Type listType = new com.google.gson.reflect.TypeToken<List<GithubRepository>>(){}.getType();
                 List<GithubRepository> repositories = new Gson().fromJson(response.getData(), listType);
@@ -94,13 +100,17 @@ public class GithubApp extends App {
         }
     }
 
-    public static void setupWebhook(String url, String token, GithubWebhookSetup body) throws ActionTriggerException {
+    public static void setupWebhook(String url, String token, GithubWebhookSetup body, User user) throws ActionTriggerException {
         try {
             ApiResponse<GithubWebhookSetupCallback> response = BasicApiClient.sendPostRequest(url, body, GithubWebhookSetupCallback.class, Map.of(
                 "Authorization", "Bearer " + token,
                 "X-GitHub-Api-Version", "2022-11-28")
             );
 
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "github");
+                throw new ActionTriggerException("App is not connected to Github");
+            }
             if ((response.getStatus() < 200 || response.getStatus() >= 300)) {
                 if (response.getData() != null && response.getData().getErrors() != null && !response.getData().getErrors().isEmpty()) {
                     GithubWebhookSetupCallback.Error error = response.getData().getErrors().get(0);

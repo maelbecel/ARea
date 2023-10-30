@@ -40,13 +40,34 @@ public class GoogleOAuth2Handler extends OAuth2CodeAuthorizationHandler {
                     Map.of("Authorization", "Bearer " + token.getAccess_token()));
 
                 if (userInfo.getData() == null)
-                    return new ConnectedService("google", token.getAccess_token(), null);
-                return new ConnectedService("google", token.getAccess_token(), new Gson().toJson(userInfo.getData()));
+                    return new ConnectedService("google", token.getAccess_token(), null, token.getRefresh_token(), token.getExpires_in(), System.currentTimeMillis());
+                return new ConnectedService("google", token.getAccess_token(), new Gson().toJson(userInfo.getData()), token.getRefresh_token(), token.getExpires_in(), System.currentTimeMillis());
             } catch (Exception e) {
-                return new ConnectedService("google", token.getAccess_token(), null);
+                return new ConnectedService("google", token.getAccess_token(), null, token.getRefresh_token(), token.getExpires_in(), System.currentTimeMillis());
             }
         } else {
             System.err.println("Error: " + responseEntity.getStatusCode());
+            return null;
+        }
+    }
+
+    @Override
+    public ConnectedService refreshToken(ConnectedService service, MultiValueMap<String, String> body) {
+        String bodyXml = "client_id=" + body.getFirst("client_id") +
+            "&client_secret=" + body.getFirst("client_secret") +
+            "&refresh_token=" + service.getRefreshToken() +
+            "&grant_type=refresh_token";
+        String url = "https://oauth2.googleapis.com/token";
+
+        try {
+            ApiResponse<GoogleOAuth2Token> response = BasicApiClient.sendPostRequest(url, bodyXml, GoogleOAuth2Token.class, Map.of(
+                "Content-Type", "application/x-www-form-urlencoded"
+            ));
+
+            if (response.getStatus() < 200 || response.getStatus() >= 300)
+                return null;
+            return new ConnectedService("google", response.getData().getAccess_token(), service.getData(), service.getRefreshToken(), response.getData().getExpires_in(), System.currentTimeMillis());
+        } catch (Exception e) {
             return null;
         }
     }

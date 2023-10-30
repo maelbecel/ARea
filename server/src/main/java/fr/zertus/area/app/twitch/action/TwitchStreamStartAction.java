@@ -9,6 +9,7 @@ import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.utils.*;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class TwitchStreamStartAction extends Action {
                 Map.of("Authorization", "Bearer " + appToken.getAccess_token(), "Client-Id", appToken.getClientId()));
 
             if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "twitch");
                 throw new ActionTriggerException("Fail to connect to Twitch - User is not connected to Twitch");
             }
             if (response.getStatus() == 409) {

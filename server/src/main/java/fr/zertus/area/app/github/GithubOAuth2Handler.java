@@ -16,7 +16,7 @@ public class GithubOAuth2Handler extends OAuth2CodeAuthorizationHandler {
         GithubOAuth2Token token = restTemplate.postForObject(tokenUrl, body, GithubOAuth2Token.class);
         if (token == null || token.getAccess_token() == null)
             return null;
-        return new ConnectedService("github", token.getAccess_token(), null);
+        return new ConnectedService("github", token.getAccess_token(), null, null, 0, System.currentTimeMillis());
     }
 
     @Override

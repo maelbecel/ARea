@@ -8,6 +8,7 @@ import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.utils.ActionTriggerUtils;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
@@ -41,7 +42,7 @@ public class SpotifyNewTrackInPlaylistAction extends Action implements ManualTri
 
     @Override
     public List<FormInput> getInputs(User user) {
-        ConnectedService service = user.getConnectedService("spotify");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "spotify");
         if (service == null) {
             throw new IllegalArgumentException("User is not connected to spotify");
         }
@@ -51,6 +52,10 @@ public class SpotifyNewTrackInPlaylistAction extends Action implements ManualTri
                 "Authorization", "Bearer " + service.getToken()
             ));
 
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "spotify");
+                throw new ActionTriggerException("User is not connected to spotify");
+            }
             if (response.getStatus() < 200 || response.getStatus() >= 300) {
                 throw new IllegalArgumentException("Error while getting playlists");
             }
@@ -73,7 +78,7 @@ public class SpotifyNewTrackInPlaylistAction extends Action implements ManualTri
 
     @Override
     public void setupAction(User user, List<FormInput> inputs) throws ActionTriggerException {
-        ConnectedService service = user.getConnectedService("spotify");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "spotify");
         if (service == null) {
             throw new ActionTriggerException("User is not connected to spotify");
         }
@@ -83,6 +88,10 @@ public class SpotifyNewTrackInPlaylistAction extends Action implements ManualTri
                 "Authorization", "Bearer " + service.getToken()
             ));
 
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "spotify");
+                throw new ActionTriggerException("User is not connected to spotify");
+            }
             if (response.getStatus() < 200 || response.getStatus() >= 300) {
                 throw new ActionTriggerException("Error while getting playlists");
             }
@@ -110,7 +119,7 @@ public class SpotifyNewTrackInPlaylistAction extends Action implements ManualTri
 
     @Override
     public List<Map<String, String>> manualTrigger(User user, List<FormInput> inputs) throws ActionTriggerException {
-        ConnectedService service = user.getConnectedService("spotify");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "spotify");
         if (service == null)
             throw new ActionTriggerException("User is not connected to spotify");
 
@@ -122,6 +131,10 @@ public class SpotifyNewTrackInPlaylistAction extends Action implements ManualTri
                "Authorization", "Bearer " + service.getToken()
             ));
 
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "spotify");
+                throw new ActionTriggerException("User is not connected to spotify");
+            }
             if (response.getStatus() < 200 || response.getStatus() >= 300) {
                 throw new ActionTriggerException("Error while getting playlist tracks");
             }

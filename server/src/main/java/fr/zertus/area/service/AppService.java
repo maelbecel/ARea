@@ -157,12 +157,26 @@ public class AppService {
             throw new DataNotFoundException("User not found");
         user.addConnectedService(connectedService);
         if (connectedService.getSlug().equals("google")) {
-            user.addConnectedService(new ConnectedService("gmail", connectedService.getToken(), connectedService.getData()));
-            user.addConnectedService(new ConnectedService("youtube", connectedService.getToken(), connectedService.getData()));
+            user.addConnectedService(new ConnectedService("gmail", connectedService.getToken(), connectedService.getData(), connectedService.getRefreshToken(), connectedService.getExpiration(), connectedService.getTokenDate()));
+            user.addConnectedService(new ConnectedService("youtube", connectedService.getToken(), connectedService.getData(), connectedService.getRefreshToken(), connectedService.getExpiration(), connectedService.getTokenDate()));
         }
         userService.save(user);
 
         return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
+    }
+
+    public MultiValueMap<String, String> getTokenRequestsBodyFor(String slug) {
+        App app = getApp(slug);
+        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(slug);
+        if (clientRegistration == null)
+            return null;
+
+        String clientId = clientRegistration.getClientId();
+        String clientSecret = clientRegistration.getClientSecret();
+        String defaultRedirectUri = clientRegistration.getRedirectUri();
+
+        // We need to give a redirect Uri (I don't know why, because token result is the return of this request) so we give the default one
+        return app.getOAuth2Handler().getBody("", clientId, clientSecret, defaultRedirectUri);
     }
 
     public boolean deleteOAuth2(String slug) throws DataNotFoundException {

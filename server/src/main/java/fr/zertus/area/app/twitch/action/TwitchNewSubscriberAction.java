@@ -9,6 +9,7 @@ import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.utils.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class TwitchNewSubscriberAction extends Action {
 
     @Override
     public void setupAction(User user, List<FormInput> inputs) throws ActionTriggerException {
-        if (!userExist(inputs))
+        if (!userExist(inputs, user))
             throw new ActionTriggerException("Channel not found");
 
         // Create subscription
@@ -45,6 +46,7 @@ public class TwitchNewSubscriberAction extends Action {
                 Map.of("Authorization", "Bearer " + appToken.getAccess_token(), "Client-Id", appToken.getClientId()));
 
             if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "twitch");
                 throw new ActionTriggerException("Fail to connect to Twitch - User is not connected to Twitch");
             }
             if (response.getStatus() == 409) {
@@ -59,7 +61,7 @@ public class TwitchNewSubscriberAction extends Action {
         }
     }
 
-    private boolean userExist(List<FormInput> inputs) throws ActionTriggerException {
+    private boolean userExist(List<FormInput> inputs, User user) throws ActionTriggerException {
         TwitchAppToken appToken = TwitchApp.getAppToken();
         if (appToken == null)
             throw new ActionTriggerException("Twitch app token is null");
@@ -71,6 +73,7 @@ public class TwitchNewSubscriberAction extends Action {
                 Map.of("Authorization", "Bearer " + appToken.getAccess_token(), "Client-Id", appToken.getClientId()));
 
             if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "twitch");
                 throw new ActionTriggerException("Fail to get user - User is not connected to Twitch");
             }
             if (response.getData() == null || response.getData().getData() == null || response.getData().getData().isEmpty())

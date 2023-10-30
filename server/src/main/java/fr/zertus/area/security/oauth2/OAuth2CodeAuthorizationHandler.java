@@ -29,6 +29,10 @@ public abstract class OAuth2CodeAuthorizationHandler {
 
     public abstract ConnectedService getToken(String token, MultiValueMap<String, String> body);
 
+    public ConnectedService refreshToken(ConnectedService service, MultiValueMap<String, String> body) {
+        return null;
+    }
+
     public abstract String getState();
 
     public URI getOAuth2AuthorizationUri(String authorizationUri, String clientId, String redirectUri, String state, Set<String> scope) {

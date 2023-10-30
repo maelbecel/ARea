@@ -2,6 +2,8 @@ package fr.zertus.area.app.discord;
 
 import fr.zertus.area.app.github.GithubOAuth2Handler;
 import fr.zertus.area.entity.ConnectedService;
+import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.utils.BasicApiClient;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.*;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -35,12 +38,34 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             DiscordOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
-            return new ConnectedService("discord", token.getAccess_token(), null);
+            return new ConnectedService("discord", token.getAccess_token(), null, token.getRefresh_token(), token.getExpires_in(), System.currentTimeMillis());
         } else {
             System.err.println("Error: " + responseEntity.getStatusCode());
             return null;
         }
     };
+
+    @Override
+    public ConnectedService refreshToken(ConnectedService service, MultiValueMap<String, String> body) {
+        String bodyXml = "grant_type=refresh_token&refresh_token=" + service.getRefreshToken();
+        String url = "https://discord.com/api/oauth2/token";
+
+        try {
+            ApiResponse<DiscordOAuth2Token> response = BasicApiClient.sendPostRequest(url, bodyXml, DiscordOAuth2Token.class, Map.of(
+                "Authorization", "Basic " + Base64.getEncoder().encodeToString("CLIENT_ID:CLIENT_SECRET".getBytes()),
+                "Content-Type", "application/x-www-form-urlencoded"
+            ));
+
+            if (response.getStatus() < 200 || response.getStatus() >= 300) {
+                logger.error("Error while refreshing token for service");
+                return null;
+            }
+            return new ConnectedService("discord", response.getData().getAccess_token(), null, response.getData().getRefresh_token(), response.getData().getExpires_in(), System.currentTimeMillis());
+        } catch (Exception e) {
+            logger.error("Error while refreshing token for service");
+            return null;
+        }
+    }
 
     @Override
     public URI getOAuth2AuthorizationUri(String authorizationUri, String clientId, String redirectUri, String state, Set<String> scope) {
@@ -71,5 +96,7 @@ public class DiscordOAuth2Handler extends OAuth2CodeAuthorizationHandler {
         String access_token;
         String token_type;
         String scope;
+        long expires_in;
+        String refresh_token;
     }
 }
