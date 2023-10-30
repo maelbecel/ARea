@@ -3,6 +3,7 @@ package fr.zertus.area.app.spotify;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
+import fr.zertus.area.app.spotify.action.SpotifyNewTrackInPlaylistAction;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import fr.zertus.area.utils.StringUtils;
 
@@ -24,7 +25,9 @@ public class SpotifyApp extends App {
 
     @Override
     public List<Action> getActions() {
-        return null;
+        return List.of(
+            new SpotifyNewTrackInPlaylistAction(getName())
+        );
     }
 
     @Override

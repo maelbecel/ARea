@@ -50,7 +50,7 @@ public class AppController {
                         @ExampleObject(
                             name = "Example response",
                             description = "This is an example with one service",
-                            value = "{\"status\":200,\"message\":\"OK\",\"data\":[{\"name\":\"Github\",\"slug\":\"github\",\"actions\":[],\"reactions\":[],\"decoration\":{\"logoUrl\":\"https://imgur.com/kcALSJQ.png\",\"backgroundColor\":\"#7388D9\"}}]}"
+                            value = "{\"status\":200,\"message\":\"OK\",\"data\":[{\"name\":\"Github\",\"slug\":\"github\",\"hasAuthentification\":true,\"authMethod\":\"oauth2\",\"actions\":[],\"reactions\":[],\"decoration\":{\"logoUrl\":\"https://imgur.com/kcALSJQ.png\",\"backgroundColor\":\"#7388D9\"}}]}"
                         )
                     }
                 )),
@@ -72,7 +72,7 @@ public class AppController {
                     @ExampleObject(
                         name = "Example response",
                         description = "This is an example with github service",
-                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"name\":\"Github\",\"slug\":\"github\",\"actions\":[],\"reactions\":[],\"decoration\":{\"logoUrl\":\"https://imgur.com/kcALSJQ.png\",\"backgroundColor\":\"#7388D9\"}}}"
+                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"name\":\"Github\",\"slug\":\"github\",\"hasAuthentification\":true,\"authMethod\":\"oauth2\",\"actions\":[],\"reactions\":[],\"decoration\":{\"logoUrl\":\"https://imgur.com/kcALSJQ.png\",\"backgroundColor\":\"#7388D9\"}}}"
                     )
                 }
             )
