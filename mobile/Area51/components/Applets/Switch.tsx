@@ -64,22 +64,40 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
             style={[styles.container, {
                 backgroundColor: darkenBg,
                 width: bigSwitch ? '100%' : '60%',
-                borderRadius: bigSwitch ? 50 : 100
+                borderRadius: bigSwitch ? 50 : 100,
+                justifyContent: isChekedState ? 'space-between' : 'flex-start',
             }]}
             disabled={isDisabled}
         >
-            <Text style={[styles.label, {
-                marginLeft: bigSwitch ? '35%' : '12.5%',
-                color: getWriteColor(darkenBg),
-                fontSize: bigSwitch ? 30 : 14,
-            }]}>{isChekedState ? yesLabel : noLabel}</Text>
-            <View style={[, {
-                width: bigSwitch ? 75 : 30,
-                height: bigSwitch ? 75 : 30,
-                borderRadius: bigSwitch ? 35 : 15,
-                transform: [{ translateX: isChekedState ? 0 : -287 }],},
-                isChecked && { backgroundColor: toggleColor ? toggleColor : bgColor }
-            ]}/>
+            {isChekedState ? (
+                <>
+                <Text style={[styles.label, {
+                    marginLeft: bigSwitch ? '35%' : '12.5%',
+                    color: getWriteColor(darkenBg),
+                    fontSize: bigSwitch ? 30 : 14,
+                }]}>{isChekedState ? yesLabel : noLabel}</Text>
+                <View style={[, {
+                    width: bigSwitch ? 75 : 30,
+                    height: bigSwitch ? 75 : 30,
+                    borderRadius: bigSwitch ? 35 : 15 },
+                    isChecked && { backgroundColor: toggleColor ? toggleColor : bgColor }
+                ]}/>
+                </>
+            ) : (
+            <>
+                <View style={[, {
+                    width: bigSwitch ? 75 : 30,
+                    height: bigSwitch ? 75 : 30,
+                    borderRadius: bigSwitch ? 35 : 15 },
+                    isChecked && { backgroundColor: toggleColor ? toggleColor : bgColor }
+                ]}/>
+                <Text style={[styles.label, {
+                    marginLeft: bigSwitch ? '15%' : '12.5%',
+                    color: getWriteColor(darkenBg),
+                    fontSize: bigSwitch ? 30 : 14,
+                }]}>{isChekedState ? yesLabel : noLabel}</Text>
+            </>
+            )}
         </TouchableOpacity>
     );
 };
@@ -88,7 +106,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
         padding: 4,
     },
     label: {
