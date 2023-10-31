@@ -13,6 +13,7 @@ import PlaceHolders, {Dict} from '../api/Placeholders';
 import IngredientButton from '../components/IngredientButton';
 import UserInfosAPI from '../api/UserInfos';
 import * as SecureStore from 'expo-secure-store';
+import AppletDetails from '../api/AppletDetails';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -89,6 +90,7 @@ const ConnectAuth = ({ navigation, route }) => {
   const [reaction, setReaction] = React.useState<Reaction[]>([]);
   const [title, setTitle] = React.useState<string>("");
   const [oAuthStatus, setoAuthStatus] = React.useState<boolean>(false);
+  const [error, seterror] = React.useState<boolean>(false);
   const [description, setDescription] = React.useState<string>("");
   const [inputs, setInput] = React.useState<Input[]>([]);
   const [placeholders, setPlaceholders] = React.useState<Dict>(null);
@@ -142,7 +144,13 @@ const ConnectAuth = ({ navigation, route }) => {
 
   /* The `showForm` function is a helper function that generates a form based on the `inputs` array. */
   const showForm = () => {
-   return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : displayOther(input, index)))}
+    if (error == false && inputs == null) {
+      Alert.alert("Authentification Error", "An error occurred while trying to connect to the API")
+      navigation.goBack();
+      seterror(true);
+      return null;
+    } else if (inputs == null) return null;
+    return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : displayOther(input, index)))}
 
   /**
    * The function `isAllFormFill` checks if all the form inputs have been filled and returns true if
@@ -153,6 +161,7 @@ const ConnectAuth = ({ navigation, route }) => {
    * there are still empty form fields.
    */
   const isAllFormFill = () : boolean => {
+    if (inputs == null) return false;
     for (let i = 0; i < inputs.length; i++) {
       if (inputsResp[i] == null || inputsResp[i] == "" || inputsResp[i] == undefined)
         return false;
@@ -172,8 +181,13 @@ const ConnectAuth = ({ navigation, route }) => {
 
     const response = await UserInfosAPI(token, serverAddress);
     const services = response.data.connectedServices;
+    const hasAuth = (await AppletDetails(slug.split('.')[0])).data.hasAuthentification
 
-    if (services.includes(slug)) {
+    if (services.includes(slug) || !hasAuth) {
+      setoAuthStatus(true);
+      return true;
+    } else {
+      await _openAuthSessionAsync();
       setoAuthStatus(true);
       return true;
     }
@@ -181,10 +195,6 @@ const ConnectAuth = ({ navigation, route }) => {
       Alert.alert("Warning", "You need to set a server address in the settings to use this app");
       navigation.goBack();
       return false;
-    } else {
-      await _openAuthSessionAsync();
-      setoAuthStatus(true);
-      return true;
     }
   }
 
@@ -243,7 +253,9 @@ const ConnectAuth = ({ navigation, route }) => {
       const infoInput = (type == "action") ? await ActionApi(slug) : await ReactionApi(slug, actionSlug);
       const placeHolders = (type == "action") ? null : await PlaceHolders(slug, actionSlug)
 
-      if (info == null) return;
+      if (info == null) {
+        return;
+      }
       setInput(infoInput);
       setColor(info.decoration.backgroundColor);
       setUrl(info.decoration.logoUrl);
