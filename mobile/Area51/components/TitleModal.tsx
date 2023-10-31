@@ -22,7 +22,6 @@ const TitleModal: React.FC<TitleModalProps> = ({ color, title }) => {
       const getData = async () => {
         setTitleInput(title);
         const id = await AsyncStorage.getItem('appletID');
-        console.log("id : ", id);
         setId(id);
       };
       getData();
@@ -31,11 +30,23 @@ const TitleModal: React.FC<TitleModalProps> = ({ color, title }) => {
     const updateTitle = async () => {
         try {
             setModalVisible(false);
-            console.log(titleInput);
             await UpdateAppletTitleWithID(appletID, titleInput);
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const setTitle = (text: string) => {
+      if (text.length <= 140) {
+        setTitleInput(text);
+      }
+    };
+
+    const titleLen = () => {
+        if (titleInput.length >= 0) {
+            return `${titleInput.length}/140`;
+        }
+        return "";
     };
 
     /* The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
@@ -57,10 +68,14 @@ const TitleModal: React.FC<TitleModalProps> = ({ color, title }) => {
                   <Text style={ styles.title }>Edit title</Text>
                   <TextInput
                     style={styles.input}
-                    onChangeText={(text) => setTitleInput(text)}
+                    onChangeText={(text) => setTitle(text)}
                     value={titleInput}
                   />
-                  <Button title="Enregistrer" onPress={updateTitle} color="#363841" />
+                  <Text style={styles.subtitle}>{titleLen()}</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Button title="Annuler" onPress={() => setModalVisible(false)} color="#363841" />
+                    <Button title="Enregistrer" onPress={updateTitle} color="#363841" />
+                  </View>
                 </View>
               </View>
             </Modal>
@@ -83,6 +98,12 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         textAlign: 'center',
     },
+    subtitle: {
+        marginTop: 5,
+        fontSize: 14,
+        marginBottom: 20,
+        textAlign: 'right',
+    },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -100,7 +121,6 @@ const styles = StyleSheet.create({
       height: 40,
       borderColor: 'gray',
       borderWidth: 1,
-      marginBottom: 20,
       paddingHorizontal: 10,
       borderRadius: 20,
     },

@@ -1,6 +1,6 @@
 // --- Librairies import --- //
-import React, { useEffect, useState } from "react";
-import { View, StatusBar, StyleSheet, Alert } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, StatusBar, StyleSheet, RefreshControl } from "react-native";
 
 // --- Components import --- //
 import AppletInfoContainer from "../components/Applets/AppletInfoContainer";
@@ -17,6 +17,16 @@ const MyApplet = ({route}) => {
     const { id } = route.params;
     const navigation = useNavigation();
     const [statusBarHeight, setStatusBarHeight] = useState(0);
+    const [refreshing, setRefreshing] = useState<boolean>(false); // State to store refreshing state
+
+    const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+        setDataApplet(null);
+		await dataFetch();
+		setTimeout(() => {
+		  setRefreshing(false);
+		}, 1000);
+	}, []);
 
     useEffect(() => {
       const getStatusbarHeight = () => {
@@ -27,15 +37,16 @@ const MyApplet = ({route}) => {
 
     }, []);
 
+    const dataFetch = async () => {
+        try {
+            const data = await AppletInfos(id);
+            setDataApplet(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
-        const dataFetch = async () => {
-            try {
-                const data = await AppletInfos(id);
-                setDataApplet(data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
         dataFetch();
     }, [id]);
 
@@ -59,7 +70,9 @@ const MyApplet = ({route}) => {
     }, [bgColor]);
 
     return (
-        <ScrollView>
+        <ScrollView refreshControl={
+			<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+		  }>
             <View style={{ ...styles.container, backgroundColor: bgColor.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : bgColor, paddingTop: statusBarHeight }}>
                 {/* TODO: faire l'engrenage de modification etc */}
                 <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={getWriteColor(bgColor)} iconRight='settings' onPressRight={() => console.log("settings")} />

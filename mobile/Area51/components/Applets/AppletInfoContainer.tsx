@@ -58,7 +58,6 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                 setLastUseDate(formattedLastUseDate);
                 setFormattedDate(formattedDate);
             }
-            console.log("console.log(id) : ", id);
             await AsyncStorage.setItem('appletID', id.toString());
         };
         dataFetch();
