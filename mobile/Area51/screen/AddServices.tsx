@@ -95,7 +95,7 @@ const AddServices = ({navigation, route}) => {
     return reaction.map((item, index) => {
       return (
         <View key={index} style={{ alignItems: 'center', backgroundColor: "#FFF", width: "100%"}}>
-          <ActionChoose  type="reaction" slug={item} onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : index})}  onPressCross={() => {removeItem(item)}}/>
+          <ActionChoose  type="reaction" slug={item} onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : index})}  onPressCross={() => {removeItem(index)}}/>
         </View>
       )
     })
@@ -105,7 +105,7 @@ const AddServices = ({navigation, route}) => {
   screen when the `AddServices` component is rendered. */
   return (
       <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 0, marginTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
-        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})}/>
+        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={() => actionInput = "default"}/>
         {showReactions()}
         {
           (reaction.length >= 9) ? null : (

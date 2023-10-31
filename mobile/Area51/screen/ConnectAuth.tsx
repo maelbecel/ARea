@@ -188,8 +188,15 @@ const ConnectAuth = ({ navigation, route }) => {
       return true;
     } else {
       await _openAuthSessionAsync();
-      setoAuthStatus(true);
-      return true;
+      const verifResponse = await UserInfosAPI(token, serverAddress);
+      const verifServices = verifResponse.data.connectedServices;
+      if (services.includes(slug)) {
+        setoAuthStatus(true);
+        return true;
+      }
+      Alert.alert("Authentification Error", "An error occurred while trying to connect to the API")
+      navigation.goBack();
+      return false;
     }
     if (await AsyncStorage.getItem('serverAddressWarning') == 'true') {
       Alert.alert("Warning", "You need to set a server address in the settings to use this app");
