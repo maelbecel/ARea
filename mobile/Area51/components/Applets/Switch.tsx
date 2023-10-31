@@ -1,7 +1,7 @@
 import React, { createRef, useEffect, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet, DimensionValue } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getWriteColor } from "../ActionCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const darkenColor = (color: string, factor: number, darkMode: boolean): string => {
     if (!darkMode) {
@@ -38,9 +38,10 @@ interface ToggleSwitchProps {
     toggleColor?: string;
     darkMode?: boolean;
     bigSwitch?: boolean;
+    onChange?: () => void;
 }
 
-const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, darkMode = true, bigSwitch = false }) => {
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, darkMode = true, bigSwitch = false, onChange }) => {
 
     const [isChekedState, setIsChecked] = useState<boolean>(false);
     const [darkenBg, setDarkenColor] = useState<string>("#ffffff");
@@ -50,12 +51,12 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
         setDarkenColor(darkenColor(bgColor, 1.2, darkMode));
     }, [bgColor]);
 
-    const handleSwitchChange = () => {
-
+    const handleSwitchChange = async () => {
         setIsChecked(!isChekedState);
-        AsyncStorage.setItem("switchState", JSON.stringify(!isChekedState));
+        if (onChange) {
+            onChange();
+        }
     }
-
 
     return (
         <TouchableOpacity

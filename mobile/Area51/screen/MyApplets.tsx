@@ -69,7 +69,7 @@ const MyApplet = ({route}) => {
                     <AppletInfoContainer
                         name={dataApplet?.data?.name}
                         color={bgColor}
-                        actionSlug={dataApplet?.data?.actionSlug.split('.')[0]}
+                        actionSlug={dataApplet?.data?.actionSlug}
                         reactionsList={dataApplet?.data?.reactions}
                         user={dataApplet?.data?.user?.username}
                         enabled={dataApplet?.data?.enabled}

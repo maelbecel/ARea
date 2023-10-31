@@ -4,9 +4,11 @@ import LogoApplet from "./Logo";
 import ToggleSwitch from "./Switch";
 import SwitchNotifyMe from "./SwitchNotifyMe";
 import MoreDetailsButton from "./MoreDetails";
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import DeleteApplet from "../../api/DeleteApplet";
 import { getWriteColor } from "../ActionCard";
+import TitleModal from "../TitleModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ReactionListProps {
     reactionSlug: string;
@@ -47,14 +49,19 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
     functional component. It takes two arguments: a callback function and an array
     of dependencies. */
     useEffect(() => {
-        if (createdAt !== 0) {
-            const createdAtDate = new Date(createdAt * 1000);
-            const lastUpdateDate = new Date(lastTriggerDate * 1000);
-            const formattedDate = createdAtDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
-            const formattedLastUseDate = lastUpdateDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
-            setLastUseDate(formattedLastUseDate);
-            setFormattedDate(formattedDate);
-        }
+        const dataFetch = async () => {
+            if (createdAt !== 0) {
+                const createdAtDate = new Date(createdAt * 1000);
+                const lastUpdateDate = new Date(lastTriggerDate * 1000);
+                const formattedDate = createdAtDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
+                const formattedLastUseDate = lastUpdateDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
+                setLastUseDate(formattedLastUseDate);
+                setFormattedDate(formattedDate);
+            }
+            console.log("console.log(id) : ", id);
+            await AsyncStorage.setItem('appletID', id.toString());
+        };
+        dataFetch();
     }, []);
 
     const handleDeleteApplet = () => {
@@ -66,11 +73,11 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
         <View style={ styles.container }>
             <View style={{ ...styles.header, backgroundColor: color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color }}>
                 {/* The applet's logo */}
-                <View style={{ flexDirection: 'row' }}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug})} style={{ marginRight: 10, marginLeft: -10 }}>
+                <View style={{ flexDirection: 'row', marginLeft: '2%' }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug.split('.')[0]})} style={{ marginRight: 10, marginLeft: -10 }}>
                         {actionSlug &&
                         <LogoApplet
-                            slug={actionSlug}
+                            slug={actionSlug.split('.')[0]}
                             color={color}
                         />}
                     </TouchableOpacity>
@@ -93,9 +100,7 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                 {/* The user who created the applet and the button to edit the title */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{...styles.text, fontWeight: 'bold', color: getWriteColor(color) }}>by {user}</Text>
-                    <TouchableOpacity onPress={() => console.log("Edit title")}>
-                        <Text style={{...styles.text, fontWeight: 'bold', color: getWriteColor(color) }}>Edit title</Text>
-                    </TouchableOpacity>
+                    <TitleModal color={color} title={name}/>
                 </View>
             </View>
 
@@ -155,7 +160,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 32,
         fontWeight: 'bold',
-        paddingBottom: '1%',
+        paddingVertical: '2%',
         paddingHorizontal: '2%',
         marginBottom: '2%',
     },
