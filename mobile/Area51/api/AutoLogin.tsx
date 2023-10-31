@@ -15,12 +15,12 @@ import { Alert } from 'react-native';
  */
 const AutoLoginAPI  = async (): Promise<boolean> => {
     try {
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
         if (serverAddress == null) {
             return false;
         }
-        const token = await SecureStore.getItemAsync('token_api');
-        const response = await fetch(`${serverAddress}/user/verify?token=` + token, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const response : Response = await fetch(`${serverAddress}/user/verify?token=` + token, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

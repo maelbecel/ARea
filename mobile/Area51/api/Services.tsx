@@ -31,18 +31,18 @@ export type Applet = {
 const Services = async (): Promise<Applet[]> => {
     try {
         let applets: Applet[] = [];
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/service`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/service`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             }
         });
-        const json = await response.json();
+        const json : any = await response.json();
         if (json.data == undefined) return null;
-        for (let i = 0; i < json.data.length; i++) {
+        for (let i : number = 0; i < json.data.length; i++) {
             let action : boolean = (json.data[i].actions.length > 0);
             let reaction : boolean = (json.data[i].reactions.length > 0);
             let tmp : Applet = {slug : json.data[i].slug, name : json.data[i].name, action : action, reaction : reaction, decoration : {backgroundColor : json.data[i].decoration.backgroundColor, logoUrl : json.data[i].decoration.logoUrl}};

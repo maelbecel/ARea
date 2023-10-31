@@ -1,20 +1,27 @@
+/* The code is importing three modules: `SecureStore` from 'expo-secure-store', `AsyncStorage` from
+"@react-native-async-storage/async-storage", and `Alert` from 'react-native'. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from 'react-native';
 
-const AppletMe = async () => {
+/**
+ * The function `AppletMe` makes an API request to retrieve information about the current user's
+ * applet, handling any errors that may occur.
+ * @returns The function `AppletMe` returns the data received from the server, which is the result of
+ * the API call to the `/applet/me` endpoint.
+ */
+const AppletMe = async () : Promise<any> => {
     try {
-        const token = await SecureStore.getItemAsync("token_api");
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/applet/me`, {
+        const token : string = await SecureStore.getItemAsync("token_api");
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/applet/me`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
             });
-        const data = await response.json();
-        console.log("APPLET INFOS");
+        const data : any = await response.json();
         return data;
     } catch (error) {
         if (error == 'TypeError: Network request failed') {
