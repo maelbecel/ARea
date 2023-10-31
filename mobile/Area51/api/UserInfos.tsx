@@ -1,17 +1,23 @@
 import { Alert } from 'react-native';
 
+
 /**
- * The Login function is an asynchronous function that sends a POST request to a login API endpoint
- * with the provided token and serverAddress, and returns the response as JSON.
- * @param {string} token - The `token` parameter is a string that represents the user's token.
- * It is used to identify the user during the login process.
- * @param {string} serverAddress - The `serverAddress` parameter is a string that represents the serverAddress.
- * It is used to authenticate the user during the login process.
- * @returns The function `Login` returns a Promise that resolves to a JSON object.
+ * The function `UserInfosAPI` is an asynchronous function that makes a GET request to a server
+ * endpoint `/user/me` with a token and server address, and returns the response data or displays an
+ * error message if there is an error.
+ * @param {string} token - The `token` parameter is a string that represents the authentication token
+ * required to access the user's information on the server. This token is usually obtained after the
+ * user has successfully logged in and authenticated with the server. It is used to authorize the
+ * user's request to retrieve their information.
+ * @param {string} serverAddress - The `serverAddress` parameter is a string that represents the
+ * address of the server where the API request will be made. It should be in the format of a URL, such
+ * as "https://example.com/api".
+ * @returns The function `UserInfosAPI` returns the data fetched from the server if the request is
+ * successful. If there is an error, it returns `null`.
  */
-const UserInfosAPI  = async (token: string, serverAddress : string) => {
+const UserInfosAPI  = async (token: string, serverAddress : string) : Promise<any> => {
     try {
-        const data = await (
+        const data : any = await (
             await fetch(`${serverAddress}/user/me`, {
                 method: 'GET',
                 headers: {

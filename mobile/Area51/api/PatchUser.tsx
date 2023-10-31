@@ -14,7 +14,7 @@ import { Alert } from 'react-native';
  * the user.
  * @returns the JSON response from the server.
  */
-const PatchUser = async (email: string, password : string, username : string) => {
+const PatchUser = async (email: string | null, password : string | null, username : string | null) => {
     try {
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const token = await SecureStore.getItemAsync('token_api');

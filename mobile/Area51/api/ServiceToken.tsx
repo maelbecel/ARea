@@ -18,9 +18,9 @@ const ServiceToken = async (slug : string): Promise<string> => {
         return null;
     }
     try {
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/service/${slug}/oauth2/token`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/service/${slug}/oauth2/token`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const ServiceToken = async (slug : string): Promise<string> => {
         if (response.status != 200) {
             return null;
         }
-        const json = await response.json();
+        const json : any = await response.json();
         if (json.data == undefined) return null;
         else return json.data;
     } catch (error) {

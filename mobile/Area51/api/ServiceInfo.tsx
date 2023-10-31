@@ -149,9 +149,9 @@ const ServiceInfo = async (slug : string): Promise<Service> => {
         return null;
     }
     try {
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/service/${slug}`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response  : Response = await fetch(`${serverAddress}/service/${slug}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ const ServiceInfo = async (slug : string): Promise<Service> => {
         if (response.status != 200) {
             return null;
         }
-        const json = await response.json();
+        const json : any = await response.json();
         if (json.data == null) return null;
         let service : Service = {slug : json.data.slug, name : json.data.name, actions : null, reactions : null, decoration : {backgroundColor : json.data.decoration.backgroundColor, logoUrl : json.data.decoration.logoUrl, description: json.data.decoration.description, websiteUrl: json.data.decoration.websiteUrl}};
         service.actions = getAction(json.data.actions);

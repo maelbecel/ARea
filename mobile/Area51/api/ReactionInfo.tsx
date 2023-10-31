@@ -14,16 +14,16 @@ import { Alert } from 'react-native';
  */
 const ReactionInfo = async (slug : string): Promise<any> => {
     try {
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/reaction/info/${slug}`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/reaction/info/${slug}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             },
         });
-        const json = await response.json();
+        const json : any = await response.json();
         if (json.data == undefined) return null;
         return json.data;
     } catch (error) {

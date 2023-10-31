@@ -15,17 +15,17 @@ import { Alert } from 'react-native';
  * It is used to authenticate the user during the login process.
  * @returns The function `Login` returns a Promise that resolves to a JSON object.
  */
-const LoginAPI  = async (email: string, password : string) => {
+const LoginAPI  = async (email: string, password : string) : Promise<any> => {
     try {
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/user/login`, {
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({email, password}),
         });
-        const json = await response.json();
+        const json : any = await response.json();
         SecureStore.setItemAsync('token_api', json.data);
         return json;
     } catch (error) {
