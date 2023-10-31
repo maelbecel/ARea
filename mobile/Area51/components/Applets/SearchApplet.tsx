@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ActivityIndicator, Alert } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, ActivityIndicator, Alert, RefreshControl } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import FormInput from "../FormInput";
 import AppletComponent from "./AppletComponent";
@@ -8,10 +9,11 @@ import AppletComponent from "./AppletComponent";
 import AppletMe from "../../api/AppletMe";
 import { ScrollView } from "react-native-gesture-handler";
 
-const SearchApplet = () => {
+const SearchApplet: React.FC = () => {
 	const [applets, setApplets] = useState<any>(null); // State to store applets
 	const [dispApplets, setDispApplets] = useState<any>(null); // State to store applets
 	const [loading, setLoading] = useState<boolean>(true); // State to store loading state
+	const [refreshing, setRefreshing] = useState<boolean>(false); // State to store refreshing state
 
 	const reduceTitle = (title: string) => {
 		if (title.length > 75) {
@@ -20,28 +22,41 @@ const SearchApplet = () => {
 		return title;
 	};
 
+	const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+		setApplets(null);
+		setDispApplets(null);
+		await dataFetch();
+		setTimeout(() => {
+		  setRefreshing(false);
+		}, 1000);
+	  }, []);
+
 	const filterApplets = (name : string) => {
 		if (applets == null) return;
 		let tmp = applets.filter((service: any) => service.name.toLowerCase().includes(name.toLowerCase()));
 		setDispApplets(tmp);
 	}
 
+	const dataFetch = async () => {
+	  try {
+		const data: any = await AppletMe();
+		setApplets(data.data);
+		setDispApplets(data.data);
+		setLoading(false);
+	} catch (error) {
+		console.error("error applet component", error);
+	  }
+	};
+
 	useEffect(() => {
-		const dataFetch = async () => {
-		  try {
-			const data: any = await AppletMe();
-			setApplets(data.data);
-			setDispApplets(data.data);
-			setLoading(false);
-		} catch (error) {
-			console.error("error applet component", error);
-		  }
-		};
 		dataFetch();
 	}, []);
 
 	  return (
-		  <ScrollView style={{ height: "100%", alignContent: "center" }}>
+		  <ScrollView style={{ height: "100%", alignContent: "center" }} refreshControl={
+			<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+		  }>
 			{/* Barre de recherche */}
 			<View style={styles.input}>
 			  <FormInput
