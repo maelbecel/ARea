@@ -34,6 +34,7 @@ const UpdateButton = ({token, email, username, setToken} : UpdateButtonProps) =>
 
             setToken(localStorage.getItem("token") as string);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
     useEffect(() => {

@@ -33,6 +33,7 @@ const MoreDetailsButton = ({isToggle, actionSlug, reactions } : ButtonProps) => 
     useEffect(() => {
         setIsButtonToggle(isToggle);
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchData = async () => {
@@ -90,10 +91,9 @@ const MoreDetailsButton = ({isToggle, actionSlug, reactions } : ButtonProps) => 
                     </div>
                     <div className="flex flex-col w-[100%]">
                         <div className="flex flex-col">
-                            {reactions && Array.isArray(reactions) && reactions.map((reaction) => {
-                                console.log("reaction -> ", reaction);
+                            {reactions && Array.isArray(reactions) && reactions.map((reaction, index: number) => {
                                 return (
-                                    <DetailLogo slug={reaction.reactionSlug}/>
+                                    <DetailLogo key={index} slug={reaction.reactionSlug}/>
                                 );
                             })}
                         </div>
