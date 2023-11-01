@@ -2,8 +2,8 @@
 import React, { createContext, useContext, useEffect, useState, } from 'react';
 
 // --- Interfaces --- //
-import { UserProfile } from './interface';
-import { GetProfile } from './me';
+import { UserProfile } from '../interface/interface';
+import { GetProfile } from '../me';
 
 const UserContext = createContext<{
     user: UserProfile;

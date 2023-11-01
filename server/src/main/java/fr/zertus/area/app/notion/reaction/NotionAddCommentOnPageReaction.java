@@ -7,6 +7,7 @@ import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.BadFormInputException;
 import fr.zertus.area.exception.ReactionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
@@ -27,7 +28,7 @@ public class NotionAddCommentOnPageReaction extends Reaction {
 
     @Override
     public boolean setupReaction(User user, List<FormInput> inputs) throws BadFormInputException {
-        ConnectedService service = user.getConnectedService("notion");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "notion");
         if (service == null) {
             throw new BadFormInputException("You need to connect your Notion account before using this reaction");
         }
@@ -51,7 +52,7 @@ public class NotionAddCommentOnPageReaction extends Reaction {
 
     @Override
     public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws ReactionTriggerException {
-        ConnectedService service = user.getConnectedService("notion");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "notion");
         if (service == null) {
             throw new ReactionTriggerException("You need to connect your Notion account before using this reaction");
         }
@@ -69,6 +70,10 @@ public class NotionAddCommentOnPageReaction extends Reaction {
                 "Notion-Version", "2022-06-28"
             ));
 
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "notion");
+                throw new ReactionTriggerException("Fail to connect to Notion - User is not connected to Notion");
+            }
             if (response.getStatus() != 200) {
                 throw new ReactionTriggerException("An error occurred while adding comment");
             }

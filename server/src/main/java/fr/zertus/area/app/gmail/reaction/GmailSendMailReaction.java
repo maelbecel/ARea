@@ -9,6 +9,7 @@ import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.BadFormInputException;
 import fr.zertus.area.exception.ReactionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.service.RegisterUserService;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
@@ -30,7 +31,7 @@ public class GmailSendMailReaction extends Reaction {
 
     @Override
     public boolean setupReaction(User user, List<FormInput> inputs) throws BadFormInputException {
-        if (user.getConnectedService("google") == null)
+        if (AuthManagerService.getConnectedService(user, "google") == null)
             throw new BadFormInputException("Google service is not connected");
 
         String email = FormInputUtils.getValue("to", inputs);
@@ -45,7 +46,7 @@ public class GmailSendMailReaction extends Reaction {
 
     @Override
     public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws ReactionTriggerException {
-        ConnectedService service = user.getConnectedService("google");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "google");
         if (service == null)
             throw new ReactionTriggerException("Google service is not connected");
         GoogleUserInfo userInfo = GoogleApp.getUserInfo(service);
@@ -59,10 +60,14 @@ public class GmailSendMailReaction extends Reaction {
 
         try {
             ApiResponse<String> response = BasicApiClient.sendPostRequest(url, email, String.class, Map.of(
-                "Authorization", "Bearer " + user.getConnectedService("google").getToken(),
+                "Authorization", "Bearer " + service.getToken(),
                 "Content-Type", "message/rfc822")
             );
 
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "google");
+                throw new ReactionTriggerException("Fail to connect to Google - User is not connected to Google");
+            }
             if (response.getStatus() < 200 || response.getStatus() >= 300)
                 throw new ReactionTriggerException("Failed to send mail: " + response.getData());
             return true;

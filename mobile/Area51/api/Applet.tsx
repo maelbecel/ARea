@@ -29,18 +29,9 @@ import {Input} from  './ServiceInfo'
  * creating an applet.
  * @returns a Promise<boolean>.
  */
-const Applet = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string, reactionInputs : Input[], reactionResp : Array<any>): Promise<boolean> => {
+const Applet = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string[], reactionInputs : Input[][], reactionResp : Array<any>): Promise<boolean | any> => {
     try {
         let inputs : Input[] = [];
-        console.log("============= New Applet ====================")
-        console.log("Name: " + name)
-        console.log("Action: " + actionSlug)
-        console.log("Action Inputs: ", actionInputs)
-        console.log("Action Response: ", actionResp)
-        console.log("Reaction: " + reactionSlug)
-        console.log("Reaction Inputs: ", reactionInputs)
-        console.log("Reaction Response: ", reactionResp)
-        console.log("=============================================")
         const token = await SecureStore.getItemAsync('token_api');
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const response = await fetch(`${serverAddress}/applet`, {
@@ -53,20 +44,24 @@ const Applet = async (name : string, actionSlug : string, actionInputs : Input[]
                 notifUser: true,
                 name: name,
                 actionSlug: actionSlug,
-                reactionSlug: reactionSlug,
+                enabled: true,
                 actionInputs: actionInputs.map((input, index) => {
-                    return {name: input.name, label : input.label, type : input.type, value : actionResp[index], valid : true}
+                    return {name: input.name, label : input.label, type : input.type, value : actionResp[index]}
                 }),
-                reactionInputs: reactionInputs.map((input, index) => {
-                    return {name: input.name, label : input.label, type : input.type, value : reactionResp[index], valid : true}
-                })
-            })
+                reactions: reactionSlug.map((reaction, index) => { return {
+                    reactionSlug: reaction,
+                    reactionInputs: reactionInputs[index].map((input, indexr) => {
+                        return {name: input.name, label : input.label, type : input.type, value : reactionResp[index][indexr]}
+                    })
+                }})
+            }, null, 4)
         });
-        console.log(response.status);
         const json = await response.json();
-        console.log("Applet say : ", json)
-        if (json.data == undefined) return false;
-        return true;
+        if (json.data == undefined) {
+            alert("Error " + response.status + " : " + json.detail)
+            return false;
+        }
+        return json.data;
     } catch (error) {
         console.error(error);
         return false;

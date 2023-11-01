@@ -6,6 +6,13 @@ import Image from "next/image";
 import { Card, inputs } from "../interface";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
+import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import { useRouter } from "next/router";
+import { GetServices } from "../../../../utils/api/service/service";
+import { Service } from "../../../../utils/api/service/interface/interface";
+import { GetReactionInputs } from "../../../../utils/api/reaction/reaction";
+import { GetActionInputs } from "../../../../utils/api/action/action";
 
 const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
     const theme = getTheme(color);
@@ -42,7 +49,7 @@ const ActionInfoContainer = ({ color, theme, url, title } : { color: string, the
 
 const TextField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
     return (
-        <div className='flex flex-col w-[50%]'>
+        <div className='flex flex-col w-[90%] lg:w-[50%]'>
             <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
                 {input.label}
             </span>
@@ -64,7 +71,7 @@ const TextField = ({ input, color, theme, array, setArray, index, id }: { input:
 
 const NumberField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
     return (
-        <div className='flex flex-col w-[50%]'>
+        <div className='flex flex-col w-[90%] lg:w-[50%]'>
             <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
                 {input.label}
             </span>
@@ -88,7 +95,7 @@ const NumberField = ({ input, color, theme, array, setArray, index, id }: { inpu
 
 const SelectField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
     return (
-        <div className='flex flex-col w-[50%]'>
+        <div className='flex flex-col w-[90%] lg:w-[50%]'>
             <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
                 {input.label}
             </span>
@@ -130,7 +137,7 @@ const ValidateTriggersButton = ({ props, callback, text }  : { props: any | unde
     const theme = getTheme(props?.decoration?.backgroundColor);
 
     return (
-        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] p-[27px] pl-[130px] pr-[130px]`}
+        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] py-[10px] md:py-[27px] w-[90%] md:w-[75%] lg:w-[50%] xl:w-[25%]`}
             style={{
                 backgroundColor: active ? props?.decoration?.backgroundColor : (theme === 'dark' ? 'white' : '#363841'),
                 color          : active ? (theme === 'dark' ? 'white' : '#363841') : props?.decoration?.backgroundColor,
@@ -147,67 +154,65 @@ const ValidateTriggersButton = ({ props, callback, text }  : { props: any | unde
     )
 };
 
-const FillActionInputsPages = ({ setPages, token, service, slug, index, array, setArray, EditMode }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, EditMode: boolean }) => {
+const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray, EditMode }: { setPages: Dispatch<SetStateAction<number>>, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, EditMode: boolean }) => {
     const [props, setProps] = useState<any | undefined>(undefined);
     const [actionProps, setActionProps] = useState<any | undefined>(undefined);
     const [theme, setTheme] = useState<string>("light");
 
+    const { services, setServices } = useServices();
+    const { token, setToken } = useToken();
+
+    const router = useRouter();
+
+    const getServices = async (token: string) => {
+        setServices(await GetServices(token));
+    };
+
     useEffect(() => {
         if (props !== undefined)
             return;
-
-        const getService = async (slug: string) => {
-            try {
-                const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization : `Bearer ${token}`
-                    },
-                });
-
-                const data = await response.json();
-
-                setProps(data?.data);
-            } catch (error) {
-                console.log(error);
+        if (services.length === 0) {
+            if (token === "") {
+                const tokenStore = localStorage.getItem("token");
+                
+                if (tokenStore === null) {
+                    router.push("/");
+                    return;
+                }
+                setToken(tokenStore);
             }
-        };
+            getServices(token);
+        }
 
-        getService(service);
-    }, [props, service, token]);
+        const Service: Service | undefined = services.find((Service: Service) => Service.slug === service);
+
+        setProps(Service);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props, services, token, service]);
 
     useEffect(() => {
         if (actionProps !== undefined && props !== undefined)
             return;
 
-            const getAction = async (service: string, slug: string) => {
-            try {
-                const response = await fetch(`https://area51.zertus.fr/${index === 0 ? `action/${slug}` : `reaction/${slug}/${array[0].slug}`}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization : `Bearer ${token}`
-                    },
-                });
+        const getAction = async (slug: string) => {
+            let response: any;
 
-                const data = await response.json();
+            if (index === 0)
+                response = await GetActionInputs(token, slug);
+            else
+                response = await GetReactionInputs(token, slug, array[0].slug);
 
-                setActionProps(data?.data);
+            setActionProps(response);
+            setArray((prev) => {
+                const newArray = [...prev];
 
-                setArray((prev) => {
-                    const newArray = [...prev];
+                newArray[index].fields = response?.inputs as inputs[];
 
-                    newArray[index].fields = data?.data?.inputs;
-
-                    return (newArray);
-                });
-            } catch (error) {
-                console.log(error);
-            }
+                return (newArray);
+            });
         };
 
-        getAction(service, slug);
+        getAction(slug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index, service, slug, token, actionProps, array]);
 
@@ -226,7 +231,7 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
                 }}
                 color={props?.decoration?.backgroundColor}
             />
-            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col`}
+            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col py-[5px]`}
                 style={{
                     backgroundColor: props?.decoration?.backgroundColor,
                     color: theme === 'dark' ? '#ffffff' : '#363841'
@@ -234,7 +239,7 @@ const FillActionInputsPages = ({ setPages, token, service, slug, index, array, s
             >
                 <ActionInfoContainer color={props?.decoration?.backgroundColor} theme={theme} url={props?.decoration?.logoUrl} title={props?.name} />
                 {actionProps?.placeholders &&
-                    <ul className='w-[50%] text-[24px]'>
+                    <ul className='w-[90%] lg:w-[50%] text-[18px]  md:text-[24px]'>
                         {Object.keys(actionProps.placeholders).map((key) => (
                             <li key={key}>
                                 <strong>{key}: </strong> {actionProps.placeholders[key]}

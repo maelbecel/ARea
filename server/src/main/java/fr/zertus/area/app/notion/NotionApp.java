@@ -5,6 +5,7 @@ import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
 import fr.zertus.area.app.notion.reaction.NotionAddCommentOnPageReaction;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.utils.IPGetter;
 import fr.zertus.area.utils.StringUtils;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class NotionApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://area51.zertus.fr/service/notion/image", "#FFFFFF",
+        return new AppDecoration(IPGetter.getServerBaseAddress() + "/service/notion/image", "#FFFFFF",
             "A new tool that blends your everyday work apps into one. It's the all-in-one workspace for you and your team.", "https://www.notion.so/");
     }
 

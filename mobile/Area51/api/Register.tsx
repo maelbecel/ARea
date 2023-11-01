@@ -4,6 +4,7 @@ securely store sensitive data, such as user authentication tokens or API keys, o
 provides methods for storing, retrieving, and deleting data from the secure storage. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 /**
  * The Register function is an asynchronous function that sends a POST request to the specified API
@@ -29,6 +30,11 @@ const RegisterAPI = async (email: string, password : string, username : string) 
         SecureStore.setItemAsync('token_api', json.data);
         return json;
     } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+            Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
         console.error(error);
         return null;
     }

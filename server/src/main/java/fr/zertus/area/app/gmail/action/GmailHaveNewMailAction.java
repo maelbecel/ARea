@@ -10,6 +10,7 @@ import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.utils.ActionTriggerUtils;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
@@ -38,7 +39,7 @@ public class GmailHaveNewMailAction extends Action implements ManualTrigger {
 
     @Override
     public void setupAction(User user, List<FormInput> inputs) throws ActionTriggerException {
-        ConnectedService service = user.getConnectedService("google");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "google");
         if (service == null)
             throw new ActionTriggerException("Google service is not connected");
 
@@ -49,6 +50,10 @@ public class GmailHaveNewMailAction extends Action implements ManualTrigger {
                 "Authorization", "Bearer " + service.getToken()
             ));
 
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "google");
+                throw new ActionTriggerException("Google service is not connected");
+            }
             if (response.getStatus() < 200 || response.getStatus() >= 300)
                 throw new ActionTriggerException("Error while getting the historyId: " + response.getData().toString());
             if (response.getData().getMessages().isEmpty()) {
@@ -60,6 +65,10 @@ public class GmailHaveNewMailAction extends Action implements ManualTrigger {
             ApiResponse<GmailMail> response1 = BasicApiClient.sendGetRequest(getUrl, GmailMail.class, Map.of(
                 "Authorization", "Bearer " + service.getToken()
             ));
+            if (response1.getStatus() == 401 || response1.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "google");
+                throw new ActionTriggerException("Google service is not connected");
+            }
             if (response1.getStatus() < 200 || response1.getStatus() >= 300)
                 throw new ActionTriggerException("Error while getting the historyId: " + response1.getData().toString());
             inputs.add(FormInput.createHiddenInput("historyId", "HistoryId", response1.getData().getHistoryId()));
@@ -82,7 +91,7 @@ public class GmailHaveNewMailAction extends Action implements ManualTrigger {
         String historyId = FormInputUtils.getValue("historyId", inputs);
         String url = "https://gmail.googleapis.com/gmail/v1/users/me/history?startHistoryId=" + historyId
             + "&historyTypes=messageAdded";
-        ConnectedService service = user.getConnectedService("google");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "google");
         if (service == null)
             throw new ActionTriggerException("Google service is not connected");
 
@@ -91,7 +100,8 @@ public class GmailHaveNewMailAction extends Action implements ManualTrigger {
                 "Authorization", "Bearer " + service.getToken()
             ));
 
-            if (response.getStatus() == 401) {
+            if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "google");
                 throw new ActionTriggerException("Google service is not connected");
             }
             if (response.getStatus() < 200 || response.getStatus() >= 300)
@@ -129,7 +139,7 @@ public class GmailHaveNewMailAction extends Action implements ManualTrigger {
         GmailMail mail = response.getData();
         if (mail == null)
             return null;
-        if (mail.getFromMail().equalsIgnoreCase(usermail)) {
+        if (mail.getFromMail().equalsIgnoreCase(usermail) || mail.getFromMail().contains("zertus.fr")) {
             return null;
         }
         return Map.of(

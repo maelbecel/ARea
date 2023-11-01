@@ -2,13 +2,16 @@ package fr.zertus.area.app.twitch;
 
 import fr.zertus.area.app.github.GithubOAuth2Handler;
 import fr.zertus.area.entity.ConnectedService;
+import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.utils.BasicApiClient;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Set;
 
 public class TwitchOAuth2Handler extends OAuth2CodeAuthorizationHandler {
@@ -19,7 +22,27 @@ public class TwitchOAuth2Handler extends OAuth2CodeAuthorizationHandler {
         TwitchOAuth2Token token = restTemplate.postForObject(tokenUrl, body, TwitchOAuth2Token.class);
         if (token == null || token.getAccess_token() == null)
             return null;
-        return new ConnectedService("twitch", token.getAccess_token(), null);
+        return new ConnectedService("twitch", token.getAccess_token(), null, token.getRefresh_token(), token.getExpires_in(), System.currentTimeMillis());
+    }
+
+    @Override
+    public ConnectedService refreshToken(ConnectedService service, MultiValueMap<String, String> body) {
+        String bodyXml = "grant_type=refresh_token&refresh_token=" + service.getRefreshToken() +
+            "&client_id=" + body.getFirst("client_id") +
+            "&client_secret=" + body.getFirst("client_secret");
+        String url = "https://id.twitch.tv/oauth2/token";
+
+        try {
+            ApiResponse<TwitchOAuth2Token> response = BasicApiClient.sendPostRequest(url, bodyXml, TwitchOAuth2Token.class, Map.of(
+                "Content-Type", "application/x-www-form-urlencoded"
+            ));
+
+            if (response.getStatus() < 200 || response.getStatus() >= 300)
+                return null;
+            return new ConnectedService("twitch", response.getData().getAccess_token(), null, response.getData().getRefresh_token(), response.getData().getExpires_in(), System.currentTimeMillis());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -48,6 +71,8 @@ public class TwitchOAuth2Handler extends OAuth2CodeAuthorizationHandler {
     public static class TwitchOAuth2Token {
         String access_token;
         String token_type;
+        long expires_in;
+        String refresh_token;
     }
 
 }

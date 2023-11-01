@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { UpdateAppletWithID } from "../../utils/api/applet/applet";
 
 interface ToggleSwitchProps {
     isCheked: boolean;
@@ -6,12 +8,14 @@ interface ToggleSwitchProps {
     yesLabel: string;
     noLabel: string;
     bgColor: string;
+    id: string;
 }
 
-const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor } : ToggleSwitchProps) => {
+const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor, id } : ToggleSwitchProps) => {
     
     const [isChekedState, setIsChecked] = useState<boolean>(false);
     const [color, setColor] = useState<string>("#ffffff");
+    const { token, setToken } = useToken();
 
     useEffect(() => {
         setIsChecked(isCheked);
@@ -21,12 +25,16 @@ const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor } : Togg
 
     const handleSwitchChange = () => {
 
-        setIsChecked(!isChekedState);
-
         if (isChekedState == true) {
             console.log("disabled");
+            const value = {enabled: false};
+            setIsChecked(false);
+            UpdateAppletWithID(token, id, value);
         } else {
             console.log("enabled");
+            const value = {enabled: true};
+            setIsChecked(true);
+            UpdateAppletWithID(token, id, value);
         }
     }
   
@@ -35,7 +43,7 @@ const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor } : Togg
             <div className="flex justify-center duration-500 w-[100%] h-[100%]">
                 <button
                     onClick={handleSwitchChange}
-                    className="w-[24%] h-[75px] relative"
+                    className="sm:w-[40%] lg:w-[25%] w-[80%] h-[75px] relative"
                     disabled={isDisable}
                 >
                     <div style={{ backgroundColor: color }} className={`h-[100%] w-[100%] rounded-[50px] duration-500 p-[4px] flex items-center`}>

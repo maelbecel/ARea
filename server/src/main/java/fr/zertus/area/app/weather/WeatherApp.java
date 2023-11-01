@@ -4,6 +4,7 @@ import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
 import fr.zertus.area.app.weather.action.WeatherWhenTempChangeAction;
+import fr.zertus.area.utils.IPGetter;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class WeatherApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://area51.zertus.fr/service/weather/image", "#00aed1");
+        return new AppDecoration(IPGetter.getServerBaseAddress() + "/service/weather/image", "#00aed1");
     }
 
 }

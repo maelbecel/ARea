@@ -1,5 +1,5 @@
-import React, { Children, Dispatch, ReactFragment, SetStateAction, useState } from "react";
-import Link from "next/link";
+import React, { Children, Dispatch, ReactFragment, SetStateAction, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 interface InputProps {
     placeholder : string
@@ -11,12 +11,19 @@ interface InputProps {
 
 interface FormProfileProps {
     mail        : string
-    password    : string
     username    : string
+    password    : string
+    setUsernameFunction : Dispatch<SetStateAction<string>>;
+    setMailFunction : Dispatch<SetStateAction<string>>;
 }
 
 const Input = ({placeholder, secureMode = false, value, setValue, label } : InputProps) => {
+    const router = useRouter();
 
+    const navigateToChangePassword = () => {
+        router.push("/profile/changePassword");
+    }
+    
     return (
         <div className="flex flex-col">
             <label className="text-[#363841] font-bold text-[28px]">{label}</label>            
@@ -30,24 +37,29 @@ const Input = ({placeholder, secureMode = false, value, setValue, label } : Inpu
                 />
                 { secureMode && 
                     <div className="font-bold text-[18px] text-[#00C2FF] pl-[10px]">
-                        <Link href="#">Change password ?</Link>
+                        <button onClick={navigateToChangePassword}>
+                            Change password ?
+                        </button>
                     </div>
                 }
         </div>
     )
 }
 
-const FormProfile = ({username, mail, password} : FormProfileProps) => {
-    const [UserName, setUsername] = useState<string>(username ?? '')
-    const [UserMail, setUserMail] = useState<string>(mail ?? '')
-    const [UserPassword, setUserPassword] = useState<string>(password ?? '')
+const FormProfile = ({username, mail, password, setUsernameFunction, setMailFunction} : FormProfileProps) => {
 
     return (
-        <div className="flex justify-center flex-col gap-y-10">
-            <label className="text-[#363841] font-bold text-[42px]">Account</label>
-            <Input placeholder="Username" value={UserName} setValue={setUsername} label="Username"/>
-            <Input placeholder="Password" secureMode={true} value={UserPassword} setValue={setUserPassword} label="Password"/>
-            <Input placeholder="Mail" value={UserMail} setValue={setUserMail} label="Mail"/>
+        <div className="flex justify-center flex-col items-center gap-y-10 w-[100%]">
+            <label className="text-[#363841] font-bold text-[42px] text-center">Account</label>
+            <div className="w-[100%]">
+                <Input placeholder="Username" value={username} setValue={setUsernameFunction} label="Username"/>
+            </div>
+            <div className="w-[100%]">
+                <Input placeholder="Password" secureMode={true} value={password} setValue={setUsernameFunction} label="Password"/>
+            </div>
+            <div className="w-[100%]">
+                <Input placeholder="Mail" value={mail} setValue={setMailFunction} label="Mail"/>
+            </div>
         </div>
     );
 }

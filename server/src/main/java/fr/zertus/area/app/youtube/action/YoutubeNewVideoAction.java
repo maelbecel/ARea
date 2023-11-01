@@ -8,6 +8,7 @@ import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
+import fr.zertus.area.utils.IPGetter;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -37,7 +38,7 @@ public class YoutubeNewVideoAction extends Action {
         String url = "https://pubsubhubbub.appspot.com/subscribe";
 
         RestTemplate restTemplate = new RestTemplate();
-        String body = "hub.callback=https://area51.zertus.fr/webhook/youtube&hub.topic=https%3A%2F%2Fwww.youtube.com%2Fxml%2Ffeeds%2Fvideos.xml%3Fchannel_id%3D" + channelId + "&hub.verify=sync&hub.mode=subscribe";
+        String body = "hub.callback=" + IPGetter.getServerBaseAddress() + "/webhook/youtube&hub.topic=https%3A%2F%2Fwww.youtube.com%2Fxml%2Ffeeds%2Fvideos.xml%3Fchannel_id%3D" + channelId + "&hub.verify=sync&hub.mode=subscribe";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); // Set content type to application/x-www-form-urlencoded

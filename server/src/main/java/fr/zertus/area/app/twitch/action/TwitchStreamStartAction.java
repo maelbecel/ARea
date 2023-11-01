@@ -9,10 +9,8 @@ import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
-import fr.zertus.area.utils.BasicApiClient;
-import fr.zertus.area.utils.FormInput;
-import fr.zertus.area.utils.FormInputUtils;
-import fr.zertus.area.utils.StringUtils;
+import fr.zertus.area.service.AuthManagerService;
+import fr.zertus.area.utils.*;
 
 import java.util.List;
 import java.util.Map;
@@ -40,12 +38,11 @@ public class TwitchStreamStartAction extends Action {
             throw new ActionTriggerException("Channel not found");
 
         // Create subscription
-        String serverUrl = System.getenv("SERVER_BASE_URL") != null ? System.getenv("SERVER_BASE_URL") : "https://area51.zertus.fr";
         TwitchSubscriptionBody twitchSubscriptionBody = new TwitchSubscriptionBody(
             "stream.online",
             "1",
             new TwitchSubscriptionBody.Condition(FormInputUtils.getValue("channel_id", inputs)),
-            new TwitchSubscriptionBody.Transport("webhook", serverUrl + "/webhook/twitch", "StateForUserWebhook")
+            new TwitchSubscriptionBody.Transport("webhook", IPGetter.getServerBaseAddress() + "/webhook/twitch", "StateForUserWebhook")
         );
         try {
             TwitchAppToken appToken = TwitchApp.getAppToken();
@@ -55,6 +52,7 @@ public class TwitchStreamStartAction extends Action {
                 Map.of("Authorization", "Bearer " + appToken.getAccess_token(), "Client-Id", appToken.getClientId()));
 
             if (response.getStatus() == 401 || response.getStatus() == 403) {
+                AuthManagerService.tokenNotValid(user, "twitch");
                 throw new ActionTriggerException("Fail to connect to Twitch - User is not connected to Twitch");
             }
             if (response.getStatus() == 409) {

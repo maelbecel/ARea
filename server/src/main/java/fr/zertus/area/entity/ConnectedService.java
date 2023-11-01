@@ -14,5 +14,8 @@ public class ConnectedService {
     String slug;
     String token;
     String data;
+    String refreshToken;
+    long expiration;
+    long tokenDate;
 
 }

@@ -1,7 +1,9 @@
 package fr.zertus.area.app.spotify;
 
 import fr.zertus.area.entity.ConnectedService;
+import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.utils.BasicApiClient;
 import lombok.Data;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Set;
 
 public class SpotifyOAuth2Handler extends OAuth2CodeAuthorizationHandler {
@@ -35,9 +38,27 @@ public class SpotifyOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             SpotifyOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
-            return new ConnectedService("spotify", token.getAccess_token(), null);
+            return new ConnectedService("spotify", token.getAccess_token(), null, token.getRefresh_token(), token.getExpires_in(), System.currentTimeMillis());
         } else {
             System.err.println("Error: " + responseEntity.getStatusCode());
+            return null;
+        }
+    }
+
+    @Override
+    public ConnectedService refreshToken(ConnectedService service, MultiValueMap<String, String> body) {
+        String bodyXml = "grant_type=refresh_token&refresh_token=" + service.getRefreshToken();
+        String url = "https://accounts.spotify.com/api/token";
+
+        try {
+            ApiResponse<SpotifyOAuth2Token> response = BasicApiClient.sendPostRequest(url, bodyXml, SpotifyOAuth2Token.class, Map.of(
+                "Content-Type", "application/x-www-form-urlencoded"
+            ));
+
+            if (response.getStatus() < 200 || response.getStatus() >= 300)
+                return null;
+            return new ConnectedService("spotify", response.getData().getAccess_token(), null, response.getData().getRefresh_token(), response.getData().getExpires_in(), System.currentTimeMillis());
+        } catch (Exception e) {
             return null;
         }
     }

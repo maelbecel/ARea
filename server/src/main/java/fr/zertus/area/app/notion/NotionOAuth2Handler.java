@@ -51,7 +51,7 @@ public class NotionOAuth2Handler extends OAuth2CodeAuthorizationHandler {
             NotionOAuth2Token token = responseEntity.getBody();
             if (token == null || token.getAccess_token() == null)
                 return null;
-            return new ConnectedService("notion", token.getAccess_token(), null);
+            return new ConnectedService("notion", token.getAccess_token(), null, null, 0, System.currentTimeMillis());
         } else {
             System.err.println("Error: " + responseEntity.getStatusCode());
             return null;

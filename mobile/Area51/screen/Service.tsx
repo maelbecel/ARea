@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { Text, View, StatusBar, Image, StyleSheet, ScrollView } from 'react-native';
+import {Alert, Text, View, StatusBar, Image, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
 import ServiceInfo, {Action, Reaction} from '../api/ServiceInfo';
 import ActionCard from '../components/ActionCard';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -87,7 +90,7 @@ const Service = ({ navigation, route }) => {
    */
   const displayReactions = () => {
     return reaction.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: "reaction" })}/>
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('Create')}/>
     ));
   }
 
@@ -102,8 +105,8 @@ const Service = ({ navigation, route }) => {
     const fetchData = async () => {
       try {
         const service = await ServiceInfo(slug);
-        setColor(service.decoration.backgroundColor);
-        setUrl(service.decoration.logoUrl);
+        (service.decoration.backgroundColor) ? setColor(service.decoration.backgroundColor) : null;
+        (service.decoration.logoUrl != "") ? setUrl(service.decoration.logoUrl) : null;
         setName(service.name);
         setAction(service.actions);
         setReaction(service.reactions);
@@ -121,11 +124,11 @@ const Service = ({ navigation, route }) => {
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
       <View style={[{ backgroundColor: color }, styles.container]}>
-        <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='info' onPressRight={() => navigation.goBack()} />
+        <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='info' onPressRight={() => navigation.navigate("Info", {slug : slug})} />
         <Image source={{ uri: url }} style={styles.logo} />
         <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
       </View>
-      <ScrollView >
+      <ScrollView>
         <View style={styles.action}>
           {displayActions()}
           {displayReactions()}
@@ -165,6 +168,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     marginBottom: 60,
+    paddingBottom: 250,
   }
 });
 

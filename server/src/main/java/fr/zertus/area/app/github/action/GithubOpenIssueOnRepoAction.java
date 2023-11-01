@@ -9,9 +9,11 @@ import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
+import fr.zertus.area.utils.IPGetter;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -35,7 +37,7 @@ public class GithubOpenIssueOnRepoAction extends Action {
 
     @Override
     public List<FormInput> getInputs(User user) {
-        ConnectedService service = user.getConnectedService("github");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "github");
         if (service == null)
             return super.getInputs(user);
         List<String> options = GithubApp.getRepositories(service.getToken());
@@ -46,15 +48,15 @@ public class GithubOpenIssueOnRepoAction extends Action {
 
     @Override
     public void setupAction(User user, List<FormInput> inputs) throws ActionTriggerException {
-        ConnectedService service = user.getConnectedService("github");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "github");
         if (service == null)
             throw new ActionTriggerException("You need to connect your Github account first");
         String input = FormInputUtils.getValue("repository", inputs);
         String url = "https://api.github.com/repos/" + input + "/hooks";
         GithubWebhookSetup body = new GithubWebhookSetup("web", true, List.of("issues"),
-            new GithubWebhookSetup.Config("https://area51.zertus.fr/webhook/github", "json", "0"));
+            new GithubWebhookSetup.Config(IPGetter.getServerBaseAddress() + "/webhook/github", "json", "0"));
 
-        GithubApp.setupWebhook(url, service.getToken(), body);
+        GithubApp.setupWebhook(url, service.getToken(), body, user);
     }
 
     @Override

@@ -7,6 +7,7 @@ import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.BadFormInputException;
 import fr.zertus.area.exception.ReactionTriggerException;
 import fr.zertus.area.payload.response.ApiResponse;
+import fr.zertus.area.service.AuthManagerService;
 import fr.zertus.area.utils.BasicApiClient;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.FormInputUtils;
@@ -29,7 +30,7 @@ public class GithubCommentIssueReaction extends Reaction {
 
     @Override
     public List<FormInput> getInputs(User user) {
-        ConnectedService service = user.getConnectedService("github");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "github");
         if (service == null)
             return super.getInputs(user);
         List<String> options = GithubApp.getRepositories(service.getToken());
@@ -42,7 +43,7 @@ public class GithubCommentIssueReaction extends Reaction {
 
     @Override
     public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws ReactionTriggerException {
-        ConnectedService service = user.getConnectedService("github");
+        ConnectedService service = AuthManagerService.getConnectedService(user, "github");
         if (service == null)
             throw new ReactionTriggerException("You must be connected to github to use this reaction");
 
@@ -59,7 +60,8 @@ public class GithubCommentIssueReaction extends Reaction {
             ));
             if (response.getStatus() == 201)
                 return true;
-            if (response.getStatus() == 403) {
+            if (response.getStatus() == 403 || response.getStatus() == 401) {
+                AuthManagerService.tokenNotValid(user, "github");
                 throw new ReactionTriggerException("You don't have the permission to comment on this issue");
             }
             if (response.getStatus() == 404) {

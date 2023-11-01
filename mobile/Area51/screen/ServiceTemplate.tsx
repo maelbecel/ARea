@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Text, View, StatusBar, Image, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
-import ServiceInfo, {Action, Reaction} from '../api/ServiceInfo';
+import ServiceInfo, {Action, Reaction, Service} from '../api/ServiceInfo';
 import ActionCard from '../components/ActionCard';
 
 /**
@@ -59,7 +59,7 @@ const getWriteColor = (color: string): string => {
 template. It takes in `navigation` and `route` as props, which are provided by React Navigation. The
 `route` prop contains the parameters passed to the component. */
 const ServiceTemplate = ({ navigation, route }) => {
-  const { slug, type, actionInput, reactionInput } = route.params;
+  const { slug, type, actionInput, reactionInput, index } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
@@ -73,8 +73,8 @@ const ServiceTemplate = ({ navigation, route }) => {
    * @returns The `displayActions` function is returning an array of `ActionCard` components.
    */
   const displayActions = () => {
-    return action.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput})}/>
+    return action.map((service: any) => (
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index})}/>
     ));
   };
 
@@ -84,12 +84,15 @@ const ServiceTemplate = ({ navigation, route }) => {
    * @returns The `displayReactions` function is returning an array of `ActionCard` components.
    */
   const displayReactions = () => {
-    return reaction.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput })}/>
+    return reaction.map((service: any) => (
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index })}/>
     ));
   }
 
 
+  /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
+  case, the `useEffect` hook is used to fetch data from a service and update the state variables
+  based on the fetched data. */
   React.useEffect(() => {
     /**
      * The function fetchData fetches data from a service and sets various state variables based on the
@@ -97,8 +100,9 @@ const ServiceTemplate = ({ navigation, route }) => {
      */
     const fetchData = async () => {
       try {
+        const service = await ServiceInfo(slug);
         setColor(service.decoration.backgroundColor);
-        setUrl(service.decoration.logoUrl);
+        (service.decoration.logoUrl != "") ? setUrl(service.decoration.logoUrl) : null;
         setName(service.name);
         setAction(service.actions);
         setReaction(service.reactions);
@@ -159,6 +163,8 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     marginBottom: 60,
+    paddingBottom: 250,
+
   }
 });
 
