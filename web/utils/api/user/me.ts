@@ -67,15 +67,15 @@ const DeleteProfile = async (token: string, router: NextRouter) => {
             }
         });
 
-        const data = await response.json();
+        console.log("response -> ", response.status);
 
-        if (data?.status === 400) {
+        if (response.status === 400) {
             console.log("[DELETE] .../user/me (Error: 400): \"Bad user id\".");
             return null;
         }
 
         console.log("[DELETE] .../user/me: \"User deleted\".");
-        console.log(data);
+        console.log(response);
 
         localStorage.removeItem("token");
         router.push("/");
