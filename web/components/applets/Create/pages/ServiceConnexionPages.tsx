@@ -15,6 +15,7 @@ import { useServices } from "../../../../utils/api/service/Providers/ServiceProv
 import { GetServices } from "../../../../utils/api/service/service";
 import { Service } from "../../../../utils/api/service/interface/interface";
 import { OAuth2GetToken } from "../../../../utils/api/service/oauth2";
+import { useUser } from "../../../../utils/api/user/Providers/UserProvider";
 
 const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Dispatch<SetStateAction<number>> }) => {
     const theme = getTheme(color);
@@ -66,6 +67,7 @@ const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray
     const [theme, setTheme] = useState<string>("");
     const [action, setAction] = useState<any>({});
 
+    const { user, setUser } = useUser();
     const { services, setServices } = useServices();
     const { token, setToken } = useToken();
 
@@ -76,6 +78,16 @@ const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray
     const getServices = async (token: string) => {
         setServices(await GetServices(token));
     };
+
+    useEffect(() => {
+        for (let i = 0; i < user.connectedServices.length; i++) {
+            if (user.connectedServices[i] === service) {
+                setPages(4);
+                return;
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     useEffect(() => {
         if (props !== undefined)
@@ -95,6 +107,11 @@ const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray
         }
 
         const Service: Service | undefined = services.find((Service: Service) => Service.slug === service);
+
+        if (Service?.hasAuthentification === false) {
+            setPages(4);
+            return;
+        }
 
         setProps(Service);
 
@@ -139,7 +156,7 @@ const ServiceConnexionPages = ({ setPages, service, slug, index, array, setArray
 
                 // Open the OAuth2 authorization window
                 oauth2Window = window.open(
-                    `https://area51.zertus.fr/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${OAuthToken}`,
+                    `${localStorage.getItem("address") as string}/service/${service}/oauth2?redirecturi=http://localhost:8081/close&authToken=${OAuthToken}`,
                     'OAuth2 Authorization',
                     'width=720,height=480'
                 );

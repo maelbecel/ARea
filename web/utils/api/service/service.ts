@@ -16,7 +16,7 @@ const GetServices = async (token: string): Promise<Service[]> => {
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/service`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/service`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const GetService = async (token: string, slug: string): Promise<Service | null> 
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/service/${slug}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

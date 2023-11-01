@@ -17,7 +17,7 @@ const CreateApplet = async (token: string, body: any, router: NextRouter): Promi
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/applet`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/applet`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const GetAppletWithID = async (token: string, id: string): Promise<any | null> =
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/applet/${id}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/applet/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -110,7 +110,7 @@ const DeleteAppletWithID = async (token: string, id: string): Promise<void> => {
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/applet/${id}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/applet/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -160,14 +160,14 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/applet/${id}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/applet/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 Authorization : `Bearer ${token}`
             },
             body: JSON.stringify({
-                name   : title,
+                name: title,
             })
         });
 
@@ -208,7 +208,7 @@ const UpdateAppletWithID = async (token: string, id: string, body: object): Prom
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/applet/${id}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/applet/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

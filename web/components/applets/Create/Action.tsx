@@ -21,7 +21,7 @@ export const getAction = async (setArray: Dispatch<SetStateAction<Card[]>>, len:
     const slug = newAction.slug?.split(".")[0] as string;
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/service/${slug}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export const getAction = async (setArray: Dispatch<SetStateAction<Card[]>>, len:
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/action/${slug}/${newAction.slug}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/action/${slug}/${newAction.slug}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

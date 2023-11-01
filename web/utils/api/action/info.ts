@@ -19,7 +19,7 @@ const GetActionInfo = async (token: string, slug: string): Promise<any | null> =
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/action/info/${slug}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/action/info/${slug}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
