@@ -11,7 +11,6 @@ const Switch = ({isCheked, isDisable, setChecked} : SwitchProps) => {
 
     useEffect(() => {
         setIsChecked(isCheked);
-        console.log("isCheked -> ", isCheked);
     }, [isCheked]);
 
     const handleSwitchChange = () => {

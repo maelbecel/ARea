@@ -49,3 +49,60 @@ export const defaultReaction = {
     inputs: [] as string[],
     placeholders: {}
 } as Card;
+
+/**
+ * Interface for the input of the action
+ * @name name    name of the input
+ * @name label   label of the input
+ * @name value   value of the input
+ * @name options options of the input (if type is SELECT)
+ * @name type    type of the input (TEXT, URL, NUMBER, SELECT)
+ * @name valid   if the input is valid
+ */
+export interface Input {
+    name: string;
+    label: string;
+    value: string;
+    options: string[];
+    type: string;
+    valid: boolean;
+};
+
+/**
+ * Interface for the action applet
+ */
+export interface ActionApplet {
+    actionSlug: string;
+    actionInputs: Input[];
+};
+
+/**
+ * Interface for the reaction applet
+ */
+export interface ReactionApplet {
+    reactionSlug: string;
+    reactionInputs: Input[];
+};
+
+export const defaultInput = [{
+    name: "",
+    label: "",
+    value: "",
+    options: [],
+    type: "",
+    valid: false
+}] as Input[];
+
+export const defaultActionApplet = {
+    actionSlug: "",
+    actionInputs: defaultInput
+} as ActionApplet;
+
+export const defaultReactionApplet = {
+    reactionSlug: "",
+    reactionInputs: defaultInput
+} as ReactionApplet;
+
+export const defaultReactionsApplet = [
+    defaultReactionApplet
+] as ReactionApplet[];

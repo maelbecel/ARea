@@ -35,7 +35,7 @@ const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug:
     const theme = getTheme(color);
 
     return (
-        <Link href={`/create?page=2&service=${slug}&active=true&back=1`}>
+        <Link href={`/create?page=2&service=${slug}&back=1`}>
             <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col py-[25px]`}
                  style={{
                     backgroundColor: (color.length === 0) ? "#363841" : color,

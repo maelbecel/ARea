@@ -18,7 +18,7 @@ const Button = ({ callBack, text, backgroundColor, textColor, size = false, half
             color: textColor,
             height: size ? '100px' : '50px',
             fontSize: size ? '36px' : '24px',
-            width: (half === 0 ? '100%' : (half === 1 ? '25%' : (half === 2 ? '50%' : '75%')))
+            width: (half === 0 ? '100%' : (half === 1 ? '25%' : (half === 2 ? '50%' : (half === 4 ? '12%' : '75%'))))
         },
         clicked: {
             backgroundColor: textColor,
@@ -42,7 +42,7 @@ const Button = ({ callBack, text, backgroundColor, textColor, size = false, half
                 ...styles.default,
                 ...(isClicked ? styles.clicked : {})
             }}
-             className={`rounded-default flex justify-center items-center font-bold transition-colors duration-200 cursor-pointer`}
+             className={`rounded-[50px] flex justify-center items-center font-bold transition-colors duration-200 cursor-pointer`}
              onClick={handleClick}
         >
             {text}
