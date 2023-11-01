@@ -14,6 +14,7 @@ import SimpleLink from "../../../components/NavBar/components/SimpleLink";
 import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
 import { NavigateButton } from "../../../components/NavBar/components/Button";
 import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/navbar";
+import ModalError from "../../../components/modalErrorNotif";
 
 const IndexPage: NextPage = () => {
 
@@ -49,27 +50,25 @@ const IndexPage: NextPage = () => {
         if (user?.email === "" || user?.email === null)
             getProfile(token);
     }, [setUser, token, user])
-          
-    const handleConfirm = () => {
+     
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
 
-        // check if currentPassword is correct
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
 
-        console.log("currentPassword -> ", currentPassword);
-        console.log("newPassword -> ", newPassword);
-        console.log("confirmPassword -> ", confirmPassword);
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
 
-        if (currentPassword === "") {
-            console.log("Passwords don't match");
-            return;
+    const handleConfirm = async () => {
+        const data = await PatchProfilePassword(token, currentPassword, newPassword, confirmPassword);
+        
+        if (data === null) {
+            openModalError();
+        } else {
+            closeModalError();
         }
-
-        if (newPassword !== confirmPassword ||
-            (newPassword === "" && confirmPassword === "") || 
-            (newPassword == currentPassword)) {
-            console.log("Passwords don't match");
-            return;
-        }
-        PatchProfilePassword(token, confirmPassword);
     }
 
     return (
@@ -108,6 +107,7 @@ const IndexPage: NextPage = () => {
                         <button className="rounded-[25px] bg-[#363841] py-[15%] px-[50%]" onClick={handleConfirm}>Confirm</button>
                     </div>
                 </div>
+                <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
             </div>
         </>
     )

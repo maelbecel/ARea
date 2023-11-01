@@ -4,6 +4,7 @@ import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import { GetServices } from "../../utils/api/service/service";
+import ModalError from "../modalErrorNotif";
 
 interface LinkedAccountProps {
     slug: string
@@ -30,6 +31,16 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
 
     const [oauth2Token, setOauth2Token] = useState<OAuth2Token>();
     const bgColor = backgroundColor ?? "#363841";
+
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
 
     const fetchToken = async () => {
         const token = localStorage.getItem("token");
@@ -69,17 +80,20 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
     }), [oauth2Token];
 
     return (
-        <div className="w-[100%] flex flex-col lg:flex-row justify-between items-center">
-            <div style={{backgroundColor : bgColor}} className="flex justify-center rounded-lg w-[50px] h-[50px] p-[8px] text-center">
-                <Image src={urlImg} width={50} height={50} alt={"Logo"}/>   
+        <div className="w-[100%] flex flex-col">
+            <div className="w-[100%] flex flex-col lg:flex-row justify-between items-center">
+                <div style={{backgroundColor : bgColor}} className="flex justify-center rounded-lg w-[50px] h-[50px] p-[8px] text-center">
+                    <Image src={urlImg} width={50} height={50} alt={"Logo"}/>   
+                </div>
+                <div className="flex justify-center text-center font-bold text-[28px] text-[#00C2FF]">
+                    { islinked ? (
+                        <a onClick={() => requestoauth2()} className="cursor-pointer">Unlink your account</a>
+                    ) : (
+                        <a onClick={() => requestoauth2()} className="cursor-pointer">Link your account</a>
+                    ) }
+                </div>
             </div>
-            <div className="flex justify-center text-center font-bold text-[28px] text-[#00C2FF]">
-                { islinked ? (
-                    <a onClick={() => requestoauth2()} className="cursor-pointer">Unlink your account</a>
-                ) : (
-                    <a onClick={() => requestoauth2()} className="cursor-pointer">Link your account</a>
-                ) }
-            </div>
+            <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </div>
     );
 }
