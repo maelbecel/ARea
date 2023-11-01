@@ -15,25 +15,22 @@ const SwitchNotifyMe = ({isCheked, isDisable, id} : SwitchProps) => {
 
     useEffect(() => {
         setIsChecked(isCheked);
-        console.log("isCheked -> ", isCheked);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSwitchChange = () => {
         if (isChekedState == true) {
             setIsChecked(false);
-
             const value = {notifUser: false};
-            UpdateAppletWithID(token, id, value);
 
+            UpdateAppletWithID(token, id, value);
             console.log("disabled");
         } else {
             setIsChecked(true);
-
             const value = {notifUser: true};
+            
             UpdateAppletWithID(token, id, value);
-
             console.log("enabled");
-
         }
     }
 
