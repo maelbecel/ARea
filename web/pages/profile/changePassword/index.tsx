@@ -64,11 +64,7 @@ const IndexPage: NextPage = () => {
     const handleConfirm = async () => {
         const data = await PatchProfilePassword(token, currentPassword, newPassword, confirmPassword);
         
-        if (data === null) {
-            openModalError();
-        } else {
-            closeModalError();
-        }
+        (data === null) ? openModalError() : closeModalError();
     }
 
     return (

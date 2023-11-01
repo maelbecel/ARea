@@ -22,25 +22,24 @@ const SwitchNotifyMe = ({isCheked, isDisable, id} : SwitchProps) => {
     const handleSwitchChange = async () => {
         if (isChekedState == true) {
             setIsChecked(false);
+
             const value = {notifUser: false};
             const data = await UpdateAppletWithID(token, id, value);
-            console.log("disabled");
-            console.log("data -> ", data);
+
             if (data == null) {
                 setIsChecked(true);
                 openModalError();
-                return;
             }
         } else {
             setIsChecked(true);
+
             const value = {notifUser: true};
             const data = await UpdateAppletWithID(token, id, value);
+
             if (data == null) {
                 setIsChecked(false);
                 openModalError();
-                return;
             }
-            console.log("enabled");
         }
     }
 

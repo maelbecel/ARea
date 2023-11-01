@@ -53,10 +53,10 @@ const GetProfile = async (token: string): Promise<UserProfile | null> => {
  * @param {NextRouter} router - The Next.js router instance for page navigation.
  *
  */
-const DeleteProfile = async (token: string, router: NextRouter) => {
+const DeleteProfile = async (token: string, router: NextRouter): Promise<boolean> => {
     if (token === null) {
         console.log("[DELETE] .../user/me: token is null");
-        return null;
+        return false;
     }
 
     try {
@@ -71,7 +71,7 @@ const DeleteProfile = async (token: string, router: NextRouter) => {
 
         if (response.status === 400) {
             console.log("[DELETE] .../user/me (Error: 400): \"Bad user id\".");
-            return null;
+            return false;
         }
 
         console.log("[DELETE] .../user/me: \"User deleted\".");
@@ -79,9 +79,11 @@ const DeleteProfile = async (token: string, router: NextRouter) => {
 
         localStorage.removeItem("token");
         router.push("/");
+        return true;
     } catch (error: any) {
         console.log(error);
     }
+    return false;
 };
 
 /**

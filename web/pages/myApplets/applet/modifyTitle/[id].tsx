@@ -19,13 +19,13 @@ const IndexPage: NextPage = () => {
     const [newTitle, setNewTitle] = React.useState<string>("");
 
     const handleConfirm = async () => {
-        console.log("new title -> ", newTitle);
         const data = await UpdateAppletTitleWithID(token as string, id as string, newTitle as string);
-        console.log("data -> ", data);
-        if (data === null) {
+
+        if (data === false) {
             openModalError();
             return;
         }
+
         router.push(`/myApplets/applet/${id}`);
     }
 

@@ -12,21 +12,15 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton = ({token} : DeleteButtonProps ) => {
-
     const router = useRouter();
     const [modalIsOpen, setIsOpen] = useState(false);
     const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
-
 
     // handleDelete async function 
     const handleDelete = async () => {
         const data = await DeleteProfile(token, router);
 
-        if (data == null) {
-            openModalError();
-        } else {
-            closeModalError();
-        }
+        (data === false) ? openModalError() : closeModalError();
     }
 
     const openModalError = () => {

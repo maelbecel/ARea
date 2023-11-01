@@ -1,5 +1,5 @@
 // --- Librairies import --- //
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 // --- Components --- //
@@ -15,6 +15,7 @@ import Button from "../../../Button/Button";
 import { ActionApplet, ReactionApplet } from "../interface";
 import { UpdateAppletWithID } from "../../../../utils/api/applet/applet";
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import ModalError from "../../../modalErrorNotif";
 
 const CreateHeader = () => {
     const router = useRouter();
@@ -102,6 +103,19 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
 
         if (status === true)
             router.push(`/myApplets/applet/${applet.id}`);
+        else
+            openModalError();
+    };
+
+    // --- Modals --- //
+    const [modalErrorIsOpen, setIsErrorOpen] = useState<boolean>(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
     };
 
     return (
@@ -130,6 +144,7 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
                     </>
                 )}
                 <CreateButton name={"Continue"} callback={() => {handleClick()}} />
+                <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
             </div>
         </div>
     );

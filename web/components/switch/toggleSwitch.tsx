@@ -16,7 +16,7 @@ const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor, id } : 
     
     const [isChekedState, setIsChecked] = useState<boolean>(false);
     const [color, setColor] = useState<string>("#ffffff");
-    const { token, setToken } = useToken();
+    const { token } = useToken();
 
     useEffect(() => {
         setIsChecked(isCheked);
@@ -27,24 +27,24 @@ const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor, id } : 
     const handleSwitchChange = async () => {
 
         if (isChekedState == true) {
-            console.log("disabled");
-            const value = {enabled: false};
             setIsChecked(false);
+
+            const value = {enabled: false};
             const data = await UpdateAppletWithID(token, id, value);
+
             if (data == null) {
                 openModalError();
                 setIsChecked(true);
-                return;
             }
         } else {
-            console.log("enabled");
-            const value = {enabled: true};
             setIsChecked(true);
+
+            const value = {enabled: true};
             const data = await UpdateAppletWithID(token, id, value);
+
             if (data == null) {
                 openModalError();
                 setIsChecked(false);
-                return;
             }
         }
     }

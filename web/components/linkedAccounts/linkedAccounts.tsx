@@ -5,7 +5,7 @@ import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import { GetServices } from "../../utils/api/service/service";
 import ModalError from "../modalErrorNotif";
-import { DeleteOAuth2Token } from "../../utils/api/service/oauth2";
+import { DeleteOAuth2Token, OAuth2GetToken } from "../../utils/api/service/oauth2";
 
 interface LinkedAccountProps {
     slug: string
@@ -26,13 +26,8 @@ interface linkedAccountData {
     hasAuthentification: boolean
 }
 
-interface OAuth2Token {
-    data: string;
-}
-
 const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, backgroundColor, token} : LinkedAccountProps) => {
-
-    const [oauth2Token, setOauth2Token] = useState<OAuth2Token>();
+    const [oauth2Token, setOauth2Token] = useState<string>("");
     const bgColor = backgroundColor ?? "#363841";
     const [islinkedState, setIsLinked] = useState<boolean>(islinked);
     const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
@@ -46,22 +41,13 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
     };
 
     const fetchToken = async () => {
-        const token = localStorage.getItem("token");
         const dataFetch = async () => {
-            try {
-                const data = await (
-                    await fetch(`${localStorage.getItem("address") as string}/service/${slug}/oauth2/token`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                setOauth2Token(data);
-            } catch (error) {
-                console.log(error);
-            }
+            const status = await OAuth2GetToken(token, slug)
+
+            if (status === null)
+                return;
+
+            setOauth2Token(status);
         };
         dataFetch();
     }
@@ -69,6 +55,7 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
     const requestoauth2 = async () => {
         if (!islinked) {
             await fetchToken();
+            return;
         } else {
             console.log("not linked need a oauth2 suppression");
         }
@@ -78,21 +65,15 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
         if (islinked) {
             const res = await DeleteOAuth2Token(token, slug);
 
-            if (res == null) {
-                openModalError();
-                return;
-            } else {
-                setIsLinked(false);
-            }
+            (res === false) ? openModalError() : setIsLinked(false);
         }
     }
 
     useEffect(() => {
-        if (!oauth2Token || !oauth2Token?.data || oauth2Token?.data == "") {
+        if (!oauth2Token || oauth2Token == "")
             return;
-        } else {
-            window.location.href = `${url}&authToken=${oauth2Token.data}`;
-        }
+
+        window.location.href = `${url}&authToken=${oauth2Token}`;
     }), [oauth2Token];
 
     return (
