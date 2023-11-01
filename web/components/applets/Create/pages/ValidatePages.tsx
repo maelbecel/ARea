@@ -14,6 +14,7 @@ import { GetService, GetServices } from "../../../../utils/api/service/service";
 import { useUser } from "../../../../utils/api/user/Providers/UserProvider";
 import Button from "../../../Button/Button";
 import { CreateApplet } from "../../../../utils/api/applet/applet";
+import ModalError from "../../../modalErrorNotif";
 
 const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
     const theme = getTheme(color);
@@ -151,6 +152,17 @@ const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>
         setTheme(getTheme(pictures[0]?.backgroundColor ?? "#ffffff"));
     }, [pictures]);
 
+    // --- Modals --- //
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
+
     return (
         <>
             <Headers
@@ -184,7 +196,10 @@ const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>
                                 enabled: true
                             };
 
-                            await CreateApplet(token, body, router);
+                            const status = await CreateApplet(token, body, router);
+
+                            if (status === false)
+                                openModalError();
                         }}
                         text="Validate"
                         backgroundColor={pictures[0]?.backgroundColor}
@@ -193,6 +208,7 @@ const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>
                         half={(typeof window !== 'undefined' && window.innerWidth < 768) ? 0 : 2}
                 />
             </div>
+            <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </>
     );
 }

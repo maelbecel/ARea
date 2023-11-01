@@ -7,13 +7,13 @@ import { NextRouter } from "next/router";
  * @param {Object} body       - The request body containing data to create the applet.
  * @param {NextRouter} router - Next.js router object for navigation.
  *
- * @returns {Promise<void>} A promise that sends a POST request to create an applet.
+ * @returns {Promise<boolean>} A promise that sends a POST request to create an applet.
  * Redirects to "/myApplets" upon success. Logs success or error messages.
  */
-const CreateApplet = async (token: string, body: any, router: NextRouter): Promise<void> => {
+const CreateApplet = async (token: string, body: any, router: NextRouter): Promise<boolean> => {
     if (token === null) {
         console.log("[POST] .../applet: token is null");
-        return;
+        return false;
     }
 
     try {
@@ -30,17 +30,18 @@ const CreateApplet = async (token: string, body: any, router: NextRouter): Promi
 
         if (data?.status !== 201) {
             console.log(`[POST] .../applet (Error: ${data?.status}): \"${data?.message}\".`);
-            return;
+            return false;
         }
 
         console.log("[POST] .../applet: \"Successfully created applet.\"");
         console.log(data);
 
         router.push("/myApplets");
+        return true;
     } catch (error: any) {
         console.log(error);
     }
-    return;
+    return false;
 };
 
 /**
@@ -95,7 +96,7 @@ const GetAppletWithID = async (token: string, id: string): Promise<any | null> =
  * @param {string} token - The user's authentication token.
  * @param {string} id    - The ID of the applet to delete.
  *
- * @returns {Promise<void>} A promise that sends a DELETE request to delete an applet.
+ * @returns {Promise<boolean>} A promise that sends a DELETE request to delete an applet.
  * Logs success or error messages. Does not return data.
  */
 const DeleteAppletWithID = async (token: string, id: string): Promise<boolean> => {
@@ -132,23 +133,23 @@ const DeleteAppletWithID = async (token: string, id: string): Promise<boolean> =
  * @param {string} id    - The ID of the applet to delete.
  * @param {string} title - The new title of the applet.
  *
- * @returns {Promise<string | null>} A promise that sends a PATCH request to patch an applet.
+ * @returns {Promise<boolean>} A promise that sends a PATCH request to patch an applet.
  * Logs success or error messages. Does not return data.
  */
-const UpdateAppletTitleWithID = async (token: string, id: string, title: string ): Promise<string | null> => {
+const UpdateAppletTitleWithID = async (token: string, id: string, title: string ): Promise<boolean> => {
     if (id === null) {
         console.log(`[PATCH] .../applet/{id}: id is null`);
-        return null;
+        return false;
     }
 
     if (token === null) {
         console.log(`[PATCH] .../applet/${id}: token is null`);
-        return null;
+        return false;
     }
 
     if (title === null || title === "") {
         console.log(`[PATCH] .../applet/${id}: title is null`);
-        return null;
+        return false;
     }
 
     try {
@@ -167,15 +168,16 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
 
         if (data?.status !== 200) {
             console.log(`[PATCH] .../applet/${id} (Error: ${data?.status}): \"${data?.message}\".`);
-            return null;
+            return false;
         }
 
         console.log(`[PATCH] .../applet/${id}: \"Successfully patched applet.\"`);
         console.log(data);
+        return true;
     } catch (error: any) {
         console.log(error);
     }
-    return "fine";
+    return false;
 };
 
 /**
@@ -185,7 +187,7 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
  * @param {string} id    - The ID of the applet to delete.
  * @param {object} body - The new content of the applet.
  *
- * @returns {Promise<string | null>} A promise that sends a PATCH request to patch an applet.
+ * @returns {Promise<boolean>} A promise that sends a PATCH request to patch an applet.
  * Logs success or error messages. Does not return data.
  */
 const UpdateAppletWithID = async (token: string, id: string, body: object): Promise<boolean> => {

@@ -11,6 +11,7 @@ import { Service } from "../../utils/api/service/interface/interface";
 import { GetServices } from "../../utils/api/service/service";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { DeleteAppletWithID } from "../../utils/api/applet/applet";
+import ModalError from "../modalErrorNotif";
 
 interface ReactionDataProps {
     name: string;
@@ -84,6 +85,17 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
     const handleTitleChange = () => {
         console.log("title changed");
     }
+
+    // --- Modals --- //
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
 
     // TODO: add a link to the edit applet
     // TODO: add link on each logo (need to see on each which page to link)
@@ -185,10 +197,13 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
 
                         if (status === true)
                             router.push("/myApplets");
+                        else
+                            openModalError();
                      }}
                 >
                     Delete Applet
                 </div>
+                <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
             </div>
         </div>
     )

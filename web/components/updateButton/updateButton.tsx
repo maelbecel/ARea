@@ -30,8 +30,6 @@ const UpdateButton = ({token, email, username, setToken} : UpdateButtonProps) =>
     const handleUpdate = async () => {
         const data = await PatchProfile(token, email, username);
 
-        console.log("data -> ", data);
-
         if (data == null)
             openModalError();
         else
