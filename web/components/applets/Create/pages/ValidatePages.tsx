@@ -40,10 +40,16 @@ const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle }
     return (
         <div style={{backgroundColor: `${color}`}} className={`w-full flex justify-center items-center gap-7 p-6 select-none`}>
             <div style={{backgroundColor: `${color}`}} className={`w-[90%] md:w-[50%] flex-col py-[25px]`}>
-                <div style={{backgroundColor: `${color}`}} className={`flex-row py-[10px]`}>
+                <div style={{backgroundColor: `${color}`}} className={`flex-row py-[10px] flex gap-2`}>
                     {props && props.map((prop: any, id: number) => {
                         return (
-                            <Image key={id} src={prop.decoration.logoUrl} width={45} height={45} alt={"Service Logo"} className={"object-contain"} />
+                            (props[0]?.decoration.backgroundColor === "#ffffff" ? (
+                                <div key={id} style={{backgroundColor : `${prop.decoration.backgroundColor}`}} className="flex justify-center items-center rounded-lg w-[45px] h-[45px] p-[5px]">
+                                    <Image src={prop.decoration.logoUrl} width={45} height={45} alt={"Logo"} />
+                                </div>
+                            ) : (
+                                <Image src={prop.decoration.logoUrl} width={45} height={45} alt={"Logo"} />
+                            ))
                         )
                     })}
                 </div>
@@ -101,7 +107,7 @@ const ValidatePages = ({ setPages, service, slug, index, array, setArray, title,
      * Fetch user profile
      */
     useEffect(() => {
-        if (profile !== null || profile !== undefined)
+        if (profile !== null && profile !== undefined)
             return;
         if (token === "") {
             const tokenStore = localStorage.getItem("token");

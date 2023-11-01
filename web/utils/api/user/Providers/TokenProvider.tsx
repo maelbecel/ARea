@@ -17,6 +17,19 @@ export const TokenProviders = ({ children }: any) => {
 
     useEffect(() => {
         const checkToken = async (userToken: string) => {
+            try {
+                await fetch(`${localStorage.getItem("address") as string}/about.json`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+            } catch (e) {
+                localStorage.removeItem("token");
+                setToken('');
+                return;
+            }
+
             const res = await VerifyUserToken(userToken);
 
             res === null ? setToken('') : setToken(res);

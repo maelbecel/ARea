@@ -16,7 +16,7 @@ export const getReaction = async (setArray: Dispatch<SetStateAction<Card[]>>, to
     const slug = newReaction.slug?.split(".")[0] as string;
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/service/${slug}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

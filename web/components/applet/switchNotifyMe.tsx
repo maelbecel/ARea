@@ -16,7 +16,7 @@ const SwitchNotifyMe = ({isCheked, isDisable, id} : SwitchProps) => {
 
     useEffect(() => {
         setIsChecked(isCheked);
-        console.log("isCheked -> ", isCheked);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSwitchChange = async () => {
@@ -41,7 +41,6 @@ const SwitchNotifyMe = ({isCheked, isDisable, id} : SwitchProps) => {
                 return;
             }
             console.log("enabled");
-
         }
     }
 

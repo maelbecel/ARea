@@ -1,6 +1,7 @@
 // --- Librairies import --- //
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
+import Image from 'next/image';
 
 // --- Components import --- //
 import { GetProfile } from "../../utils/api/user/me";
@@ -116,7 +117,7 @@ const IndexPage: NextPage = () => {
                     </div>
                 </div>
                 <div className="flex justify-center p-[5%] w-auto h-[50%]">
-                    <img src="/Images/image7.svg" alt="service"/>
+                    <Image src="/Images/image7.svg" alt="service" width={500} height={500}/>
                 </div>
                 <div className="pb-[15%] sm:pb-[2%] text-[20px] sm:text-[30px] font-bold text-[#363841] flex flex-col items-center sm:items-start text-center sm:text-left">
                     <div>
@@ -124,7 +125,7 @@ const IndexPage: NextPage = () => {
                     </div>
                 </div>
                 <div className="flex justify-center p-[5%] w-auto h-[50%]">
-                    <img src="/Images/image8.svg" alt="service"/>
+                    <Image src="/Images/image8.svg" alt="service" width={500} height={500}/>
                 </div>
                 <div className="pb-[15%] sm:pb-[2%] text-[20px] sm:text-[30px] font-bold text-[#363841] flex flex-col items-center sm:items-start text-center sm:text-left">
                     <div>
@@ -132,7 +133,7 @@ const IndexPage: NextPage = () => {
                     </div>
                 </div>
                 <div className="flex justify-center p-[5%] w-auto h-[50%]">
-                    <img src="/Images/image9.svg" alt="service"/>
+                    <Image src="/Images/image9.svg" alt="service" width={500} height={500}/>
                 </div>
             </div>
             <Footer/>

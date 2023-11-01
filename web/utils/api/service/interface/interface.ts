@@ -6,5 +6,6 @@ export interface Service {
     decoration: {
         logoUrl: string;
         backgroundColor: string;
-    }
+    };
+    hasAuthentification: boolean;
 };

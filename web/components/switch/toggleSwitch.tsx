@@ -21,7 +21,7 @@ const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor, id } : 
     useEffect(() => {
         setIsChecked(isCheked);
         setColor(bgColor);
-        console.log("isCheked -> ", isCheked);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSwitchChange = async () => {

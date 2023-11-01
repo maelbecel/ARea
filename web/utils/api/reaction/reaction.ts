@@ -20,7 +20,7 @@ const GetReactionInputs = async (token: string, slug: string, actionSlug: string
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/reaction/${slug}/${actionSlug}`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/reaction/${slug}/${actionSlug}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

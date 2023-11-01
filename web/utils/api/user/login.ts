@@ -14,7 +14,7 @@ const UserLogin = async (email: string, password: string): Promise<string | null
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/user/login`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/user/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

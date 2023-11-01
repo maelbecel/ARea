@@ -19,7 +19,7 @@ const OAuth2GetToken = async (token: string, slug: string): Promise<string | nul
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/service/${slug}/oauth2/token`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/service/${slug}/oauth2/token`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const DeleteOAuth2Token = async (token: string, slug: string): Promise<void> => 
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/service/${slug}/oauth2`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/service/${slug}/oauth2`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

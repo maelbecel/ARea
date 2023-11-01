@@ -21,7 +21,7 @@ const GetProfile = async (token: string): Promise<UserProfile | null> => {
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/user/me`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/user/me`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const DeleteProfile = async (token: string, router: NextRouter) => {
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/user/me`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/user/me`, {
             method: "DELETE",
             headers: {
                 Authorization : `Bearer ${token}`
@@ -107,7 +107,7 @@ const PatchProfile = async (token: string, email: string, username: string): Pro
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/user/me`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/user/me`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -168,7 +168,7 @@ const PatchProfilePassword = async (token: string, password: string, confirmPass
     }
 
     try {
-        const response = await fetch(`https://area51.zertus.fr/user/me`, {
+        const response = await fetch(`${localStorage.getItem("address") as string}/user/me`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
