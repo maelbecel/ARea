@@ -1,10 +1,9 @@
-
 /* The statement `import * as SecureStore from 'expo-secure-store';` is importing the entire module
 `expo-secure-store` and assigning it to the variable `SecureStore`. This allows you to access the
 functions and variables exported by the `expo-secure-store` module using the `SecureStore` variable. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Alert } from 'react-native';
 
 /**
  * The above type represents a service with a slug, name, action and reaction arrays, and decoration
@@ -27,6 +26,8 @@ export type Service = {
     decoration: {
         backgroundColor: string;
         logoUrl: string;
+        description: string;
+        websiteUrl: string;
     }
 }
 
@@ -148,26 +149,30 @@ const ServiceInfo = async (slug : string): Promise<Service> => {
         return null;
     }
     try {
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/service/${slug}`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response  : Response = await fetch(`${serverAddress}/service/${slug}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log(`/service/${slug} :`, response.status);
         if (response.status != 200) {
             return null;
         }
-        const json = await response.json();
-        let service : Service = {slug : json.data.slug, name : json.data.name, actions : null, reactions : null, decoration : {backgroundColor : json.data.decoration.backgroundColor, logoUrl : json.data.decoration.logoUrl}};
+        const json : any = await response.json();
+        if (json.data == null) return null;
+        let service : Service = {slug : json.data.slug, name : json.data.name, actions : null, reactions : null, decoration : {backgroundColor : json.data.decoration.backgroundColor, logoUrl : json.data.decoration.logoUrl, description: json.data.decoration.description, websiteUrl: json.data.decoration.websiteUrl}};
         service.actions = getAction(json.data.actions);
         service.reactions = getReaction(json.data.reactions);
-        console.log(`Service `, service);
         return service;
     } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+            Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
         console.error("An error occur : ", error);
         return null;
     }

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import OutlinedTextBox from '../components/OutlinedTextBox';
+import PasswordModal from '../components/PasswordModal';
 
 /* The `interface ProfileFormProps` is defining the type of props that the `ProfileForm` component
 expects to receive. In this case, it expects a single prop called `data` of type `any`. The `data`
@@ -106,15 +107,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({data}) => {
                 <View style={styles.rectangle}>
                     <SecureText passwordLength={data.passwordLength} />
                 </View>
-                <TouchableOpacity
-                    onPress={() => {
-                        // Navigate to the 'ChangePassword' screen when the user clicks on 'Modifier le mot de passe'
-                        // navigation.navigate('ChangePassword');
-                        console.log('Change password');
-                    }}
-                >
-                    <Text style={styles.link}>Modifier le mot de passe</Text>
-                </TouchableOpacity>
+                <PasswordModal/>
             </View>
             <View style={{marginTop: 10}}>
                 <Text style={styles.subtitle}>Adresse e-mail</Text>

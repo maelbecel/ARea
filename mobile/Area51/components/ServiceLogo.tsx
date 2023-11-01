@@ -1,16 +1,11 @@
-/* The `import` statement is used to import specific modules or components from external libraries or
-files. In this case, it is importing various components and types from the `react-native` and
-`react-native-gesture-handler` libraries. */
 import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
+import React from 'react';
+import ServiceInfo from '../api/ServiceInfo';
 
-
-/* The `interface CardProps` is defining a new interface called `CardProps` that extends the
-`TouchableOpacityProps` interface. It specifies the expected props for the `ActionCard` component. */
 interface CardProps extends TouchableOpacityProps {
-    name   : string;
-    color   : string;
-    description    : string;
-    onPress: () => void;
+    slug    : string;
+    onPress : () => void;
+    disabled ?: boolean;
 }
 
 /**
@@ -24,7 +19,7 @@ interface CardProps extends TouchableOpacityProps {
  * (black), indicating that the text color should be dark. Otherwise, it returns "#FFFFFF" (white),
  * indicating that the text color should be light.
  */
-export const getWriteColor = (color: string): string => {
+const getWriteColor = (color: string): string => {
     /* The line `const hexColor = color.startsWith("#") ? color : `#`;` is checking if the
     `color` variable starts with a `#` symbol. If it does, then `hexColor` is assigned the value of
     `color`. If it doesn't start with `#`, then `hexColor` is assigned the value of `#`,
@@ -63,32 +58,54 @@ export const getWriteColor = (color: string): string => {
     }
 };
 
-/* The code `const ActionCard: React.FC<CardProps> = ({ title, color, slug, onPress, logo }) => { ...
-}` is defining a functional component called `ActionCard`. */
-const ActionCard: React.FC<CardProps> = ({ description, color, onPress, name }) => {
-    if (color == "") {
-        color = "#EEEEEE";
+
+const ServiceLogo: React.FC<CardProps> = ({ slug , onPress, disabled = false}) => {
+
+    const [color, setColor] = React.useState<string>("EEEEEE");
+    const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
+    const [loading, setLoading] = React.useState<boolean>(true);
+
+    React.useEffect(() => {
+        const fetchInfos = async () => {
+            const res = await ServiceInfo(slug);
+            setColor(res.decoration.backgroundColor);
+            setLogo(res.decoration.logoUrl);
+            setLoading(false);
+        }
+        fetchInfos();
+    }, []);
+
+    if (!loading) {
+        if (!disabled) {
+            return (
+                <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                    <View>
+                        <Image source={{ uri: logo }} style={styles.logopti}/>
+                        <Text style={{color : getWriteColor(color), fontWeight : 'bold', fontSize : 9.9, alignSelf : 'center'}}>Log Out</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        } else {
+            return (
+                <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                    <View>
+                        <Image source={{ uri: logo }} style={[styles.logopti]}/>
+                        <Text style={{color : getWriteColor(color), fontWeight : 'bold', fontSize : 13, alignSelf : 'center'}}>Log In</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        }
     }
-    return (
-    <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
-        <View>
-            <Text style={[styles.name, {color: getWriteColor(color)}]}>{name}</Text>
-            <Text style={[styles.desc, {color: getWriteColor(color)}]}>{description}</Text>
-        </View>
-    </TouchableOpacity>
-  );
 }
 
-/* The `const styles = StyleSheet.create({ ... })` block is defining a JavaScript object called
-`styles` that contains various style properties for the `ActionCard` component. Each property in
-the `styles` object represents a different style rule, such as `container`, `logo`, and `name`.
-These style rules define the visual appearance of the `ActionCard` component. */
+
 const styles = StyleSheet.create({
     container: {
-      paddingTop: 20,
-      paddingHorizontal: 20,
+      height: 80,
+      width: 80,
       marginVertical: 15,
-      width: '85%',
+      marginRight: 15,
+      paddingHorizontal: 20,
       borderRadius: 10,
       shadowColor: '#000',
         shadowOffset: {
@@ -100,26 +117,17 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     logo: {
-        height: 70,
-        width: 70,
-        marginVertical: 10,
+        height: 50,
+        width: 50,
+        marginVertical: 15,
         alignSelf: 'center',
     },
-    name: {
-      fontSize: 25,
-      fontWeight: 'bold',
-      marginTop: 2,
-      marginBottom: 20,
-    },
-    desc: {
-        fontSize: 20,
-        marginTop: 5,
-        marginBottom: 20,
-      }
+    logopti: {
+        height: 30,
+        width: 30,
+        marginVertical: 15,
+        alignSelf: 'center',
+    }
   });
 
-/* The line `export default ActionCard;` is exporting the `ActionCard` component as the default
-export of the module. This means that when another file imports this module, it can import the
-`ActionCard` component using the default import syntax, like `import ActionCard from
-'./ActionCard'`. */
-export default ActionCard;
+export default ServiceLogo;
