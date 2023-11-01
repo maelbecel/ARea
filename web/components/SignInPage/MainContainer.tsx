@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import ChangeAddressComponent from "../Modal/ChangeAddress";
 import { UserLogin } from "../../utils/api/user/login";
+import ModalError from "../modalErrorNotif";
 
 const MainContainer = () => {
     // --- Form Values --- //
@@ -34,6 +35,16 @@ const MainContainer = () => {
         checkAlreadyLogged();
     }, [router]);
 
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
+
     const handleClick = async () => {
         const res = await UserLogin(email, password);
 
@@ -43,6 +54,8 @@ const MainContainer = () => {
 
         if (res)
             router.push("/");
+        else
+            openModalError();
     }
 
     return (
@@ -53,6 +66,7 @@ const MainContainer = () => {
                 <InputContainer placeholder='Password'         value={password} setValue={setPassword} icon="/Icons/lock.svg" secureMode={true} />
                 <Forgot text="Forgot your password ?" redirectUri="/passwords/forgot" />
             </TextContainer>
+            <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </div>
     )
 }

@@ -56,7 +56,7 @@ const GetProfile = async (token: string): Promise<UserProfile | null> => {
 const DeleteProfile = async (token: string, router: NextRouter) => {
     if (token === null) {
         console.log("[DELETE] .../user/me: token is null");
-        return;
+        return null;
     }
 
     try {
@@ -67,15 +67,15 @@ const DeleteProfile = async (token: string, router: NextRouter) => {
             }
         });
 
-        const data = await response.json();
+        console.log("response -> ", response.status);
 
-        if (data?.status === 400) {
+        if (response.status === 400) {
             console.log("[DELETE] .../user/me (Error: 400): \"Bad user id\".");
-            return;
+            return null;
         }
 
         console.log("[DELETE] .../user/me: \"User deleted\".");
-        console.log(data);
+        console.log(response);
 
         localStorage.removeItem("token");
         router.push("/");
@@ -101,7 +101,7 @@ const PatchProfile = async (token: string, email: string, username: string): Pro
         return null;
     }
 
-    if (email === null || username === null) {
+    if (email === null || username === null || email === "" || username === "") {
         console.log("[PATCH] .../user/me: email, username or password is null");
         return null;
     }
@@ -142,12 +142,14 @@ const PatchProfile = async (token: string, email: string, username: string): Pro
  *
  * @param {string} token    - The user's authentication token.
  * @param {string} password - The user's new password.
+ * @param {string} confirmPassword - The user's new password confirmation.
+ * @param {string} newPassword - The user's new password.
  *
  * @returns {Promise<UserProfile | null>} A promise that resolves with the updated user profile data or null on error.
  * 
  * @warning Don't forget to check if the result is null, before giving it to the useAuth provider.
  */
-const PatchProfilePassword = async (token: string, password: string): Promise<UserProfile | null> => {
+const PatchProfilePassword = async (token: string, password: string, confirmPassword: string, newPassword: string): Promise<UserProfile | null> => {
     if (token === null) {
         console.log("[PATCH] .../user/me: token is null");
         return null;
@@ -155,6 +157,13 @@ const PatchProfilePassword = async (token: string, password: string): Promise<Us
 
     if (password === null || password === "") {
         console.log("[PATCH] .../user/me: password is null");
+        return null;
+    }
+
+    if (newPassword !== confirmPassword ||
+        (newPassword === "" && confirmPassword === "") || 
+        (newPassword == password)) {
+        console.log("Passwords don't match");
         return null;
     }
 

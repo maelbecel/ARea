@@ -60,6 +60,7 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
             setLastUseDate(formattedLastUseDate);
             setFormattedDate(formattedDate);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

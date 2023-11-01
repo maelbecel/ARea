@@ -142,6 +142,7 @@ const SearchApplet = () => {
         };
 
         dataFetch();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     const findObjectsBySlug = (array: any[], name: string) => {
@@ -163,7 +164,7 @@ const SearchApplet = () => {
                 console.log(applets[i].reactions[j].reactionSlug);
             }   
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchApplets]);
 
     return (

@@ -31,6 +31,7 @@ const DetailLogo = ({slug} : DetailLogoProps) => {
             }
             reactionInfo(token);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     return (

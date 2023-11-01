@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import SimpleLink from "../../../../components/NavBar/components/SimpleLink";
 import Input from "../../../../components/formProfile/input";
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { UpdateAppletTitleWithID } from "../../../../utils/api/applet/applet";
+import ModalError from "../../../../components/modalErrorNotif";
 
 const IndexPage: NextPage = () => {
 
@@ -17,12 +18,27 @@ const IndexPage: NextPage = () => {
     const { token, setToken } = useToken();
     const [newTitle, setNewTitle] = React.useState<string>("");
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         console.log("new title -> ", newTitle);
-        UpdateAppletTitleWithID(token as string, id as string, newTitle as string);
+        const data = await UpdateAppletTitleWithID(token as string, id as string, newTitle as string);
+        console.log("data -> ", data);
+        if (data === null) {
+            openModalError();
+            return;
+        }
         router.push(`/myApplets/applet/${id}`);
     }
 
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
+        
     return (
         <>
             <NavBar>
@@ -51,6 +67,7 @@ const IndexPage: NextPage = () => {
                         <button className="rounded-[25px] bg-[#363841] py-[15%] px-[50%]" onClick={handleConfirm}>Confirm</button>
                     </div>
                 </div>
+                <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
             </div>
         </>
     );

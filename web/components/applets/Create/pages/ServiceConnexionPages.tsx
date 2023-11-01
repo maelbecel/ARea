@@ -151,6 +151,11 @@ const ServiceConnexionPages = ({ setPages }: { setPages: Dispatch<SetStateAction
 
         const Service: Service | undefined = services.find((Service: Service) => Service.slug === getServiceName());
 
+        if (Service?.hasAuthentification === false) {
+            setPages(4);
+            return;
+        }
+
         setProps(Service);
 
         if (Service && Service.actions && Service.reactions) {
