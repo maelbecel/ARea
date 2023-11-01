@@ -137,8 +137,8 @@ const SearchApplet = () => {
         }
 
         const dataFetch = async () => {
-            setApplets(await GetMyApplets(token));
-            setSearchApplets(await GetMyApplets(token))
+            setApplets((await GetMyApplets(token)).reverse());
+            setSearchApplets((await GetMyApplets(token)).reverse());
         };
 
         dataFetch();

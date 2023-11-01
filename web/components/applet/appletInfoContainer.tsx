@@ -10,6 +10,7 @@ import ToggleSwitch from "../switch/toggleSwitch";
 import { Service } from "../../utils/api/service/interface/interface";
 import { GetServices } from "../../utils/api/service/service";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { DeleteAppletWithID } from "../../utils/api/applet/applet";
 
 interface ReactionDataProps {
     name: string;
@@ -177,6 +178,16 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
                     <div className="text-[#363841] font-bold text-[22px] my-[1%]">
                         <SwitchNotifyMe isCheked={notifUser} isDisable={false} id={id?.toString()}/>
                     </div>
+                </div>
+                <div className="text-[#FF0000] font-bold text-[22px] my-[1%] cursor-pointer"
+                     onClick={async () => {
+                        const status = await DeleteAppletWithID(token, id.toString());
+
+                        if (status === true)
+                            router.push("/myApplets");
+                     }}
+                >
+                    Delete Applet
                 </div>
             </div>
         </div>

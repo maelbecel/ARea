@@ -13,6 +13,8 @@ import Button from "../../../Button/Button";
 
 // --- Interface --- //
 import { ActionApplet, ReactionApplet } from "../interface";
+import { UpdateAppletWithID } from "../../../../utils/api/applet/applet";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 
 const CreateHeader = () => {
     const router = useRouter();
@@ -41,7 +43,13 @@ const CreateHeader = () => {
     )
 }
 
-const CreateContainerComponent = ({ action, setAction, reactions, setReactions, setPages, setEditMode }: { setPages: Dispatch<SetStateAction<number>>, setEditMode: Dispatch<SetStateAction<boolean>>, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>> }) => {
+const CreateContainerComponent = ({ action, setAction, reactions, setReactions, setPages, setEditMode, applet }: { setPages: Dispatch<SetStateAction<number>>, setEditMode: Dispatch<SetStateAction<boolean>>, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, applet: any }) => {
+    // --- Providers --- //
+    const { token } = useToken();
+
+    // --- Router --- //
+    const router = useRouter();
+
     /**
      * When action is updated,
      * Update the localStorage
@@ -78,7 +86,22 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
             }
         }
 
-        setPages(5);
+        let body = {
+            name: applet.name,
+            actionSlug: action.actionSlug,
+            actionData: action.actionInputs,
+            reactions: reactions,
+            notifUser: applet.notifUser,
+            enabled: true,
+            id: applet.id,
+            user: applet.user,
+            createdAt: applet.createdAt
+        };
+
+        const status = await UpdateAppletWithID(token, applet.id, body);
+
+        if (status === true)
+            router.push(`/myApplets/applet/${applet.id}`);
     };
 
     return (
@@ -112,13 +135,13 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
     );
 };
 
-const CreatePages = ({ setPages, setEditMode, action, setAction, reactions, setReactions } : { setPages: Dispatch<SetStateAction<number>>, setEditMode: Dispatch<SetStateAction<boolean>>, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>> }) => {
+const EditPages = ({ setPages, setEditMode, action, setAction, reactions, setReactions, applet } : { setPages: Dispatch<SetStateAction<number>>, setEditMode: Dispatch<SetStateAction<boolean>>, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, applet: any }) => {
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setPages={setPages} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} />
+            <CreateContainerComponent setPages={setPages} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} applet={applet} />
         </>
     )
 }
 
-export default CreatePages;
+export default EditPages;
