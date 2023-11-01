@@ -336,7 +336,9 @@ const FillActionInputsPages = ({ setPages, service, slug, array, setArray, EditM
                             let good = false as boolean;
 
                             actionProps?.inputs?.forEach((input: inputs, id: number) => {
-                                if (inputsValue[id].value === undefined || inputsValue[id].value === "")
+                                if (input.label.includes("(optional)") === true)
+                                    good = true;
+                                else if (inputsValue[id].value === undefined || inputsValue[id].value === "")
                                     good = false;
                                 else {
                                     if (input.type === "URL" && !inputsValue[id].value.includes("http"))

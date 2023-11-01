@@ -47,8 +47,7 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
      * Update the localStorage
      */
     useEffect(() => {
-        //if (action === null || action.actionSlug === "" || action.actionSlug === null)
-            localStorage.setItem("action", JSON.stringify(action));
+        localStorage.setItem("action", JSON.stringify(action));
     }, [action]);
 
     /**
