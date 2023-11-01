@@ -98,8 +98,6 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
             createdAt: applet.createdAt
         };
 
-        console.log("BODY : ", body);
-
         const status = await UpdateAppletWithID(token, applet.id, body);
 
         if (status === true)
