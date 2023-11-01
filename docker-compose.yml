@@ -40,7 +40,7 @@ services:
     depends_on:
       - server
     volumes:
-      - ./apk:/apk
+      - ./apk:/app/apk
 
   mobile:
     image: area51/mobile:latest
