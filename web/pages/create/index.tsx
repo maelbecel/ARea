@@ -7,23 +7,25 @@ import CreatePages from "../../components/applets/Create/pages/CreatePages";
 import Footer from "../../components/footer";
 import { useEffect, useState } from "react";
 import SearchServicePages from "../../components/applets/Create/pages/SearchServicePages";
-import { ActionApplet, Card, ReactionApplet, defaultAction, defaultActionApplet, defaultReaction, defaultReactionApplet, defaultReactionsApplet } from "../../components/applets/Create/interface";
+import { ActionApplet, ReactionApplet, defaultActionApplet, defaultReactionsApplet } from "../../components/applets/Create/interface";
 import AllActionFromServicePages from "../../components/applets/Create/pages/AllActionFromServicePages";
 import ServiceConnexionPages from "../../components/applets/Create/pages/ServiceConnexionPages";
 import FillActionInputsPages from "../../components/applets/Create/pages/FillActionInputsPages";
 import ValidatePages from "../../components/applets/Create/pages/ValidatePages";
 
+// --- Providers --- //
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+
 const IndexPage: NextPage = () => {
-    const [actionArray, setActionArray] = useState<Card[]>([defaultAction, defaultReaction]);
-    const [currentService, setCurrentService] = useState<string>(""); // Service name
-    const [currentSlug, setCurrentSlug] = useState<string>(""); // Service slug
-    const [pages, setPages] = useState<number>(-1);
-    const [index, setIndex] = useState<number>(-1);
-    const [token, setToken] = useState<string>('');
-    const [active, setActive] = useState<boolean>(false);
+    // --- Variables --- //
+    const [pages, setPages] = useState<number>(-1); // The page we are on
     const [editMode, setEditMode] = useState<boolean>(false);
     const [back, setBack] = useState<boolean>(false);
 
+    // --- Providers Hookers --- //
+    const { token } = useToken();
+
+    // --- Router --- //
     const router = useRouter();
 
     /**
@@ -78,8 +80,6 @@ const IndexPage: NextPage = () => {
     }, [router]);
 
     useEffect(() => {
-        setToken(localStorage.getItem("token") as string);
-
         if (token === null)
             router.push("/")
     }, [token, router]);
@@ -89,14 +89,6 @@ const IndexPage: NextPage = () => {
             setEditMode(false);
         window.scrollTo(0, 0);
     }, [pages]);
-
-    const getType = (index: number) => {
-        if (index === -1)
-            return undefined;
-        if (index === 0)
-            return "action";
-        return "reaction";
-    }
 
     // --- Variables --- //
     const [action, setAction] = useState<ActionApplet>({} as ActionApplet);

@@ -196,15 +196,15 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
  * @returns {Promise<void>} A promise that sends a PATCH request to patch an applet.
  * Logs success or error messages. Does not return data.
  */
-const UpdateAppletWithID = async (token: string, id: string, body: object): Promise<void> => {
+const UpdateAppletWithID = async (token: string, id: string, body: object): Promise<boolean> => {
     if (id === null) {
         console.log(`[PATCH] .../applet/{id}: id is null`);
-        return;
+        return false;
     }
 
     if (token === null) {
         console.log(`[PATCH] .../applet/${id}: token is null`);
-        return;
+        return false;
     }
 
     try {
@@ -221,15 +221,16 @@ const UpdateAppletWithID = async (token: string, id: string, body: object): Prom
 
         if (data?.status !== 200) {
             console.log(`[PATCH] .../applet/${id} (Error: ${data?.status}): \"${data?.message}\".`);
-            return;
+            return false;
         }
 
         console.log(`[PATCH] .../applet/${id}: \"Successfully patched applet.\"`);
         console.log(data);
+        return true;
     } catch (error: any) {
         console.log(error);
     }
-    return;
+    return false;
 };
 
 export { CreateApplet, GetAppletWithID, DeleteAppletWithID, UpdateAppletTitleWithID, UpdateAppletWithID };
