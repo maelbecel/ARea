@@ -98,19 +98,19 @@ const GetAppletWithID = async (token: string, id: string): Promise<any | null> =
  * @returns {Promise<void>} A promise that sends a DELETE request to delete an applet.
  * Logs success or error messages. Does not return data.
  */
-const DeleteAppletWithID = async (token: string, id: string): Promise<void> => {
+const DeleteAppletWithID = async (token: string, id: string): Promise<boolean> => {
     if (id === null) {
         console.log(`[DELETE] .../applet/{id}: id is null`);
-        return;
+        return false;
     }
 
     if (token === null) {
         console.log(`[DELETE] .../applet/${id}: token is null`);
-        return;
+        return false;
     }
 
     try {
-        const response = await fetch(`${localStorage.getItem("address") as string}/applet/${id}`, {
+        await fetch(`${localStorage.getItem("address") as string}/applet/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -118,19 +118,11 @@ const DeleteAppletWithID = async (token: string, id: string): Promise<void> => {
             }
         });
 
-        const data = await response.json();
-
-        if (data?.status !== 204) {
-            console.log(`[DELETE] .../applet/${id} (Error: ${data?.status}): \"${data?.message}\".`);
-            return;
-        }
-
-        console.log(`[DELETE] .../applet/${id}: \"Successfully deleted applet.\"`);
-        console.log(data);
+        return true;
     } catch (error: any) {
         console.log(error);
     }
-    return;
+    return false;
 };
 
 /**

@@ -184,8 +184,6 @@ const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>
                                 enabled: true
                             };
 
-                            console.log("BODY : ", body);
-
                             await CreateApplet(token, body, router);
                         }}
                         text="Validate"
