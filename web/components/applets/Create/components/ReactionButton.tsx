@@ -107,7 +107,7 @@ const ReactionsComponent = ({ reactions, setReactions, onClick, onEdit } : { rea
                                            setReactions={setReactions}
                                            index={key}
                                            onClick={() => { onClick(); localStorage.setItem("index", key.toString()); }}
-                                           onEdit={() => { onEdit() }}
+                                           onEdit={() => { onEdit(); localStorage.setItem("index", key.toString()); }}
                                            key={key}
                         />
                         {reactions.length <= 8 && <AddReactions setReactions={setReactions} index={key + 1} />}

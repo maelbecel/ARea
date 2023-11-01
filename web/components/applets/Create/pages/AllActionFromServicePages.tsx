@@ -68,7 +68,7 @@ const Headers = ({ color = "#363841", setPages, back }: { color?: string, setPag
     )
 }
 
-const AllActionFromServicePages = ({ service, setPages, setSlug, setIndex, back } : { service: string, setPages: Dispatch<SetStateAction<number>>, setSlug: Dispatch<SetStateAction<string>>, type: string | undefined, setIndex: Dispatch<SetStateAction<number>>, index: number, back: boolean }) => {
+const AllActionFromServicePages = ({ setPages, back } : { setPages: Dispatch<SetStateAction<number>>, back: boolean }) => {
     // --- Variables --- //
     const [props, setProps] = useState<any | undefined>(undefined); // Service props (for get color, logo etc...)
     const [actions, setActions] = useState<any[]>([]);              // All the actions or reactions from the service to draw

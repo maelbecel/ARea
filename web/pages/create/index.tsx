@@ -21,8 +21,6 @@ const IndexPage: NextPage = () => {
     const [index, setIndex] = useState<number>(-1);
     const [token, setToken] = useState<string>('');
     const [active, setActive] = useState<boolean>(false);
-    const [title, setTitle] = useState<string>("");
-    const [notif, setNotif] = useState<boolean>(true);
     const [editMode, setEditMode] = useState<boolean>(false);
     const [back, setBack] = useState<boolean>(false);
 
@@ -139,14 +137,23 @@ const IndexPage: NextPage = () => {
         }
     }, [pages]);
 
+    /**
+     * When pages is 0 (so when we are on the first page),
+     * Remove the index from localStorage
+     */
+    useEffect(() => {
+        if (pages === 0)
+            localStorage.removeItem("index");
+    }, [pages]);
+
     return (
         <>
-            {(pages === 0 || pages === -1) ? (<CreatePages setIndex={setIndex} pages={pages} index={index} setPages={setPages} token={token} array={actionArray} setArray={setActionArray} setSlug={setCurrentSlug} setService={setCurrentService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} />) : null}
-            {(pages === 1) ? (<SearchServicePages setIndex={setIndex} setPages={setPages} currentIndex={index} token={token} setSlug={setCurrentService} setActive={setActive} array={actionArray} />) : null}
-            {(pages === 2) ? (<AllActionFromServicePages service={currentService} setPages={setPages} type={getType(index)} setSlug={setCurrentSlug} setIndex={setIndex} index={index} back={back}/>) : null}
-            {(pages === 3) ? (<ServiceConnexionPages setPages={setPages} service={currentService} slug={currentSlug} array={actionArray} index={index} setArray={setActionArray} />) : null}
-            {(pages === 4) ? (<FillActionInputsPages setPages={setPages} service={currentService} slug={currentSlug} array={actionArray} setArray={setActionArray} EditMode={editMode} setAction={setAction} setReactions={setReactions} />) : null}
-            {(pages === 5) ? (<ValidatePages setPages={setPages} service={currentService} index={index} slug={currentSlug} array={actionArray} setArray={setActionArray} title={title} setTitle={setTitle} notif={notif} setNotif={setNotif} />) : null}
+            {(pages === 0 || pages === -1) ? (<CreatePages setPages={setPages} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} />) : null}
+            {(pages === 1) ? (<SearchServicePages          setPages={setPages} />) : null}
+            {(pages === 2) ? (<AllActionFromServicePages   setPages={setPages} back={back}/>) : null}
+            {(pages === 3) ? (<ServiceConnexionPages       setPages={setPages} />) : null}
+            {(pages === 4) ? (<FillActionInputsPages       setPages={setPages} EditMode={editMode} setAction={setAction} setReactions={setReactions} setEditMode={setEditMode} />) : null}
+            {(pages === 5) ? (<ValidatePages               setPages={setPages} />) : null}
 
             {pages !== 3 && pages !== 4 && <Footer />}
         </>

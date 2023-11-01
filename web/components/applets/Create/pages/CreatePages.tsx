@@ -1,18 +1,18 @@
 // --- Librairies import --- //
-import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect } from "react";
+import { useRouter } from "next/router";
 
 // --- Components --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
 import { CreateButton, AddReactions } from "../components/CreateButton";
+import { ButtonIconNavigate } from "../../../NavBar/components/Button";
+import ReactionsComponent from "../components/ReactionButton";
+import ActionComponent from "../components/ActionButton";
+import Title from "../../../NavBar/components/Title";
+import Button from "../../../Button/Button";
 
 // --- Interface --- //
-import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
-import { ActionApplet, Card, ReactionApplet, defaultReactionsApplet } from "../interface";
-import Title from "../../../NavBar/components/Title";
-import ActionComponent from "../components/ActionButton";
-import ReactionsComponent from "../components/ReactionButton";
-import Button from "../../../Button/Button";
+import { ActionApplet, ReactionApplet } from "../interface";
 
 const CreateHeader = () => {
     const router = useRouter();
@@ -41,7 +41,7 @@ const CreateHeader = () => {
     )
 }
 
-const CreateContainerComponent = ({ action, setAction, reactions, setReactions, setIndex, setPages, array, pages, setArray, setSlug, setService, active, setActive, title, notif, setEditMode, currentIndex }: { setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, pages: number, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>>, currentIndex: number, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>> }) => {
+const CreateContainerComponent = ({ action, setAction, reactions, setReactions, setPages, setEditMode }: { setPages: Dispatch<SetStateAction<number>>, setEditMode: Dispatch<SetStateAction<boolean>>, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>> }) => {
     /**
      * When action is updated,
      * Update the localStorage
@@ -88,7 +88,7 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
                     <>
                         <ActionComponent action={action}
                                          setAction={setAction}
-                                         onEdit={() => { }}
+                                         onEdit={() => { setEditMode(true); setPages(4); }}
                                          onClick={() => { setPages(1) }}
                         />
                         {reactions.length <= 8 && <AddReactions setReactions={setReactions} index={0} />}
@@ -98,7 +98,7 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
                     <>
                         <ReactionsComponent reactions={reactions}
                                             setReactions={setReactions}
-                                            onEdit={() => { } }
+                                            onEdit={() => { setEditMode(true); setPages(4); }}
                                             onClick={() => {
                                                 if (action.actionSlug !== "" && action.actionSlug !== null && action.actionSlug.includes("."))
                                                     setPages(1)
@@ -112,13 +112,11 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
     );
 };
 
-const CreatePages = ({ setIndex, setPages, token, array, pages, setArray, setSlug, setService, active, setActive, title, notif, setEditMode, index, action, setAction, reactions, setReactions } : { pages: number, setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, setSlug: Dispatch<SetStateAction<string>>, setService: Dispatch<SetStateAction<string>>, active: boolean, setActive: Dispatch<SetStateAction<boolean>>, title: string, notif: boolean, setEditMode: Dispatch<SetStateAction<boolean>>, index: number, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>> }) => {
+const CreatePages = ({ setPages, setEditMode, action, setAction, reactions, setReactions } : { setPages: Dispatch<SetStateAction<number>>, setEditMode: Dispatch<SetStateAction<boolean>>, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>> }) => {
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setIndex={setIndex} setPages={setPages} pages={pages} array={array} setArray={setArray} setSlug={setSlug} setService={setService} active={active} setActive={setActive} title={title} notif={notif} setEditMode={setEditMode} currentIndex={index}                            
-                                      action={action} setAction={setAction} reactions={reactions} setReactions={setReactions}
-            />
+            <CreateContainerComponent setPages={setPages} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} />
         </>
     )
 }

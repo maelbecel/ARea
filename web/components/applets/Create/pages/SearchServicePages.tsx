@@ -34,7 +34,7 @@ const SearchServiceHeader = ({ callback }: { callback: () => void }) => {
     )
 }
 
-const SearchServicePages = ({ currentIndex, setIndex, setPages, token, setSlug, setActive, array } : { currentIndex: number, setIndex: Dispatch<SetStateAction<number>>, setPages: Dispatch<SetStateAction<number>>, token: string, setSlug: Dispatch<SetStateAction<string>>, setActive: Dispatch<SetStateAction<boolean>>, array: Card[] }) => {
+const SearchServicePages = ({ setPages } : { setPages: Dispatch<SetStateAction<number>> }) => {
   return (
     <>
       <SearchServiceHeader callback={() => {

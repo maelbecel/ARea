@@ -145,7 +145,7 @@ const Field = ({ input, theme, id, inputsValue, setInputsValue }: { input: Input
     return (<></>);
 };
 
-const FillActionInputsPages = ({ setPages, service, slug, array, setArray, EditMode, setAction, setReactions }: { setPages: Dispatch<SetStateAction<number>>, service: string, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, EditMode: boolean, setAction: Dispatch<SetStateAction<ActionApplet>>, setReactions: Dispatch<SetStateAction<ReactionApplet[]>> }) => {
+const FillActionInputsPages = ({ setPages, EditMode, setAction, setReactions, setEditMode }: { setPages: Dispatch<SetStateAction<number>>, EditMode: boolean, setAction: Dispatch<SetStateAction<ActionApplet>>, setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, setEditMode: Dispatch<SetStateAction<boolean>> }) => {
     // --- Variables --- //
     const [props      , setProps]       = useState<any | undefined>(undefined); // Service for the current action (color, background, logo, etc...)
     const [actionProps, setActionProps] = useState<any | undefined>(undefined); // Action of the current service (inputs, placeholders, etc...)
@@ -226,11 +226,16 @@ const FillActionInputsPages = ({ setPages, service, slug, array, setArray, EditM
             if (index === null) {
                 await GetActionInputs(token, action.actionSlug).then((response) => {
                     setActionProps(response);
-                    setInputsValue(response?.inputs as Input[]);
+                    
+                    if (EditMode === true) {
+                        setInputsValue(action.actionInputs);
+                    } else {
+                        setInputsValue(response?.inputs as Input[]);
 
-                    action.actionInputs = response?.inputs as Input[];
+                        action.actionInputs = response?.inputs as Input[];
 
-                    localStorage.setItem("action", JSON.stringify(action));
+                        localStorage.setItem("action", JSON.stringify(action));
+                    }
                 }).catch((error) => {
                     console.log("ERROR : ", error);
                 });
@@ -240,11 +245,16 @@ const FillActionInputsPages = ({ setPages, service, slug, array, setArray, EditM
 
                 await GetReactionInputs(token, reactions[parseInt(index)].reactionSlug, action.actionSlug).then((response) => {
                     setActionProps(response);
-                    setInputsValue(response?.inputs as Input[]);
 
-                    reactions[parseInt(index)].reactionInputs = response?.inputs as Input[];
+                    if (EditMode === true) {
+                        setInputsValue(reactions[parseInt(index)].reactionInputs);
+                    } else {
+                        setInputsValue(response?.inputs as Input[]);
 
-                    localStorage.setItem("reactions", JSON.stringify(reactions));
+                        reactions[parseInt(index)].reactionInputs = response?.inputs as Input[];
+
+                        localStorage.setItem("reactions", JSON.stringify(reactions));
+                    }
                 }).catch((error) => {
                     console.log("ERROR : ", error);
                 });
@@ -253,7 +263,7 @@ const FillActionInputsPages = ({ setPages, service, slug, array, setArray, EditM
 
         getAction();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [service, slug, token, actionProps]);
+    }, [token, actionProps]);
 
     /**
      * Check if the action have inputs
@@ -371,6 +381,7 @@ const FillActionInputsPages = ({ setPages, service, slug, array, setArray, EditM
                                     setReactions(reactions);
                                 }
 
+                                setEditMode(false);
                                 setPages(0);
                             }
                         }}

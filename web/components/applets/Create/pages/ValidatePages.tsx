@@ -76,7 +76,7 @@ const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle }
     );
 };
 
-const ValidatePages = ({ setPages, service, slug, index, array, setArray }: { setPages: Dispatch<SetStateAction<number>>, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, title: string, setTitle: Dispatch<SetStateAction<string>>, notif: boolean, setNotif: Dispatch<SetStateAction<boolean>> }) => {
+const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>> }) => {
     // --- Variables --- //
     const [theme   , setTheme]    = useState<string>("light");
     const [pictures, setPictures] = useState<{

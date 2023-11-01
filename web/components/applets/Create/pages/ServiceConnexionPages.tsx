@@ -64,7 +64,7 @@ const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Di
     );
 }
 
-const ServiceConnexionPages = ({ setPages, service, index, array, setArray }: { setPages: Dispatch<SetStateAction<number>>, service: string, slug: string, array: Card[], index: number, setArray: Dispatch<SetStateAction<Card[]>> }) => {
+const ServiceConnexionPages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>> }) => {
     // --- Variables --- //
     const [props, setProps] = useState<Service | undefined>(undefined); // Service props for the current service (color, logo, name, etc...)
     const [theme, setTheme] = useState<string>("");
@@ -188,7 +188,7 @@ const ServiceConnexionPages = ({ setPages, service, index, array, setArray }: { 
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [service, token, props, action]);
+    }, [token, props, action]);
 
     /**
      * Set the theme of the page
