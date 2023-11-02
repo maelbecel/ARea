@@ -7,7 +7,12 @@ import Switch from "../../../switch";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
 import { GetProfile } from "../../../../utils/api/user/me";
-import { UserProfile } from "../../../../utils/api/user/interface";
+import { UserProfile } from "../../../../utils/api/user/interface/interface";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
+import { useRouter } from "next/router";
+import { Service } from "../../../../utils/api/service/interface/interface";
+import { GetServices } from "../../../../utils/api/service/service";
 
 const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
     const theme = getTheme(color);
@@ -34,11 +39,17 @@ const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?
 const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle } : { color: string, theme: string, props: any[], username: string | undefined, title: string, setTitle: Dispatch<SetStateAction<string>> }) => {
     return (
         <div style={{backgroundColor: `${color}`}} className={`w-full flex justify-center items-center gap-7 p-6 select-none`}>
-            <div style={{backgroundColor: `${color}`}} className={`w-[50%] flex-col py-[25px]`}>
-                <div style={{backgroundColor: `${color}`}} className={`flex-row py-[10px]`}>
+            <div style={{backgroundColor: `${color}`}} className={`w-[90%] md:w-[50%] flex-col py-[25px]`}>
+                <div style={{backgroundColor: `${color}`}} className={`flex-row py-[10px] flex gap-2`}>
                     {props && props.map((prop: any, id: number) => {
                         return (
-                            <Image key={id} src={prop.decoration.logoUrl} width={45} height={45} alt={"Service Logo"} className={"object-contain"} />
+                            (props[0]?.decoration.backgroundColor === "#ffffff" ? (
+                                <div key={id} style={{backgroundColor : `${prop.decoration.backgroundColor}`}} className="flex justify-center items-center rounded-lg w-[45px] h-[45px] p-[5px]">
+                                    <Image src={prop.decoration.logoUrl} width={45} height={45} alt={"Logo"} />
+                                </div>
+                            ) : (
+                                <Image src={prop.decoration.logoUrl} width={45} height={45} alt={"Logo"} />
+                            ))
                         )
                     })}
                 </div>
@@ -65,7 +76,7 @@ const ValidateButton = ({ props, callback }  : { props: any | undefined, callbac
     const theme = getTheme(props?.decoration?.backgroundColor);
 
     return (
-        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] p-[27px] pl-[130px] pr-[130px]`}
+        <div className={`flex justify-center items-center font-bold text-[36px] rounded-[50px] py-[10px] md:py-[27px] w-[90%] md:w-[75%] lg:w-[50%] xl:w-[25%]`}
             style={{
                 backgroundColor: !active ? props?.decoration?.backgroundColor : (theme === 'dark' ? 'white' : '#363841'),
                 color          : !active ? (theme === 'dark' ? 'white' : '#363841') : props?.decoration?.backgroundColor,
@@ -82,58 +93,80 @@ const ValidateButton = ({ props, callback }  : { props: any | undefined, callbac
     )
 };
 
-const ValidatePages = ({ setPages, token, service, slug, index, array, setArray, title, setTitle, notif, setNotif }: { setPages: Dispatch<SetStateAction<number>>, token: string, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, title: string, setTitle: Dispatch<SetStateAction<string>>, notif: boolean, setNotif: Dispatch<SetStateAction<boolean>> }) => {
-    const [props, setProps] = useState<any[]>([]);
+const ValidatePages = ({ setPages, service, slug, index, array, setArray, title, setTitle, notif, setNotif }: { setPages: Dispatch<SetStateAction<number>>, service: string, index: number, slug: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, title: string, setTitle: Dispatch<SetStateAction<string>>, notif: boolean, setNotif: Dispatch<SetStateAction<boolean>> }) => {
+    const [props, setProps] = useState<Service[]>([]);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [theme, setTheme] = useState<string>("light");
 
+    const { token, setToken } = useToken();
+    const { services, setServices } = useServices();
+
+    const router = useRouter();
+
+    /**
+     * Fetch user profile
+     */
     useEffect(() => {
-        if (profile !== null || profile !== undefined)
+        if (profile !== null && profile !== undefined)
             return;
+        if (token === "") {
+            const tokenStore = localStorage.getItem("token");
+            
+            if (tokenStore === null) {
+                router.push("/");
+                return;
+            }
+            setToken(tokenStore);
+        }
 
         const getProfile = async (token: string) => {
             setProfile(await GetProfile(token));
         };
 
         getProfile(token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profile, token]);
 
+    const getServices = async (token: string) => {
+        setServices(await GetServices(token));
+    };
+
+    const getServiceBySlug = (slug: string) => {
+        for (let i = 0; i < services.length; i++) {
+            if (services[i].slug === slug)
+                return (services[i]);
+        }
+        return (null);
+    }
+
+    /**
+     * Fetch service data
+     */
     useEffect(() => {
         if (props.length !== 0)
             return;
-
-        const getService = async (slug: string) => {
-            try {
-                const response = await fetch(`https://area51.zertus.fr/service/${slug}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+        if (services.length === 0) {
+            if (token === "") {
+                const tokenStore = localStorage.getItem("token");
     
-                const data = await response.json();
-
-                setProps((prev) => [...prev, data?.data]);
-            } catch (error) {
-                console.log(error);
+                if (tokenStore === null) {
+                    router.push("/");
+                    return;
+                }
+                setToken(tokenStore);
             }
-        };
+            getServices(token);
+        }
 
-        if (array.length > 0) {            
-            setProps([]);
+        for (let i = 0; i < array.length; i++) {
+            const service = getServiceBySlug(array[i].service);
 
-            // Create an array of unique service slugs from the 'array' variable
-            const uniqueServiceSlugs = Array.from(new Set(array.map((item) => item.service)));
-
-            // Iterate through unique slugs and fetch data for each
-            uniqueServiceSlugs.forEach((slug) => {
-                if (slug !== "")
-                    getService(slug);
-            });
+            if (service === null)
+                continue;
+            setProps((prev) => [...prev, service]);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [props, services, array, token]);
 
     useEffect(() => {
         setTheme(getTheme(props[0]?.decoration?.backgroundColor));
@@ -148,10 +181,10 @@ const ValidatePages = ({ setPages, token, service, slug, index, array, setArray,
                 }}
                 color={props[0]?.decoration?.backgroundColor}
             />
-            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col bg-white text-[#363841]`}>
+            <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col bg-white text-[#363841] pb-[5px]`}>
                 <AppletsInfoContainer color={props[0]?.decoration?.backgroundColor} theme={theme} props={props} username={profile?.username} title={title} setTitle={setTitle} />
-                <div className={`flex-row flex w-[50%] justify-between items-center`}>
-                    <div className="text-[24px] font-bold">Receive a notification when the applet is actived</div>
+                <div className={`flex-row flex w-[90%] md:w-[50%] justify-between items-center`}>
+                    <div className="text-[18px] md:text-[24px] font-bold">Receive a notification when the applet is actived</div>
                     <Switch isCheked={notif} isDisable={false} setChecked={setNotif} />
                 </div>
                 <ValidateButton

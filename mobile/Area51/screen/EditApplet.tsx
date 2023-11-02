@@ -75,9 +75,10 @@ const EditApplet = ({navigation, route}) => {
     
     setLoading(10);
     setLoadingInfo("Getting reactions")
-    for (const input of reaction) {
-      const reactionInput = await Reaction(input, action)
+    for (let i = 0; i < reaction.length; i++) {
+      const reactionInput = await Reaction(reaction[i], action)
       reactionInputs.push(reactionInput)
+      setLoading(10 + (i * (20/reaction.length)));
     }
 
     setLoading(30);
@@ -87,26 +88,16 @@ const EditApplet = ({navigation, route}) => {
 
     setLoading(40);
     setLoadingInfo("Getting reaction informations")
-    for (const input of reaction) {
-      const reactionInf = await ReactionInfo(input)
+    for (let i = 0; i < reaction.length; i++) {
+      const reactionInf = await ReactionInfo(reaction[i])
       reactionInfo.push(reactionInf)
+      setLoading(40 + (i * (30/reaction.length)));
     }
 
-    setLoading(60);
-    setLoadingInfo("Creating title")
-    let title = reactionInfo[0].name
-    for (let i = 1; i < reactionInfo.length; i++) {
-      title += " and " + reactionInfo[i].name
-    }
-    title += " if " + actionInfo.name
-    if (title == undefined || action == "default" || actionInputs == undefined || reactionInputs == undefined || reaction.length == 0) {
-      alert("Error")
-      return
-    }
-
-    setLoading(80);
+    setLoading(70);
     setLoadingInfo("Creating the applet")
-    const data = await AppletApi(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput);
+    const data = await AppletPatch(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput, id);
+    setLoading(0);
     if (data == false) {
       return
     } else {
@@ -114,7 +105,6 @@ const EditApplet = ({navigation, route}) => {
       await AsyncStorage.setItem('reaction', "[]");
       navigation.navigate("MyApplets", { id: data.id});
     }
-    setLoading(0);
   }
 
   useFocusEffect(() => {

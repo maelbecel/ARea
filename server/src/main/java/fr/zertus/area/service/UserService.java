@@ -82,8 +82,11 @@ public class UserService {
             currentUser.setUsername(user.getUsername());
         if (!user.getEmail().isEmpty() && RegisterUserService.isEmailValid(user.getEmail()))
             currentUser.setEmail(user.getEmail());
-        if (!user.getPassword().isEmpty())
-            currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getCurrentPassword() != null && user.getNewPassword() != null) {
+            if (passwordEncoder.matches(user.getCurrentPassword(), currentUser.getPassword())) {
+                currentUser.setPassword(passwordEncoder.encode(user.getNewPassword()));
+            }
+        }
         return userRepository.save(currentUser);
     }
 
@@ -103,7 +106,7 @@ public class UserService {
         }
     }
 
-    public void delete() throws DataNotFoundException {
+    public void deleteCurrentUser() throws DataNotFoundException {
         User user = getCurrentUser();
         if (user == null)
             return;

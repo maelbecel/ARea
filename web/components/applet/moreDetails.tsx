@@ -1,20 +1,60 @@
 import React, { useEffect, useState } from "react";
 import LogoApplet from "./logo";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { GetActionInfo } from "../../utils/api/action/info";
+
+import DetailLogo from "./detailLogo";
+
+interface reactionDataProps {
+    name: string;
+    label: string;
+    value: string;
+    description: string;
+}
+
+interface ReactionProps {
+    reactionSlug: string;
+    reactionData: reactionDataProps[];
+}
 
 interface ButtonProps {
     isToggle: boolean;
     actionSlug: string;
-    reactionSlug: string;
+    reactions: ReactionProps[];
 }
 
-const MoreDetailsButton = ({isToggle, actionSlug, reactionSlug, } : ButtonProps) => {
+const MoreDetailsButton = ({isToggle, actionSlug, reactions } : ButtonProps) => {
 
     const [isButtonToggle, setIsButtonToggle] = useState<boolean>(false);
+    const { token, setToken } = useToken();
+    const [actionData, setActionData] = useState<any>();
+    const [reactionData, setReactionData] = useState<any>();
 
     useEffect(() => {
         setIsButtonToggle(isToggle);
-        console.log("isCheked -> ", isToggle);
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const fetchData = async () => {
+        try {
+            const actionInfo = await GetActionInfo(token, actionSlug);
+            setActionData(actionInfo);
+
+            // const reactionInfo = await GetReactionInfo(token, reactionSlug);
+            // setReactionData(reactionInfo);
+
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+
+    useEffect(() => {
+
+        console.log("actionData -> ", actionData);
+        console.log("reactionData -> ", reactionData);
+
+    }, [actionData, reactionData]);
 
     const handleClick = () => {
         if (isButtonToggle == true) {
@@ -26,49 +66,38 @@ const MoreDetailsButton = ({isToggle, actionSlug, reactionSlug, } : ButtonProps)
         }
     }
 
-    // partial place holder
     // TODO: eject code for each item in a component adding a fetch on data for each item to get the name and description
     return (
         <div>
             {isButtonToggle ? (
                 <div className="flex flex-col items-center">
-                    <div className="flex justify-between text-[#363841] font-bold text-[22px] w-[100%]">
-                        <div className="w-[33%] flex items-center">
+                    <div className="flex flex:row justify-start sm:justify-between text-[#363841] font-bold text-[22px] w-[100%]">
+                        <div className="hidden sm:visible w-[33%] sm:flex items-center">
                             Action
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center pr-[10%] sm:pr-[0%]">
                             <div className="rounded-full w-[60px] h-[60px]">
-                                {actionSlug && <LogoApplet slug={actionSlug} width={60} height={60} toogleBackground={true}/>}
+                                {actionSlug && <LogoApplet slug={actionSlug.split('.')[0]} width={60} height={60} toogleBackground={true}/>}
                             </div>
                         </div>
-                        <div className="w-[33%]">
-                            <div className="text-[#363841] font-bold text-[22px]">
-                                Name of Action
+                        <div className="sm:w-[33%] w-[100%]">
+                            <div className="text-[#363841] font-bold text-[18px] sm:text-[22px]">
+                                {actionData?.name}
                             </div>
-                            <div className="text-[#363841] font text-[22px]">
-                                Description of Action
+                            <div className="text-[#363841] font-medium text-[18px] sm:text-[22px]">
+                                {actionData?.description}
                             </div>
                         </div>
                     </div>
-                    <div className="py-[8%] px-[2px] bg-[#36384138]">
-                    </div>
-                    <div className="flex justify-between w-[100%]">
-                        <div className="w-[33%] flex items-center text-[#363841] font-bold text-[22px]">
-                            REAction
+                    <div className="flex flex-col w-[100%]">
+                        <div className="flex flex-col">
+                            {reactions && Array.isArray(reactions) && reactions.map((reaction, index: number) => {
+                                return (
+                                    <DetailLogo key={index} slug={reaction.reactionSlug}/>
+                                );
+                            })}
                         </div>
-                        <div className="flex items-center">
-                            <div className="rounded-full w-[60px] h-[60px]">
-                                {reactionSlug && <LogoApplet slug={reactionSlug} width={60} height={60} toogleBackground={true}/>}
-                            </div>
-                        </div>
-                        <div className="w-[33%]">
-                            <div className="text-[#363841] font-bold text-[22px]">
-                                Name of Reaction
-                            </div>
-                            <div className="text-[#363841] font text-[22px]">
-                                Description of Reaction
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             ) : (

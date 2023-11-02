@@ -127,7 +127,7 @@ const ActionCard: React.FC<CardProps> = ({ type, id }) => {
         {displayType(type)}
         <TouchableOpacity onPress={() => {navigation.navigate('MyApplets', { id: id })}} style={[{backgroundColor: color, alignSelf: 'flex-end'}, styles.container]} >
             <View style={{flex: 1, flexDirection: "row", paddingVertical: 20, marginHorizontal: 10, marginRight: 60}}>
-                <Image source={{ uri: logo }} style={styles.logo}/>
+                <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logo}/>
                 <Text style={[styles.desc, {color: getWriteColor(color)}]}>{name}</Text>
             </View>
         </TouchableOpacity>

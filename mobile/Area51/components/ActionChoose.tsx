@@ -186,7 +186,7 @@ const ActionChoose: React.FC<CardProps> = ({ type, slug , onPress, onPressCross=
                 <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
                     <Text style={[styles.ifthen, { color: getWriteColor(info.decoration.backgroundColor) }]}>{(type === "action") ? "If" : "Then"}</Text>
                     <View style={{flexDirection: 'row', alignItems: "center"}}>
-                        <Image source={{ uri: info.decoration.logoUrl }} style={styles.logo} />
+                        <Image source={{ uri: info.decoration.logoUrl, cache: 'force-cache' }} style={styles.logo} />
                         <Text style={[styles.desc, { color: getWriteColor(info.decoration.backgroundColor) }]}>{action}</Text>
                     </View>
                     <Icon name="close" size={30} color={getWriteColor(info.decoration.backgroundColor)} onPress={onPressCross} />
