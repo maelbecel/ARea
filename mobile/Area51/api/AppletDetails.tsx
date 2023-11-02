@@ -19,6 +19,7 @@ const AppletDetails = async (slug: string) : Promise<any> => {
         const response: Response =
             await fetch(`${serverAddress}/service/${slug}`, {
                 method: 'GET',
+                cache: 'force-cache',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

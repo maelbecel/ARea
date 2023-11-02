@@ -11,11 +11,10 @@ import { getWriteColor } from "../components/ActionCard";
 import AppletInfos from "../api/AppletInfos";
 import ServiceInfo from "../api/ServiceInfo";
 
-const MyApplet = ({route}) => {
+const MyApplet = ({navigation, route}) => {
     const [bgColor, setBgColor] = useState('');
     const [dataApplet, setDataApplet] = useState(null);
     const { id } = route.params;
-    const navigation = useNavigation();
     const [statusBarHeight, setStatusBarHeight] = useState(0);
     const [refreshing, setRefreshing] = useState<boolean>(false); // State to store refreshing state
 
@@ -74,8 +73,7 @@ const MyApplet = ({route}) => {
 			<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 		  }>
             <View style={{ ...styles.container, backgroundColor: bgColor.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : bgColor, paddingTop: statusBarHeight }}>
-                {/* TODO: faire l'engrenage de modification etc */}
-                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={getWriteColor(bgColor)} iconRight='settings' onPressRight={() => console.log("settings")} />
+                <TopBar title=""  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={getWriteColor(bgColor)} iconRight='settings' onPressRight={() => navigation.navigate("EditApplet", {id : id})} />
             </View>
             <View>
                 {dataApplet &&

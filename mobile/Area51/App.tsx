@@ -17,6 +17,7 @@ import CreateScreen from './screen/AddServices';
 import ActivityScreen from './screen/Activity';
 import ProfileScreen from './screen/Profile';
 import InfoScreen from './screen/InfoScreen';
+import EditApplet from './screen/EditApplet';
 
 import Login from './screen/LogIn';
 import SignUp from './screen/SignUp';
@@ -24,6 +25,11 @@ import Service from './screen/Service';
 import SearchServices from './screen/SearchServices';
 import ServiceTemplate from './screen/ServiceTemplate';
 import ConnectAuth from './screen/ConnectAuth';
+
+import SearchServicesEdit from './screen/SearchServicesEdit';
+import ServiceTemplateEdit from './screen/ServiceTemplateEdit';
+import ConnectAuthEdit from './screen/ConnectAuthEdit';
+
 
 import MyApplet from './api/MyApplet';
 
@@ -121,7 +127,7 @@ export default function App() {
     }
     reset();
   }, [])
-  
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ cardStyle: {backgroundColor: "#FFF"}}}>
@@ -131,9 +137,13 @@ export default function App() {
         <Stack.Screen name="SearchServices" component={SearchServices} options={{ headerShown: false }} />
         <Stack.Screen name="ServiceTemplate" component={ServiceTemplate} options={{ headerShown: false }} />
         <Stack.Screen name="ConnectAuth" component={ConnectAuth} options={{ headerShown: false }} />
+        <Stack.Screen name="SearchServicesEdit" component={SearchServicesEdit} options={{ headerShown: false }} />
+        <Stack.Screen name="ServiceTemplateEdit" component={ServiceTemplateEdit} options={{ headerShown: false }} />
+        <Stack.Screen name="ConnectAuthEdit" component={ConnectAuthEdit} options={{ headerShown: false }} />
         <Stack.Screen name="Area 51" component={Tabs} options={{ headerShown: false }} />
         <Stack.Screen name="MyApplets" component={MyApplets} options={{ headerShown: false }} />
         <Stack.Screen name="Info" component={InfoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EditApplet" component={EditApplet} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -35,6 +35,7 @@ const Services = async (): Promise<Applet[]> => {
         const serverAddress : string = await AsyncStorage.getItem('serverAddress');
         const response : Response = await fetch(`${serverAddress}/service`, {
             method: 'GET',
+            cache: 'force-cache',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
