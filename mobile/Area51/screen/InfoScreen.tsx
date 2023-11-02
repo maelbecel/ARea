@@ -6,6 +6,7 @@ import ActionCard from '../components/ActionCard';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
+import LogoApplet from '../components/Applets/Logo';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -125,7 +126,7 @@ const InfoService = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   logo: {
     height: 100,
-    marginTop: 10,
+    marginTop: '15%',
     width: 100,
     alignSelf: 'center',
   },
@@ -148,7 +149,6 @@ const styles = StyleSheet.create({
     width: '60%',
     padding: 10,
     borderRadius: 90,
-    marginTop: 20,
   },
   buttonText: {
     fontSize: 20,
@@ -165,21 +165,18 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   info: {
-    marginTop: 50,
     alignItems: 'center',
-    flex: 1,
   },
   desc: {
     width: '70%',
     justifyContent: 'center',
-    fontSize: 24,
+    fontSize: 20,
     alignSelf: 'center',
     marginBottom: 40,
   },
   action: {
     alignContent: "center",
     alignItems: "center",
-    marginBottom: 60,
     paddingBottom: 250,
   }
 });
