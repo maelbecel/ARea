@@ -4,7 +4,7 @@ import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import { GetServices } from "../../utils/api/service/service";
-import ModalError from "../modalErrorNotif";
+import ModalError from "../Modal/modalErrorNotif";
 import { DeleteOAuth2Token, OAuth2GetToken } from "../../utils/api/service/oauth2";
 
 interface LinkedAccountProps {

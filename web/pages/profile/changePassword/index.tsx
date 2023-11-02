@@ -14,7 +14,7 @@ import SimpleLink from "../../../components/NavBar/components/SimpleLink";
 import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
 import { NavigateButton } from "../../../components/NavBar/components/Button";
 import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/navbar";
-import ModalError from "../../../components/modalErrorNotif";
+import ModalError from "../../../components/Modal/modalErrorNotif";
 
 const IndexPage: NextPage = () => {
 

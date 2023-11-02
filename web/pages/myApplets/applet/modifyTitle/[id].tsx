@@ -9,7 +9,7 @@ import SimpleLink from "../../../../components/NavBar/components/SimpleLink";
 import Input from "../../../../components/formProfile/input";
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { UpdateAppletTitleWithID } from "../../../../utils/api/applet/applet";
-import ModalError from "../../../../components/modalErrorNotif";
+import ModalError from "../../../../components/Modal/modalErrorNotif";
 
 const IndexPage: NextPage = () => {
 

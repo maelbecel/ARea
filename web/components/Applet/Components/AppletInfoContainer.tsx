@@ -3,16 +3,19 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-import LogoApplet from "./logo";
-import SwitchNotifyMe from "./switchNotifyMe";
-import MoreDetailsButton from "./moreDetails";
-import ToggleSwitch from "../switch/toggleSwitch";
-import { Service } from "../../utils/api/service/interface/interface";
-import { GetServices } from "../../utils/api/service/service";
-import { useToken } from "../../utils/api/user/Providers/TokenProvider";
-import { DeleteAppletWithID } from "../../utils/api/applet/applet";
-import ModalError from "../modalErrorNotif";
+// --- Components import --- //
+import LogoApplet from "./Logo";
+import SwitchNotifyMe from "../../switch/switchNotifyMe";
+import MoreDetailsButton from "./MoreDetails";
+import ToggleSwitch from "../../switch/toggleSwitch";
+import ModalError from "../../Modal/modalErrorNotif";
 
+// --- API import --- //
+import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
+import { DeleteAppletWithID } from "../../../utils/api/applet/applet";
+import Button from "../../Button/Button";
+
+// --- Interfaces --- //
 interface ReactionDataProps {
     name: string;
     label: string;
@@ -40,95 +43,32 @@ interface ServiceInfoContainerProps {
     notifUser: boolean;
 }
 
-const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, user, enabled, createdAt = 0, lastTriggerDate = 0, notifUser} : ServiceInfoContainerProps) => {
-
-    const [formattedDate, setFormattedDate] = useState<string>("");
-    const [LastUseDate, setLastUseDate] = useState<string>("");
-    const [toggleBg, setToggleBg] = useState<boolean>(false);
-    const [services, setServices] = useState<Service[]>([]);
+const EditContainer = ({ color, theme, actionSlug, name, id, user, reactions } : { color: string, theme: string, actionSlug: string, name: string, id: number, user: string, reactions: ReactionProps[] }) => {
+    // --- Router --- //
     const router = useRouter();
 
-    const { token } = useToken();
-    
-    useEffect(() => {
-        console.log("enabled -> ", enabled);
-    
-        if (createdAt != 0) {
-            const createdAtDate = new Date(createdAt * 1000);
-            const lastUpdateDate = new Date(lastTriggerDate * 1000);
-            const formattedDate = createdAtDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
-            const formattedLastUseDate = lastUpdateDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
-            setLastUseDate(formattedLastUseDate);
-            setFormattedDate(formattedDate);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        const getServices = async (token: string) => {
-            setServices(await GetServices(token));
-        }
-
-        getServices(token);
-
-        const Service: Service | undefined = services.find((Service: Service) => Service.slug === actionSlug.split('.')[0]);
-
-        if (Service?.decoration.backgroundColor.toLowerCase() === "#ffffff")
-            setToggleBg(true);
-        else
-            setToggleBg(false);
-
-        console.log("Service -> ", Service);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const handleTitleChange = () => {
-        console.log("title changed");
-    }
-
-    // --- Modals --- //
-    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
-
-    const openModalError = () => {
-        setIsErrorOpen(true);
-    };
-
-    const closeModalError = () => {
-        setIsErrorOpen(false);
-    };
-
-    // TODO: add a link to the edit applet
-    // TODO: add link on each logo (need to see on each which page to link)
     return (
-        <div className="w-full flex flex-col justify-center">
+        <>
             <div style={{
                     backgroundColor: `${color}`,
                     color: theme === "light" ? "#363841" : "#ffffff"
                 }}
-                className="w-full flex flex-row justify-around sm:justify-between font-bold text-[18px] sm:text-[24px] py-[2%]"
+                className="w-full flex flex-row justify-around sm:justify-between font-bold text-[18px] sm:text-[24px] p-[2%]"
             >
-                <Link href="/myApplets/">
-                        {/* Add a child element inside the Lipxnk */}
-                        <a className="rounded-[25px] py-[1%] px-[4%] ml-[50px] mt-[2%]"
-                            style={{
-                                backgroundColor: theme === "light" ? "#363841" : "#ffffff",
-                                color: theme === "light" ? "#ffffff" : color,
-                            }}
-                        >
-                            Back
-                        </a>
-                </Link>
-                <Link href={`/myApplets/applet/modifyApplet/${id}`}>
-                        {/* Add a child element inside the Link */}
-                        <a className="rounded-[25px] py-[1%] px-[4%] mr-[50px] mt-[2%]"
-                            style={{
-                                backgroundColor: theme === "light" ? "#363841" : "#ffffff",
-                                color: theme === "light" ? "#ffffff" : color,
-                            }}
-                        >
-                            Edit Applet
-                        </a>
-                </Link>
+                <Button text={"Back"}
+                        backgroundColor={theme === "light" ? "#363841" : "#ffffff"}
+                        textColor={theme === "light" ? "#ffffff" : color}
+                        callBack={() => router.back()}
+                        size={false}
+                        half={1}
+                />
+                <Button text={"Edit Applet"}
+                        backgroundColor={theme === "light" ? "#363841" : "#ffffff"}
+                        textColor={theme === "light" ? "#ffffff" : color}
+                        callBack={() => router.push(`/myApplets/applet/modifyApplet/${id}`)}
+                        size={false}
+                        half={(typeof window !== 'undefined' && window.innerWidth < 768) ? 2 : 1}
+                />
             </div>
             <div className={`w-full flex justify-center flex-col`}
                 style={{
@@ -151,9 +91,7 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
                         </div>
                         <Link href={`/myApplets/applet/modifyTitle/${id}`}>
                             <div className="font-bold text-[20px] flex justify-end underline">
-                                <button onClick={handleTitleChange}>
-                                    Edit title
-                                </button>
+                                Edit title
                             </div>
                         </Link>
                         <div className="text-[20px] flex flex-row justify-start pb-[20%]">
@@ -162,6 +100,48 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
                     </div>
                 </div>
             </div>
+        </>
+    )
+};
+
+const InfoContainer = ({ enabled, createdAt, lastTriggerDate, id, reactions, actionSlug, notifUser } : { enabled: boolean, createdAt: number, lastTriggerDate: number, id: number, reactions: ReactionProps[], actionSlug: string, notifUser: boolean }) => {
+    // --- Variables --- //
+    const [formattedDate, setFormattedDate] = useState<string>("");
+    const [LastUseDate, setLastUseDate] = useState<string>("");
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    // --- Providers --- //
+    const { token } = useToken();
+
+    // --- router --- //
+    const router = useRouter();
+
+    // --- UseEffect --- //
+    useEffect(() => {    
+        if (createdAt != 0) {
+            const createdAtDate        = new Date(createdAt * 1000);
+            const lastUpdateDate       = new Date(lastTriggerDate * 1000);
+
+            const formattedDate        = createdAtDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
+            const formattedLastUseDate = lastUpdateDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
+
+            setLastUseDate(formattedLastUseDate);
+            setFormattedDate(formattedDate);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // --- Function --- //
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
+
+    return (
+        <>
             <div className="flex flex-col items-center my-[5%]">
                 <ToggleSwitch isCheked={enabled} isDisable={false} yesLabel="Enabled" noLabel="Disabled" bgColor="#363841" id={id?.toString()}/>
             </div>
@@ -192,19 +172,29 @@ const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, use
                     </div>
                 </div>
                 <div className="text-[#FF0000] font-bold text-[22px] my-[1%] cursor-pointer"
-                     onClick={async () => {
+                    onClick={async () => {
                         const status = await DeleteAppletWithID(token, id.toString());
 
                         if (status === true)
                             router.push("/myApplets");
                         else
                             openModalError();
-                     }}
+                    }}
                 >
                     Delete Applet
                 </div>
                 <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
             </div>
+        </>
+    );
+};
+
+// --- Main Component --- //
+const AppletInfoContainer = ({id, name, color, theme, actionSlug, reactions, user, enabled, createdAt = 0, lastTriggerDate = 0, notifUser} : ServiceInfoContainerProps) => {
+    return (
+        <div className="w-full flex flex-col justify-center">
+            <EditContainer color={color} theme={theme} actionSlug={actionSlug} name={name} id={id} user={user} reactions={reactions} />
+            <InfoContainer enabled={enabled} createdAt={createdAt} lastTriggerDate={lastTriggerDate} id={id} notifUser={notifUser} reactions={reactions} actionSlug={actionSlug} />
         </div>
     )
 }

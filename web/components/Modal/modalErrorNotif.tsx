@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import Modal from 'react-modal';
-import Button from "./Button/Button";
+import Button from "../Button/Button";
 
 interface ModalErrorProps {
     closeModal: () => void;

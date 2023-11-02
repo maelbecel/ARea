@@ -1,24 +1,30 @@
+// --- Components --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getTheme } from "../../../../utils/getTheme";
-import Image from "next/image";
-import { ActionApplet, Card, ReactionApplet } from "../interface";
 import Switch from "../../../switch";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate } from "../../../NavBar/components/Button";
+import ModalError from "../../../Modal/modalErrorNotif";
+import Button from "../../../Button/Button";
+
+// --- Imports --- //
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+
+// --- API --- //
+import { getTheme } from "../../../../utils/getTheme";
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
-import { useRouter } from "next/router";
-import { Service } from "../../../../utils/api/service/interface/interface";
 import { GetService, GetServices } from "../../../../utils/api/service/service";
 import { useUser } from "../../../../utils/api/user/Providers/UserProvider";
-import Button from "../../../Button/Button";
 import { CreateApplet } from "../../../../utils/api/applet/applet";
-import ModalError from "../../../modalErrorNotif";
 
-const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
-    const theme = getTheme(color);
+// --- Interface --- //
+import { ActionApplet, ReactionApplet } from "../../Interface/interface";
+import { Service } from "../../../../utils/api/service/interface/interface";
 
+// --- Headers --- //
+const Headers = ({ callback, color = "#363841", theme }: { callback: () => void, color?: string, theme: string }) => {
     return (
         <NavBar color={color.substring(1)} theme={theme}>
           <LeftSection>
@@ -43,7 +49,16 @@ const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?
     )
 };
 
-const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle } : { color: string, theme: string, props: any[], username: string | undefined, title: string, setTitle: Dispatch<SetStateAction<string>> }) => {
+interface AppletsInfoContainerProps {
+    color   : string;
+    theme   : string;
+    props   : any[];
+    username: string | undefined;
+    title   : string;
+    setTitle: Dispatch<SetStateAction<string>>;
+}
+
+const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle } : AppletsInfoContainerProps) => {
     return (
         <div style={{backgroundColor: `${color}`}} className={`w-full flex justify-center items-center gap-7 p-6 select-none`}>
             <div style={{backgroundColor: `${color}`}} className={`w-[90%] md:w-[50%] flex-col py-[25px]`}>
@@ -77,15 +92,14 @@ const AppletsInfoContainer = ({ color, theme, props, username, title, setTitle }
     );
 };
 
+// --- Main Components --- //
 const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>> }) => {
     // --- Variables --- //
     const [theme   , setTheme]    = useState<string>("light");
-    const [pictures, setPictures] = useState<{
-        logoUrl: string | undefined,
-        backgroundColor: string | undefined
-    }[]>([]);
+    const [pictures, setPictures] = useState<{ logoUrl: string | undefined, backgroundColor: string | undefined }[]>([]);
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
 
-        // --- Sending Value
+        // --- Sending Value --- //
     const [title, setTitle] = useState<string>("");
     const [notif, setNotif] = useState<boolean>(true);
 
@@ -96,6 +110,8 @@ const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>
 
     // --- Router --- //
     const router = useRouter();
+
+    // --- Function --- //
 
     const getServices = async () => {
         if (token === "") {
@@ -126,6 +142,41 @@ const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>
         ]);
     };
 
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
+
+    const SendButton = async () => {
+        if (title === "")
+            return;
+
+        const actionStr = localStorage.getItem("action") as string;
+        const action = JSON.parse(actionStr) as ActionApplet;
+
+        const reactionStr = localStorage.getItem("reactions") as string;
+        const reactions = JSON.parse(reactionStr) as ReactionApplet[];
+
+        let body = {
+            name: title,
+            actionSlug: action.actionSlug,
+            actionInputs: action.actionInputs,
+            reactions: reactions,
+            notifUser: notif,
+            enabled: true
+        };
+
+        const status = await CreateApplet(token, body, router);
+
+        if (status === false)
+            openModalError();
+    };
+
+    // --- UseEffect --- //
+
     /**
      * Fetch service data
      */
@@ -152,23 +203,14 @@ const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>
         setTheme(getTheme(pictures[0]?.backgroundColor ?? "#ffffff"));
     }, [pictures]);
 
-    // --- Modals --- //
-    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
-
-    const openModalError = () => {
-        setIsErrorOpen(true);
-    };
-
-    const closeModalError = () => {
-        setIsErrorOpen(false);
-    };
-
     return (
         <>
             <Headers
+                theme={theme}
                 callback={() => { setPages(0); }}
                 color={pictures[0]?.backgroundColor}
             />
+
             <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col bg-white text-[#363841] pb-[5px]`}>
                 <AppletsInfoContainer color={pictures[0]?.backgroundColor ?? "#ffffff"} theme={theme} props={pictures} username={user.username} title={title} setTitle={setTitle} />
                 <div className={`flex-row flex w-[90%] md:w-[50%] justify-between items-center`}>
@@ -177,30 +219,7 @@ const ValidatePages = ({ setPages }: { setPages: Dispatch<SetStateAction<number>
                     </div>
                     <Switch isCheked={notif} isDisable={false} setChecked={setNotif} />
                 </div>
-                <Button callBack={async () => {
-                            if (title === "")
-                                return;
-
-                            const actionStr = localStorage.getItem("action") as string;
-                            const action = JSON.parse(actionStr) as ActionApplet;
-
-                            const reactionStr = localStorage.getItem("reactions") as string;
-                            const reactions = JSON.parse(reactionStr) as ReactionApplet[];
-
-                            let body = {
-                                name: title,
-                                actionSlug: action.actionSlug,
-                                actionInputs: action.actionInputs,
-                                reactions: reactions,
-                                notifUser: notif,
-                                enabled: true
-                            };
-
-                            const status = await CreateApplet(token, body, router);
-
-                            if (status === false)
-                                openModalError();
-                        }}
+                <Button callBack={async () => { await SendButton(); }}
                         text="Validate"
                         backgroundColor={pictures[0]?.backgroundColor}
                         textColor={theme === 'dark' ? '#ffffff' : '#363841'}

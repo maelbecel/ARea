@@ -1,50 +1,56 @@
 // --- Librairies import --- //
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 // --- Components import --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import { getTheme } from "../../../../utils/getTheme";
 import Footer from "../../../footer";
 import { ServiceInfoContainer } from "../../../service/template";
-import { ActionApplet, Card, ReactionApplet } from "../interface";
 import Title from "../../../NavBar/components/Title";
-import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
-import { useRouter } from "next/router";
+import { ButtonIconNavigate } from "../../../NavBar/components/Button";
+import Button from "../../../Button/Button";
+
+// --- API --- //
+import { getTheme } from "../../../../utils/getTheme";
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
 import { GetServices } from "../../../../utils/api/service/service";
-import { Service } from "../../../../utils/api/service/interface/interface";
 import { OAuth2GetToken } from "../../../../utils/api/service/oauth2";
-import Button from "../../../Button/Button";
 import { useUser } from "../../../../utils/api/user/Providers/UserProvider";
 
-const Headers = ({ color = "#363841", setPages }: { color?: string, setPages: Dispatch<SetStateAction<number>> }) => {
-    const theme = getTheme(color);
+// --- Interface --- //
+import { ActionApplet, ReactionApplet } from "../../Interface/interface";
+import { Service } from "../../../../utils/api/service/interface/interface";
+
+// --- Headers --- //
+const Headers = ({ color = "#363841", theme, setPages }: { color?: string, theme: string, setPages: Dispatch<SetStateAction<number>> }) => {
+    const handleClick = () => {
+        const index = localStorage.getItem("index");
+
+        if (index === null) {
+            const actionStr = localStorage.getItem("action") as string;
+            let action = JSON.parse(actionStr) as ActionApplet;
+
+            action.actionSlug = action.actionSlug.split(".")[0];
+
+            localStorage.setItem("action", JSON.stringify(action));
+        } else {
+            const reactionsStr = localStorage.getItem("reactions") as string;
+            let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
+
+            reactions[parseInt(index)].reactionSlug = reactions[parseInt(index)].reactionSlug.split(".")[0];
+
+            localStorage.setItem("reactions", JSON.stringify(reactions));
+        }
+
+        setPages(2);
+    };
 
     return (
         <NavBar color={color.substring(1)} theme={theme}>
             <LeftSection>
                 <Button text="Back"
-                        callBack={() => {
-                            const index = localStorage.getItem("index");
-
-                            if (index === null) {
-                                const actionStr = localStorage.getItem("action") as string;
-                                let action = JSON.parse(actionStr) as ActionApplet;
-
-                                action.actionSlug = action.actionSlug.split(".")[0];
-
-                                localStorage.setItem("action", JSON.stringify(action));
-                            } else {
-                                const reactionsStr = localStorage.getItem("reactions") as string;
-                                let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
-
-                                reactions[parseInt(index)].reactionSlug = reactions[parseInt(index)].reactionSlug.split(".")[0];
-
-                                localStorage.setItem("reactions", JSON.stringify(reactions));
-                            }
-                            setPages(2);
-                        }}
+                        callBack={() => { handleClick() }}
                         backgroundColor={theme === 'light' ? '#363841' : '#ffffff'}
                         textColor={color}
                         half={(typeof window !== 'undefined' && window.innerWidth < 768) ? 1 : 4}
@@ -68,6 +74,7 @@ const ServiceConnexionPages = ({ setPages }: { setPages: Dispatch<SetStateAction
     // --- Variables --- //
     const [props, setProps] = useState<Service | undefined>(undefined); // Service props for the current service (color, logo, name, etc...)
     const [theme, setTheme] = useState<string>("");
+    const [action, setAction] = useState<any>({});
 
     // --- Providers Hooks --- //
     const { services, setServices } = useServices();
@@ -88,7 +95,7 @@ const ServiceConnexionPages = ({ setPages }: { setPages: Dispatch<SetStateAction
             setPages(4);
     });
 
-    const [action, setAction] = useState<any>({});
+    // --- Fonction --- //
 
     /**
      * Get the services from the API
@@ -126,6 +133,48 @@ const ServiceConnexionPages = ({ setPages }: { setPages: Dispatch<SetStateAction
 
         return reactions[parseInt(index)].reactionSlug.split(".")[0];
     };
+
+    const handleClick = async () => {
+        const openOAuth2Window = async () => {
+            const handleRedirect = () => {
+                if (oauth2Window)
+                    oauth2Window.close();
+            };
+
+            const serviceName = getServiceName();
+
+            try {
+                const OAuthToken = await OAuth2GetToken(token, serviceName);
+
+                if (!OAuthToken)
+                    return;
+
+                // Open the OAuth2 authorization window
+                oauth2Window = window.open(
+                    `${localStorage.getItem("address") as string}/service/${serviceName}/oauth2?redirecturi=http://localhost:8081/close&authToken=${OAuthToken}`,
+                    'OAuth2 Authorization',
+                    'width=720,height=480'
+                );
+
+                // Check if the window has been closed
+                const checkWindowClosed = () => {
+                    if (!oauth2Window || oauth2Window.closed) {
+                        // Callback to handle the redirect
+                        handleRedirect();
+                        clearInterval(checkInterval);
+                    }
+                };
+
+                const checkInterval = setInterval(checkWindowClosed, 1000);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        openOAuth2Window();
+    }
+
+    // --- UseEffect --- //
 
     /**
      * First frame useEffect,
@@ -202,49 +251,10 @@ const ServiceConnexionPages = ({ setPages }: { setPages: Dispatch<SetStateAction
         setTheme(getTheme(props?.decoration?.backgroundColor ?? "#ffffff"));
     }, [props, theme]);
 
-    const handleClick = async () => {
-        const openOAuth2Window = async () => {
-            const handleRedirect = () => {
-                if (oauth2Window)
-                    oauth2Window.close();
-            };
-
-            const serviceName = getServiceName();
-
-            try {
-                const OAuthToken = await OAuth2GetToken(token, serviceName);
-
-                if (!OAuthToken)
-                    return;
-
-                // Open the OAuth2 authorization window
-                oauth2Window = window.open(
-                    `${localStorage.getItem("address") as string}/service/${serviceName}/oauth2?redirecturi=http://localhost:8081/close&authToken=${OAuthToken}`,
-                    'OAuth2 Authorization',
-                    'width=720,height=480'
-                );
-
-                // Check if the window has been closed
-                const checkWindowClosed = () => {
-                    if (!oauth2Window || oauth2Window.closed) {
-                        // Callback to handle the redirect
-                        handleRedirect();
-                        clearInterval(checkInterval);
-                    }
-                };
-
-                const checkInterval = setInterval(checkWindowClosed, 1000);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        openOAuth2Window();
-    }
-
     return (
         <>
-            <Headers color={props?.decoration?.backgroundColor} setPages={setPages} />
+            <Headers color={props?.decoration?.backgroundColor} setPages={setPages} theme={theme} />
+
             <div className={`min-h-screen flex justify-start gap-[100px] items-center flex-col`}
                 style={{
                     backgroundColor: props?.decoration?.backgroundColor,
@@ -252,7 +262,6 @@ const ServiceConnexionPages = ({ setPages }: { setPages: Dispatch<SetStateAction
                 }}
             >
                 <ServiceInfoContainer color={props?.decoration.backgroundColor ?? '#fffffff'} theme={theme} url={props?.decoration.logoUrl ?? ''} name={props?.name ?? ''} />
-
                 <div className={`w-[90%] flex justify-center items-center text-[24px] text-center`}>
                     {action?.description}
                 </div>

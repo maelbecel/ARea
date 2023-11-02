@@ -1,10 +1,15 @@
+// --- Imports --- //
 import React, { useEffect, useState } from "react";
-import LogoApplet from "./logo";
-import { useToken } from "../../utils/api/user/Providers/TokenProvider";
-import { GetActionInfo } from "../../utils/api/action/info";
 
-import DetailLogo from "./detailLogo";
+// --- Components --- //
+import LogoApplet from "./Logo";
+import DetailLogo from "./DetailLogo";
 
+// --- API --- //
+import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
+import { GetActionInfo } from "../../../utils/api/action/info";
+
+// --- Interface --- //
 interface reactionDataProps {
     name: string;
     label: string;
@@ -24,49 +29,38 @@ interface ButtonProps {
 }
 
 const MoreDetailsButton = ({isToggle, actionSlug, reactions } : ButtonProps) => {
-
+    // --- Variables --- //
     const [isButtonToggle, setIsButtonToggle] = useState<boolean>(false);
-    const { token, setToken } = useToken();
-    const [actionData, setActionData] = useState<any>();
-    const [reactionData, setReactionData] = useState<any>();
+    const [actionData    , setActionData]     = useState<any>();
+
+    // --- Providers --- //
+    const { token } = useToken();
+
+    // --- UseEffect --- //
 
     useEffect(() => {
         setIsButtonToggle(isToggle);
         fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // --- Functions --- //
+
     const fetchData = async () => {
-        try {
-            const actionInfo = await GetActionInfo(token, actionSlug);
-            setActionData(actionInfo);
+        const actionInfo = await GetActionInfo(token, actionSlug);
 
-            // const reactionInfo = await GetReactionInfo(token, reactionSlug);
-            // setReactionData(reactionInfo);
-
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
+        setActionData(actionInfo);
     }
-
-    useEffect(() => {
-
-        console.log("actionData -> ", actionData);
-        console.log("reactionData -> ", reactionData);
-
-    }, [actionData, reactionData]);
 
     const handleClick = () => {
         if (isButtonToggle == true) {
             setIsButtonToggle(false);
-            console.log("disabled");
-        } else {
-            setIsButtonToggle(true);
-            console.log("enabled");
+            return;
         }
+
+        setIsButtonToggle(true);
     }
 
-    // TODO: eject code for each item in a component adding a fetch on data for each item to get the name and description
     return (
         <div>
             {isButtonToggle ? (
@@ -92,12 +86,9 @@ const MoreDetailsButton = ({isToggle, actionSlug, reactions } : ButtonProps) => 
                     <div className="flex flex-col w-[100%]">
                         <div className="flex flex-col">
                             {reactions && Array.isArray(reactions) && reactions.map((reaction, index: number) => {
-                                return (
-                                    <DetailLogo key={index} slug={reaction.reactionSlug}/>
-                                );
+                                return (<DetailLogo key={index} slug={reaction.reactionSlug} />);
                             })}
                         </div>
-                        
                     </div>
                 </div>
             ) : (

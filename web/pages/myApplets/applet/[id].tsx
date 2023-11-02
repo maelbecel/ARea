@@ -6,7 +6,7 @@ import { useState } from "react";
 import { getTheme } from "../../../utils/getTheme";
 
 // --- Components import --- //
-import AppletInfoContainer from "../../../components/applet/appletInfoContainer";
+import AppletInfoContainer from "../../../components/Applet/Components/AppletInfoContainer";
 import Footer from "../../../components/footer";
 import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/navbar";
 import Icon from "../../../components/NavBar/components/Icon";
@@ -99,7 +99,7 @@ const IndexPage: NextPage = () => {
     };
 
     useEffect(() => {
-        if (dataApplet === undefined || bgColor !== '')
+        if (dataApplet === undefined || dataApplet === null || bgColor !== '')
             return;
 
         if (services.length === 0) {

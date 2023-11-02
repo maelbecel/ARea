@@ -1,37 +1,39 @@
+// --- Imports --- //
 import React from "react";
 import { useEffect, useState } from "react";
-import { useToken } from "../../utils/api/user/Providers/TokenProvider";
-import { useUser } from "../../utils/api/user/Providers/UserProvider";
 
-import { GetReactionInfo } from "../../utils/api/reaction/info";
-import LogoApplet from "./logo";
+// --- API --- //
+import { GetReactionInfo } from "../../../utils/api/reaction/info";
 
-interface DetailLogoProps {
-    slug: string;
-}
+// --- Components --- //
+import LogoApplet from "./Logo";
 
+// --- Interface ---//
 interface reactionInfoProps {
     name: string;
     description: string;
     slug: string;
 }
 
-const DetailLogo = ({slug} : DetailLogoProps) => {
-
-    // GetReactionInfo
-    const [token, setToken] = useState<string>('');
+const DetailLogo = ({ slug } : { slug: string }) => {
+    // --- Variables --- //
+    const [token       , setToken]        = useState<string>('');
     const [reactionInfo, setReactionInfo] = useState<reactionInfoProps>();
+
+    // --- UseEffect --- //
 
     useEffect(() => {
         setToken(localStorage.getItem("token") as string);
+
         if (token) {
             const reactionInfo = async (token: string) => {
                 const data = await GetReactionInfo(token, slug);
                 setReactionInfo(data);
             }
+
             reactionInfo(token);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     return (

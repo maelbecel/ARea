@@ -1,23 +1,30 @@
+// --- Components --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getTheme } from "../../../../utils/getTheme";
 import Footer from "../../../footer";
-import Image from "next/image";
-import { ActionApplet, Card, Input, ReactionApplet, inputs } from "../interface";
 import Title from "../../../NavBar/components/Title";
-import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
-import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
-import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+import { ButtonIconNavigate } from "../../../NavBar/components/Button";
+import Button from "../../../Button/Button";
+import { SelectField, TextField } from "../../Components/LittleComponents/FieldsInput";
+
+// --- Imports --- //
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { GetServices } from "../../../../utils/api/service/service";
 import { Service } from "../../../../utils/api/service/interface/interface";
 import { GetReactionInputs } from "../../../../utils/api/reaction/reaction";
 import { GetActionInputs } from "../../../../utils/api/action/action";
-import Button from "../../../Button/Button";
 
-const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?: string }) => {
-    const theme = getTheme(color);
+// --- API --- //
+import { getTheme } from "../../../../utils/getTheme";
+import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
+import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 
+// --- Interfaces --- //
+import { ActionApplet, Input, ReactionApplet } from "../../Interface/interface";
+
+// --- Headers --- //
+const Headers = ({ callback, color = "#363841", theme }: { callback: () => void, color?: string, theme: string }) => {
     return (
         <NavBar color={color.substring(1)} theme={theme}>
           <LeftSection>
@@ -42,6 +49,7 @@ const Headers = ({ callback, color = "#363841" }: { callback: () => void, color?
     )
 };
 
+// --- Components --- //
 const ActionInfoContainer = ({ color, theme, url, title } : { color: string, theme: string, url: string, title: string }) => {
     return (
         <div style={{backgroundColor: `${color}`}} className={`w-full flex justify-center flex-col gap-7 p-6 select-none`}>
@@ -53,99 +61,26 @@ const ActionInfoContainer = ({ color, theme, url, title } : { color: string, the
     );
 };
 
-const TextField = ({ input, theme, setInputsValue, inputsValue, id }: { input: Input, theme: string, setInputsValue: Dispatch<SetStateAction<Input[]>>, inputsValue: Input[], id: number }) => {
-    return (
-        <div className='flex flex-col w-[90%] lg:w-[50%]'>
-            <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
-                {input.label}
-            </span>
-            <input
-                type="text"
-                className={`rounded-[10px] p-2 text-[#363841] font-bold text-[20px] border-[#363841] border-2`}
-                value={inputsValue[id].value}
-                onChange={(e) => {
-                    setInputsValue(inputsValue.map((input: Input, index: number) => {
-                        if (index === id)
-                            input.value = e.target.value;
-                        return input;
-                    }));
-                }}
-            />
-        </div>
-    );
-};
-
-const NumberField = ({ input, theme, setInputsValue, inputsValue, id }: { input: Input, theme: string, setInputsValue: Dispatch<SetStateAction<Input[]>>, inputsValue: Input[], id: number }) => {
-    return (
-        <div className='flex flex-col w-[90%] lg:w-[50%]'>
-            <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
-                {input.label}
-            </span>
-            <input
-                type="number"
-                className={`rounded-[10px] p-2 text-[#363841] font-bold text-[20px] border-[#363841] border-2`}
-                value={inputsValue[id].value}
-                onChange={(e) => {
-                    setInputsValue(inputsValue.map((input: Input, index: number) => {
-                        if (index === id)
-                            input.value = e.target.value;
-                        return input;
-                    }));
-                }}
-            />
-        </div>
-    );
-};
-
-const SelectField = ({ input, theme, setInputsValue, inputsValue, id }: { input: Input, theme: string, setInputsValue: Dispatch<SetStateAction<Input[]>>, inputsValue: Input[], id: number }) => {
-    // Put the default value of the select
-    if (inputsValue[id].value === undefined || inputsValue[id].value === "") {
-        setInputsValue(inputsValue.map((input: Input, index: number) => {
-            if (input.type === "SELECT" && (input.value === undefined || input.value === ""))
-                input.value = input.options[0];
-            return input;
-        }));
-    }
-
-    return (
-        <div className='flex flex-col w-[90%] lg:w-[50%]'>
-            <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
-                {input.label}
-            </span>
-            <select
-                className={`rounded-[10px] p-2 text-[#363841] font-bold text-[20px]`}
-                value={inputsValue[id].value}
-                onChange={(e) => {
-                    setInputsValue(inputsValue.map((input: Input, index: number) => {
-                        if (index === id)
-                            input.value = e.target.value;
-                        return input;
-                    }));
-                }}
-            >
-                {input.options?.map((option: string, id: number) => {
-                    return (
-                        <option key={id} value={option}>
-                            {option}
-                        </option>
-                    );
-                })}
-            </select>
-        </div>
-    );
-};
-
 const Field = ({ input, theme, id, inputsValue, setInputsValue }: { input: Input, theme: string, id: number, inputsValue: Input[], setInputsValue: Dispatch<SetStateAction<Input[]>> }) => {
     if (input.type === "TEXT" || input.type === "URL")
         return (<TextField   input={input} theme={theme} setInputsValue={setInputsValue} inputsValue={inputsValue} id={id} />);
     if (input.type === "NUMBER")
-        return (<NumberField input={input} theme={theme} setInputsValue={setInputsValue} inputsValue={inputsValue} id={id} />);
+        return (<TextField   input={input} theme={theme} setInputsValue={setInputsValue} inputsValue={inputsValue} id={id} type={"number"} />);
     if (input.type === "SELECT")
         return (<SelectField input={input} theme={theme} setInputsValue={setInputsValue} inputsValue={inputsValue} id={id} />);
     return (<></>);
 };
 
-const FillActionInputsPages = ({ setPages, EditMode, setAction, setReactions, setEditMode }: { setPages: Dispatch<SetStateAction<number>>, EditMode: boolean, setAction: Dispatch<SetStateAction<ActionApplet>>, setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, setEditMode: Dispatch<SetStateAction<boolean>> }) => {
+// --- Main Component --- //
+interface FillActionInputsPagesProps {
+    EditMode     : boolean;
+    setPages     : Dispatch<SetStateAction<number>>;
+    setAction    : Dispatch<SetStateAction<ActionApplet>>;
+    setReactions : Dispatch<SetStateAction<ReactionApplet[]>>;
+    setEditMode  : Dispatch<SetStateAction<boolean>>;
+};
+
+const FillActionInputsPages = ({ EditMode, setPages, setAction, setReactions, setEditMode } : FillActionInputsPagesProps) => {
     // --- Variables --- //
     const [props      , setProps]       = useState<any | undefined>(undefined); // Service for the current action (color, background, logo, etc...)
     const [actionProps, setActionProps] = useState<any | undefined>(undefined); // Action of the current service (inputs, placeholders, etc...)
@@ -194,6 +129,77 @@ const FillActionInputsPages = ({ setPages, EditMode, setAction, setReactions, se
         const reactions = JSON.parse(reactionsStr) as ReactionApplet[];
 
         return reactions[parseInt(index)].reactionSlug.split(".")[0];
+    };
+
+    const goBack = () => {
+        if (EditMode === true) {
+            setPages(0);
+            return;
+        }
+
+        const index = localStorage.getItem("index");
+
+        if (index === null) {
+            const actionStr = localStorage.getItem("action") as string;
+            let action = JSON.parse(actionStr) as ActionApplet;
+
+            action.actionSlug = action.actionSlug.split(".")[0];
+
+            localStorage.setItem("action", JSON.stringify(action));
+        } else {
+            const reactionsStr = localStorage.getItem("reactions") as string;
+            let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
+
+            reactions[parseInt(index)].reactionSlug = reactions[parseInt(index)].reactionSlug.split(".")[0];
+
+            localStorage.setItem("reactions", JSON.stringify(reactions));
+        }
+
+        setPages(2);
+    };
+
+    const TriggerClick = () => {
+        let good = false as boolean;
+
+        actionProps?.inputs?.forEach((input: Input, id: number) => {
+            if (input.label.includes("(optional)") === true)
+                good = true;
+            else if (inputsValue[id].value === undefined || inputsValue[id].value === "")
+                good = false;
+            else {
+                if (input.type === "URL" && !inputsValue[id].value.includes("http"))
+                    good = false;
+                else
+                    good = true;
+            }
+        });
+
+        if (good === true) {
+            const index = localStorage.getItem("index") as string;
+
+            if (index === null) {
+                const actionStr = localStorage.getItem("action") as string;
+                let action = JSON.parse(actionStr) as ActionApplet;
+
+                action.actionInputs = inputsValue;
+
+                localStorage.setItem("action", JSON.stringify(action));
+
+                setAction(action);
+            } else {
+                const reactionsStr = localStorage.getItem("reactions") as string;
+                let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
+
+                reactions[parseInt(index)].reactionInputs = inputsValue;
+
+                localStorage.setItem("reactions", JSON.stringify(reactions));
+
+                setReactions(reactions);
+            }
+
+            setEditMode(false);
+            setPages(0);
+        }
     };
 
     /**
@@ -288,32 +294,11 @@ const FillActionInputsPages = ({ setPages, EditMode, setAction, setReactions, se
 
     return (
         <>
-            <Headers callback={() => {
-                        if (EditMode === true)
-                            setPages(0);
-                        else {
-                            const index = localStorage.getItem("index");
-
-                            if (index === null) {
-                                const actionStr = localStorage.getItem("action") as string;
-                                let action = JSON.parse(actionStr) as ActionApplet;
-
-                                action.actionSlug = action.actionSlug.split(".")[0];
-
-                                localStorage.setItem("action", JSON.stringify(action));
-                            } else {
-                                const reactionsStr = localStorage.getItem("reactions") as string;
-                                let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
-
-                                reactions[parseInt(index)].reactionSlug = reactions[parseInt(index)].reactionSlug.split(".")[0];
-
-                                localStorage.setItem("reactions", JSON.stringify(reactions));
-                            }
-                            setPages(2);
-                        }
-                     }}
+            <Headers callback={() => { goBack() }}
                      color={props?.decoration?.backgroundColor}
+                     theme={theme}
             />
+
             <div className={`min-h-screen flex justify-start gap-[50px] items-center flex-col py-[5px]`}
                  style={{
                     backgroundColor: props?.decoration?.backgroundColor,
@@ -342,49 +327,7 @@ const FillActionInputsPages = ({ setPages, EditMode, setAction, setReactions, se
                     );
                 })}
                 <Button text={EditMode === true ? "Edit Trigger" : "Create Trigger"}
-                        callBack={() => {
-                            let good = false as boolean;
-
-                            actionProps?.inputs?.forEach((input: inputs, id: number) => {
-                                if (input.label.includes("(optional)") === true)
-                                    good = true;
-                                else if (inputsValue[id].value === undefined || inputsValue[id].value === "")
-                                    good = false;
-                                else {
-                                    if (input.type === "URL" && !inputsValue[id].value.includes("http"))
-                                        good = false;
-                                    else
-                                        good = true;
-                                }
-                            });
-
-                            if (good === true) {
-                                const index = localStorage.getItem("index") as string;
-
-                                if (index === null) {
-                                    const actionStr = localStorage.getItem("action") as string;
-                                    let action = JSON.parse(actionStr) as ActionApplet;
-
-                                    action.actionInputs = inputsValue;
-
-                                    localStorage.setItem("action", JSON.stringify(action));
-
-                                    setAction(action);
-                                } else {
-                                    const reactionsStr = localStorage.getItem("reactions") as string;
-                                    let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
-
-                                    reactions[parseInt(index)].reactionInputs = inputsValue;
-
-                                    localStorage.setItem("reactions", JSON.stringify(reactions));
-
-                                    setReactions(reactions);
-                                }
-
-                                setEditMode(false);
-                                setPages(0);
-                            }
-                        }}
+                        callBack={() => { TriggerClick() }}
                         size={true}
                         backgroundColor={theme === 'dark' ? '#ffffff' : '#363841'}
                         textColor={props?.decoration?.backgroundColor}

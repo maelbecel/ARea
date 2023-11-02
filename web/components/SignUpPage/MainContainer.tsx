@@ -5,7 +5,7 @@ import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import React from "react";
 import ChangeAddressComponent from "../Modal/ChangeAddress";
-import ModalError from "../modalErrorNotif";
+import ModalError from "../Modal/modalErrorNotif";
 
 const MainContainer = () => {
     // --- Form Values --- //

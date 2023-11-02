@@ -1,29 +1,31 @@
 // --- Imports --- //
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getTheme } from "../../../../utils/getTheme";
-import { GetService } from "../../../../utils/api/service/service";
-import Image from "next/image";
+import { getTheme } from "../../../utils/getTheme";
+import { GetService } from "../../../utils/api/service/service";
 
 // --- Types --- //
-import { ReactionApplet, defaultReactionApplet, defaultReactionsApplet } from "../interface";
-import { GetReactionInfo } from "../../../../utils/api/reaction/info";
-import { CreateButton, AddReactions } from "./CreateButton";
+import { ReactionApplet, defaultReactionApplet, defaultReactionsApplet } from "../Interface/interface";
+
+// --- API --- //
+import { GetReactionInfo } from "../../../utils/api/reaction/info";
 
 // --- Component --- //
-const EmptyReactionComponent = ({ onClick } : { onClick : () => void }) => {
-    return (
-        <div className={`w-full flex justify-center items-center rounded-[15px] text-[62px] font-extrabold py-[36px] select-none hover:brightness-110 bg-[#363841] text-[#ffffff]`} onClick={() => { onClick() }}>
-            REAction
-        </div>
-    )
-};
+import ClickableText from "./LittleComponents/ClickableText";
+import AddReactions from "./AddReactions";
+import BottomComponentCard from "./LittleComponents/BottomComponentCard";
+import EmptyComponent from "./LittleComponents/EmptyCompoennt";
 
 const ReactionCardComponent = ({ reaction, setReactions, onEdit } : { reaction : ReactionApplet, setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, onEdit : () => void }) => {
+    // --- Variables --- //
     const [background, setBackground] = useState<string>("#ffffff");
     const [logo      , setLogo]       = useState<string>("");
     const [name      , setName]       = useState<string>("");
     const [theme     , setTheme]      = useState<string>("light");
 
+    /**
+     * First frame and when the reaction changes,
+     * get the background color, the color, the logo and the name of the reaction
+     */
     useEffect(() => {
         if (reaction.reactionSlug === null)
             return;
@@ -54,33 +56,34 @@ const ReactionCardComponent = ({ reaction, setReactions, onEdit } : { reaction :
              className={`w-full flex rounded-[15px] flex-col hover:brightness-110 cursor-pointer`}
         >
             <div className='w-[95%] flex flex-row gap-[20px] justify-end pt-[5px] sm:pt-[8px]'>
-                <div className='font-bold text-[12px] sm:text-[16px] underline' onClick={() => { onEdit() }}>
-                    Edit
-                </div>
-                <div className='font-bold text-[12px] sm:text-[16px] underline'
-                     onClick={() => { setReactions((prevState: ReactionApplet[]) => {
-                        const newState = [...prevState];
-                        newState.splice(newState.indexOf(reaction), 1);
-                        return newState;
-                     })}}
-                >
-                    Delete
-                </div>
+                <ClickableText text={"Edit"} onClick={() => { onEdit() }} />
+                <ClickableText text={"Delete"}
+                               onClick={() => { setReactions((prevState: ReactionApplet[]) => {
+                                    const newState = [...prevState];
+
+                                    newState.splice(newState.indexOf(reaction), 1);
+                                    return newState;
+                                })}}
+                />
             </div>
-            <div className="flex flex-row justify-start gap-6 px-[5px] md:px-[40px] pb-[5px] md:pb-[30px] items-center">
-                <div className="font-extrabold text-[24px] sm:text-[48px] lg:text-[62px]">
-                    REAction
-                </div>
-                {logo !== '' && <Image src={logo} width={100} height={100} alt='' />}
-                <div className="font-bold text-[18px] sm:text-[24px] lg:text-[32px]">
-                    {name}
-                </div>
-            </div>
+            <BottomComponentCard type={"REAction"} name={name} logo={logo} />
         </div>
     )
 };
 
-const ReactionComponent = ({ reaction, setReactions, index, onClick, onEdit } : { reaction : ReactionApplet, setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, index: number, onClick : () => void, onEdit : () => void }) => {
+interface ReactionComponentProps {
+    reaction    : ReactionApplet,
+    setReactions: Dispatch<SetStateAction<ReactionApplet[]>>,
+    onClick     : () => void,
+    onEdit      : () => void,
+    index       : number
+};
+
+const ReactionComponent = ({ reaction, setReactions, index, onClick, onEdit } : ReactionComponentProps) => {
+    /**
+     * If the reaction is undefined or null or empty,
+     * set the default reaction
+     */
     if (reaction.reactionSlug === undefined) {
         setReactions((prevState: ReactionApplet[]) => {
             const newState = [...prevState];
@@ -89,15 +92,38 @@ const ReactionComponent = ({ reaction, setReactions, index, onClick, onEdit } : 
         });
     }
 
+    /**
+     * If the reaction is empty,
+     * return the empty reaction component
+     */
     if (reaction.reactionSlug === "")
-        return (<EmptyReactionComponent onClick={() => { onClick() }} />);
+        return (<EmptyComponent type={"REAction"} onClick={() => { onClick() }} />);
+
+    /**
+     * Else return the reaction card component
+     */
     return (<ReactionCardComponent reaction={reaction} setReactions={setReactions} onEdit={onEdit} />);
 };
 
-const ReactionsComponent = ({ reactions, setReactions, onClick, onEdit } : { reactions : ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, onClick : () => void, onEdit : () => void }) => {
+// --- Main Component --- //
+interface ReactionsComponentProps {
+    reactions   : ReactionApplet[],
+    setReactions: Dispatch<SetStateAction<ReactionApplet[]>>,
+    onClick     : () => void,
+    onEdit      : () => void,
+};
+
+const ReactionsComponent = ({ reactions, setReactions, onClick, onEdit } : ReactionsComponentProps) => {
+    /**
+     * If the reactions is undefined or null or empty,
+     * set the default reactions
+     */
     if (reactions.length === 0)
         setReactions(defaultReactionsApplet);
 
+    /**
+     * Loop through the reactions and return the reaction component
+     */
     return (
         <>
             {reactions && reactions.map((reaction: ReactionApplet, key: number) => {

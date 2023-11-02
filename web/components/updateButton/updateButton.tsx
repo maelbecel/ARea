@@ -4,7 +4,7 @@ import { PatchProfile } from "../../utils/api/user/me";
 import { UserProfile } from "../../utils/api/user/interface/interface";
 import { useUser } from "../../utils/api/user/Providers/UserProvider";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
-import ModalError from "../modalErrorNotif";
+import ModalError from "../Modal/modalErrorNotif";
 
 
 interface UpdateButtonProps {

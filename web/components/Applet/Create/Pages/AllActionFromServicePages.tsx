@@ -1,54 +1,66 @@
+// --- Imports --- //
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getTheme } from "../../../../utils/getTheme";
-import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import { ServiceInfoContainer } from "../../../service/template";
-import GetActionService from "../../../service/GetActionService";
-import { ActionApplet, Card, ReactionApplet } from "../interface";
-import Title from "../../../NavBar/components/Title";
-import { ButtonIconNavigate, CallBackButton } from "../../../NavBar/components/Button";
 import { useRouter } from "next/router";
+
+// --- API --- //
+import { getTheme } from "../../../../utils/getTheme";
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { useServices } from "../../../../utils/api/service/Providers/ServiceProvider";
 import { GetServices } from "../../../../utils/api/service/service";
 import { Service } from "../../../../utils/api/service/interface/interface";
+
+// --- Components --- //
+import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
+import { ServiceInfoContainer } from "../../../service/template";
+import GetActionService from "../../../service/GetActionService";
+import Title from "../../../NavBar/components/Title";
+import { ButtonIconNavigate } from "../../../NavBar/components/Button";
 import Button from "../../../Button/Button";
 
-const Headers = ({ color = "#363841", setPages, back }: { color?: string, setPages: Dispatch<SetStateAction<number>>, back: boolean }) => {
+// --- Interfaces --- //
+import { ActionApplet, ReactionApplet } from "../../Interface/interface";
+
+// --- Headers --- //
+const Headers = ({ color = "#363841", setPages, back, theme }: { color?: string, setPages: Dispatch<SetStateAction<number>>, back: boolean, theme: string }) => {
+    // --- Router --- //
     const router = useRouter();
 
-    const theme = getTheme(color);
+    /**
+     * Function that handle on Back button
+     */
+    const callBack = () => {
+        const index = localStorage.getItem("index") as string;
+
+        if (index !== null) {
+            const reactionsStr = localStorage.getItem("reactions") as string;
+            let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
+
+            reactions[parseInt(index)].reactionSlug = "";
+
+            localStorage.setItem("reactions", JSON.stringify(reactions));
+        } else {
+            const actionStr = localStorage.getItem("action") as string;
+            let action = JSON.parse(actionStr) as ActionApplet;
+
+            action.actionSlug = "";
+
+            localStorage.setItem("action", JSON.stringify(action));
+        }
+
+        if (back === true) {
+            router.back();
+            router.back();
+            return;
+        }
+
+        setPages(1)
+    };
 
     return (
         <NavBar color={color.substring(1)} theme={theme}>
             <LeftSection>
                 <Button text="Back"
-                        callBack={() => {
-                            const index = localStorage.getItem("index") as string;
-
-                            if (index !== null) {
-                                const reactionsStr = localStorage.getItem("reactions") as string;
-                                let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
-                    
-                                reactions[parseInt(index)].reactionSlug = "";
-
-                                localStorage.setItem("reactions", JSON.stringify(reactions));
-                            } else {
-                                const actionStr = localStorage.getItem("action") as string;
-                                let action = JSON.parse(actionStr) as ActionApplet;
-                    
-                                action.actionSlug = "";
-
-                                localStorage.setItem("action", JSON.stringify(action));
-                            }
-
-                            if (back === true) {
-                                router.back();
-                                router.back();
-                                return;
-                            }
-
-                            setPages(1)
-                        }}
+                        callBack={() => { callBack() }}
                         backgroundColor={theme === 'light' ? '#363841' : '#ffffff'}
                         textColor={color}
                         half={(typeof window !== 'undefined' && window.innerWidth < 768) ? 1 : 4}
@@ -81,6 +93,8 @@ const AllActionFromServicePages = ({ setPages, back } : { setPages: Dispatch<Set
 
     // --- Router --- //
     const router = useRouter();
+
+    // --- Functions --- //
 
     /**
      * Get all the Services, available for the user
@@ -118,6 +132,29 @@ const AllActionFromServicePages = ({ setPages, back } : { setPages: Dispatch<Set
 
         return action.actionSlug;
     }
+
+    const handleClick = (slug: string) => {
+        const index = localStorage.getItem("index") as string;
+
+        if (index !== null) {
+            const reactionsStr = localStorage.getItem("reactions") as string;
+            let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
+
+            reactions[parseInt(index)].reactionSlug = slug;
+
+            localStorage.setItem("reactions", JSON.stringify(reactions));
+        } else {
+            const actionStr = localStorage.getItem("action") as string;
+            let action = JSON.parse(actionStr) as ActionApplet;
+
+            action.actionSlug = slug;
+
+            localStorage.setItem("action", JSON.stringify(action));
+        }
+        setPages(3);
+    };
+
+    // --- UseEffects --- //
 
     /**
      * First frame useEffect,
@@ -180,6 +217,7 @@ const AllActionFromServicePages = ({ setPages, back } : { setPages: Dispatch<Set
             <Headers color={props?.decoration?.backgroundColor}
                      setPages={setPages}
                      back={back}
+                     theme={theme}
             />
             <div className={`min-h-screen flex justify-start items-center flex-col`}>
                 <ServiceInfoContainer color={props?.decoration.backgroundColor} theme={theme} url={props?.decoration.logoUrl} name={props?.name} />
@@ -189,26 +227,7 @@ const AllActionFromServicePages = ({ setPages, back } : { setPages: Dispatch<Set
                         actions={actions}
                         color={props?.decoration?.backgroundColor}
                         theme={theme}
-                        callback={(slug: string, description: string, color: string) => {
-                            const index = localStorage.getItem("index") as string;
-
-                            if (index !== null) {
-                                const reactionsStr = localStorage.getItem("reactions") as string;
-                                let reactions = JSON.parse(reactionsStr) as ReactionApplet[];
-
-                                reactions[parseInt(index)].reactionSlug = slug;
-
-                                localStorage.setItem("reactions", JSON.stringify(reactions));
-                            } else {
-                                const actionStr = localStorage.getItem("action") as string;
-                                let action = JSON.parse(actionStr) as ActionApplet;
-
-                                action.actionSlug = slug;
-
-                                localStorage.setItem("action", JSON.stringify(action));
-                            }
-                            setPages(3);
-                        }}
+                        callback={(slug: string) => { handleClick(slug) }}
                     />
                 </div>
             </div>

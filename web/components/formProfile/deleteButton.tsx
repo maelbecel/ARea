@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import Modal from 'react-modal';
 import Button from "../Button/Button";
-import ModalError from "../modalErrorNotif";
+import ModalError from "../Modal/modalErrorNotif";
 
 interface DeleteButtonProps {
     token: string;

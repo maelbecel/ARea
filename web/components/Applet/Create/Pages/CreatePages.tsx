@@ -1,23 +1,22 @@
 // --- Librairies import --- //
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useRouter } from "next/router";
 
 // --- Components --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import { CreateButton, AddReactions } from "../components/CreateButton";
 import { ButtonIconNavigate } from "../../../NavBar/components/Button";
-import ReactionsComponent from "../components/ReactionButton";
-import ActionComponent from "../components/ActionButton";
+import ReactionsComponent from "../../Components/ReactionButton";
+import ActionComponent from "../../Components/ActionButton";
+import AddReactions from "../../Components/AddReactions";
 import Title from "../../../NavBar/components/Title";
 import Button from "../../../Button/Button";
 
 // --- Interface --- //
-import { ActionApplet, ReactionApplet } from "../interface";
-import { UpdateAppletWithID } from "../../../../utils/api/applet/applet";
-import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
-import ModalError from "../../../modalErrorNotif";
+import { ActionApplet, ReactionApplet } from "../../Interface/interface";
 
+// --- Header --- //
 const CreateHeader = () => {
+    // --- Router --- //
     const router = useRouter();
 
     return (
@@ -44,12 +43,17 @@ const CreateHeader = () => {
     )
 }
 
-const CreateContainerComponent = ({ action, setAction, reactions, setReactions, setPages, setEditMode, applet }: { setPages: Dispatch<SetStateAction<number>>, setEditMode: Dispatch<SetStateAction<boolean>>, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, applet: any }) => {
-    // --- Providers --- //
-    const { token } = useToken();
+interface CreateContainerComponentProps {
+    action      : ActionApplet;
+    reactions   : ReactionApplet[];
+    setPages    : Dispatch<SetStateAction<number>>;
+    setEditMode : Dispatch<SetStateAction<boolean>>;
+    setAction   : Dispatch<SetStateAction<ActionApplet>>;
+    setReactions: Dispatch<SetStateAction<ReactionApplet[]>>;
+}
 
-    // --- Router --- //
-    const router = useRouter();
+const CreateContainerComponent = ({ action, reactions, setAction, setReactions, setPages, setEditMode }: CreateContainerComponentProps) => {
+    // --- UseEffect --- //
 
     /**
      * When action is updated,
@@ -67,10 +71,13 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
         localStorage.setItem("reactions", JSON.stringify(reactions));
     }, [reactions]);
 
+    /**
+     * Function that handle on Continue button
+     */
     const handleClick = async () => {
-        // --- If Action is empty --- //
         if (action.actionSlug === "" || action.actionSlug === null)
             return;
+
         let count = 0;
 
         for (let i = 0; i < reactions.length; i++) {
@@ -80,42 +87,13 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
 
         if (count === 0)
             return;
-        else {
-            for (let i = 0; i < reactions.length; i++) {
-                if (reactions[i].reactionSlug === "" || reactions[i].reactionSlug === null)
-                    setReactions(reactions.filter((_, index) => index !== i));
-            }
+
+        for (let i = 0; i < reactions.length; i++) {
+            if (reactions[i].reactionSlug === "" || reactions[i].reactionSlug === null)
+                setReactions(reactions.filter((_, index) => index !== i));
         }
 
-        let body = {
-            name: applet.name,
-            actionSlug: action.actionSlug,
-            actionData: action.actionInputs,
-            reactions: reactions,
-            notifUser: applet.notifUser,
-            enabled: true,
-            id: applet.id,
-            user: applet.user,
-            createdAt: applet.createdAt
-        };
-
-        const status = await UpdateAppletWithID(token, applet.id, body);
-
-        if (status === true)
-            router.push(`/myApplets/applet/${applet.id}`);
-        else
-            openModalError();
-    };
-
-    // --- Modals --- //
-    const [modalErrorIsOpen, setIsErrorOpen] = useState<boolean>(false);
-
-    const openModalError = () => {
-        setIsErrorOpen(true);
-    };
-
-    const closeModalError = () => {
-        setIsErrorOpen(false);
+        setPages(5);
     };
 
     return (
@@ -132,31 +110,34 @@ const CreateContainerComponent = ({ action, setAction, reactions, setReactions, 
                     </>
                 )}
                 {reactions && (
-                    <>
-                        <ReactionsComponent reactions={reactions}
-                                            setReactions={setReactions}
-                                            onEdit={() => { setEditMode(true); setPages(4); }}
-                                            onClick={() => {
-                                                if (action.actionSlug !== "" && action.actionSlug !== null && action.actionSlug.includes("."))
-                                                    setPages(1)
-                                            }}
-                        />
-                    </>
+                    <ReactionsComponent reactions={reactions}
+                                        setReactions={setReactions}
+                                        onEdit={() => { setEditMode(true); setPages(4); }}
+                                        onClick={() => {
+                                            if (action.actionSlug !== "" && action.actionSlug !== null && action.actionSlug.includes("."))
+                                                setPages(1)
+                                        }}
+                    />
                 )}
-                <CreateButton name={"Continue"} callback={() => {handleClick()}} />
-                <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
+                <Button text="Continue"
+                        callBack={() => {handleClick()}}
+                        backgroundColor="#363841"
+                        textColor="#ffffff"
+                        half={(typeof window !== 'undefined' && window.innerWidth < 768) ? 0 : 2}
+                        size={true}
+                />
             </div>
         </div>
     );
 };
 
-const EditPages = ({ setPages, setEditMode, action, setAction, reactions, setReactions, applet } : { setPages: Dispatch<SetStateAction<number>>, setEditMode: Dispatch<SetStateAction<boolean>>, action: ActionApplet, setAction: Dispatch<SetStateAction<ActionApplet>>, reactions: ReactionApplet[], setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, applet: any }) => {
+const CreatePages = ({ action, reactions, setPages, setEditMode, setAction, setReactions } : CreateContainerComponentProps) => {
     return (
         <>
             <CreateHeader />
-            <CreateContainerComponent setPages={setPages} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} applet={applet} />
+            <CreateContainerComponent setPages={setPages} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} />
         </>
     )
 }
 
-export default EditPages;
+export default CreatePages;

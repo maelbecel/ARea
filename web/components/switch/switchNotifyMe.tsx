@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { UpdateAppletWithID } from "../../utils/api/applet/applet";
-import ModalError from "../modalErrorNotif";
+import ModalError from "../Modal/modalErrorNotif";
 
 interface SwitchProps {
     isCheked: boolean;

@@ -1,7 +1,18 @@
+// --- Imports --- //
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
-import { ReactionApplet, defaultReactionApplet } from "../interface";
 
+// --- Types --- //
+import { ReactionApplet, defaultReactionApplet } from "../Interface/interface";
+import { Dispatch, SetStateAction } from "react";
+
+// --- Component --- //
+
+/**
+ * Circle with a plus inside component that execute a callback when is clicked
+ *
+ * @param  setReactions  set the reactions of the applet
+ * @param  index         index of the reaction to add
+ */
 const AddReactions = ({ setReactions, index } : { setReactions: Dispatch<SetStateAction<ReactionApplet[]>>, index: number }) => {
     const addNewServiceAtIndex = (index: number) => {
         setReactions((prevReactions) => {
@@ -22,14 +33,4 @@ const AddReactions = ({ setReactions, index } : { setReactions: Dispatch<SetStat
     );
 };
 
-const CreateButton = ({ name, callback } : { name: string, callback: () => void }) => {
-    return (
-        <div className={`w-[50%] flex justify-center items-center rounded-[50px] text-[36px] font-bold py-[27px] select-none active:bg-white bg-[#363841] text-white active:text-[#363841]`}
-            onClick={() => {callback()}}
-        >
-            {name}
-        </div>
-    );
-};
-
-export { AddReactions, CreateButton };
+export default AddReactions;

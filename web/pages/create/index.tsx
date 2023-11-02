@@ -3,15 +3,15 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
 // --- Components --- //
-import CreatePages from "../../components/applets/Create/pages/CreatePages";
+import CreatePages from "../../components/Applet/Create/Pages/CreatePages";
 import Footer from "../../components/footer";
 import { useEffect, useState } from "react";
-import SearchServicePages from "../../components/applets/Create/pages/SearchServicePages";
-import { ActionApplet, ReactionApplet, defaultActionApplet, defaultReactionsApplet } from "../../components/applets/Create/interface";
-import AllActionFromServicePages from "../../components/applets/Create/pages/AllActionFromServicePages";
-import ServiceConnexionPages from "../../components/applets/Create/pages/ServiceConnexionPages";
-import FillActionInputsPages from "../../components/applets/Create/pages/FillActionInputsPages";
-import ValidatePages from "../../components/applets/Create/pages/ValidatePages";
+import SearchServicePages from "../../components/Applet/Create/Pages/SearchServicePages";
+import { ActionApplet, ReactionApplet, defaultActionApplet, defaultReactionsApplet } from "../../components/Applet/Interface/interface";
+import AllActionFromServicePages from "../../components/Applet/Create/Pages/AllActionFromServicePages";
+import ServiceConnexionPages from "../../components/Applet/Create/Pages/ServiceConnexionPages";
+import FillActionInputsPages from "../../components/Applet/Create/Pages/FillActionInputsPages";
+import ValidatePages from "../../components/Applet/Create/Pages/ValidatePages";
 
 // --- Providers --- //
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";

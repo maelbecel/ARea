@@ -2,22 +2,22 @@
 import React from "react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
 // --- Components import --- //
-import Image from "next/image";
-import LogoApplet from "./logo";
-import Switch from "./switch";
-import { useToken } from "../../utils/api/user/Providers/TokenProvider";
-import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
-import { useRouter } from "next/router";
-import { GetServices } from "../../utils/api/service/service";
-import { Service } from "../../utils/api/service/interface/interface";
-import { GetMyApplets } from "../../utils/api/applet/me";
-import { getTheme } from "../../utils/getTheme";
+import LogoApplet from "./Logo";
+import Switch from "../../switch/switch";
 
-interface ReactionProps {
-    reactionSlug: string;
-}
+// --- API --- //
+import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
+import { useServices } from "../../../utils/api/service/Providers/ServiceProvider";
+import { GetServices } from "../../../utils/api/service/service";
+import { GetMyApplets } from "../../../utils/api/applet/me";
+import { getTheme } from "../../../utils/getTheme";
+
+// --- Interface --- //
+import { Service } from "../../../utils/api/service/interface/interface";
 
 interface AppletProps {
     id: number;
@@ -27,22 +27,29 @@ interface AppletProps {
     lastTriggerUpdate: string; // date
     createdAt: number; // date
     enabled: boolean;
-    reactions: ReactionProps[];
+    reactions: string[];
 }
 
 const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
+    // --- Variables --- //
     const [bgColor, setBgColor] = useState<string>("");
     const [newName, setNewName] = useState<string>(name);
-    const [theme, setTheme] = useState<string>("light");
+    const [theme  , setTheme]   = useState<string>("light");
 
+    // --- Providers --- //
     const { services, setServices } = useServices();
-    const { token, setToken } = useToken();
+    const { token   , setToken    } = useToken();
 
+    // --- Router --- //
     const router = useRouter();
+
+    // --- Functions --- //
 
     const getServices = async (token: string) => {
         setServices(await GetServices(token));
     }
+
+    // --- UseEffect --- //
 
     useEffect(() => {
         if (services.length === 0) {
@@ -73,15 +80,6 @@ const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastT
             setNewName(name.slice(0, 50) + "...");
     }, [name]);
 
-    // debug all info received
-    useEffect(() => {
-        if (reactions === undefined)
-            return;
-        for (let i = 0; i < reactions.length; i++) {
-            console.log(reactions[i].reactionSlug);
-        }
-    }, [id, name, actionSlug, reactions, actionTrigger, lastTriggerUpdate, createdAt, enabled]);  
-
     return (
         <div style={{
                 backgroundColor: bgColor,
@@ -94,9 +92,7 @@ const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastT
                     <div className="flex flex-wrap space-x-[3%]">
                         {actionSlug   && <LogoApplet slug={actionSlug}   width={56} height={56} toogleBackground={false}/>}
                         {reactions && Array.isArray(reactions) && reactions.map((reaction, index: number) => {
-                            return (
-                                <LogoApplet key={index} slug={reaction.reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={false} />
-                            );
+                            return (<LogoApplet key={index} slug={reaction.split('.')[0]} width={56} height={56} toogleBackground={false} />);
                         })}
                     </div>
                     <div className="font-bold text-[28px] pb-[40%] w-full overflow-hidden break-words">
@@ -114,13 +110,18 @@ const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastT
 };
 
 const SearchApplet = () => {
-    const [applets, setApplets] = useState<AppletProps[]>([]);
+    // --- Variables --- //
+    const [applets      , setApplets]       = useState<AppletProps[]>([]);
     const [searchApplets, setSearchApplets] = useState<AppletProps[]>([]);
-    const [searchValue, setSearchValue] = useState<string>("");
+    const [searchValue  , setSearchValue]   = useState<string>("");
 
+    // --- Providers --- //
     const { token, setToken } = useToken();
 
+    // --- Router --- //
     const router = useRouter();
+
+    // --- UseEffect --- //
 
     useEffect(() => {
         if (applets.length > 0)
@@ -145,6 +146,8 @@ const SearchApplet = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
+    // --- Functions --- //
+
     const findObjectsBySlug = (array: any[], name: string) => {
         return array.filter(item => item?.name.toLowerCase().includes(name.toLowerCase()));
     };
@@ -155,17 +158,6 @@ const SearchApplet = () => {
         setSearchValue(newValue);
         setSearchApplets(findObjectsBySlug(applets, newValue));
     };
-
-    useEffect(() => {
-
-        for (let i = 0; i < applets.length; i++) {
-            console.log(applets[i].reactions);
-            for (let j = 0; j < applets[i].reactions.length; j++) {
-                console.log(applets[i].reactions[j].reactionSlug);
-            }   
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchApplets]);
 
     return (
         <div className="flex flex-col justify-center items-center">
@@ -181,6 +173,8 @@ const SearchApplet = () => {
                         className="bg-transparent w-full text-[24px] font-bold text-[#363841] outline-none p-[10px]"
                 />
             </div>
+
+            {/* Applets */}
             <div className="w-[75%] grid grid-cols-1 lg:grid-cols-3 gap-8 h-auto">
                 {searchApplets && searchApplets.map((applet) => {
                     return (
