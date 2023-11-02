@@ -2,35 +2,43 @@
 import Image from 'next/image';
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 // --- Components import --- //
 import { GetProfile } from "../../utils/api/user/me";
 import Icon from "../../components/NavBar/components/Icon";
-import { useUser } from "../../utils/api/user/Providers/UserProvider";
-import { UserProfile } from "../../utils/api/user/interface/interface";
 import { NavigateButton } from "../../components/NavBar/components/Button";
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
 import Profile from "../../components/NavBar/components/Profile";
 import Footer from "../../components/Footer/Footer";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
 import Button from "../../components/Button/Button";
-import { useRouter } from "next/router";
+
+// --- API import --- //
+import { UserProfile } from "../../utils/api/user/interface/interface";
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
 
 const IndexPage: NextPage = () => {
-    
-    const [token, setToken] = useState<string>('');
-    const [connected  , setConnected] = useState<boolean>(false);
+    // --- Variables --- //
+    const [token    , setToken]     = useState<string>('');
+    const [connected, setConnected] = useState<boolean>(false);
+
+    // --- Providers --- //
     const { user, setUser } = useUser();
+
+    // --- Router --- //
     const router = useRouter();
+
+    // --- UseEffect --- //
 
     useEffect(() => {
         setToken(localStorage.getItem("token") as string);
         if (token) {
             setConnected(true);
-            console.log("token -> ", token);
-        } else
+        } else {
             // set router to login page
             setConnected(false);
+        }
     }, [token]);
 
     useEffect(() => {
