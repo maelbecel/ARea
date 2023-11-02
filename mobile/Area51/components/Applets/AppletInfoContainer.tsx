@@ -69,7 +69,7 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
         <View style={ styles.container }>
             <View style={{ ...styles.header, backgroundColor: color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color }}>
                 {/* The applet's logo */}
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignContent: 'center', justifyContent: 'center' }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignContent: 'center', justifyContent: 'flex-start' }}>
                         <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug.split('.')[0]})}>
                             {actionSlug &&
                             <LogoApplet
