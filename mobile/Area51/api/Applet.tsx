@@ -41,7 +41,7 @@ const Applet = async (name : string, actionSlug : string, actionInputs : Input[]
             },
             body: JSON.stringify({
                 notifUser: true,
-                name: name,
+                name: name.substring(0, 139),
                 actionSlug: actionSlug,
                 enabled: true,
                 actionInputs: actionInputs.map((input : Input, index : number) => {
@@ -57,7 +57,7 @@ const Applet = async (name : string, actionSlug : string, actionInputs : Input[]
         });
         const json : any = await response.json();
         if (json.data == undefined) {
-            alert("Error " + response.status + " : " + json.detail)
+            Alert.alert("Error", json.message)
             return false;
         }
         return json.data;
