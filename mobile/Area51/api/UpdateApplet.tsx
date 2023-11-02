@@ -5,8 +5,6 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 
-// TODO documetnation github
-
 /**
  * Update an applet with a specific ID by sending a PATCH request to the server.
  *
