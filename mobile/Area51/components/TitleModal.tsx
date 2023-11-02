@@ -73,8 +73,8 @@ const TitleModal: React.FC<TitleModalProps> = ({ color, title }) => {
                   />
                   <Text style={styles.subtitle}>{titleLen()}</Text>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Button title="Annuler" onPress={() => setModalVisible(false)} color="#363841" />
-                    <Button title="Enregistrer" onPress={updateTitle} color="#363841" />
+                    <Button title="Cancel" onPress={() => setModalVisible(false)} color="#363841" />
+                    <Button title="Save" onPress={updateTitle} color="#363841" />
                   </View>
                 </View>
               </View>

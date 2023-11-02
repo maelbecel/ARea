@@ -9,6 +9,7 @@ import DeleteApplet from "../../api/DeleteApplet";
 import { getWriteColor } from "../ActionCard";
 import TitleModal from "../TitleModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DeleteModal from "../DeleteModal";
 
 interface ReactionListProps {
     reactionSlug: string;
@@ -63,11 +64,6 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
         };
         dataFetch();
     }, []);
-
-    const handleDeleteApplet = () => {
-        DeleteApplet(id);
-        navigation.navigate('My Applets');
-    };
 
     return (
         <View style={ styles.container }>
@@ -135,13 +131,11 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                         "Never used yet"
                     )}
                 </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%', alignContent: 'center' }}>
                     <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22 }}>Notify me</Text>
                     <SwitchNotifyMe isChecked={notif} isDisabled={false} />
                 </View>
-                <TouchableOpacity onPress={handleDeleteApplet}>
-                    <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>Delete applet</Text>
-                </TouchableOpacity>
+                <DeleteModal id={id} />
             </View>
         </View>
     );
