@@ -54,7 +54,9 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
 
     const handleSwitchChange = async () => {
         setIsChecked(!isChekedState);
-        await UpdateAppletEnableWithID(await AsyncStorage.getItem("appletID"), !isChekedState);
+        if (bigSwitch) {
+            await UpdateAppletEnableWithID(await AsyncStorage.getItem("appletID"), !isChekedState);
+        };
     }
 
     return (
