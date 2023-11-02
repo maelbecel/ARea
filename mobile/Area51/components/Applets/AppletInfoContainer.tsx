@@ -69,25 +69,25 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
         <View style={ styles.container }>
             <View style={{ ...styles.header, backgroundColor: color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color }}>
                 {/* The applet's logo */}
-                <View style={{ flexDirection: 'row', marginLeft: '2%' }}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug.split('.')[0]})} style={{ marginRight: 10, marginLeft: -10 }}>
-                        {actionSlug &&
-                        <LogoApplet
-                            slug={actionSlug.split('.')[0]}
-                            color={color}
-                        />}
-                    </TouchableOpacity>
-                    {/* Loop through reactionsList */}
-                    {reactionsList && reactionsList.map((reaction: any, index: number) => (
-                        <View key={index}>
-                            <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reaction.reactionSlug.split('.')[0]})} style={{ marginRight: 10 }}>
-                                <LogoApplet
-                                slug={reaction.reactionSlug.split('.')[0]}
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignContent: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug.split('.')[0]})}>
+                            {actionSlug &&
+                            <LogoApplet
+                                slug={actionSlug.split('.')[0]}
                                 color={color}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    ))}
+                            />}
+                        </TouchableOpacity>
+                        {/* Loop through reactionsList */}
+                        {reactionsList && reactionsList.map((reaction: any, index: number) => (
+                            <View key={index}>
+                                <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reaction.reactionSlug.split('.')[0]})}>
+                                    <LogoApplet
+                                    slug={reaction.reactionSlug.split('.')[0]}
+                                    color={color}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        ))}
                 </View>
 
                 {/* The title of the applet */}

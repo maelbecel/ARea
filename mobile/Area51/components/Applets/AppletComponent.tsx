@@ -53,26 +53,22 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
 
     return (
         <TouchableOpacity style={{ ...styles.container, backgroundColor: bgColor} } onPress={() => navigation.navigate('MyApplets', { id: id })}>
-            <View style={ {...styles.card, marginBottom: 10, flexWrap: "wrap" }}>
-                <View style={{ marginRight: 10 }}>
+            <View style={[ styles.card, {marginBottom: 10, flexWrap: "wrap" }]}>
                     {actionSlug && (
                         <LogoApplet
                         slug={actionSlug}
                         color={bgColor}
                         />
                     )}
-                </View>
-                <View style={{ flexDirection: 'row' }}>
                     {/* Loop through reactionsList */}
                     {reactionsList && reactionsList.map((reaction: any, index: number) => (
-                        <View key={index} style={{ marginRight: 10 }}>
+                        <View key={index} style={{  }}>
                             <ReactionLogo
                                 reaction={reaction}
                                 bgColor={bgColor}
                             />
                         </View>
                     ))}
-                </View>
             </View>
             <View style={ { ...styles.card, marginBottom: 10 } }>
                 <Text style={ [ styles.title, { color: getWriteColor(bgColor) }] }>
