@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /* The code is importing different screen components from their respective files. These screen
 components are used in the `Tabs` component to define the screens for each tab in the bottom tab
@@ -15,6 +16,7 @@ import ExploreScreen from './screen/Home';
 import CreateScreen from './screen/AddServices';
 import ActivityScreen from './screen/Activity';
 import ProfileScreen from './screen/Profile';
+import InfoScreen from './screen/InfoScreen';
 
 import Login from './screen/LogIn';
 import SignUp from './screen/SignUp';
@@ -28,7 +30,7 @@ import MyApplet from './api/MyApplet';
 /* `const Tab = createBottomTabNavigator();` creates a bottom tab navigator using the
 `createBottomTabNavigator` function from the `@react-navigation/bottom-tabs` library. This bottom
 tab navigator is used to display multiple screens in a tabbed interface at the bottom of the screen. */
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 
 /**
@@ -37,7 +39,7 @@ const Stack = createStackNavigator();
  * @returns either a string or a number. If the randomly generated number is less than 100, it will
  * return the number. Otherwise, it will return the string '99+'.
  */
-const getNbApplets = () => {
+const getNbApplets = () : number | string=> {
     const [res, setRes] = React.useState(null);
 
     React.useEffect(() => {
@@ -59,45 +61,48 @@ which displays multiple screens in a tabbed interface at the bottom of the scree
 function Tabs() {
   return (
     <Tab.Navigator
-        initialRouteName="Login"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
+      initialRouteName="Login"
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color }) => {
+          let iconName;
 
-            if (route.name === 'My Applets') {
-              iconName = focused ? 'apps' : 'apps'; // Icon name for "My Applets"
-            } else if (route.name === 'Explore') {
-              iconName = focused ? 'explore' : 'explore'; // Icon name for "Explore"
-            } else if (route.name === 'Create') {
-              iconName = focused ? 'add' : 'add'; // Icon name for "Create"
-            } else if (route.name === 'Activity') {
-              iconName = focused ? 'notifications' : 'notifications'; // Icon name for "Activity"
-            } else if (route.name === 'Profile') {
-              iconName = focused ? 'person' : 'person'; // Icon name for "Profile"
-            }
+          if (route.name === 'My Applets') {
+            iconName = 'apps';
+          } else if (route.name === 'Explore') {
+            iconName = 'explore';
+          } else if (route.name === 'Create') {
+            iconName = 'add';
+          } else if (route.name === 'Activity') {
+            iconName = 'notifications';
+          } else if (route.name === 'Profile') {
+            iconName = 'person';
+          }
 
-            return <Icon name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#000',
-          tabBarInactiveTintColor: '#A8A8A8',
-          tabBarActiveBackgroundColor: '#FFFFFF',
-          tabBarInactiveBackgroundColor: '#FFFFFF',
-          tabBarShowLabel: false,
-          tabBarStyle: [
-            {
-              display: 'flex',
-            },
-            null,
-          ],
-        })}
-    >
-      <Tab.Screen name="My Applets" component={AppletsScreen} options={{ headerShown: false, tabBarBadge: getNbApplets() }} />
-      <Tab.Screen name="Explore" component={ExploreScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Create" component={CreateScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Activity" component={ActivityScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+          return <Icon name={iconName} size={26} color={color} />;
+        },
+        tabBarActiveTintColor: '#000',
+        tabBarIndicatorStyle: {height: 0},
+        tabBarInactiveTintColor: '#A8A8A8',
+        tabBarActiveBackgroundColor: 'transparent',
+        tabBarInactiveBackgroundColor: 'transparent',
+        tabBarShowLabel: false,
+        backgroundColor: '#FFFFFF',
+        tabBarStyle: {
+          elevation: 0,
+          shadowOpacity: 0,
+          height: 60,
+          backgroundColor: 'transparent',
+        },
+      })}
+      tabBarPosition="bottom"
+      >
+      <Tab.Screen name="My Applets" component={AppletsScreen} />
+      <Tab.Screen name="Explore" component={ExploreScreen} />
+      <Tab.Screen name="Create" component={CreateScreen} />
+      <Tab.Screen name="Activity" component={ActivityScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
-  )
+  );
 }
 
 /**
@@ -109,6 +114,14 @@ function Tabs() {
  * "Login", "SignUp", and "Area 51". Each Stack.Screen component has a name prop and a component prop
  */
 export default function App() {
+  React.useEffect(() => {
+    const reset = async (): Promise<void> => {
+      await AsyncStorage.setItem('action', "default");
+      await AsyncStorage.setItem('reaction', "[]");
+    }
+    reset();
+  }, [])
+  
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ cardStyle: {backgroundColor: "#FFF"}}}>
@@ -120,6 +133,7 @@ export default function App() {
         <Stack.Screen name="ConnectAuth" component={ConnectAuth} options={{ headerShown: false }} />
         <Stack.Screen name="Area 51" component={Tabs} options={{ headerShown: false }} />
         <Stack.Screen name="MyApplets" component={MyApplets} options={{ headerShown: false }} />
+        <Stack.Screen name="Info" component={InfoScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

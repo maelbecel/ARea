@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {Alert, Text, View, StatusBar, Image, StyleSheet, ScrollView } from 'react-native';
+import {Alert, Text, View, StatusBar, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
 import ServiceInfo, {Action, Reaction} from '../api/ServiceInfo';
 import ActionCard from '../components/ActionCard';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as WebBrowser from 'expo-web-browser';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -59,39 +59,21 @@ const getWriteColor = (color: string): string => {
 
 /* The `Service` component is a functional component that represents a screen in a React Native app. It
 receives two props, `navigation` and `route`, from the React Navigation library. */
-const Service = ({ navigation, route }) => {
+const InfoService = ({ navigation, route }) => {
   const { slug } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
-  const [action, setAction] = React.useState<Action[]>([]);
-  const [reaction, setReaction] = React.useState<Reaction[]>([]);
+  const [link, setLink] = React.useState<string>("");
+  const [desc, setDesc] = React.useState<string>("");
 
-
-  /**
-   * The function `displayActions` returns an array of `ActionCard` components based on the `action`
-   * array, with each component having a unique key, name, description, color, and an `onPress` event
-   * that navigates to the 'ConnectAuth' screen with specific parameters.
-   * @returns The `displayActions` function is returning an array of `ActionCard` components.
-   */
-  const displayActions = () => {
-    return action.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug , type: "action"})}/>
-    ));
-  };
-
-  /**
-   * The function `displayReactions` maps over an array of `reaction` objects and returns an array of
-   * `ActionCard` components with specific props.
-   * @returns The `displayReactions` function is returning an array of `ActionCard` components. Each
-   * `ActionCard` component has a `key` prop set to the `slug` property of the `service` object, and
-   * also has `name`, `description`, `color`, and `onPress` props set based on the properties of the
-   * `service` object.
-   */
-  const displayReactions = () => {
-    return reaction.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('Create')}/>
-    ));
+  const openPage = async () => {
+    try {
+      await WebBrowser.openBrowserAsync(link);
+    } catch (error) {
+      alert(error);
+      console.error(error);
+    }
   }
 
 
@@ -108,8 +90,8 @@ const Service = ({ navigation, route }) => {
         (service.decoration.backgroundColor) ? setColor(service.decoration.backgroundColor) : null;
         (service.decoration.logoUrl != "") ? setUrl(service.decoration.logoUrl) : null;
         setName(service.name);
-        setAction(service.actions);
-        setReaction(service.reactions);
+        setDesc(service.decoration.description);
+        setLink(service.decoration.websiteUrl);
       } catch (error) {
         console.error("Erreur lors de l'appel de ServiceInfo:", error);
       }
@@ -124,16 +106,16 @@ const Service = ({ navigation, route }) => {
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
       <View style={[{ backgroundColor: color }, styles.container]}>
-        <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='info' onPressRight={() => navigation.navigate("Info", {slug : slug})} />
+        <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} />
         <Image source={{ uri: url }} style={styles.logo} />
         <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
-      </View>
-      <ScrollView>
-        <View style={styles.action}>
-          {displayActions()}
-          {displayReactions()}
+        <View style={styles.info}>
+            <Text style={[styles.desc, { color: getWriteColor(color) }]}>{desc}</Text>
+            <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.button]} onPress={openPage}>
+                <Text style={[{color: color}, styles.buttonText]}>Visit {name}</Text>
+            </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -149,6 +131,7 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 30,
+    height: '100%',
     shadowColor: '#000',
       shadowOffset: {
       width: 0,
@@ -158,9 +141,38 @@ const styles = StyleSheet.create({
       shadowRadius: 3.84,
       elevation: 5,
   },
+  button : {
+    marginVertical: 10,
+    alignItems: 'center',
+    alignSelf: 'center',
+    width: '60%',
+    padding: 10,
+    borderRadius: 90,
+    marginTop: 20,
+  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    padding: 5,
+  },
   name: {
     fontSize: 30,
     fontWeight: 'bold',
+    alignSelf: 'center',
+    marginBottom: 40,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  info: {
+    marginTop: 50,
+    alignItems: 'center',
+    flex: 1,
+  },
+  desc: {
+    width: '70%',
+    justifyContent: 'center',
+    fontSize: 24,
     alignSelf: 'center',
     marginBottom: 40,
   },
@@ -173,4 +185,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Service;
+export default InfoService;

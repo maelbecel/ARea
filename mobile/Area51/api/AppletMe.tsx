@@ -5,27 +5,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from 'react-native';
 
 /**
- * The function `AppletDetails` is an asynchronous function that retrieves details of an applet from a
- * server using a provided slug, and handles any errors that may occur during the process.
- * @param {string} slug - The `slug` parameter is a string that represents a unique identifier for a
- * specific applet. It is used to fetch the details of the applet from the server.
- * @returns The function `AppletDetails` returns a Promise that resolves to the data fetched from the
- * server, or null if an error occurs.
+ * The function `AppletMe` makes an API request to retrieve information about the current user's
+ * applet, handling any errors that may occur.
+ * @returns The function `AppletMe` returns the data received from the server, which is the result of
+ * the API call to the `/applet/me` endpoint.
  */
-const AppletDetails = async (slug: string) : Promise<any> => {
+const AppletMe = async () : Promise<any> => {
     try {
-        const token: string = await SecureStore.getItemAsync("token_api");
-        const serverAddress: string = await AsyncStorage.getItem('serverAddress');
-        const response: Response =
-            await fetch(`${serverAddress}/service/${slug}`, {
+        const token : string = await SecureStore.getItemAsync("token_api");
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/applet/me`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
             });
-        const data: any = await response.json();
-        return (data);
+        const data : any = await response.json();
+        return data;
     } catch (error) {
         if (error == 'TypeError: Network request failed') {
             Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
@@ -37,4 +34,4 @@ const AppletDetails = async (slug: string) : Promise<any> => {
     }
 };
 
-export default AppletDetails;
+export default AppletMe;
