@@ -131,8 +131,8 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                         "Never used yet"
                     )}
                 </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%', alignContent: 'center' }}>
-                    <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22 }}>Notify me</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: '10%', alignContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22, alignContent: 'center', alignItems: 'center' }}>Notify me</Text>
                     <SwitchNotifyMe isChecked={notif} isDisabled={false} />
                 </View>
                 <DeleteModal id={id} />
