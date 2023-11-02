@@ -94,6 +94,9 @@ const NumberField = ({ input, color, theme, array, setArray, index, id }: { inpu
 };
 
 const SelectField = ({ input, color, theme, array, setArray, index, id }: { input: inputs, color: string, theme: string, array: Card[], setArray: Dispatch<SetStateAction<Card[]>>, index: number, id: number }) => {
+    if (array[index].inputs[id] === undefined || array[index].inputs[id] === "")
+        array[index].inputs[id] = input.options[0];
+
     return (
         <div className='flex flex-col w-[90%] lg:w-[50%]'>
             <span className={`text-[24px] font-bold`} style={{ color: (theme === 'light' ? '#363841' : '#ffffff') }}>
@@ -128,7 +131,9 @@ const Field = ({ input, color, theme, array, setArray, index, id }: { input: inp
         return (<TextField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
     if (input.type === "NUMBER")
         return (<NumberField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
-    return (<SelectField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
+    if (input.type === "SELECT")
+        return (<SelectField input={input} color={color} theme={theme} array={array} setArray={setArray} index={index} id={id} />);
+    return (<></>);
 };
 
 const ValidateTriggersButton = ({ props, callback, text }  : { props: any | undefined, callback: () => void, text: string }) => {
@@ -203,6 +208,7 @@ const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray
                 response = await GetReactionInputs(token, slug, array[0].slug);
 
             setActionProps(response);
+            console.log("Response", response);
             setArray((prev) => {
                 const newArray = [...prev];
 
@@ -217,6 +223,19 @@ const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray
     }, [index, service, slug, token, actionProps, array]);
 
     useEffect(() => {
+        if (actionProps === undefined)
+            return;
+        if (actionProps?.inputs.length === 0) {
+            if (EditMode === true || index === 0) {
+                setPages(0);
+                return;
+            }
+            setPages(5);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [actionProps]);
+
+    useEffect(() => {
         setTheme(getTheme(props?.decoration?.backgroundColor));
     }, [props]);
 
@@ -227,7 +246,7 @@ const FillActionInputsPages = ({ setPages, service, slug, index, array, setArray
                     if (EditMode === true)
                         setPages(0);
                     else
-                        setPages(3);
+                        setPages(2);
                 }}
                 color={props?.decoration?.backgroundColor}
             />

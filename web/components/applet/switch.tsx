@@ -12,7 +12,7 @@ const Switch = ({isCheked, isDisable} : SwitchProps) => {
 
     useEffect(() => {
         setIsChecked(isCheked);
-        console.log("isCheked -> ", isCheked);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSwitchChange = () => {

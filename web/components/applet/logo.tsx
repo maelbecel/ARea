@@ -54,17 +54,22 @@ const LogoApplet = ({slug, width = 40, height = 40, toogleBackground = true} : L
     }, [logo]);
 
     return (
-       
-        toogleBackground ? (
-            <div style={{ backgroundColor : logo?.backgroundColor}} className="rounded-full p-[10px] w-[100%] h-[100%]" >
-                {logo && logo.logoUrl && <Image src={logo.logoUrl} width={width} height={height} alt={"Service Logo"} /> }
-            </div>
-        ) : (
+        (!toogleBackground ? (
             <div>
                 {logo && logo.logoUrl && <Image src={logo.logoUrl} width={width} height={height} alt={"Service Logo"} /> }
             </div>
-        )
-    )
+        ) : (
+            <div style={{
+                    backgroundColor : logo?.backgroundColor,
+                    width: width,
+                    height: height
+                }}
+                className="rounded-lg p-[10px]"
+            >
+                {logo && logo.logoUrl && <Image src={logo.logoUrl} width={width} height={height} alt={"Service Logo"} /> }
+            </div>
+        ))
+    );
 }
 
 export default LogoApplet;
