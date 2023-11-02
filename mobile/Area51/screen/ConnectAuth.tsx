@@ -106,13 +106,14 @@ const ConnectAuth = ({ navigation, route }) => {
       type={type}
       color={color}
       onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}}
-      onSelect={(text) => {isAllFormFill()}}
+      onSelect={(text) => {isAllFormFill()}
+}
     />)
   }
 
   const displayNumberForm = (input : any, index : number) => {
     return (
-      <View key={input.name} style={{width:"100%"}}>
+      <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
         <View >
           <TextInput keyboardType='numeric' placeholder={input.label} textBreakStrategy="highQuality" placeholderTextColor={getWriteColor(color, true)} onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}} style={[styles.input, { backgroundColor: getWriteColor(getWriteColor(color, true)), color: getWriteColor(color, true) }]}/>
         </View>
@@ -134,7 +135,7 @@ const ConnectAuth = ({ navigation, route }) => {
     }
     inputsResp[index] = input.options[0];
     return (
-      <View key={input.name} style={{marginBottom : 30, width:"100%"}}>
+      <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
         <View >
           <SelectDropdown defaultValue={input.options[0]} data={input.options.sort((a : string, b : string) => a.toLowerCase().localeCompare(b.toLowerCase()))} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
         </View>
