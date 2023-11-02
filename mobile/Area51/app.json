@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Area51",
-    "slug": "area51",
-    "owner": "zertus",
+    "slug": "Area51",
+    "owner": "etipech",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

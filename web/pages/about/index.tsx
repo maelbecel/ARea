@@ -117,7 +117,7 @@ const IndexPage: NextPage = () => {
                         </div>
                         <div className="flex flex-wrap gap-x-[1%] justify-center py-[10%] sm:py-[5%]">
                             <div className="text-[18px] font-bold text-[#363841] text-center">You want to use mobile version ? You can download it</div>
-                            <button onClick={handleDownloadApk} className="text-[18px] font-bold text-[#00B2FF]">here</button>
+                            <a href='app.apk' download={'app.apk'} className="text-[18px] font-bold text-[#00B2FF]">here</a>
                         </div>
                     </div>
                 </div>

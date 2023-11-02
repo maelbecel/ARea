@@ -1,57 +1,71 @@
-import React, { useEffect, useState } from "react";
-import { View, Image } from "react-native";
-import * as SecureStore from "expo-secure-store";
+import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
+import React from 'react';
+import ServiceInfo from '../../api/ServiceInfo';
 
-interface LogoProps {
-    slug: string;
-    width?: number;
-    height?: number;
-    toggleBackground: boolean;
+interface CardProps extends TouchableOpacityProps {
+    slug    : string;
+    onPress ?: () => void;
+    color   ?: string;
 }
 
-interface Logo {
-    logoUrl: string;
-    backgroundColor?: string;
+const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) => {
+
+    const [bgColor, setColor] = React.useState<string>("EEEEEE");
+    const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
+    const [loading, setLoading] = React.useState<boolean>(true);
+
+    React.useEffect(() => {
+        const fetchInfos = async () => {
+            const res = await ServiceInfo(slug);
+            setColor(res.decoration.backgroundColor);
+            setLogo(res.decoration.logoUrl);
+            setLoading(false);
+        }
+        fetchInfos();
+    }, []);
+
+    const isLight = (color: string) => {
+        if (color.charAt(0) === '#') {
+            color = color.substr(1);
+        }
+        if (color.length === 3) {
+            color = color.charAt(0) + color.charAt(0) + color.charAt(1) + color.charAt(1) + color.charAt(2) + color.charAt(2);
+        }
+        if (color.toLocaleLowerCase() === 'ffffff') {
+            return false;
+        }
+        return true;
+    }
+
+    if (!loading) {
+        return (
+            onPress ? ( // Vérifiez si onPress est défini
+                <TouchableOpacity onPress={onPress} style={[{ backgroundColor: isLight(color) ? null : bgColor }, styles.container]}>
+                    <Image source={{ uri: logo }} style={[styles.logopti]} />
+                </TouchableOpacity>
+            ) : (
+                <View style={[{ backgroundColor: isLight(color) ? null : bgColor }, styles.container]}>
+                    <Image source={{ uri: logo }} style={[styles.logopti]} />
+                </View>
+            )
+        );
+    }
 }
 
-const LogoApplet = ({ slug, width = 40, height = 40, toggleBackground = true }: LogoProps) => {
-    const [logo, setLogo] = useState<Logo | null>(null);
 
-    useEffect(() => {
-        const dataFetch = async (slug: string) => {
-            try {
-                const token = await SecureStore.getItemAsync("token_api");
-                const response = await fetch(`http://zertus.fr:8001/service/${slug}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                const data = await response.json();
-                setLogo({
-                    logoUrl: data?.data?.decoration?.logoUrl,
-                    backgroundColor: data?.data?.decoration?.backgroundColor,
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        dataFetch(slug);
-    }, []); // Assurez-vous de gérer correctement les dépendances du useEffect dans React Native
-
-    return (
-        <View style={{ borderRadius: toggleBackground ? width / 2 : 0, overflow: 'hidden' }}>
-            {logo && logo.logoUrl && (
-                <Image
-                    source={{ uri: logo.logoUrl }}
-                    style={{ width: width, height: height, backgroundColor: toggleBackground ? logo.backgroundColor : 'transparent' }}
-                />
-            )}
-        </View>
-    );
-};
+const styles = StyleSheet.create({
+    container: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        height: 50,
+        width: 50,
+        borderRadius: 10,
+    },
+    logopti: {
+        height: 40,
+        width: 40,
+        alignSelf: 'center',
+    }
+  });
 
 export default LogoApplet;

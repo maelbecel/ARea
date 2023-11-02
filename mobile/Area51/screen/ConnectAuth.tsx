@@ -1,14 +1,19 @@
 import * as React from 'react';
-import { Text, View, StatusBar, TouchableOpacity, Image, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, Alert, StatusBar, TouchableOpacity, Image, TextInput, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
 import ServiceInfo, {Action, Reaction, Input} from '../api/ServiceInfo';
-import ActionCard from '../components/ActionCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionApi from '../api/Action';
 import ReactionApi from '../api/Reaction';
-import TokenApi from '../api/ServiceToken'
+import TokenApi from '../api/ServiceToken';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
+import SelectDropdown from 'react-native-select-dropdown'
+import PlaceHolders, {Dict} from '../api/Placeholders';
+import IngredientButton from '../components/IngredientButton';
+import UserInfosAPI from '../api/UserInfos';
+import * as SecureStore from 'expo-secure-store';
+import AppletDetails from '../api/AppletDetails';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -21,7 +26,7 @@ import * as WebBrowser from 'expo-web-browser';
  * (black), indicating that the text color should be dark. Otherwise, it returns "#FFFFFF" (white),
  * indicating that the text color should be light.
  */
-const getWriteColor = (color: string): string => {
+const getWriteColor = (color: string, attenuation : boolean = false): string => {
   /* The line `const hexColor = color.startsWith("#") ? color : `#`;` is checking if the
   `color` variable starts with a `#` symbol. If it does, then `hexColor` is assigned the value of
   `color`. If it doesn't start with `#`, then `hexColor` is assigned the value of `#`,
@@ -53,10 +58,18 @@ const getWriteColor = (color: string): string => {
 
   /* The code block is determining the appropriate text color based on the luminance of the
   background color. */
-  if (luminance > 0.6) {
-      return "#000000";
+  if (attenuation) {
+    if (luminance > 0.6) {
+        return "#363841";
+    } else {
+        return "#D9D9D9";
+    }
   } else {
-      return "#FFFFFF";
+    if (luminance > 0.6) {
+      return "#000000";
+    } else {
+        return "#FFFFFF";
+    }
   }
 };
 
@@ -68,28 +81,76 @@ session using the WebBrowser API and navigates to a different screen based on th
 view includes a top bar with a title and icons for navigation, an image, and text components for
 displaying the service name, action title, and description */
 const ConnectAuth = ({ navigation, route }) => {
-  const { slug, type, actionInput, reactionInput } = route.params;
+  const { slug, type, actionInput, reactionInput, index } = route.params;
+  console.log("Params ConnectAuth:", route.params);
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
   const [action, setAction] = React.useState<Action[]>([]);
   const [reaction, setReaction] = React.useState<Reaction[]>([]);
   const [title, setTitle] = React.useState<string>("");
+  const [oAuthStatus, setoAuthStatus] = React.useState<boolean>(false);
+  const [error, seterror] = React.useState<boolean>(false);
   const [description, setDescription] = React.useState<string>("");
   const [inputs, setInput] = React.useState<Input[]>([]);
+  const [placeholders, setPlaceholders] = React.useState<Dict>(null);
   const redirectUri = Linking.createURL("/oauth2/" + slug.split(".")[0]);
   const useUrl = Linking.useURL();
   const [loggedIn, setLoggedIn] = React.useState(false);
   let inputsResp = [];
 
+  const displayTextForm = (input : Input, index : number) => {
+    return (<IngredientButton key={input.name}
+      input={input}
+      placeholders={placeholders}
+      type={type}
+      color={color}
+      onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}}
+      onSelect={(text) => {isAllFormFill()}}
+    />)
+  }
+
+  const displayNumberForm = (input : any, index : number) => {
+    return (
+      <View key={input.name} style={{width:"100%"}}>
+        <View >
+          <TextInput keyboardType='numeric' placeholder={input.label} textBreakStrategy="highQuality" placeholderTextColor={getWriteColor(color, true)} onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}} style={[styles.input, { backgroundColor: getWriteColor(getWriteColor(color, true)), color: getWriteColor(color, true) }]}/>
+        </View>
+     </View>
+    )
+  }
+
+  const displayOther = (input : any, index : number) => {
+    console.error("###############")
+    console.error("Unknown type : ", input.type);
+    console.error("At index : ", index);
+    console.error("###############")
+    return null;
+  }
+
+  const displaySelectForm = (input : any, index : number) => {
+    if (!input.options) {
+      return null;
+    }
+    inputsResp[index] = input.options[0];
+    return (
+      <View key={input.name} style={{marginBottom : 30, width:"100%"}}>
+        <View >
+          <SelectDropdown defaultValue={input.options[0]} data={input.options.sort((a : string, b : string) => a.toLowerCase().localeCompare(b.toLowerCase()))} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
+        </View>
+     </View>
+    )
+  }
+
   /* The `showForm` function is a helper function that generates a form based on the `inputs` array. */
   const showForm = () => {
-   return inputs.map((input, index) => (
-     <View key={input.name} style={{width:"100%"}}>
-       <TextInput placeholder={input.label} onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}} style={[styles.input, { backgroundColor: getWriteColor(color) }]}/>
-     </View>
-   ));
-  }
+    if (error == false && inputs == null) {
+      Alert.alert("Authentification Error", "An error occurred while trying to connect to the API")
+      navigation.goBack();
+      seterror(true);
+      return null;
+    } else if (inputs == null) return null;
+    return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : displayOther(input, index)))}
 
   /**
    * The function `isAllFormFill` checks if all the form inputs have been filled and returns true if
@@ -100,13 +161,48 @@ const ConnectAuth = ({ navigation, route }) => {
    * there are still empty form fields.
    */
   const isAllFormFill = () : boolean => {
+    if (inputs == null) return false;
     for (let i = 0; i < inputs.length; i++) {
-      console.log("Form ", i, " : ", inputsResp[i])
-      if (inputsResp[i] == null)
+      if (inputsResp[i] == null || inputsResp[i] == "" || inputsResp[i] == undefined)
         return false;
     }
-    console.log("All form fill")
     return true;
+  }
+
+  const isConnected = async (slug : string) : Promise<boolean> => {
+    const serverAddress = await AsyncStorage.getItem('serverAddress');
+    const token = await SecureStore.getItemAsync('token_api');
+
+
+    if (!token || !serverAddress) {
+      navigation.navigate('Login');
+      return;
+    }
+
+    const response = await UserInfosAPI(token, serverAddress);
+    const services = response.data.connectedServices;
+    const hasAuth = (await AppletDetails(slug.split('.')[0])).data.hasAuthentification
+
+    if (services.includes(slug) || !hasAuth) {
+      setoAuthStatus(true);
+      return true;
+    } else {
+      await _openAuthSessionAsync();
+      const verifResponse = await UserInfosAPI(token, serverAddress);
+      const verifServices = verifResponse.data.connectedServices;
+      if (services.includes(slug)) {
+        setoAuthStatus(true);
+        return true;
+      }
+      Alert.alert("Authentification Error", "An error occurred while trying to connect to the API")
+      navigation.goBack();
+      return false;
+    }
+    if (await AsyncStorage.getItem('serverAddressWarning') == 'true') {
+      Alert.alert("Warning", "You need to set a server address in the settings to use this app");
+      navigation.goBack();
+      return false;
+    }
   }
 
   /**
@@ -120,10 +216,9 @@ const ConnectAuth = ({ navigation, route }) => {
       let result = await WebBrowser.openAuthSessionAsync(
         `${serverAddress}/service/${slug.split(".")[0]}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
       );
-      console.log(result);
     } catch (error) {
       alert(error);
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -134,6 +229,21 @@ const ConnectAuth = ({ navigation, route }) => {
       setLoggedIn(true);
     }
   }, [useUrl]);
+
+  React.useEffect(() => {
+    const callingAction = async () => {
+      const actionSlug = await AsyncStorage.getItem("action");
+      if (type == "reaction" && actionSlug == "default") {
+        navigation.removeListener
+        navigation.navigate("Create");
+        return;
+      } else {
+        await isConnected(slug.split(".")[0])
+      }
+    }
+
+    callingAction();
+  }, []);
 
   /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
   case, the effect is triggered when the component is mounted (since the dependency array `[]` is
@@ -148,20 +258,25 @@ const ConnectAuth = ({ navigation, route }) => {
       const info = await ServiceInfo(slug.split(".")[0])
       const actionSlug = await AsyncStorage.getItem("action");
       const infoInput = (type == "action") ? await ActionApi(slug) : await ReactionApi(slug, actionSlug);
-      if (info == null) return;
+      const placeHolders = (type == "action") ? null : await PlaceHolders(slug, actionSlug)
+
+      if (info == null) {
+        return;
+      }
       setInput(infoInput);
       setColor(info.decoration.backgroundColor);
       setUrl(info.decoration.logoUrl);
       setName(info.name);
       setAction(info.actions);
       setReaction(info.reactions);
+      setPlaceholders(placeHolders);
       for (let i = 0; i < info.actions.length; i++) {
         inputsResp[i] = null;
       }
       isAllFormFill();
     }
     fetchServiceInfo();
-  }, []);
+  }, [oAuthStatus]);
 
   /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
   case, the effect is triggered when the `action` or `reaction` variables change. */
@@ -187,9 +302,6 @@ const ConnectAuth = ({ navigation, route }) => {
           return;
         }
       }
-      console.log( action.length, " Actions")
-      console.log( reaction.length, " Reactions")
-      console.log("Nothing look like this : ", slug)
     }
     findAction();
   }
@@ -201,12 +313,20 @@ const ConnectAuth = ({ navigation, route }) => {
    */
   const redirection = async () => {
     if (isAllFormFill()) {
-      await _openAuthSessionAsync();
-      await AsyncStorage.setItem(type, slug);
+      if (type == "action")
+        await AsyncStorage.setItem(type, slug);
+      else {
+        let tmp : Array<any> = JSON.parse(await AsyncStorage.getItem(type));
+        tmp[index] = slug;
+        await AsyncStorage.setItem(type, JSON.stringify(tmp));
+      }
       if (type == "action")
         navigation.navigate("Create", {actionInput: inputsResp, reactionInput: reactionInput});
-      else
-        navigation.navigate("Create", {actionInput: actionInput, reactionInput: inputsResp});
+      else {
+        let res : Array<any> = (reactionInput != undefined) ? reactionInput : [];
+        res[index] = inputsResp;
+        navigation.navigate("Create", {actionInput: actionInput, reactionInput: res});
+      }
     }
   }
 
@@ -218,20 +338,22 @@ const ConnectAuth = ({ navigation, route }) => {
   URL, and a text component with the value of the "name" variable. */
   if (name != "") {
     return (
-      <View>
-        <View style={[{ backgroundColor: color }, styles.container]}>
-          <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Create")} />
-          <Image source={{ uri: url }} style={styles.logo} />
-          <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
-        </View>
-        <View style={[{ backgroundColor: color },styles.action]}>
-          <Text style={[styles.name, { color: getWriteColor(color) }]}>{title}</Text>
-          <Text style={[styles.desc, { color: getWriteColor(color) }]}>{description}</Text>
-          {showForm()}
-          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.button]} onPress={redirection}>
-            <Text style={[{color: color}, styles.buttonText]}>Connection</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={{backgroundColor: color, height : "100%", paddingTop: 30}}>
+        <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Create")} />
+        <ScrollView style={{width : "100%"}} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+          <View style={[{ backgroundColor: color }]}>
+            <Image source={{ uri: url }} style={styles.logo} />
+            <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
+          </View>
+          <View style={[{ backgroundColor: color },styles.action]}>
+            <Text style={[styles.name, { color: getWriteColor(color) }]}>{title}</Text>
+            <Text style={[styles.desc, { color: getWriteColor(color) }]}>{description}</Text>
+              {oAuthStatus && showForm()}
+              <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.button]} onPress={redirection}>
+                <Text style={[{color: color}, styles.buttonText]}>Connection</Text>
+              </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -249,10 +371,24 @@ const styles = StyleSheet.create({
   button : {
     marginVertical: 10,
     alignItems: 'center',
+    alignSelf: 'center',
     width: '60%',
     padding: 10,
     borderRadius: 90,
     marginTop: 20,
+  },
+  ingredients : {
+    marginVertical: 10,
+    width: '50%',
+    padding: 5,
+    borderRadius: 10,
+    marginBottom: 30,
+  },
+  buttoningr: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    padding: 5,
   },
   buttonText: {
     fontSize: 20,
@@ -262,14 +398,6 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 30,
-    shadowColor: '#000',
-      shadowOffset: {
-      width: 0,
-      height: 2,
-      },
-      shadowOpacity: 0.3,
-      shadowRadius: 3.84,
-      elevation: 5,
   },
   name: {
     fontSize: 30,
@@ -289,14 +417,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '70%',
     borderRadius: 10,
-    textAlign: 'center',
-    marginBottom: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingVertical: 10,
+    flexWrap: 'wrap',
   },
   action: {
     paddingTop: 50,
     alignContent: "center",
     alignItems: "center",
-    height: 1000,
+    height: "100%",
   }
 });
 
