@@ -19,6 +19,10 @@ import { getTheme } from "../../../utils/getTheme";
 // --- Interface --- //
 import { Service } from "../../../utils/api/service/interface/interface";
 
+interface ReactionProps {
+    reactionSlug: string;
+}
+
 interface AppletProps {
     id: number;
     name: string;
@@ -27,7 +31,7 @@ interface AppletProps {
     lastTriggerUpdate: string; // date
     createdAt: number; // date
     enabled: boolean;
-    reactions: string[];
+    reactions: ReactionProps[];
 }
 
 const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastTriggerUpdate, createdAt, enabled }: AppletProps) => {
@@ -92,7 +96,7 @@ const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastT
                     <div className="flex flex-wrap space-x-[3%]">
                         {actionSlug   && <LogoApplet slug={actionSlug}   width={56} height={56} toogleBackground={false}/>}
                         {reactions && Array.isArray(reactions) && reactions.map((reaction, index: number) => {
-                            return (<LogoApplet key={index} slug={reaction.split('.')[0]} width={56} height={56} toogleBackground={false} />);
+                            return (<LogoApplet key={index} slug={reaction.reactionSlug.split('.')[0]} width={56} height={56} toogleBackground={false} />);
                         })}
                     </div>
                     <div className="font-bold text-[28px] pb-[40%] w-full overflow-hidden break-words">

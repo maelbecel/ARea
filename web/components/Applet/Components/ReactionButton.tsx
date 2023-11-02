@@ -97,7 +97,7 @@ const ReactionComponent = ({ reaction, setReactions, index, onClick, onEdit } : 
      * return the empty reaction component
      */
     if (reaction.reactionSlug === "")
-        return (<EmptyComponent type={"REAction"} onClick={() => { onClick() }} />);
+        return (<EmptyComponent type={"REAction"} onClick={() => { onClick() }} bg={'#363841'} color={"#ffffff"} />);
 
     /**
      * Else return the reaction card component

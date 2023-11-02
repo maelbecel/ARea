@@ -90,7 +90,7 @@ const ActionComponent = ({ action, setAction, onClick, onEdit } : ActionComponen
      * return the empty action component
      */
     if (action.actionSlug === "")
-        return (<EmptyComponent type={"Action"} onClick={() => { onClick(); localStorage.removeItem("index"); }} />);
+        return (<EmptyComponent type={"Action"} onClick={() => { onClick(); localStorage.removeItem("index"); }} bg={"#D9D9D9"} color={"#363841"} />);
 
     /**
      * Else return the action card component
