@@ -1,13 +1,13 @@
+// --- Interface --- //
 interface InputProps {
-    placeholder : string
-    secureMode ?: boolean
-    label       : string
+    placeholder      : string
+    label            : string
+    value            : string
+    secureMode      ?: boolean
     onChangeFunction : (value: string) => void
-    value       : string
 }
 
 const Input = ({placeholder, secureMode, label, value, onChangeFunction} : InputProps) => {
-
     return (
         <div className="flex flex-col">
             <label className="text-[#363841] font-bold text-[28px]">{label}</label>            

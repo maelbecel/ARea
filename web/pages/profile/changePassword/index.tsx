@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 
 // --- Components import --- //
-import Input from "../../../components/formProfile/input";
+import Input from "../../../components/Form/Profile/Input";
 import { GetProfile, PatchProfilePassword } from "../../../utils/api/user/me";
 import Icon from "../../../components/NavBar/components/Icon";
 import Profile from "../../../components/NavBar/components/Profile";

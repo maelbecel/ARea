@@ -1,22 +1,25 @@
-import React, { useEffect, useState } from "react";
-
-import { DeleteProfile } from "../../utils/api/user/me";
+// --- Imports --- //
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-
 import Modal from 'react-modal';
-import Button from "../Button/Button";
-import ModalError from "../Modal/modalErrorNotif";
 
-interface DeleteButtonProps {
-    token: string;
-}
+// --- API --- //
+import { DeleteProfile } from "../../../utils/api/user/me";
 
-const DeleteButton = ({token} : DeleteButtonProps ) => {
+// --- Components --- //
+import Button from "../../Button/Button";
+import ModalError from "../../Modal/modalErrorNotif";
+
+const DeleteButton = ({ token } : { token: string } ) => {
+    // --- Variables --- //
+    const [modalIsOpen     , setIsOpen]      = useState<boolean>(false);
+    const [modalErrorIsOpen, setIsErrorOpen] = useState<boolean>(false);
+
+    // --- Router --- //
     const router = useRouter();
-    const [modalIsOpen, setIsOpen] = useState(false);
-    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
 
-    // handleDelete async function 
+    // --- Functions --- //
+
     const handleDelete = async () => {
         const data = await DeleteProfile(token, router);
 

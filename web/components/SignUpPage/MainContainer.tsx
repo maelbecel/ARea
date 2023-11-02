@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UserRegister } from "../../utils/api/user/register";
-import TextContainer, { InputContainer } from "../auth/TextContainer";
+import TextContainer, { InputContainer } from "../Auth/TextContainer";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import React from "react";

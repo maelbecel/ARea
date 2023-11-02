@@ -6,7 +6,7 @@ import Link from "next/link";
 import NavBar, { LeftSection, RightSection } from "../../../../components/NavBar/navbar";
 import Icon from "../../../../components/NavBar/components/Icon";
 import SimpleLink from "../../../../components/NavBar/components/SimpleLink";
-import Input from "../../../../components/formProfile/input";
+import Input from "../../../../components/Form/Profile/Input";
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 import { UpdateAppletTitleWithID } from "../../../../utils/api/applet/applet";
 import ModalError from "../../../../components/Modal/modalErrorNotif";
