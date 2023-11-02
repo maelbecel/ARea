@@ -11,7 +11,7 @@ import AllActionFromServicePages from "../../../../components/Applet/Create/Page
 import FillActionInputsPages from "../../../../components/Applet/Create/Pages/FillActionInputsPages";
 import ServiceConnexionPages from "../../../../components/Applet/Create/Pages/ServiceConnexionPages";
 import SearchServicePages from "../../../../components/Applet/Create/Pages/SearchServicePages";
-import Footer from "../../../../components/footer";
+import Footer from "../../../../components/Footer/Footer";
 
 // --- Interface --- //
 import { ActionApplet, ReactionApplet, defaultReactionsApplet } from "../../../../components/Applet/Interface/interface";

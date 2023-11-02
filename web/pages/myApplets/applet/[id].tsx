@@ -7,7 +7,7 @@ import { getTheme } from "../../../utils/getTheme";
 
 // --- Components import --- //
 import AppletInfoContainer from "../../../components/Applet/Components/AppletInfoContainer";
-import Footer from "../../../components/footer";
+import Footer from "../../../components/Footer/Footer";
 import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/navbar";
 import Icon from "../../../components/NavBar/components/Icon";
 import SimpleLink from "../../../components/NavBar/components/SimpleLink";

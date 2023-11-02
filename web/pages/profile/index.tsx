@@ -7,16 +7,16 @@ import { GetProfile } from "../../utils/api/user/me";
 import Icon from "../../components/NavBar/components/Icon";
 import Profile from "../../components/NavBar/components/Profile";
 import FormProfile from "../../components/Form/Profile/FormProfile";
-import LogoutButton from "../../components/Form/Profile/LogoutButton";
-import DeleteButton from "../../components/Form/Profile/DeleteButton";
-import UpdateButton from "../../components/updateButton/updateButton";
+import LogoutButton from "../../components/Button/LogoutButton";
+import DeleteButton from "../../components/Button/DeleteButton";
+import UpdateButton from "../../components/Button/UpdateButton";
 import { useUser } from "../../utils/api/user/Providers/UserProvider";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
 import { UserProfile } from "../../utils/api/user/interface/interface";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { NavigateButton } from "../../components/NavBar/components/Button";
-import LinkedAccounts from "../../components/linkedAccounts/linkedAccounts";
-import ProfilePicture from "../../components/profilePicture/profilePicture";
+import LinkedAccounts from "../../components/ProfilePage/LinkedAccounts";
+import ProfilePicture from "../../components/ProfilePage/ProfilePicture";
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
 
 const IndexPage: NextPage = () => {

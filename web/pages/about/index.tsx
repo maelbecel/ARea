@@ -11,7 +11,7 @@ import { UserProfile } from "../../utils/api/user/interface/interface";
 import { NavigateButton } from "../../components/NavBar/components/Button";
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
 import Profile from "../../components/NavBar/components/Profile";
-import Footer from "../../components/footer";
+import Footer from "../../components/Footer/Footer";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
 import Button from "../../components/Button/Button";
 import { useRouter } from "next/router";

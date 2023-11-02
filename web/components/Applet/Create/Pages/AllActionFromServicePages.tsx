@@ -11,8 +11,8 @@ import { Service } from "../../../../utils/api/service/interface/interface";
 
 // --- Components --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import { ServiceInfoContainer } from "../../../service/template";
-import GetActionService from "../../../service/GetActionService";
+import { ServiceInfoContainer } from "../../../Service/Template";
+import GetActionService from "../../../Service/GetActionService";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate } from "../../../NavBar/components/Button";
 import Button from "../../../Button/Button";

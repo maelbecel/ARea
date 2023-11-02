@@ -1,6 +1,6 @@
 // --- Components --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import Footer from "../../../footer";
+import Footer from "../../../Footer/Footer";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate } from "../../../NavBar/components/Button";
 import Button from "../../../Button/Button";

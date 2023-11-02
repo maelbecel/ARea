@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 
 // --- Components import --- //
 import LogoApplet from "./Logo";
-import Switch from "../../switch/switch";
+import Switch from "../../Switch/Switch2";
 
 // --- API --- //
 import { useToken } from "../../../utils/api/user/Providers/TokenProvider";

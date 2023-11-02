@@ -1,8 +1,8 @@
+// --- Imports --- //
 import React from "react";
 import Image from 'next/image'
 
 const ProfilePicture = ({url} : {url ?: string}) => {
-
     return (
         <div className="flex justify-center">
             {url ? (

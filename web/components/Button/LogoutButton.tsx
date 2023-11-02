@@ -4,12 +4,12 @@ import { useRouter } from "next/router";
 import Modal from 'react-modal';
 
 // --- API --- //
-import { useUser } from "../../../utils/api/user/Providers/UserProvider";
-import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
-import { UserProfile } from "../../../utils/api/user/interface/interface";
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { UserProfile } from "../../utils/api/user/interface/interface";
 
 // --- Components --- //
-import Button from "../../Button/Button";
+import Button from "./Button";
 
 const LogoutButton = () => {
   // --- Variables --- //

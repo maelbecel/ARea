@@ -3,6 +3,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router";
+
+// --- API --- //
 import { getTheme } from "../../utils/getTheme";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
@@ -64,14 +66,19 @@ const ServiceListComponents = ({ serviceList, type, callback } : { serviceList?:
 }
 
 const SearchService = ({ type = 'link', callback = (slug: string) => {}, filterType = "action" } : { type?: string, callback?: (slug: string) => void, filterType?: string }) => {
-    const { token, setToken } = useToken();
-    const { services, setServices } = useServices();
-
-    const [searchValue  , setSearchValue] = useState<string>("");
-    const [service, setService] = useState<Service[]>([]);
+    // --- Variables --- //
+    const [searchValue  , setSearchValue]   = useState<string>("");
+    const [service      , setService]       = useState<Service[]>([]);
     const [serviceSearch, setServiceSearch] = useState<Service[]>([]);
 
+    // --- Providers --- //
+    const { token   , setToken    } = useToken();
+    const { services, setServices } = useServices();
+
+    // --- Router --- //
     const route = useRouter();
+
+    // --- UseEffect --- //
 
     useEffect(() => {
         if (type === "link" || filterType === "action") {
@@ -114,6 +121,8 @@ const SearchService = ({ type = 'link', callback = (slug: string) => {}, filterT
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [route, services, token]);
 
+    // --- Functions --- //
+
     const handleChange = (event: any) => {
         const findObjectsBySlug = (array: any[], slug: string) => {
             return array.filter(item => item?.slug.includes(slug) || item?.name.includes(slug));
@@ -139,6 +148,7 @@ const SearchService = ({ type = 'link', callback = (slug: string) => {}, filterT
                 />
             </div>
 
+            {/* Service list */}
             <ServiceListComponents serviceList={serviceSearch} type={type} callback={callback} />
         </>
     )

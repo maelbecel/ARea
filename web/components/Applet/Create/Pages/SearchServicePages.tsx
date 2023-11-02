@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 // --- Components --- //
 import NavBar, { RightSection, LeftSection, MiddleSection } from '../../../NavBar/navbar'
-import SearchService from '../../../service/SearchService'
+import SearchService from '../../../Service/SearchService'
 import Title from '../../../NavBar/components/Title'
 import { ButtonIconNavigate } from '../../../NavBar/components/Button'
 import Button from '../../../Button/Button'

@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 
 // --- Components import --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import Footer from "../../../footer";
-import { ServiceInfoContainer } from "../../../service/template";
+import Footer from "../../../Footer/Footer";
+import { ServiceInfoContainer } from "../../../Service/Template";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate } from "../../../NavBar/components/Button";
 import Button from "../../../Button/Button";

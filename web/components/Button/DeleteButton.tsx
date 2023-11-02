@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 import Modal from 'react-modal';
 
 // --- API --- //
-import { DeleteProfile } from "../../../utils/api/user/me";
+import { DeleteProfile } from "../../utils/api/user/me";
 
 // --- Components --- //
-import Button from "../../Button/Button";
-import ModalError from "../../Modal/modalErrorNotif";
+import Button from "./Button";
+import ModalError from "../Modal/modalErrorNotif";
 
 const DeleteButton = ({ token } : { token: string } ) => {
     // --- Variables --- //

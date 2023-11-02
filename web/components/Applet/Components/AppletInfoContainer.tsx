@@ -5,9 +5,9 @@ import React, { useEffect, useState } from "react";
 
 // --- Components import --- //
 import LogoApplet from "./Logo";
-import SwitchNotifyMe from "../../switch/switchNotifyMe";
+import SwitchNotifyMe from "../../Switch/SwitchNotifyMe";
 import MoreDetailsButton from "./MoreDetails";
-import ToggleSwitch from "../../switch/toggleSwitch";
+import ToggleSwitch from "../../Switch/ToggleSwitch";
 import ModalError from "../../Modal/modalErrorNotif";
 
 // --- API import --- //

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 // --- Components --- //
 import CreatePages from "../../components/Applet/Create/Pages/CreatePages";
-import Footer from "../../components/footer";
+import Footer from "../../components/Footer/Footer";
 import { useEffect, useState } from "react";
 import SearchServicePages from "../../components/Applet/Create/Pages/SearchServicePages";
 import { ActionApplet, ReactionApplet, defaultActionApplet, defaultReactionsApplet } from "../../components/Applet/Interface/interface";

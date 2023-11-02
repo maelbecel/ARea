@@ -1,6 +1,6 @@
 // --- Components --- //
 import NavBar, { LeftSection, MiddleSection, RightSection } from "../../../NavBar/navbar";
-import Switch from "../../../switch";
+import Switch from "../../../Switch/Switch1";
 import Title from "../../../NavBar/components/Title";
 import { ButtonIconNavigate } from "../../../NavBar/components/Button";
 import ModalError from "../../../Modal/modalErrorNotif";

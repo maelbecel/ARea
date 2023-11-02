@@ -1,12 +1,18 @@
+// --- Imports --- //
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
+
+// --- API --- //
 import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
-import { useRouter } from "next/router";
 import { GetServices } from "../../utils/api/service/service";
-import ModalError from "../Modal/modalErrorNotif";
 import { DeleteOAuth2Token, OAuth2GetToken } from "../../utils/api/service/oauth2";
 
+// --- Components --- //
+import ModalError from "../Modal/modalErrorNotif";
+
+// --- Interfaces --- //
 interface LinkedAccountProps {
     slug: string
     url?: string
@@ -27,10 +33,13 @@ interface linkedAccountData {
 }
 
 const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, backgroundColor, token} : LinkedAccountProps) => {
-    const [oauth2Token, setOauth2Token] = useState<string>("");
+    // --- Variables --- //
+    const [oauth2Token     , setOauth2Token] = useState<string>("");
+    const [islinkedState   , setIsLinked]    = useState<boolean>(islinked);
+    const [modalErrorIsOpen, setIsErrorOpen] = useState<boolean>(false);
     const bgColor = backgroundColor ?? "#363841";
-    const [islinkedState, setIsLinked] = useState<boolean>(islinked);
-    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    // --- Functions --- //
 
     const openModalError = () => {
         setIsErrorOpen(true);
@@ -69,6 +78,8 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
         }
     }
 
+    // --- UseEffect --- //
+
     useEffect(() => {
         if (!oauth2Token || oauth2Token == "")
             return;
@@ -96,11 +107,17 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
 }
 
 const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
+    // --- Variables --- //
     const [linkedAccountsData, setLinkedAccountsData] = useState<linkedAccountData[] | undefined>();
+
+    // --- Providers --- //
     const { services, setServices } = useServices();
     const { token, setToken } = useToken();
 
+    // --- Router --- //
     const route = useRouter();
+
+    // --- UseEffect --- //
 
     useEffect(() => {
         if (services.length !== 0)
@@ -154,7 +171,7 @@ const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
                 {linkedAccountsData && services.map((item : any, index : any) => {
                     if (item.hasAuthentification) {
                         return (
-                                <LinkedAccount
+                            <LinkedAccount
                                 key={index} 
                                 slug={item.slug}
                                 token={token}
@@ -162,7 +179,7 @@ const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
                                 url={linkedAccountsData[index].url}
                                 islinked={linkedAccountsData[index].islinked}
                                 backgroundColor={item.decoration.backgroundColor}
-                                />
+                            />
                         );
                     }
                 })}
