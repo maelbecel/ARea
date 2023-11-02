@@ -80,8 +80,8 @@ if all form fields have been filled. If all form fields are filled, it opens an 
 session using the WebBrowser API and navigates to a different screen based on the type of form. The
 view includes a top bar with a title and icons for navigation, an image, and text components for
 displaying the service name, action title, and description */
-const ConnectAuth = ({ navigation, route }) => {
-  const { slug, type, actionInput, reactionInput, index } = route.params;
+const ConnectAuthEdit = ({ navigation, route }) => {
+  const {id, slug, type, actionInput, reactionInput, index } = route.params;
   console.log("Params ConnectAuth:", route.params);
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
@@ -235,7 +235,7 @@ const ConnectAuth = ({ navigation, route }) => {
       const actionSlug = await AsyncStorage.getItem("action");
       if (type == "reaction" && actionSlug == "default") {
         navigation.removeListener
-        navigation.navigate("Create");
+        navigation.navigate("EditApplet", {id : id});
         return;
       } else {
         await isConnected(slug.split(".")[0])
@@ -321,11 +321,11 @@ const ConnectAuth = ({ navigation, route }) => {
         await AsyncStorage.setItem(type, JSON.stringify(tmp));
       }
       if (type == "action")
-        navigation.navigate("Create", {actionInput: inputsResp, reactionInput: reactionInput});
+        navigation.navigate("EditApplet", {id: id, actionInput: inputsResp, reactionInput: reactionInput});
       else {
         let res : Array<any> = (reactionInput != undefined) ? reactionInput : [];
         res[index] = inputsResp;
-        navigation.navigate("Create", {actionInput: actionInput, reactionInput: res});
+        navigation.navigate("EditApplet", {id: id, actionInput: actionInput, reactionInput: res});
       }
     }
   }
@@ -339,7 +339,7 @@ const ConnectAuth = ({ navigation, route }) => {
   if (name != "") {
     return (
       <View style={{backgroundColor: color, height : "100%", paddingTop: 30}}>
-        <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Create")} />
+        <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Edit", {id : id})} />
         <ScrollView style={{width : "100%"}} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
           <View style={[{ backgroundColor: color }]}>
             <Image source={{ uri: url }} style={styles.logo} />
@@ -435,4 +435,4 @@ const styles = StyleSheet.create({
 export of the module. This means that when another module imports this module, it can access the
 `ConnectAuth` component using the default import syntax, like `import ConnectAuth from
 './ConnectAuth';`. */
-export default ConnectAuth;
+export default ConnectAuthEdit;

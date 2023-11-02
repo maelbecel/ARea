@@ -12,6 +12,7 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
 import RegisterAPI from '../api/Register';
+import ServerModal from '../components/ServerModal';
 
 /* The code is defining a functional component called `Signup` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -40,6 +41,7 @@ const Signup = ({ navigation }) => {
   /* The code is rendering a view with various components inside it. */
   return (
         <View style={styles.container}>
+          <ServerModal />
           <Text style={styles.login}>Sign up</Text>
           <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
           <FormInput title="Username" icon={{ name: "person", width: 27, height: 27 }} onChangeText={setUsername} />
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+    marginTop: 50,
   },
   forgot : {
     color: '#363841',

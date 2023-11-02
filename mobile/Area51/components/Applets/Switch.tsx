@@ -1,7 +1,8 @@
 import React, { createRef, useEffect, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet, DimensionValue } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getWriteColor } from "../ActionCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UpdateAppletEnableWithID } from "../../api/UpdateApplet";
 
 export const darkenColor = (color: string, factor: number, darkMode: boolean): string => {
     if (!darkMode) {
@@ -38,9 +39,10 @@ interface ToggleSwitchProps {
     toggleColor?: string;
     darkMode?: boolean;
     bigSwitch?: boolean;
+    onChange?: () => void;
 }
 
-const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, darkMode = true, bigSwitch = false }) => {
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, darkMode = true, bigSwitch = false, onChange }) => {
 
     const [isChekedState, setIsChecked] = useState<boolean>(false);
     const [darkenBg, setDarkenColor] = useState<string>("#ffffff");
@@ -50,12 +52,10 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
         setDarkenColor(darkenColor(bgColor, 1.2, darkMode));
     }, [bgColor]);
 
-    const handleSwitchChange = () => {
-
+    const handleSwitchChange = async () => {
         setIsChecked(!isChekedState);
-        AsyncStorage.setItem("switchState", JSON.stringify(!isChekedState));
+        await UpdateAppletEnableWithID(await AsyncStorage.getItem("appletID"), !isChekedState);
     }
-
 
     return (
         <TouchableOpacity
@@ -63,22 +63,40 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
             style={[styles.container, {
                 backgroundColor: darkenBg,
                 width: bigSwitch ? '100%' : '60%',
-                borderRadius: bigSwitch ? 50 : 100
+                borderRadius: bigSwitch ? 50 : 100,
+                justifyContent: isChekedState ? 'space-between' : 'flex-start',
             }]}
             disabled={isDisabled}
         >
-            <Text style={[styles.label, {
-                marginLeft: bigSwitch ? '35%' : '12.5%',
-                color: getWriteColor(darkenBg),
-                fontSize: bigSwitch ? 30 : 14,
-            }]}>{isChekedState ? yesLabel : noLabel}</Text>
-            <View style={[, {
-                width: bigSwitch ? 75 : 30,
-                height: bigSwitch ? 75 : 30,
-                borderRadius: bigSwitch ? 35 : 15,
-                transform: [{ translateX: isChekedState ? 0 : -287 }],},
-                isChecked && { backgroundColor: toggleColor ? toggleColor : bgColor }
-            ]}/>
+            {isChekedState ? (
+                <>
+                <Text style={[styles.label, {
+                    marginLeft: bigSwitch ? '35%' : '12.5%',
+                    color: getWriteColor(darkenBg),
+                    fontSize: bigSwitch ? 30 : 15,
+                }]}>{isChekedState ? yesLabel : noLabel}</Text>
+                <View style={[, {
+                    width: bigSwitch ? 75 : 30,
+                    height: bigSwitch ? 75 : 30,
+                    borderRadius: bigSwitch ? 37.5 : 15,
+                    backgroundColor: toggleColor ? toggleColor : bgColor }
+                ]}/>
+                </>
+            ) : (
+            <>
+                <View style={[, {
+                    width: bigSwitch ? 75 : 30,
+                    height: bigSwitch ? 75 : 30,
+                    borderRadius: bigSwitch ? 37.5 : 15,
+                    backgroundColor: toggleColor ? toggleColor : bgColor }
+                ]}/>
+                <Text style={[styles.label, {
+                    marginLeft: bigSwitch ? '15%' : '12.5%',
+                    color: getWriteColor(darkenBg),
+                    fontSize: bigSwitch ? 30 : 14,
+                }]}>{isChekedState ? yesLabel : noLabel}</Text>
+            </>
+            )}
         </TouchableOpacity>
     );
 };
@@ -87,7 +105,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
         padding: 4,
     },
     label: {

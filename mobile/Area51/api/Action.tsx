@@ -15,20 +15,20 @@ import { Alert } from 'react-native';
 const Action = async (slug : string): Promise<any[]> => {
     try {
         let inputs : any[] = [];
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/action/${slug}`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/action/${slug}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             }
         });
-        const json = await response.json();
+        const json : any = await response.json();
         if (json.data == undefined) return null;
         for (let i = 0; i < json.data.inputs.length; i++)
         {
-            let tmp  = {name : json.data.inputs[i].name, label : json.data.inputs[i].label, type : json.data.inputs[i].type, options : json.data.inputs[i].options};
+            let tmp : any  = {name : json.data.inputs[i].name, label : json.data.inputs[i].label, type : json.data.inputs[i].type, options : json.data.inputs[i].options};
             inputs.push(tmp);
         }
         return inputs;

@@ -16,10 +16,10 @@ import { Alert } from 'react-native';
  * user who wants to register.
  * @returns a JSON object.
  */
-const RegisterAPI = async (email: string, password : string, username : string) => {
+const RegisterAPI = async (email: string, password : string, username : string) : Promise<any> => {
     try {
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/user/register`, {
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/user/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -2,18 +2,18 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 
-const MyApplets  = async () => {
+const MyApplets  = async () : Promise<any> => {
     try {
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const token = await SecureStore.getItemAsync('token_api');
-        const response = await fetch(`${serverAddress}/applet/me`, {
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const response : Response = await fetch(`${serverAddress}/applet/me`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             },
         });
-        const json = await response.json();
+        const json : any = await response.json();
         if (json == null) return null;
         return json.data;
     } catch (error) {

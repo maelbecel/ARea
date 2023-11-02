@@ -6,35 +6,37 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Input} from  './ServiceInfo'
 import { Alert } from 'react-native';
 
+// TODO Documentation github
 
 /**
- * The above function is a TypeScript React function that creates an applet by making a POST request to
- * a server with the provided parameters.
+ * The function `AppletPatch` is an asynchronous function that updates an applet with the provided
+ * parameters and returns a boolean indicating success or an error message.
  * @param {string} name - The name of the applet.
- * @param {string} actionSlug - The `actionSlug` parameter is a string that represents the action being
- * performed in the applet. It is used to identify the specific action to be executed.
+ * @param {string} actionSlug - The `actionSlug` parameter is a string that represents the slug (unique
+ * identifier) of the action for the applet.
  * @param {Input[]} actionInputs - The `actionInputs` parameter is an array of objects that represent
  * the inputs required for the action. Each object in the array has the following properties:
- * @param actionResp - The `actionResp` parameter is an array of any type that represents the response
- * data from the action. It is used to populate the values of the action inputs in the request body.
- * Each element in the `actionResp` array corresponds to an input in the `actionInputs` array.
+ * @param actionResp - The `actionResp` parameter is an array of responses from the action. It contains
+ * the values that will be used as inputs for the action in the PATCH request.
  * @param {string[]} reactionSlug - The `reactionSlug` parameter is an array of strings that represents
- * the slugs of the reactions for the applet. Each reaction slug identifies a specific action that will
- * be triggered as a reaction to the main action of the applet.
+ * the slugs of the reactions for the applet. Each string in the array corresponds to a specific
+ * reaction.
  * @param {Input[][]} reactionInputs - The `reactionInputs` parameter is a 2-dimensional array of type
- * `Input`. Each inner array represents the inputs required for a specific reaction. The outer array
- * represents the reactions themselves. So, for each reaction, you have an array of inputs.
+ * `Input`. Each element in the outer array represents a reaction, and each element in the inner array
+ * represents an input for that reaction.
  * @param reactionResp - The parameter `reactionResp` is an array of arrays. Each inner array
- * represents the response values for a specific reaction. The outer array represents the response
- * values for all the reactions.
+ * represents the response values for a specific reaction. The outer array represents the responses for
+ * all the reactions.
+ * @param {number} id - The `id` parameter is the identifier of the applet that you want to update. It
+ * is used to specify which applet should be patched with the new data.
  * @returns a Promise that resolves to either a boolean value or any other value.
  */
-const Applet = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string[], reactionInputs : Input[][], reactionResp : Array<any>): Promise<boolean | any> => {
+const AppletPatch = async (name : string, actionSlug : string, actionInputs : Input[], actionResp : Array<any>,  reactionSlug : string[], reactionInputs : Input[][], reactionResp : Array<any>, id : number): Promise<boolean | any> => {
     try {
         const token : string = await SecureStore.getItemAsync('token_api');
         const serverAddress : string = await AsyncStorage.getItem('serverAddress');
-        const response : Response = await fetch(`${serverAddress}/applet`, {
-            method: 'POST',
+        const response : Response = await fetch(`${serverAddress}/applet/${id}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
@@ -72,9 +74,8 @@ const Applet = async (name : string, actionSlug : string, actionInputs : Input[]
     }
 }
 
-
-/* `export default Applet;` is exporting the `Applet` function as the default export of the module.
-This means that when another module imports this module, they can import the `Applet` function
-directly without having to specify its name. For example, in another module, you can import the
-`Applet` function like this: `import Applet from './Applet'`. */
-export default Applet;
+/* `export default AppletPatch;` is exporting the `AppletPatch` function as the default export of the
+module. This means that when another module imports this module, they can import the `AppletPatch`
+function directly without having to specify its name. For example, in another module, you can import
+the `AppletPatch` function like this: `import AppletPatch from './AppletPatch';`. */
+export default AppletPatch;

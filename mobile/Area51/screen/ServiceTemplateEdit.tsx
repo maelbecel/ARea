@@ -1,12 +1,9 @@
+/* The code is importing various modules and components from external libraries and files. */
 import * as React from 'react';
-import {Alert, Text, View, StatusBar, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StatusBar, Image, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
-import ServiceInfo, {Action, Reaction} from '../api/ServiceInfo';
+import ServiceInfo, {Action, Reaction, Service} from '../api/ServiceInfo';
 import ActionCard from '../components/ActionCard';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as WebBrowser from 'expo-web-browser';
-import LogoApplet from '../components/Applets/Logo';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -58,28 +55,44 @@ const getWriteColor = (color: string): string => {
   }
 };
 
-/* The `Service` component is a functional component that represents a screen in a React Native app. It
-receives two props, `navigation` and `route`, from the React Navigation library. */
-const InfoService = ({ navigation, route }) => {
-  const { slug } = route.params;
+/* The `ServiceTemplate` function is a React component that renders a view for a specific service
+template. It takes in `navigation` and `route` as props, which are provided by React Navigation. The
+`route` prop contains the parameters passed to the component. */
+const ServiceTemplateEdit = ({ navigation, route }) => {
+  const {id, slug, type, actionInput, reactionInput, index } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
-  const [link, setLink] = React.useState<string>("");
-  const [desc, setDesc] = React.useState<string>("");
+  const [action, setAction] = React.useState<Action[]>([]);
+  const [reaction, setReaction] = React.useState<Reaction[]>([]);
 
-  const openPage = async () => {
-    try {
-      await WebBrowser.openBrowserAsync(link);
-    } catch (error) {
-      alert(error);
-      console.error(error);
-    }
+
+  /**
+   * The function `displayActions` maps over an array of actions and returns an array of `ActionCard`
+   * components with specific props.
+   * @returns The `displayActions` function is returning an array of `ActionCard` components.
+   */
+  const displayActions = () => {
+    return action.map((service: any) => (
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuthEdit', { id: id, slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index})}/>
+    ));
+  };
+
+  /**
+   * The function `displayReactions` maps over an array of `reaction` objects and returns an array of
+   * `ActionCard` components with specific props.
+   * @returns The `displayReactions` function is returning an array of `ActionCard` components.
+   */
+  const displayReactions = () => {
+    return reaction.map((service: any) => (
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuthEdit', {id: id,  slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index })}/>
+    ));
   }
 
 
   /* The `React.useEffect` hook is used to perform side effects in a functional component. In this
-  case, the effect is triggered when the `slug` variable changes. */
+  case, the `useEffect` hook is used to fetch data from a service and update the state variables
+  based on the fetched data. */
   React.useEffect(() => {
     /**
      * The function fetchData fetches data from a service and sets various state variables based on the
@@ -88,11 +101,11 @@ const InfoService = ({ navigation, route }) => {
     const fetchData = async () => {
       try {
         const service = await ServiceInfo(slug);
-        (service.decoration.backgroundColor) ? setColor(service.decoration.backgroundColor) : null;
+        setColor(service.decoration.backgroundColor);
         (service.decoration.logoUrl != "") ? setUrl(service.decoration.logoUrl) : null;
         setName(service.name);
-        setDesc(service.decoration.description);
-        setLink(service.decoration.websiteUrl);
+        setAction(service.actions);
+        setReaction(service.reactions);
       } catch (error) {
         console.error("Erreur lors de l'appel de ServiceInfo:", error);
       }
@@ -101,22 +114,21 @@ const InfoService = ({ navigation, route }) => {
     fetchData();
   }, [slug]);
 
-  /* The `return` statement in the `Service` component is returning a JSX expression that represents
-  the structure and content of the component's rendered output. */
+  /* The code block is rendering a view that contains a top bar, an image, and a text component. It
+  also includes a scroll view that contains a view with action cards. */
   return (
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
       <View style={[{ backgroundColor: color }, styles.container]}>
-        <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} />
+        <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Create")} />
         <Image source={{ uri: url }} style={styles.logo} />
         <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
-        <View style={styles.info}>
-            <Text style={[styles.desc, { color: getWriteColor(color) }]}>{desc}</Text>
-            <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.button]} onPress={openPage}>
-                <Text style={[{color: color}, styles.buttonText]}>Visit {name}</Text>
-            </TouchableOpacity>
-        </View>
       </View>
+      <ScrollView >
+        <View style={styles.action}>
+          {(type === "action") ? displayActions() : displayReactions()}
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -126,13 +138,12 @@ const InfoService = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   logo: {
     height: 100,
-    marginTop: '15%',
+    marginTop: 10,
     width: 100,
     alignSelf: 'center',
   },
   container: {
     paddingTop: 30,
-    height: '100%',
     shadowColor: '#000',
       shadowOffset: {
       width: 0,
@@ -142,44 +153,20 @@ const styles = StyleSheet.create({
       shadowRadius: 3.84,
       elevation: 5,
   },
-  button : {
-    marginVertical: 10,
-    alignItems: 'center',
-    alignSelf: 'center',
-    width: '60%',
-    padding: 10,
-    borderRadius: 90,
-  },
-  buttonText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    padding: 5,
-  },
   name: {
     fontSize: 30,
     fontWeight: 'bold',
-    alignSelf: 'center',
-    marginBottom: 40,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  info: {
-    alignItems: 'center',
-  },
-  desc: {
-    width: '70%',
-    justifyContent: 'center',
-    fontSize: 20,
     alignSelf: 'center',
     marginBottom: 40,
   },
   action: {
     alignContent: "center",
     alignItems: "center",
+    marginBottom: 60,
     paddingBottom: 250,
+
   }
 });
 
 
-export default InfoService;
+export default ServiceTemplateEdit;

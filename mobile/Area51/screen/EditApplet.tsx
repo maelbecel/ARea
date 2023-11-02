@@ -1,5 +1,3 @@
-/* The code is importing various modules and components that are needed for the functionality of the
-`AddServices` component. */
 import * as React from 'react';
 import { Text, View, Alert, ScrollView } from 'react-native';
 import ActionChoose from '../components/ActionChoose';
@@ -12,23 +10,62 @@ import Action from '../api/Action';
 import Reaction from '../api/Reaction';
 import ActionInfo from '../api/ActionInfo';
 import ReactionInfo from '../api/ReactionInfo';
+import AppletID from '../api/AppletID';
+import TopBar from '../components/TopBar';
+import AppletPatch from '../api/AppletPatch';
 import * as Progress from 'react-native-progress';
 
-/* The code defines a functional component called `AddServices` that takes two props, `navigation` and
-`route`. */
-const AddServices = ({navigation, route}) => {
+
+const EditApplet = ({navigation, route}) => {
   const [action, setAction] = React.useState("default");
   const [reaction, setReaction] = React.useState<string[]>([]);
+  const [actionInput, setActionInput] = React.useState(route.params != undefined ? route.params : [])
+  const [reactionInput, setReactionInput] = React.useState(route.params != undefined ? route.params : [])
+  const [title, setTitle] = React.useState("")
   const [loading, setLoading] = React.useState<number>(0);
   const [loadingInfo, setLoadingInfo] = React.useState<string>("");
-  let {actionInput} = (route.params != undefined ? route.params : "")
-  let {reactionInput} = (route.params != undefined ? route.params : [])
+  const {id} = route.params
 
-  /**
-   * The function `newApplet` creates a new applet by getting action and reaction inputs, calling the
-   * AppletApi function, setting default values for action and reaction, and navigating to the "My
-   * Applets" screen.
-   */
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await AppletID(id);
+        if (data == null) return null;
+        setTitle(data.name);
+        setAction(data.actionSlug);
+        await AsyncStorage.setItem('action', data.actionSlug);
+        let ac : string[] = []
+        for (let i = 0; i < data.actionData.length; i++)
+          ac[i] = data.actionData[i].value;
+        setActionInput(ac);
+        console.log("Set actionInput : ", actionInput)
+
+        let reactionSlugs : string[] = []
+        let rea : any[][] = []
+        for (let i = 0; i < data.reactions.length; i++) {
+          reactionSlugs[i] = data.reactions[i].reactionSlug;
+          let tmp : any[] = [];
+          for (let x = 0; x < data.reactions[i].reactionData.length; x++)
+            tmp.push(data.reactions[i].reactionData[x].value)
+          rea[i] = tmp;
+        }
+        setReactionInput(rea);
+        console.log("Set reactionInput : ", reactionInput)
+        setReaction(reactionSlugs);
+        await AsyncStorage.setItem('reaction', JSON.stringify(reactionSlugs));
+      } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+          Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
+        console.error("Error while getting info : ", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+
   const newApplet = async () => {
 
     setLoading(1);
@@ -80,9 +117,6 @@ const AddServices = ({navigation, route}) => {
     setLoading(0);
   }
 
-  /* The `useFocusEffect` hook is a React Navigation hook that allows you to perform side effects when
-  the screen comes into focus. In this code, it is used to fetch data from AsyncStorage and update
-  the state variables `action` and `reaction` when the screen is focused. */
   useFocusEffect(() => {
     const fetchData = async () => {
       try {
@@ -105,7 +139,11 @@ const AddServices = ({navigation, route}) => {
   const removeItem = async (item : number) => {
     const tmp = [...reactionInput];
     tmp.splice(item, 1);
-    reactionInput = tmp;
+    setReactionInput(tmp);
+    const rec = [...reaction]
+    rec.splice(item, 1);
+    setReaction(rec);
+    await AsyncStorage.setItem('reaction', JSON.stringify(rec));
   };
 
   const showReactions = () => {
@@ -115,17 +153,26 @@ const AddServices = ({navigation, route}) => {
     return reaction.map((item, index) => {
       return (
         <View key={index} style={{ alignItems: 'center', backgroundColor: "#FFF", width: "100%"}}>
-          <ActionChoose  type="reaction" slug={item} onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : index})}  onPressCross={() => {removeItem(index)}}/>
+          <ActionChoose  type="reaction" slug={item} onPress={() => (action === "default") ? null : navigation.navigate('SearchServicesEdit', {id : id, type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : index})}  onPressCross={() => {removeItem(index)}}/>
         </View>
       )
     })
   }
 
-  /* The `return` statement in the code is rendering the JSX elements that will be displayed on the
-  screen when the `AddServices` component is rendered. */
+  const resetAll = async () => {
+    setActionInput("default");
+    await AsyncStorage.setItem('action', "default");
+    setReactionInput([]);
+    await AsyncStorage.setItem('reaction', "[]");
+  }
+
   return (loading == 0) ? (
-      <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 0, marginTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
-        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={() => actionInput = "default"}/>
+    <View>
+      <View style={{backgroundColor: "#FFF", paddingTop: 50}}>
+        <TopBar title="Edit"  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={"#363841"} />
+      </View>
+      <ScrollView style={{ backgroundColor: "#FFF", height: "80%", paddingTop: 0, marginTop: 0}} contentContainerStyle={{alignItems: 'center', flex: 0, justifyContent: "center"}}>
+        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={resetAll}/>
         {showReactions()}
         {
           (reaction.length >= 9) ? null : (
@@ -134,7 +181,7 @@ const AddServices = ({navigation, route}) => {
         }
         {
           (reaction.length >= 9) ? null : (
-            <ActionChoose type="reaction" slug="default" onPress={() => (action === "default") ? null : navigation.navigate('SearchServices', {type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : reaction.length})} />
+            <ActionChoose type="reaction" slug="default" onPress={() => (action === "default") ? null : navigation.navigate('SearchServicesEdit', {id : id, type: "reaction", actionInput : actionInput, reactionInput : reactionInput, index : reaction.length})} />
           )
         }
         {(action != "default" && reaction.length > 0) ?
@@ -142,6 +189,7 @@ const AddServices = ({navigation, route}) => {
           : null
         }
       </ScrollView>
+      </View>
   ) : (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text style={{ textAlign: 'center', fontSize: 30, fontWeight: 'bold', color: '#363841' }}>Loading...</Text>
@@ -151,9 +199,4 @@ const AddServices = ({navigation, route}) => {
   );
 }
 
-/* The line `export default AddServices;` is exporting the `AddServices` component as the default
-export of the module. This allows other modules to import and use the `AddServices` component by
-simply importing it without specifying a specific name for the import. For example, in another
-module, you can import the `AddServices` component like this: `import AddServices from
-'./AddServices';`. */
-export default AddServices;
+export default EditApplet;

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import LogoApplet from "./Logo";
+import ReactionInfo from "../../api/ReactionInfo";
+import ActionInfo from "../../api/ActionInfo";
 
 interface ReactionListProps {
     reactionSlug: string;
@@ -22,6 +24,7 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionsList }: ButtonProps)
     const [isButtonToggle, setIsButtonToggle] = useState<boolean>(isToggle);
     const [actionInfos, setActionInfos] = useState<any>("");
     const [reactionInfos, setReactionInfos] = useState<any>("");
+    const [loading, setLoading] = useState<boolean>(true);
 
     const handleClick = () => {
         setIsButtonToggle(!isButtonToggle);
@@ -30,10 +33,15 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionsList }: ButtonProps)
     useEffect(() => {
         const dataFetch = async () => {
             try {
-                // const actionInfos = await ActionInfos(actionSlug);
-                // const reactionInfos = await ReactionInfos(reactionSlug);
-                // setActionInfos(actionInfos);
-                // setReactionInfos(reactionInfos);
+                const actionInfos = await ActionInfo(actionSlug);
+                const reactionInfos = [];
+                for (let i = 0; i < reactionsList.length; i++) {
+                    const reactionInfo = await ReactionInfo(reactionsList[i].reactionSlug);
+                    reactionInfos.push(reactionInfo);
+                }
+                setActionInfos(actionInfos);
+                setReactionInfos(reactionInfos);
+                setLoading(false);
             } catch (error) {
                 console.error(error);
             }
@@ -43,26 +51,26 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionsList }: ButtonProps)
 
     return (
         <View>
-            {isButtonToggle ? (
+            {!loading && isButtonToggle ? (
                 <View>
-                    <View style={ styles.section }>
+                    <View>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                             <View>
                                 {actionSlug &&
                                 <LogoApplet
-                                    slug={actionSlug}
+                                    slug={actionSlug.split('.')[0]}
                                 />}
                             </View>
 
-                            <View style={{ marginLeft: 30 }}>
-                                <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Name of Action</Text>
-                                <Text style={{ color: "#363841", fontSize: 22 }}>Description of Action</Text>
+                            <View style={{ marginLeft: 30, width: '70%' }}>
+                                <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>{actionInfos.name}</Text>
+                                <Text style={{ color: "#363841", fontSize: 22 }}>{actionInfos.description}</Text>
                             </View>
                         </View>
                     </View>
 
 
-                    <View style={ styles.section }>
+                    <View>
                         {/* Loop through reactionsList */}
                         {reactionsList && reactionsList.map((reaction: any, index: number) => (
                         <View key={index}>
@@ -71,9 +79,9 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionsList }: ButtonProps)
                                 <LogoApplet
                                 slug={reaction.reactionSlug.split('.')[0]}
                                 />
-                                <View style={{ marginLeft: 30 }}>
-                                    <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>Name of Reaction</Text>
-                                    <Text style={{ color: "#363841", fontSize: 22 }}>Description of Reaction</Text>
+                                <View style={{ marginLeft: 30, width: '70%' }}>
+                                    <Text style={{ color: "#363841", fontWeight: "bold", fontSize: 22 }}>{reactionInfos[index].name}</Text>
+                                    <Text style={{ color: "#363841", fontSize: 22 }}>{reactionInfos[index].description}</Text>
                                 </View>
                             </View>
                         </View>
@@ -94,9 +102,6 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionsList }: ButtonProps)
 };
 
 const styles = StyleSheet.create({
-    section : {
-        flexDirection: "column",
-    },
     separator: {
         paddingVertical: "8%",
         backgroundColor: "#36384138",
