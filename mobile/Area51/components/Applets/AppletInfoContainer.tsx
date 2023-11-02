@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         marginBottom: '5%',
     },
     title: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: 'bold',
         paddingVertical: '2%',
         paddingHorizontal: '2%',

@@ -7,6 +7,8 @@ import PatchUser from '../api/PatchUser';
 const PasswordModal: React.FC = () => {
     const [password, setPassword] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     /**
      * The function saves the server address in local storage and checks if the server is reachable.
@@ -14,20 +16,37 @@ const PasswordModal: React.FC = () => {
     const savePassword = async () => {
         // Enregistrez l'adresse du serveur dans le stockage local
         try {
-          const res = await PatchUser(null, password, null);
+          if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+          }
+          const res = await PatchUser(null, password, currentPassword, null);
+          if (res.status === 400) {
+            alert('Wrong current password');
+            return;
+          }
           setModalVisible(false);
+          setPassword('');
+          setCurrentPassword('');
         } catch (error) {
           alert('Error while saving password');
         }
     };
 
+    const reset = () => {
+      setModalVisible(false);
+      setPassword('');
+      setCurrentPassword('');
+      setConfirmPassword('');
+    };
+
     /* The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
     UI of the `ServerModal` component. */
     return (
-        <View style={styles.container}>
+        <View>
             {/* <StatusBar backgroundColor={modalVisible ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.0)'}/> */}
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Text style={styles.link}>Update password</Text>
+              <Text style={styles.link}>Change password</Text>
             </TouchableOpacity>
             <Modal
                 transparent={true}
@@ -38,14 +57,36 @@ const PasswordModal: React.FC = () => {
             >
               <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                  <Text>Please, enter your new password</Text>
+                  <Text style={ styles.title }>Change password</Text>
+                  <Text style={ styles.text }>Please, enter your current password</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={currentPassword}
+                    secureTextEntry={true}
+                    onChangeText={(text) => setCurrentPassword(text)}
+                  />
+                  <Text style={ styles.text }>Please, enter your new password</Text>
                   <TextInput
                     style={styles.input}
                     value={password}
                     secureTextEntry={true}
                     onChangeText={(text) => setPassword(text)}
                   />
-                  <Button title="Enregistrer" onPress={savePassword} color="#363841" />
+                  <Text style={ styles.text }>Please, confirm your new password</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={confirmPassword}
+                    secureTextEntry={true}
+                    onChangeText={(text) => setConfirmPassword(text)}
+                  />
+                  <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                    <View style={{ flex: 1, marginRight: 10 }}>
+                    <Button title="Cancel" onPress={() => reset()} color="#363841" />
+                    </View>
+                    <View style={{ flex: 1, marginLeft: 10 }}>
+                    <Button title="Save" onPress={savePassword} color="#363841" />
+                    </View>
+                  </View>
                 </View>
               </View>
             </Modal>
@@ -57,9 +98,6 @@ const PasswordModal: React.FC = () => {
 styles for different elements in the component. The `StyleSheet.create()` function is used to create
 a stylesheet object that optimizes the styles for performance. */
 const styles = StyleSheet.create({
-    container: {
-        marginLeft: 0,
-    },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -68,7 +106,10 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: 'white',
-        padding: 20,
+        width: '80%',
+        paddingHorizontal: 40,
+        paddingVertical: 20,
+        height: 'auto',
         borderRadius: 10,
         elevation: 5,
     },
@@ -82,10 +123,21 @@ const styles = StyleSheet.create({
       height: 40,
       borderColor: 'gray',
       borderWidth: 1,
-      marginBottom: 20,
       paddingHorizontal: 10,
+      borderRadius: 20,
+      marginBottom: 25,
     },
-    settingsButton: {
+    title: {
+      fontSize: 24,
+      color: '#363841',
+      fontWeight: 'bold',
+      marginBottom: 30,
+      textAlign: 'center',
+    },
+    text: {
+      color: '#363841',
+      fontSize: 14,
+      marginBottom: 5,
     },
 });
 

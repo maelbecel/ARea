@@ -6,15 +6,17 @@ import { Alert } from 'react-native';
 
 /**
  * The function `PatchUser` is an asynchronous function that sends a PATCH request to update user
- * information (email, password, and username) to a server using the provided server address and token.
+ * information (email, newPassword, and username) to a server using the provided server address and token.
  * @param {string} email - The email parameter is a string that represents the user's email address.
- * @param {string} password - The `password` parameter is a string that represents the new password for
+ * @param {string} newPassword - The `newPassword` parameter is a string that represents the new newPassword for
+ * the user.
+ * @param {string} currentPassword - The `currentPassword` parameter is a string that represents the new newPassword for
  * the user.
  * @param {string} username - The `username` parameter is a string that represents the new username for
  * the user.
  * @returns the JSON response from the server.
  */
-const PatchUser = async (email: string | null, password : string | null, username : string | null) => {
+const PatchUser = async (email: string | null, newPassword : string | null, currentPassword : string | null, username : string | null) => {
     try {
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const token = await SecureStore.getItemAsync('token_api');
@@ -22,8 +24,11 @@ const PatchUser = async (email: string | null, password : string | null, usernam
         if (email != null) {
             data["email"] = email;
         }
-        if (password != null) {
-            data["password"] = password;
+        if (newPassword != null) {
+            data["newPassword"] = newPassword;
+        }
+        if (currentPassword != null) {
+            data["currentPassword"] = currentPassword;
         }
         if (username != null) {
             data["username"] = username;

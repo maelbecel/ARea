@@ -27,7 +27,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Text style={{...styles.text, fontWeight: 'bold', color: 'red' }}>Delete title</Text>
+                <Text style={{...styles.text, fontWeight: 'bold', color: 'red' }}>Delete Applet</Text>
             </TouchableOpacity>
             <Modal
                 transparent={true}
