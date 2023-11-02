@@ -7,16 +7,16 @@ import { useRouter } from "next/router";
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
 
 // --- Components --- //
-import AllActionFromServicePages from "../../../../components/applets/Create/pages/AllActionFromServicePages";
-import FillActionInputsPages from "../../../../components/applets/Create/pages/FillActionInputsPages";
-import ServiceConnexionPages from "../../../../components/applets/Create/pages/ServiceConnexionPages";
-import SearchServicePages from "../../../../components/applets/Create/pages/SearchServicePages";
-import Footer from "../../../../components/footer";
+import AllActionFromServicePages from "../../../../components/Applet/Create/Pages/AllActionFromServicePages";
+import FillActionInputsPages from "../../../../components/Applet/Create/Pages/FillActionInputsPages";
+import ServiceConnexionPages from "../../../../components/Applet/Create/Pages/ServiceConnexionPages";
+import SearchServicePages from "../../../../components/Applet/Create/Pages/SearchServicePages";
+import Footer from "../../../../components/Footer/Footer";
 
 // --- Interface --- //
-import { ActionApplet, ReactionApplet, defaultReactionsApplet } from "../../../../components/applets/Create/interface";
+import { ActionApplet, ReactionApplet, defaultReactionsApplet } from "../../../../components/Applet/Interface/interface";
 import { GetAppletWithID } from "../../../../utils/api/applet/applet";
-import EditPages from "../../../../components/applets/Create/pages/EditPages";
+import EditPages from "../../../../components/Applet/Edit/Pages/EditPages";
 
 const IndexPage: NextPage = () => {
     // --- Variables --- //

@@ -3,8 +3,8 @@ import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 
 // --- Components --- //
-import SearchService from '../components/service/SearchService';
-import Footer from '../components/footer';
+import SearchService from '../components/Service/SearchService';
+import Footer from '../components/Footer/Footer';
 import { useUser } from '../utils/api/user/Providers/UserProvider';
 import { GetProfile } from '../utils/api/user/me';
 import { UserProfile } from '../utils/api/user/interface/interface';

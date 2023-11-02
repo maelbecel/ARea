@@ -6,8 +6,8 @@ import { useRouter } from "next/router";
 // --- Components import --- //
 import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/navbar";
 import Icon from "../../../components/NavBar/components/Icon";
-import TextContainer from "../../../components/auth/TextContainer";
-import Footer from "../../../components/footer";
+import TextContainer from "../../../components/Auth/TextContainer";
+import Footer from "../../../components/Footer/Footer";
 import SimpleLink from "../../../components/NavBar/components/SimpleLink";
 import { NavigateButton } from "../../../components/NavBar/components/Button";
 
