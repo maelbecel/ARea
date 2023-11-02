@@ -4,10 +4,13 @@ import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import { GetServices } from "../../utils/api/service/service";
+import ModalError from "../modalErrorNotif";
+import { DeleteOAuth2Token } from "../../utils/api/service/oauth2";
 
 interface LinkedAccountProps {
     slug: string
     url?: string
+    token: string
     urlImg?: string
     islinked: boolean
     backgroundColor?: string
@@ -20,16 +23,27 @@ interface LinkedAccountsData {
 interface linkedAccountData {
     url: string,
     islinked: boolean,
+    hasAuthentification: boolean
 }
 
 interface OAuth2Token {
     data: string;
 }
 
-const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, backgroundColor} : LinkedAccountProps) => {
+const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, backgroundColor, token} : LinkedAccountProps) => {
 
     const [oauth2Token, setOauth2Token] = useState<OAuth2Token>();
     const bgColor = backgroundColor ?? "#363841";
+    const [islinkedState, setIsLinked] = useState<boolean>(islinked);
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
 
     const fetchToken = async () => {
         const token = localStorage.getItem("token");
@@ -60,6 +74,19 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
         }
     }
 
+    const deleteRequestoauth2 = async () => {
+        if (islinked) {
+            const res = await DeleteOAuth2Token(token, slug);
+
+            if (res == null) {
+                openModalError();
+                return;
+            } else {
+                setIsLinked(false);
+            }
+        }
+    }
+
     useEffect(() => {
         if (!oauth2Token || !oauth2Token?.data || oauth2Token?.data == "") {
             return;
@@ -69,17 +96,20 @@ const LinkedAccount = ({slug, url = "#", urlImg = "/Logo/Logo.svg", islinked, ba
     }), [oauth2Token];
 
     return (
-        <div className="w-[100%] flex flex-col lg:flex-row justify-between items-center">
-            <div style={{backgroundColor : bgColor}} className="flex justify-center rounded-lg w-[50px] h-[50px] p-[8px] text-center">
-                <Image src={urlImg} width={50} height={50} alt={"Logo"}/>   
+        <div className="w-[100%] flex flex-col">
+            <div className="w-[100%] flex flex-col lg:flex-row justify-between items-center">
+                <div style={{backgroundColor : bgColor}} className="flex justify-center rounded-lg w-[50px] h-[50px] p-[8px] text-center">
+                    <Image src={urlImg} width={50} height={50} alt={"Logo"}/>   
+                </div>
+                <div className="flex justify-center text-center font-bold text-[28px] text-[#00C2FF]">
+                    { islinkedState ? (
+                        <a onClick={() => deleteRequestoauth2()} className="cursor-pointer">Unlink your account</a>
+                    ) : (
+                        <a onClick={() => requestoauth2()} className="cursor-pointer">Link your account</a>
+                    ) }
+                </div>
             </div>
-            <div className="flex justify-center text-center font-bold text-[28px] text-[#00C2FF]">
-                { islinked ? (
-                    <a onClick={() => requestoauth2()} className="cursor-pointer">Unlink your account</a>
-                ) : (
-                    <a onClick={() => requestoauth2()} className="cursor-pointer">Link your account</a>
-                ) }
-            </div>
+            <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </div>
     );
 }
@@ -119,7 +149,7 @@ const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
 
         if (linkedAccountsDataArray !== undefined) {
             for (const element of services) {
-                const tempElement : linkedAccountData = { url: "", islinked: true };
+                const tempElement : linkedAccountData = { url: "", islinked: true, hasAuthentification: element.hasAuthentification };
 
                 if (linkedAccountsDataArray.includes(element.slug)) {
                     tempElement.islinked = true;
@@ -141,16 +171,19 @@ const LinkedAccounts = ({linkedAccountsDataArray} : LinkedAccountsData) => {
             </div>
             <div className="flex flex-col items-center gap-y-7">
                 {linkedAccountsData && services.map((item : any, index : any) => {
-                    return (
-                        <LinkedAccount
-                            key={index} 
-                            slug={item.slug}
-                            urlImg={item.decoration.logoUrl}
-                            url={linkedAccountsData[index].url}
-                            islinked={linkedAccountsData[index].islinked}
-                            backgroundColor={item.decoration.backgroundColor}
-                        />
-                    );
+                    if (item.hasAuthentification) {
+                        return (
+                                <LinkedAccount
+                                key={index} 
+                                slug={item.slug}
+                                token={token}
+                                urlImg={item.decoration.logoUrl}
+                                url={linkedAccountsData[index].url}
+                                islinked={linkedAccountsData[index].islinked}
+                                backgroundColor={item.decoration.backgroundColor}
+                                />
+                        );
+                    }
                 })}
             </div>
         </div>

@@ -140,23 +140,23 @@ const DeleteAppletWithID = async (token: string, id: string): Promise<void> => {
  * @param {string} id    - The ID of the applet to delete.
  * @param {string} title - The new title of the applet.
  *
- * @returns {Promise<void>} A promise that sends a PATCH request to patch an applet.
+ * @returns {Promise<string | null>} A promise that sends a PATCH request to patch an applet.
  * Logs success or error messages. Does not return data.
  */
-const UpdateAppletTitleWithID = async (token: string, id: string, title: string ): Promise<void> => {
+const UpdateAppletTitleWithID = async (token: string, id: string, title: string ): Promise<string | null> => {
     if (id === null) {
         console.log(`[PATCH] .../applet/{id}: id is null`);
-        return;
+        return null;
     }
 
     if (token === null) {
         console.log(`[PATCH] .../applet/${id}: token is null`);
-        return;
+        return null;
     }
 
-    if (title === null) {
+    if (title === null || title === "") {
         console.log(`[PATCH] .../applet/${id}: title is null`);
-        return;
+        return null;
     }
 
     try {
@@ -167,7 +167,7 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
                 Authorization : `Bearer ${token}`
             },
             body: JSON.stringify({
-                name   : title,
+                name: title,
             })
         });
 
@@ -175,7 +175,7 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
 
         if (data?.status !== 200) {
             console.log(`[PATCH] .../applet/${id} (Error: ${data?.status}): \"${data?.message}\".`);
-            return;
+            return null;
         }
 
         console.log(`[PATCH] .../applet/${id}: \"Successfully patched applet.\"`);
@@ -183,7 +183,7 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
     } catch (error: any) {
         console.log(error);
     }
-    return;
+    return "fine";
 };
 
 /**
@@ -193,18 +193,18 @@ const UpdateAppletTitleWithID = async (token: string, id: string, title: string 
  * @param {string} id    - The ID of the applet to delete.
  * @param {object} body - The new content of the applet.
  *
- * @returns {Promise<void>} A promise that sends a PATCH request to patch an applet.
+ * @returns {Promise<string | null>} A promise that sends a PATCH request to patch an applet.
  * Logs success or error messages. Does not return data.
  */
-const UpdateAppletWithID = async (token: string, id: string, body: object): Promise<void> => {
+const UpdateAppletWithID = async (token: string, id: string, body: object): Promise<string | null> => {
     if (id === null) {
         console.log(`[PATCH] .../applet/{id}: id is null`);
-        return;
+        return null;
     }
 
     if (token === null) {
         console.log(`[PATCH] .../applet/${id}: token is null`);
-        return;
+        return null;
     }
 
     try {
@@ -221,7 +221,7 @@ const UpdateAppletWithID = async (token: string, id: string, body: object): Prom
 
         if (data?.status !== 200) {
             console.log(`[PATCH] .../applet/${id} (Error: ${data?.status}): \"${data?.message}\".`);
-            return;
+            return null;
         }
 
         console.log(`[PATCH] .../applet/${id}: \"Successfully patched applet.\"`);
@@ -229,7 +229,7 @@ const UpdateAppletWithID = async (token: string, id: string, body: object): Prom
     } catch (error: any) {
         console.log(error);
     }
-    return;
+    return "fine";
 };
 
 export { CreateApplet, GetAppletWithID, DeleteAppletWithID, UpdateAppletTitleWithID, UpdateAppletWithID };

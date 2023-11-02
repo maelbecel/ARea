@@ -1,4 +1,5 @@
 // --- Librairies import --- //
+import Image from 'next/image';
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 
@@ -93,7 +94,7 @@ const IndexPage: NextPage = () => {
                             </div>
                         </div>
                         <div className="flex justify-center p-[5%] w-auto h-[50%]">
-                            <img src="/Images/applet.svg" alt="applet"/>
+                            <Image src="/Images/applet.svg" alt="applet" width={500} height={500}/>
                         </div>
                         <div className="flex flex-col justify-start p-[5%]">
                             <div className="text-[18px] font-bold text-[#363841] pb-[10%]">
@@ -107,7 +108,7 @@ const IndexPage: NextPage = () => {
                             </div>
                         </div>
                         <div className="flex justify-center p-[5%] w-auto h-[50%]">
-                            <img src="/Images/service.svg" alt="service"/>
+                            <Image src="/Images/service.svg" alt="service" width={500} height={500}/>
                         </div>
                     </div>
                     <div className="flex flex-col items-center py-[10%]">

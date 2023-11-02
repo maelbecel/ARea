@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { UpdateAppletWithID } from "../../utils/api/applet/applet";
+import ModalError from "../modalErrorNotif";
 
 interface SwitchProps {
     isCheked: boolean;
@@ -15,27 +16,43 @@ const SwitchNotifyMe = ({isCheked, isDisable, id} : SwitchProps) => {
 
     useEffect(() => {
         setIsChecked(isCheked);
-        console.log("isCheked -> ", isCheked);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleSwitchChange = () => {
+    const handleSwitchChange = async () => {
         if (isChekedState == true) {
             setIsChecked(false);
-
             const value = {notifUser: false};
-            UpdateAppletWithID(token, id, value);
-
+            const data = await UpdateAppletWithID(token, id, value);
             console.log("disabled");
+            console.log("data -> ", data);
+            if (data == null) {
+                setIsChecked(true);
+                openModalError();
+                return;
+            }
         } else {
             setIsChecked(true);
-
             const value = {notifUser: true};
-            UpdateAppletWithID(token, id, value);
-
+            const data = await UpdateAppletWithID(token, id, value);
+            if (data == null) {
+                setIsChecked(false);
+                openModalError();
+                return;
+            }
             console.log("enabled");
-
         }
     }
+
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
 
     return (
         <div>
@@ -55,6 +72,7 @@ const SwitchNotifyMe = ({isCheked, isDisable, id} : SwitchProps) => {
                     onChange={handleSwitchChange}
                 />
             )}
+            <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </div>
     );
 }

@@ -53,15 +53,15 @@ const OAuth2GetToken = async (token: string, slug: string): Promise<string | nul
  * @returns {Promise<void>} A promise that sends a DELETE request to delete the OAuth2 token for the specified service.
  * Does not return any specific value but logs success or error messages.
  */
-const DeleteOAuth2Token = async (token: string, slug: string): Promise<void> => {
+const DeleteOAuth2Token = async (token: string, slug: string): Promise<number | null> => {
     if (slug === null) {
         console.log("[DELETE] .../service/{slug}/oauth2: slug is null.");
-        return;
+        return null;
     }
 
     if (token === null) {
         console.log(`[DELETE] .../service/${slug}/oauth2: token is null.`);
-        return;
+        return null;
     }
 
     try {
@@ -73,19 +73,18 @@ const DeleteOAuth2Token = async (token: string, slug: string): Promise<void> => 
             }
         });
 
-        const data = await response.json();
 
-        if (data?.status !== 200) {
-            console.log(`[DELETE] .../service/${slug}/oauth2 (Error: ${data?.status}): \"${data?.message}\".`);
-            return;
+        if (response?.status !== 204) {
+            console.log(`[DELETE] .../service/${slug}/oauth2 (Error: ${response?.status}): \"${response?.statusText}\".`);
+            return null;
         }
 
         console.log(`[DELETE] .../service/${slug}/oauth2: \"Successfully deleted the OAuth2 token.\".`);
-        console.log(data);
+        console.log(response);
     } catch (error: any) {
         console.log(error);
     }
-    return;
+    return 1;
 };
 
 export { OAuth2GetToken, DeleteOAuth2Token };

@@ -26,9 +26,6 @@ public class FormInput {
     Type type = Type.TEXT;
 
     public boolean isValid() throws BadFormInputException {
-        if (value == null || value.isEmpty()) {
-            throw new BadFormInputException("The value of the input " + name + " is null or empty");
-        }
 
         switch (type) {
             case NUMBER -> {
@@ -44,8 +41,10 @@ public class FormInput {
 //                }
             }
             case URL -> {
-                if (!value.startsWith("http://") && !value.startsWith("https://")) {
-                    throw new BadFormInputException("The value of the input " + name + " is not an url");
+                if (value != null) {
+                    if (!value.startsWith("http://") && !value.startsWith("https://")) {
+                        throw new BadFormInputException("The value of the input " + name + " is not an url");
+                    }
                 }
             }
         }

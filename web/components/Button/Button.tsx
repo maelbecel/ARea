@@ -42,7 +42,7 @@ const Button = ({ callBack, text, backgroundColor, textColor, size = false, half
                 ...styles.default,
                 ...(isClicked ? styles.clicked : {})
             }}
-             className={`rounded-default flex justify-center items-center font-bold transition-colors duration-200 cursor-pointer`}
+             className={`rounded-[50px] flex justify-center items-center font-bold transition-colors duration-200 cursor-pointer`}
              onClick={handleClick}
         >
             {text}
