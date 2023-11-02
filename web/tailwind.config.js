@@ -3,6 +3,7 @@ module.exports = {
     "./pages/**/*.tsx",
     "./components/**/*.tsx",
   ],
-  theme: {},
+  theme: {
+  },
   plugins: [],
 }

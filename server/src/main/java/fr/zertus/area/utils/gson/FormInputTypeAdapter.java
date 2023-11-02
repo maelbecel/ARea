@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonWriter;
 import fr.zertus.area.utils.FormInput;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FormInputTypeAdapter extends TypeAdapter<FormInput> {
 
@@ -47,6 +48,7 @@ public class FormInputTypeAdapter extends TypeAdapter<FormInput> {
                     break;
                 case "options":
                     jsonReader.beginArray();
+                    input.setOptions(new ArrayList<>());
                     while (jsonReader.hasNext() && !jsonReader.peek().equals(JsonToken.END_ARRAY))
                         input.getOptions().add(jsonReader.nextString());
                     jsonReader.endArray();

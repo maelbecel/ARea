@@ -10,5 +10,7 @@ public class RegisterDTO {
     String email = "";
     String username = "";
     String password = "";
+    String currentPassword = "";
+    String newPassword = "";
 
 }

@@ -3,24 +3,24 @@ import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router";
+import { getTheme } from "../../utils/getTheme";
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { useServices } from "../../utils/api/service/Providers/ServiceProvider";
+import { GetServices } from "../../utils/api/service/service";
 
-// --- Interface --- //
-interface ServiceProps {
-    name: string;
-    slug: string;
-    decoration: {
-        logoUrl: string,
-        backgroundColor: string
-    };
-    actions: []
-    reactions: []
-}
+// --- Interfaces --- //
+import { Service } from "../../utils/api/service/interface/interface";
 
 // --- Component --- //
 const ServiceButtonComponent = ({ name, slug, logo, color, callback }: { name: string, slug: string, logo: string, color: string, callback: (slug: string) => void}) => {
+    const theme = getTheme(color);
+
     return (
-        <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
-            style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
+        <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col py-[25px]`}
+            style={{
+                backgroundColor: (color.length === 0) ? "#363841" : color,
+                color: (theme === "dark") ? "#ffffff" : "#363841"
+            }}
             onClick={() => {
                 callback(slug);
             }}
@@ -32,10 +32,15 @@ const ServiceButtonComponent = ({ name, slug, logo, color, callback }: { name: s
 }
 
 const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug: string, logo: string, color: string}) => {
+    const theme = getTheme(color);
+
     return (
         <Link href={`/create?page=2&service=${slug}&active=true&back=1`}>
-            <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col p-[25px] pl-[43px] pr-[43px]`}
-                 style={{ backgroundColor: (color.length === 0) ? "#363841" : color}}
+            <div className={`flex justify-center items-center rounded-[20px] shadow-xl hover:brightness-125 flex-col py-[25px]`}
+                 style={{
+                    backgroundColor: (color.length === 0) ? "#363841" : color,
+                    color: (theme === "dark") ? "#ffffff" : "#363841"
+                }}
             >
                 <Image src={logo} width={120} height={120} alt={"Service Logo"} />
                 <span>{name}</span>
@@ -44,9 +49,9 @@ const ServiceLinkComponent = ({ name, slug, logo, color }: { name: string, slug:
     )
 }
 
-const ServiceListComponents = ({ serviceList, type, callback } : { serviceList?: ServiceProps[], type: string, callback: (slug: string) => void }) => {
+const ServiceListComponents = ({ serviceList, type, callback } : { serviceList?: Service[], type: string, callback: (slug: string) => void }) => {
     return (
-        <div className="font-bold text-[20px] text-white grid grid-cols-4 gap-5 h-auto mb-[5rem]">
+        <div className="font-bold text-[20px] text-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 h-auto mb-[5rem] w-[90%]">
             {serviceList && serviceList.map((service, index) => (
                 type === 'button' ? (
                     <ServiceButtonComponent key={index} name={service.name} slug={service.slug} logo={service.decoration.logoUrl} color={service.decoration.backgroundColor} callback={callback} />
@@ -59,45 +64,61 @@ const ServiceListComponents = ({ serviceList, type, callback } : { serviceList?:
 }
 
 const SearchService = ({ type = 'link', callback = (slug: string) => {}, filterType = "action" } : { type?: string, callback?: (slug: string) => void, filterType?: string }) => {
+    const { token, setToken } = useToken();
+    const { services, setServices } = useServices();
+
     const [searchValue  , setSearchValue] = useState<string>("");
-    const [service      , setService] = useState<ServiceProps[]>([]);
-    const [serviceSearch, setServiceSearch] = useState<ServiceProps[]>([]);
+    const [service, setService] = useState<Service[]>([]);
+    const [serviceSearch, setServiceSearch] = useState<Service[]>([]);
+
+    const route = useRouter();
 
     useEffect(() => {
-        const fetchService = async () => {
-            try {
-                const token = localStorage.getItem("token");
+        if (type === "link" || filterType === "action") {
+            setService(services.filter((item: any) => item?.actions.length > 0));
+            setServiceSearch(services.filter((item: any) => item?.actions.length > 0));
+        } else {
+            setService(services.filter((item: any) => item?.actions.length > 0));
+            setServiceSearch(services.filter((item: any) => item?.reactions.length > 0));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [services]);
 
-                const response = await fetch("https://area51.zertus.fr/service", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization : `Bearer ${token}`
-                    },
-                });
+    useEffect(() => {
+        if (services.length !== 0)
+            return;
 
-                const data = await response.json();
+        if (token === '') {
+            const tokenStore = localStorage.getItem("token");
 
-                if (type === "link" || filterType === "action") {
-                    setService(data?.data.filter((item: any) => item?.actions.length > 0));
-                    setServiceSearch(data?.data.filter((item: any) => item?.actions.length > 0));
-                } else {
-                    setService(data?.data.filter((item: any) => item?.reactions.length > 0));
-                    setServiceSearch(data?.data.filter((item: any) => item?.reactions.length > 0));
-                }
-            } catch (error) {
-                console.log(error);
+            if (tokenStore === null) {
+                route.push("/");
+                return;
+            }
+            setToken(tokenStore);
+        }
+
+        const getServices = async (token: string) => {
+            setServices(await GetServices(token));
+
+            if (type === "link" || filterType === "action") {
+                setService(services.filter((item: any) => item?.actions.length > 0));
+                setServiceSearch(services.filter((item: any) => item?.actions.length > 0));
+            } else {
+                setService(services.filter((item: any) => item?.actions.length > 0));
+                setServiceSearch(services.filter((item: any) => item?.reactions.length > 0));
             }
         };
 
-        fetchService();
-    }, []);
-
-    const findObjectsBySlug = (array: any[], slug: string) => {
-        return array.filter(item => item?.slug.includes(slug) || item?.name.includes(slug));
-    };
+        getServices(token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [route, services, token]);
 
     const handleChange = (event: any) => {
+        const findObjectsBySlug = (array: any[], slug: string) => {
+            return array.filter(item => item?.slug.includes(slug) || item?.name.includes(slug));
+        };
+
         const newValue = event.target.value;
 
         setSearchValue(newValue);
@@ -107,14 +128,14 @@ const SearchService = ({ type = 'link', callback = (slug: string) => {}, filterT
     return (
         <>
             {/* Search bar */}
-            <div className="w-[40%] justify-between items-center flex-row bg-[#D9D9D9] rounded-[15px] flex mb-[5rem]">
-                <div className="m-[10px]">
+            <div className="w-[80%] md:w-[60%] lg:w-[40%] justify-between items-center flex-row bg-[#D9D9D9] rounded-[15px] flex mb-[50px] lg:mb-[5rem]">
+                <div className="m-[5px] md:m-[10px]">
                     <Image src="/Icons/search.svg" width={45} height={45} alt={"Icon"} />
                 </div>
                 <input value={searchValue}
                         placeholder="Search services"
                         onChange={(e) => handleChange(e)}
-                        className="bg-transparent w-full text-[24px] font-bold text-[#363841] outline-none p-[10px]"
+                        className="bg-transparent w-full text-[18px] md:text-[24px] font-bold text-[#363841] outline-none p-[5px] md:p-[10px]"
                 />
             </div>
 

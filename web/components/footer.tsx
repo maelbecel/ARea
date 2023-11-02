@@ -7,24 +7,26 @@ import Link from "next/link"
  */
 const Footer = ({ color = "ffffff", theme = 'light' }: { color ?: string, theme ?: string }) => {
     return (
-        <div className={`w-full justify-around items-center flex-row font-bold text-[24px] hidden md:flex`}
+        <div className={`w-full justify-center items-center hidden md:flex`}
             style={{
                 backgroundColor: `#${color}`,
                 color: theme === 'light' ? '#363841' : '#ffffff'
             }}
         >
-            <Link href="/about">
-                About
-            </Link>
-            <Link href="/help">
-                Help
-            </Link>
-            <Link href="/contact">
-                Contact
-            </Link>
-            <Link href="/privacy">
-                Privacy
-            </Link>
+            <div className={`md:w-[70%] lg:w-[50%] justify-between flex items-center flex-row font-bold text-[24px]`}>
+                <Link href="/about">
+                    About
+                </Link>
+                <Link href="/help">
+                    Help
+                </Link>
+                <Link href="/contact">
+                    Contact
+                </Link>
+                <Link href="/privacy">
+                    Privacy
+                </Link>
+            </div>
         </div>
     )
 }

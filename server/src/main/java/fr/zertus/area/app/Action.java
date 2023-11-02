@@ -2,6 +2,7 @@ package fr.zertus.area.app;
 
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
+import fr.zertus.area.exception.ActionTriggerException;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.StringUtils;
 
@@ -59,8 +60,8 @@ public abstract class Action implements IAction {
     }
 
     @Override
-    public boolean setupAction(User user, List<FormInput> inputs) {
-        return false;
+    public void setupAction(User user, List<FormInput> inputs) throws ActionTriggerException {
+        throw new ActionTriggerException("This action is not setupable");
     }
 
     @Override

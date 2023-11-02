@@ -12,7 +12,6 @@ const SwitchNotifyMe = ({ isChecked, isDisabled }: SwitchProps) => {
     const handleSwitchChange = () => {
         if (!isDisabled) {
             setIsChecked(!isChekedState);
-            console.log(isChekedState ? "disabled" : "enabled");
         }
     };
 

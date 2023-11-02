@@ -3,8 +3,7 @@
 `ServiceInfo` file in the current directory. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Input} from  './ServiceInfo'
-
+import { Alert } from 'react-native';
 
 /**
  * The function `Action` is an asynchronous function that takes a `slug` parameter and returns a
@@ -13,9 +12,9 @@ import {Input} from  './ServiceInfo'
  * action. It is used to construct the URL for the API request.
  * @returns The function `Action` returns a Promise that resolves to an array of `Input` objects.
  */
-const Action = async (slug : string): Promise<Input[]> => {
+const Action = async (slug : string): Promise<any[]> => {
     try {
-        let inputs : Input[] = [];
+        let inputs : any[] = [];
         const token = await SecureStore.getItemAsync('token_api');
         const serverAddress = await AsyncStorage.getItem('serverAddress');
         const response = await fetch(`${serverAddress}/action/${slug}`, {
@@ -25,16 +24,20 @@ const Action = async (slug : string): Promise<Input[]> => {
                 'Authorization': 'Bearer ' + token
             }
         });
-        console.log(response.status);
         const json = await response.json();
         if (json.data == undefined) return null;
         for (let i = 0; i < json.data.inputs.length; i++)
         {
-            let tmp : Input = {name : json.data.inputs[i].name, label : json.data.inputs[i].label, type : json.data.inputs[i].type};
+            let tmp  = {name : json.data.inputs[i].name, label : json.data.inputs[i].label, type : json.data.inputs[i].type, options : json.data.inputs[i].options};
             inputs.push(tmp);
         }
         return inputs;
     } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+            Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
         console.error(error);
         return null;
     }

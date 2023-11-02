@@ -19,6 +19,12 @@ public class TwitchSubscriptionBody {
     @AllArgsConstructor
     public static class Condition {
         String broadcaster_user_id;
+        String moderator_user_id;
+
+        public Condition(String broadcaster_user_id) {
+            this.broadcaster_user_id = broadcaster_user_id;
+            this.moderator_user_id = broadcaster_user_id;
+        }
     }
 
     @Data

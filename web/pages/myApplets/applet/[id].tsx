@@ -12,25 +12,41 @@ import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/na
 import Icon from "../../../components/NavBar/components/Icon";
 import SimpleLink from "../../../components/NavBar/components/SimpleLink";
 import Profile from "../../../components/NavBar/components/Profile";
-import { useUser } from "../../../utils/api/user/UserProvider";
+import { useUser } from "../../../utils/api/user/Providers/UserProvider";
 import { GetProfile } from "../../../utils/api/user/me";
-import { UserProfile } from "../../../utils/api/user/interface";
+import { UserProfile } from "../../../utils/api/user/interface/interface";
 import { NavigateButton } from "../../../components/NavBar/components/Button";
+import { useServices } from "../../../utils/api/service/Providers/ServiceProvider";
+import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
+import { GetServices } from "../../../utils/api/service/service";
+import { Service } from "../../../utils/api/service/interface/interface";
+import { GetAppletWithID } from "../../../utils/api/applet/applet";
+
+interface ReactionDataProps {
+    name: string;
+    label: string;
+    value: string;
+    description: string;
+}
+
+interface ReactionProps {
+    reactionSlug: string;
+    reactionData: ReactionDataProps[];
+}
 
 interface AppletProps {
-    data : {
-        id: number;
-        name: string;
-        actionSlug: string;
-        reactionSlug: string;
-        actionTrigger: string;
-        lastTriggerDate: number;
-        createdAt: number;
-        enabled: boolean;
-        user : {
-            username: string;
-        }
+    id: number;
+    name: string;
+    actionSlug: string;
+    reactions: ReactionProps[];
+    actionTrigger: string;
+    lastTriggerDate: number;
+    createdAt: number;
+    enabled: boolean;
+    user : {
+        username: string;
     }
+    notifUser: boolean;
 }
 
 const IndexPage: NextPage = () => {
@@ -38,10 +54,15 @@ const IndexPage: NextPage = () => {
     const [dataApplet, setDataApplet] = useState<AppletProps | undefined>();
     const router = useRouter();
     const [theme, setTheme] = useState<string>('');
-    const [token, setToken] = useState<string>('');
     const { id } = router.query;
     const { user, setUser } = useUser();
 
+    const { services, setServices } = useServices();
+    const { token, setToken } = useToken();
+
+    /**
+     * Get the user profile
+     */
     useEffect(() => {
         const getProfile = async (token: string) => {
             setUser(await GetProfile(token) as UserProfile);
@@ -52,58 +73,57 @@ const IndexPage: NextPage = () => {
     }, [setUser, token, user]);
 
     useEffect(() => {
-        setToken(localStorage.getItem("token") as string);
-
-        if (id == undefined) {
-            console.log("something went wrong");
+        if (id == undefined)
             return;
-        }
-        const dataFetch = async () => {
-            try {
-                const data = await (
-                    await fetch(`https://area51.zertus.fr/applet/${id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    })
-                ).json();
-                console.log("Applets : ", data?.data);
-                setDataApplet(data);
-            } catch (error) {
-                console.log(error);
+
+        if (token === "") {
+            const tokenStore = localStorage.getItem("token");
+
+            if (tokenStore === null) {
+                router.push("/");
+                return;
             }
+            setToken(tokenStore);
+        }
+
+        const dataFetch = async () => {
+            setDataApplet(await GetAppletWithID(token, id as string));
         };
+
         dataFetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, token]);
 
+    const getServices = async (token: string) => {
+        setServices(await GetServices(token));
+    };
+
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (dataApplet) {
-            const dataFetch = async (slug : string) => {
-                try {
-                    const dataFetched = await (
-                        await fetch(`https://area51.zertus.fr/service/${slug}`, {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`,
-                            }
-                        })
-                    ).json();
-                    setBgColor(dataFetched?.data?.decoration?.backgroundColor);
-                } catch (error) {
-                    console.log(error);
+        if (dataApplet === undefined || bgColor !== '')
+            return;
+
+        if (services.length === 0) {
+            if (token === "") {
+                const tokenStore = localStorage.getItem("token");
+    
+                if (tokenStore === null) {
+                    router.push("/");
+                    return;
                 }
-            };
-            console.log("test enable " + dataApplet?.data?.enabled);
-            dataFetch(dataApplet?.data?.actionSlug.split('.')[0]);
+                setToken(tokenStore);
+            }
+            getServices(token);
         }
+
+        const Service: Service | undefined = services.find((Service: Service) => Service?.slug === dataApplet?.actionSlug.split('.')[0]);
+
+        setBgColor(Service?.decoration?.backgroundColor ?? '#ffffff');
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataApplet]);
 
     useEffect(() => {
-        if (bgColor === undefined)
+        if (bgColor === '')
             return;
         setTheme(getTheme(bgColor));
     }, [bgColor]);
@@ -125,14 +145,16 @@ const IndexPage: NextPage = () => {
             <div className={`min-h-screen`}>
                 {dataApplet && 
                     <AppletInfoContainer
-                        name={dataApplet?.data?.name}
+                        id={dataApplet?.id}
+                        name={dataApplet?.name}
                         color={bgColor}
                         theme={theme}
-                        actionSlug={dataApplet?.data?.actionSlug.split('.')[0]}
-                        reactionSlug={dataApplet?.data?.reactionSlug.split('.')[0]}
-                        user={dataApplet?.data?.user?.username}
-                        enabled={dataApplet?.data?.enabled}
-                        createdAt={dataApplet?.data?.createdAt}
+                        actionSlug={dataApplet?.actionSlug}
+                        reactions={dataApplet?.reactions}
+                        user={dataApplet?.user?.username}
+                        enabled={dataApplet?.enabled}
+                        createdAt={dataApplet?.createdAt}
+                        notifUser={dataApplet?.notifUser}
                     />
                 }
             </div>

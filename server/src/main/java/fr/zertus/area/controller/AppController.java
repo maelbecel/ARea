@@ -17,10 +17,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -47,7 +50,7 @@ public class AppController {
                         @ExampleObject(
                             name = "Example response",
                             description = "This is an example with one service",
-                            value = "{\"status\":200,\"message\":\"OK\",\"data\":[{\"name\":\"Github\",\"slug\":\"github\",\"actions\":[],\"reactions\":[],\"decoration\":{\"logoUrl\":\"https://imgur.com/kcALSJQ.png\",\"backgroundColor\":\"#7388D9\"}}]}"
+                            value = "{\"status\":200,\"message\":\"OK\",\"data\":[{\"name\":\"Github\",\"slug\":\"github\",\"hasAuthentification\":true,\"authMethod\":\"oauth2\",\"actions\":[],\"reactions\":[],\"decoration\":{\"logoUrl\":\"https://imgur.com/kcALSJQ.png\",\"backgroundColor\":\"#7388D9\"}}]}"
                         )
                     }
                 )),
@@ -69,7 +72,7 @@ public class AppController {
                     @ExampleObject(
                         name = "Example response",
                         description = "This is an example with github service",
-                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"name\":\"Github\",\"slug\":\"github\",\"actions\":[],\"reactions\":[],\"decoration\":{\"logoUrl\":\"https://imgur.com/kcALSJQ.png\",\"backgroundColor\":\"#7388D9\"}}}"
+                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"name\":\"Github\",\"slug\":\"github\",\"hasAuthentification\":true,\"authMethod\":\"oauth2\",\"actions\":[],\"reactions\":[],\"decoration\":{\"logoUrl\":\"https://imgur.com/kcALSJQ.png\",\"backgroundColor\":\"#7388D9\"}}}"
                     )
                 }
             )
@@ -156,7 +159,7 @@ public class AppController {
         return appService.redirectOAuth2App(slug, userId, redirecturi);
     }
 
-    @Operation(summary = "Delete OAuth2", description = "This call is use to delete OAuth2 token for current user from given service", tags = { "Service" },
+    @Operation(summary = "Delete OAuth2 user token", description = "This call is use to delete OAuth2 token for current user from given service", tags = { "Service" },
         parameters = @Parameter(name = "slug", description = "Slug of the service", required = true, example = "github"))
     @ApiResponses(value = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -221,6 +224,17 @@ public class AppController {
     public ResponseEntity<ApiResponse<String>> handleOAuth2Callback(@PathVariable String slug, @RequestParam(required = false) String error,
                                                                     @RequestParam(required = false) String code, @RequestParam String state) throws DataNotFoundException {
         return appService.callbackOAuth2App(slug, code, state, error);
+    }
+
+    @Hidden
+    @GetMapping("/{slug}/image")
+    public ResponseEntity<?> getImage(@PathVariable String slug) throws DataNotFoundException {
+        InputStream in = getClass().getResourceAsStream("/static/images/" + slug + ".png");
+        if (in == null)
+            throw new DataNotFoundException("Image not found");
+        return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_PNG)
+            .body(new InputStreamResource(in));
     }
 
 }

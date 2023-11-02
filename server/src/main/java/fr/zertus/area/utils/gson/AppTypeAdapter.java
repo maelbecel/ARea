@@ -23,6 +23,10 @@ public class AppTypeAdapter extends TypeAdapter<App> {
         jsonWriter.beginObject();
         jsonWriter.name("name").value(app.getName());
         jsonWriter.name("slug").value(app.getSlug());
+        jsonWriter.name("hasAuthentification").value(app.isOAuth2());
+        if (app.isOAuth2()) {
+            jsonWriter.name("authMethod").value("oauth2");
+        }
         jsonWriter.name("actions").beginArray();
         if (app.getActions() != null) {
             for (Action action : app.getActions()) {
@@ -40,6 +44,8 @@ public class AppTypeAdapter extends TypeAdapter<App> {
         jsonWriter.name("decoration").beginObject();
         jsonWriter.name("logoUrl").value(app.getDecoration().getLogoUrl());
         jsonWriter.name("backgroundColor").value(app.getDecoration().getBackgroundColor());
+        jsonWriter.name("description").value(app.getDecoration().getDescription());
+        jsonWriter.name("websiteUrl").value(app.getDecoration().getLinkUrl());
         jsonWriter.endObject();
         jsonWriter.endObject();
     }

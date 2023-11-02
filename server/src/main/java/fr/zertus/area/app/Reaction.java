@@ -2,6 +2,7 @@ package fr.zertus.area.app;
 
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.BadFormInputException;
+import fr.zertus.area.exception.ReactionTriggerException;
 import fr.zertus.area.utils.FormInput;
 import fr.zertus.area.utils.StringUtils;
 
@@ -65,7 +66,7 @@ public abstract class Reaction implements IReaction {
     }
 
     @Override
-    public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws BadFormInputException {
+    public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws ReactionTriggerException {
         return false;
     }
 

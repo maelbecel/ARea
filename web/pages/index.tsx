@@ -3,21 +3,22 @@ import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 
 // --- Components --- //
-import NavBar, { RightSection, LeftSection } from '../components/NavBar/navbar'
-import Icon from '../components/NavBar/components/Icon';
 import SearchService from '../components/service/SearchService';
 import Footer from '../components/footer';
-import SimpleLink from '../components/NavBar/components/SimpleLink';
-import Profile from '../components/NavBar/components/Profile';
-import { useUser } from '../utils/api/user/UserProvider';
+import { useUser } from '../utils/api/user/Providers/UserProvider';
 import { GetProfile } from '../utils/api/user/me';
-import { UserProfile } from '../utils/api/user/interface';
-import { NavigateButton } from '../components/NavBar/components/Button';
+import { UserProfile } from '../utils/api/user/interface/interface';
+import HomeStartContainer from '../components/HomePage/Container/HomeStartContainer';
+import HomeDetailsContainer from '../components/HomePage/Container/HomeDetailsContainer';
+import HomeDownloadAPKContainer from '../components/HomePage/Container/HomeDownloadAPKContainer';
+import PageHeaders from '../components/HomePage/Headers';
+import HomeExploreContainer from '../components/HomePage/Container/HomeExploreContainer';
+import { useToken } from '../utils/api/user/Providers/TokenProvider';
 
 const IndexPage: NextPage = () => {
-  const [token, setToken] = useState<string>('');
-  const [connected  , setConnected] = useState<boolean>(false);
+  const [connected, setConnected] = useState<boolean>(false);
   const { user, setUser } = useUser();
+  const { token, setToken } = useToken();
 
   useEffect(() => {
     setToken(localStorage.getItem("token") as string);
@@ -26,56 +27,33 @@ const IndexPage: NextPage = () => {
       setConnected(true);
     else
       setConnected(false);
-  }, [token]);
+  }, [setToken, token]);
 
   useEffect(() => {
+    if (connected === false)
+      return;
+
     const getProfile = async (token: string) => {
       setUser(await GetProfile(token) as UserProfile);
     }
-    
+
     if (user?.email === "" || user?.email === null)
       getProfile(token);
-  }, [token, user, setUser]);
+  }, [token, user, setUser, connected]);
 
   return (
     <>
-      {connected ? (
-        <NavBar>
-          <LeftSection>
-            <Icon />
-          </LeftSection>
-          <RightSection>
-            <SimpleLink   href="/myApplets" text="My applets" />
-            <NavigateButton href="/create"             text="Create" />
-            <Profile email={user?.email} />
-          </RightSection>
-        </NavBar>
-      ) : (
-        <NavBar>
-          <LeftSection>
-            <Icon />
-          </LeftSection>
-          <RightSection>
-            <SimpleLink   href="/sign-up" text="Sign up" />
-            <NavigateButton href="/login"   text="Login" />
-          </RightSection>
-        </NavBar>
-      )}
+      <PageHeaders connected={connected} email={user?.email} />
 
-      <div className="w-full min-h-screen bg-background">
+      <div className="w-full min-h-screen">
         {connected ? (
-          <div className="flex items-center flex-col mt-[2em]">
-            <div className="w-full flex justify-center items-center flex-col">
-              <h1 className="text-center font-extrabold text-[#363841] text-[2.6rem] mb-[1em] w-full">
-                Explore services
-              </h1>
-            </div>
-            <SearchService />
-          </div>
+          <HomeExploreContainer />
         ) : (
-          <div>
-            {/* TODO: Implement a home page (like help page)} */}
-          </div>
+          <>
+            <HomeStartContainer />
+            <HomeDownloadAPKContainer />
+            <HomeDetailsContainer />
+          </>
         )}
       </div>
 
