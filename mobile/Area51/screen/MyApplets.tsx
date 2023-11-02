@@ -88,6 +88,7 @@ const MyApplet = ({route}) => {
                         enabled={dataApplet?.data?.enabled}
                         createdAt={dataApplet?.data?.createdAt}
                         id={dataApplet?.data?.id}
+                        notif={dataApplet?.data?.notifUser}
                     />
                 }
             </View>
