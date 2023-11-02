@@ -37,9 +37,10 @@ interface AppletInfoContainerProps {
     id: number;
     createdAt?: number;
     lastTriggerDate?: number;
+    notif: boolean;
 }
 
-const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionsList, user, enabled, id, createdAt = 0, lastTriggerDate = 0 }) => {
+const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionsList, user, enabled, id, createdAt = 0, lastTriggerDate = 0, notif }) => {
     const [formattedDate, setFormattedDate] = useState<string>("");
     const [LastUseDate, setLastUseDate] = useState<string>("");
 
@@ -136,7 +137,7 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                 </Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%' }}>
                     <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22 }}>Notify me</Text>
-                    <SwitchNotifyMe isChecked={false} isDisabled={false} />
+                    <SwitchNotifyMe isChecked={notif} isDisabled={false} />
                 </View>
                 <TouchableOpacity onPress={handleDeleteApplet}>
                     <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>Delete applet</Text>
