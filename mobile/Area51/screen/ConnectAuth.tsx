@@ -16,7 +16,7 @@ import * as SecureStore from 'expo-secure-store';
 import AppletDetails from '../api/AppletDetails';
 import {Keyboard} from  'react-native'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
+import { ActivityIndicator } from 'react-native-paper';
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
  * black or white) based on the brightness of the background color.
@@ -107,7 +107,7 @@ const ConnectAuth = ({ navigation, route }) => {
       type={type}
       color={color}
       onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}}
-      onSelect={(text) => {isAllFormFill()}
+      onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}
 }
     />)
   }
@@ -137,7 +137,8 @@ const ConnectAuth = ({ navigation, route }) => {
     inputsResp[index] = input.options[0];
     return (
       <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
-        <View >
+        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+          <Text style={[styles.select, { color: getWriteColor(color) }]}>{input.label}:</Text>
           <SelectDropdown defaultValue={input.options[0]} data={input.options.sort((a : string, b : string) => a.toLowerCase().localeCompare(b.toLowerCase()))} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
         </View>
      </View>
@@ -189,10 +190,7 @@ const ConnectAuth = ({ navigation, route }) => {
       setoAuthStatus(true);
       return true;
     } else {
-      await _openAuthSessionAsync();
-      const verifResponse = await UserInfosAPI(token, serverAddress);
-      const verifServices = verifResponse.data.connectedServices;
-      if (services.includes(slug)) {
+      if (await _openAuthSessionAsync() ){
         setoAuthStatus(true);
         return true;
       }
@@ -218,6 +216,10 @@ const ConnectAuth = ({ navigation, route }) => {
       let result = await WebBrowser.openAuthSessionAsync(
         `${serverAddress}/service/${slug.split(".")[0]}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
       );
+      if (result.type == "success") {
+        return true;
+      } else
+        return false;
     } catch (error) {
       alert(error);
       console.error(error);
@@ -315,6 +317,7 @@ const ConnectAuth = ({ navigation, route }) => {
    */
   const redirection = async () => {
     if (isAllFormFill()) {
+      console.log('Type is ', type)
       if (type == "action")
         await AsyncStorage.setItem(type, slug);
       else {
@@ -322,9 +325,10 @@ const ConnectAuth = ({ navigation, route }) => {
         tmp[index] = slug;
         await AsyncStorage.setItem(type, JSON.stringify(tmp));
       }
-      if (type == "action")
+      if (type == "action"){
+        console.log("navigation to page ", "Create ", {actionInput: inputsResp, reactionInput: reactionInput});
         navigation.navigate("Create", {actionInput: inputsResp, reactionInput: reactionInput});
-      else {
+      } else {
         let res : Array<any> = (reactionInput != undefined) ? reactionInput : [];
         res[index] = inputsResp;
         navigation.navigate("Create", {actionInput: actionInput, reactionInput: res});
@@ -364,6 +368,13 @@ const ConnectAuth = ({ navigation, route }) => {
       </View>
     );
   }
+else {
+  return (
+    <View style={{backgroundColor: color, flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <ActivityIndicator size="large" color={getWriteColor(color)} />
+    </View>
+  )
+}
 };
 
 /* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
@@ -418,6 +429,12 @@ const styles = StyleSheet.create({
     width: '70%',
     textAlign: 'center',
     marginBottom: 40,
+  },
+  select: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+    marginTop: 10,
   },
   input: {
     fontSize: 20,

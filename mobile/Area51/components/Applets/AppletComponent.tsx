@@ -93,7 +93,9 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
             </View>
         </TouchableOpacity>
         ) : (
-        <ActivityIndicator size="large" color="#363841" />
+            <View style={{backgroundColor: bgColor, flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="#363841" />
+            </View>
         )
     );
 };
