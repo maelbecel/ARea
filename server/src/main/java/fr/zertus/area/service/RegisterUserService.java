@@ -12,6 +12,7 @@ import fr.zertus.area.security.utils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -55,6 +56,8 @@ public class RegisterUserService {
     }
 
     public String registerLoginUserByGoogle(ConnectedService service, String redirectUri) {
+        if (service == null || !service.getSlug().equalsIgnoreCase("google"))
+            return redirectUri + "?error=Invalid%20service";
         GoogleUserInfo userInfo = GoogleApp.getUserInfo(service);
         if (userInfo == null) {
             return redirectUri + "?error=Fail%20to%20get%20user%20info";
@@ -64,6 +67,11 @@ public class RegisterUserService {
             String userToken = JwtTokenProvider.createToken(user.getEmail());
             return redirectUri + "?token=" + userToken;
         }
+
+        if (userRepository.findByUsername(userInfo.getGiven_name()).isPresent()) {
+            return redirectUri + "?error=Username%20already%20in%20use";
+        }
+
         user = new User();
         user.setEmail(userInfo.getEmail());
         user.setUsername(userInfo.getGiven_name());
