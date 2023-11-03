@@ -146,7 +146,7 @@ const Profile = ({navigation}) => {
       <ScrollView
         showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
         showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
-        style={{height: Dimensions.get('window').height - 100}}
+        style={{height: Dimensions.get('window').height - 100, width: Dimensions.get('window').width, paddingHorizontal: 30}}
       >
         <View style={styles.profilePicture}>
           <SVGImg width={150} height={150} />
@@ -201,7 +201,7 @@ React Native. Each key in the object represents a style name, and its value is a
 defines the specific style properties for that name. */
 const styles = StyleSheet.create({
   container: {
-    padding: 40,
+    paddingTop: 40,
     backgroundColor: '#fff',
   },
   profilePicture: {

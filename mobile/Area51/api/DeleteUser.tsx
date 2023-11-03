@@ -22,7 +22,6 @@ const DeleteUser  = async () : Promise<any> => {
         const data : any = await fetch(`${serverAddress}/user/me`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
             });
