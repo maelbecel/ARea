@@ -6,6 +6,7 @@ import fr.zertus.area.payload.request.user.LoginDTO;
 import fr.zertus.area.payload.request.user.RegisterDTO;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.utils.JwtTokenProvider;
+import fr.zertus.area.service.AppService;
 import fr.zertus.area.service.AppletService;
 import fr.zertus.area.service.RegisterUserService;
 import fr.zertus.area.service.UserService;
@@ -42,6 +43,9 @@ public class UserController {
 
     @Autowired
     private AppletService appletService;
+
+    @Autowired
+    private AppService appService;
 
 
     @Operation(summary = "Login", description = "Login to the API", tags = { "User" },
@@ -176,7 +180,7 @@ public class UserController {
                         @ExampleObject(
                             name = "Example response with user",
                             description = "This is an example with user information",
-                            value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":1,\"email\":\"lucas1.dupont@epitech.eu\",\"username\":\"Zertus\",\"connectedServices\":[\"github\"]}}"
+                            value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":1,\"email\":\"lucas1.dupont@epitech.eu\",\"username\":\"Zertus\",\"connectedServices\":[\"github\"],\"passwordLength\":12,\"loginWithService\":false}}"
                         )
                     }
                 )
@@ -245,7 +249,7 @@ public class UserController {
                     @ExampleObject(
                         name = "Example response",
                         description = "This is an example with user information",
-                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":8,\"email\":\"billy.bob@zertus.fr\",\"username\":\"Billy Bob\",\"connectedServices\":[\"twitch\",\"discord\"],\"passwordLength\":12}}"
+                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":8,\"email\":\"billy.bob@zertus.fr\",\"username\":\"Billy Bob\",\"connectedServices\":[\"twitch\",\"discord\"],\"passwordLength\":12,\"loginWithService\":false}}"
                     )
                 }
             )
@@ -321,6 +325,34 @@ public class UserController {
         if (verified)
             return ApiResponse.noContent().toResponseEntity();
         return ApiResponse.unauthorized("Token is invalid").toResponseEntity();
+    }
+
+    @Operation(summary = "Login with OAuth2", description = "Login with OAuth2", tags = { "User" },
+    parameters = {
+        @Parameter(name = "slug", description = "Slug of the app", required = true, example = "github"),
+        @Parameter(name = "redirecturi", description = "Redirect uri", required = true, example = "http://localhost:8080")
+    })
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "302",
+            description = "Redirect to OAuth2 page",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ApiResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Example response",
+                        description = "This is an example with valid request",
+                        value = "{\"status\":302,\"message\":\"Redirect in progress.\"}"
+                    )
+                }
+            )
+        )
+    })
+    @GetMapping("/login/{slug}")
+    public ResponseEntity<ApiResponse<String>> loginWithOAuth2(@PathVariable String slug, @RequestParam String redirecturi) {
+        long randomId = (long) (Math.random() * 10000);
+        return appService.redirectOAuth2App(slug, randomId, redirecturi, true);
     }
 
 }

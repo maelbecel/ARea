@@ -39,7 +39,6 @@ const EditApplet = ({navigation, route}) => {
         for (let i = 0; i < data.actionData.length; i++)
           ac[i] = data.actionData[i].value;
         setActionInput(ac);
-        console.log("Set actionInput : ", actionInput)
 
         let reactionSlugs : string[] = []
         let rea : any[][] = []
@@ -51,7 +50,6 @@ const EditApplet = ({navigation, route}) => {
           rea[i] = tmp;
         }
         setReactionInput(rea);
-        console.log("Set reactionInput : ", reactionInput)
         setReaction(reactionSlugs);
         await AsyncStorage.setItem('reaction', JSON.stringify(reactionSlugs));
       } catch (error) {

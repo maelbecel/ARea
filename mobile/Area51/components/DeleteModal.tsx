@@ -18,7 +18,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
             await DeleteApplet(id);
             navigation.navigate('My Applets');
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 

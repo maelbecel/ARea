@@ -76,7 +76,7 @@ const Service = ({ navigation, route }) => {
    */
   const displayActions = () => {
     return action.map((service) => (
-      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug , type: "action"})}/>
+      <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('Create')}/>
     ));
   };
 

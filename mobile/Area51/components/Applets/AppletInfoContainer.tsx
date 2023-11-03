@@ -67,7 +67,6 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
     }, []);
 
     const handleTitleChange = async (text: string) => {
-        console.log(text);
         if (text.length < 141) {
             setTitle(text);
             await AsyncStorage.setItem('title', text);
