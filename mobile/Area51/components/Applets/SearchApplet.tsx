@@ -74,7 +74,6 @@ const SearchApplet: React.FC = () => {
 
 			{/* Liste des applets */}
 			{(!loading && dispApplets) ? dispApplets.map((item: any) => (
-				console.log(item.enabled),
 			  <View style={styles.applet} key={item.id}>
 				<AppletComponent
 				  id={item.id}

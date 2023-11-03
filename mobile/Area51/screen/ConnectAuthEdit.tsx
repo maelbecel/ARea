@@ -84,7 +84,6 @@ view includes a top bar with a title and icons for navigation, an image, and tex
 displaying the service name, action title, and description */
 const ConnectAuthEdit = ({ navigation, route }) => {
   const {id, slug, type, actionInput, reactionInput, index } = route.params;
-  console.log("Params ConnectAuth:", route.params);
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
