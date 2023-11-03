@@ -14,6 +14,7 @@ import Services, {Applet} from "../api/Services";
 import OAuthLogin from "../api/OAuth";
 import OAuthLogout from "../api/OAuthLogout";
 import DeleteUser from "../api/DeleteUser";
+import DeleteAccount from "../components/DeleteAccount";
 
 /* The above code is a TypeScript React component called "Profile". It is responsible for rendering a
 user profile screen. */
@@ -181,15 +182,9 @@ const Profile = ({navigation}) => {
             handleLogout();
           }}
         >
-            <Text style={styles.logout}>Log out</Text>
+            <Text style={styles.logout}>Logout</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            handleDelete();
-          }}
-        >
-            <Text style={styles.delete}>Delete account</Text>
-        </TouchableOpacity>
+        <DeleteAccount />
       </ScrollView>
     )}
     </View>
@@ -250,12 +245,6 @@ const styles = StyleSheet.create({
   logout: {
     color: '#363841',
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  delete: {
-    color: 'red',
-    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
   },
