@@ -18,9 +18,6 @@ const MyApplet = ({navigation, route}) => {
     const [statusBarHeight, setStatusBarHeight] = useState(0);
     const [refreshing, setRefreshing] = useState<boolean>(false); // State to store refreshing state
 
-    const listener = navigation.addListener("focus", () => {
-        dataFetch();
-    });
 
     const onRefresh = useCallback(async () => {
 		setRefreshing(true);
@@ -32,6 +29,9 @@ const MyApplet = ({navigation, route}) => {
 	}, []);
 
     useEffect(() => {
+        const listener = navigation.addListener("focus", () => {
+            dataFetch();
+        });
       const getStatusbarHeight = () => {
         setStatusBarHeight(StatusBar.currentHeight + 20 || 0);
       };
