@@ -7,9 +7,9 @@ import MoreDetailsButton from "./MoreDetails";
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import DeleteApplet from "../../api/DeleteApplet";
 import { getWriteColor } from "../ActionCard";
-import TitleModal from "../TitleModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeleteModal from "../DeleteModal";
+import OutlinedTitleBox from "../OutlinedTitleBox";
 
 interface ReactionListProps {
     reactionSlug: string;
@@ -44,6 +44,7 @@ interface AppletInfoContainerProps {
 const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionsList, user, enabled, id, createdAt = 0, lastTriggerDate = 0, notif }) => {
     const [formattedDate, setFormattedDate] = useState<string>("");
     const [LastUseDate, setLastUseDate] = useState<string>("");
+    const [title, setTitle] = useState<string>(name);
 
     const navigation: any = useNavigation();
 
@@ -64,6 +65,14 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
         };
         dataFetch();
     }, []);
+
+    const handleTitleChange = async (text: string) => {
+        console.log(text);
+        if (text.length < 141) {
+            setTitle(text);
+            await AsyncStorage.setItem('title', text);
+        }
+    };
 
     return (
         <View style={ styles.container }>
@@ -91,13 +100,8 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                 </View>
 
                 {/* The title of the applet */}
-                <Text style={ [styles.title, { color: getWriteColor(color)}] }>{name}</Text>
+                <OutlinedTitleBox value={title} bgColor={color} author={user} onChangeText={handleTitleChange} />
 
-                {/* The user who created the applet and the button to edit the title */}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{...styles.text, fontWeight: 'bold', color: getWriteColor(color) }}>by {user}</Text>
-                    <TitleModal color={color} title={name}/>
-                </View>
             </View>
 
             <View style={ styles.body }>
