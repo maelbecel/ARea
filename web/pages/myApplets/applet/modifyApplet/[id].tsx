@@ -142,7 +142,7 @@ const IndexPage: NextPage = () => {
     return (
         <>
             {(pages === 0 || pages === -1) ? (<EditPages   setPages={setPages} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} applet={dataApplet} />) : null}
-            {(pages === 1) ? (<SearchServicePages          setPages={setPages} />) : null}
+            {(pages === 1) ? (<SearchServicePages          setPages={setPages} pages={pages} />) : null}
             {(pages === 2) ? (<AllActionFromServicePages   setPages={setPages} back={false} />) : null}
             {(pages === 3) ? (<ServiceConnexionPages       setPages={setPages} />) : null}
             {(pages === 4) ? (<FillActionInputsPages       setPages={setPages} EditMode={editMode} setAction={setAction} setReactions={setReactions} setEditMode={setEditMode} />) : null}

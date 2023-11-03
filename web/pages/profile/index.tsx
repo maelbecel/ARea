@@ -69,6 +69,7 @@ const IndexPage: NextPage = () => {
                             username={username}
                             mail={email}
                             password={"a".repeat(user?.passwordLength)}
+                            loginWithService={user?.loginWithService}
                             setUsernameFunction={setUsername}
                             setMailFunction={setEmail}
                         />

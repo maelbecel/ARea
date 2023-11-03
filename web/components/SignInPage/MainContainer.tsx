@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import TextContainer, { Forgot, InputContainer } from "../Auth/TextContainer";
+import TextContainer, { InputContainer } from "../Auth/TextContainer";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import React from "react";
@@ -59,12 +59,12 @@ const MainContainer = () => {
     }
 
     return (
-        <div className="h-screen flex flex-col justify-center items-center p-[15px]">
+        <div className="h-screen flex flex-col justify-start items-center p-[15px]">
             <ChangeAddressComponent />
-            <TextContainer title="Log in" handleClick={handleClick}>
+            <TextContainer title="Log in" handleClick={handleClick} noAccount={true}>
                 <InputContainer placeholder='Email / Username' value={email}    setValue={setEmail}    icon="/Icons/mail.svg" />
                 <InputContainer placeholder='Password'         value={password} setValue={setPassword} icon="/Icons/lock.svg" secureMode={true} />
-                {/*TODO: <Forgot text="Forgot your password ?" redirectUri="/passwords/forgot" />*/}
+                {/*TODO: <RedirectText text="Forgot your password ?" redirectUri="/passwords/forgot" />*/}
             </TextContainer>
             <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </div>

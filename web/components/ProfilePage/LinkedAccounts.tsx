@@ -48,6 +48,8 @@ const LinkedAccount = ({ slug, urlImg = "/Logo/Logo.svg", backgroundColor, token
         if (res === false)
             openModalError()
         else {
+            if (user === undefined || user?.connectedServices === undefined)
+                return;
             setUser({
                 ...user,
                 connectedServices: user?.connectedServices.filter((element) => element !== slug)
@@ -59,6 +61,8 @@ const LinkedAccount = ({ slug, urlImg = "/Logo/Logo.svg", backgroundColor, token
     // --- UseEffect --- //
 
     useEffect(() => {
+        if (!user || !user.connectedServices)
+            return;
         if (user?.connectedServices.find((element) => element === slug))
             setIsLinked(true);
         else
