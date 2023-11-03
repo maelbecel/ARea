@@ -64,15 +64,17 @@ const IndexPage: NextPage = () => {
                     <div className="my-[32px]">
                         <ProfilePicture/>
                     </div>
-                    { user && <FormProfile
-                        username={username}
-                        mail={email}
-                        password={"a".repeat(user?.passwordLength)}
-                        setUsernameFunction={setUsername}
-                        setMailFunction={setEmail}
-                    /> }
+                    {user &&
+                        <FormProfile
+                            username={username}
+                            mail={email}
+                            password={"a".repeat(user?.passwordLength)}
+                            setUsernameFunction={setUsername}
+                            setMailFunction={setEmail}
+                        />
+                    }
                     <UpdateButton username={username} email={email} token={token} setToken={setToken}/>
-                    <LinkedAccounts linkedAccountsDataArray={user?.connectedServices}/>
+                    <LinkedAccounts />
                 </div>
                 <LogoutButton/>
                 <DeleteButton token={token}/>
