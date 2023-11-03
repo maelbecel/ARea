@@ -121,10 +121,11 @@ const TextContainer = ({ title, submit, children, handleClick, noAccount = false
             {noAccount &&
                 <RedirectText text="No account ? Sign up here" redirectUri="/sign-up" />
             }
+            {/*TODO: setup Connect with google  :
             <div className="font-bold text-[48px] text-[#363841]">
                 Or
             </div>
-            {/*TODO: setup Connect with google : <ConnectWithGoogle />*/}
+            <ConnectWithGoogle />*/}
         </div>
     )
 }
