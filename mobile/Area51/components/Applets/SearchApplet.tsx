@@ -16,10 +16,6 @@ const SearchApplet: React.FC = () => {
 	const [refreshing, setRefreshing] = useState<boolean>(false); // State to store refreshing state
 	const navigation: any = useNavigation();
 
-	const listener = navigation.addListener("focus", () => {
-		dataFetch();
-	});
-
 	const reduceTitle = (title: string) => {
 		if (title.length > 50) {
 			return title.slice(0, 50) + "...";
@@ -55,7 +51,9 @@ const SearchApplet: React.FC = () => {
 	};
 
 	useEffect(() => {
-		dataFetch();
+		const listener = navigation.addListener("focus", () => {
+			dataFetch();
+		});
 	}, []);
 
 	  return (
@@ -76,6 +74,7 @@ const SearchApplet: React.FC = () => {
 
 			{/* Liste des applets */}
 			{(!loading && dispApplets) ? dispApplets.map((item: any) => (
+				console.log(item.enabled),
 			  <View style={styles.applet} key={item.id}>
 				<AppletComponent
 				  id={item.id}
