@@ -86,7 +86,7 @@ const ServerModal: React.FC = () => {
         <View style={styles.container}>
             {/* <StatusBar backgroundColor={modalVisible ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.0)'}/> */}
             <TouchableOpacity style={styles.settingsButton} onPress={() => setModalVisible(true)}>
-                <MaterialIcons name="settings" size={40} color="#363841" />
+                <MaterialIcons name="settings" size={50} color="#363841" />
             </TouchableOpacity>
             <Modal
                 transparent={true}

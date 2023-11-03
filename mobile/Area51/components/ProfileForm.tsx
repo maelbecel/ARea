@@ -155,7 +155,8 @@ const styles = StyleSheet.create({
         borderRadius: 5, // Rayon des coins de la boîte
         paddingVertical: 10, // Rembourrage vertical pour l'espace interne
         paddingHorizontal: 10, // Rembourrage horizontal pour l'espace interne
-        marginVertical: 10, // Marge verticale pour l'espace externe
+        marginTop: 10, // Marge verticale pour l'espace externe
+        marginBottom: 5, // Marge verticale pour l'espace externe
     },
 });
 
