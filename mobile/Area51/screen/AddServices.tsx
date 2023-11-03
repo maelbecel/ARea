@@ -135,7 +135,7 @@ const AddServices = ({navigation, route}) => {
   /* The `return` statement in the code is rendering the JSX elements that will be displayed on the
   screen when the `AddServices` component is rendered. */
   return (loading == 0) ? (
-      <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 0, marginTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
+      <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
         <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={resetAll}/>
         {showReactions()}
         {

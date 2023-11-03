@@ -85,7 +85,9 @@ const SearchApplet: React.FC = () => {
 				/>
 			  </View>
 			)):
-			<ActivityIndicator size="large" color="#363841" />
+			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+				<ActivityIndicator size="large" color="#363841" />
+			</View>
 			}
 		  </ScrollView>
 	  );
