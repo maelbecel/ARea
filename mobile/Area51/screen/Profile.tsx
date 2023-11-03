@@ -13,6 +13,7 @@ import ServiceLogo from "../components/ServiceLogo";
 import Services, {Applet} from "../api/Services";
 import OAuthLogin from "../api/OAuth";
 import OAuthLogout from "../api/OAuthLogout";
+import DeleteUser from "../api/DeleteUser";
 
 /* The above code is a TypeScript React component called "Profile". It is responsible for rendering a
 user profile screen. */
@@ -99,6 +100,16 @@ const Profile = ({navigation}) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await DeleteUser();
+      await SecureStore.deleteItemAsync('token_api');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   /**
    */
   const handlePress = async () => {
@@ -128,13 +139,14 @@ const Profile = ({navigation}) => {
   /* The `return` statement in the code is rendering the JSX elements that make up the Profile
   component. */
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <View style={styles.container}>
     {loading ? (
       <ActivityIndicator size="large" color="#0000ff" /> // Affichez un indicateur de chargement pendant le chargement des données
     ) : (
       <ScrollView
         showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
         showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
+        style={{height: Dimensions.get('window').height - 100, width: Dimensions.get('window').width, paddingHorizontal: 30}}
       >
         <View style={styles.profilePicture}>
           <SVGImg width={150} height={150} />
@@ -149,12 +161,12 @@ const Profile = ({navigation}) => {
           ]}
           disabled={username === data.username && email === data.email}
         >
-          Appliquer les changements
+          Apply changes
         </Button>
         <View style={styles.separator} />
         <View style={styles.userInfo}>
           <View style={{marginBottom: 10}}>
-            <Text style={styles.title}>Comptes associés</Text>
+            <Text style={styles.title}>Connected accounts</Text>
           </View>
           <ScrollView
             horizontal={true}
@@ -169,11 +181,18 @@ const Profile = ({navigation}) => {
             handleLogout();
           }}
         >
-            <Text style={styles.logout}>Se déconnecter</Text>
+            <Text style={styles.logout}>Log out</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            handleDelete();
+          }}
+        >
+            <Text style={styles.delete}>Delete account</Text>
         </TouchableOpacity>
       </ScrollView>
     )}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -182,7 +201,7 @@ React Native. Each key in the object represents a style name, and its value is a
 defines the specific style properties for that name. */
 const styles = StyleSheet.create({
   container: {
-    padding: 40,
+    paddingTop: 40,
     backgroundColor: '#fff',
   },
   profilePicture: {
@@ -229,6 +248,12 @@ const styles = StyleSheet.create({
     opacity: 0.5, // Opacité de la ligne
   },
   logout: {
+    color: '#363841',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  delete: {
     color: 'red',
     fontSize: 16,
     fontWeight: 'bold',
