@@ -80,7 +80,7 @@ const ServiceLogo: React.FC<CardProps> = ({ slug , onPress, disabled = false}) =
             return (
                 <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
                     <View>
-                        <Image source={{ uri: logo }} style={styles.logopti}/>
+                        <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logopti}/>
                         <Text style={{color : getWriteColor(color), fontWeight : 'bold', fontSize : 9.9, alignSelf : 'center'}}>Log Out</Text>
                     </View>
                 </TouchableOpacity>
@@ -89,7 +89,7 @@ const ServiceLogo: React.FC<CardProps> = ({ slug , onPress, disabled = false}) =
             return (
                 <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
                     <View>
-                        <Image source={{ uri: logo }} style={[styles.logopti]}/>
+                        <Image source={{ uri: logo, cache: 'force-cache' }} style={[styles.logopti]}/>
                         <Text style={{color : getWriteColor(color), fontWeight : 'bold', fontSize : 13, alignSelf : 'center'}}>Log In</Text>
                     </View>
                 </TouchableOpacity>

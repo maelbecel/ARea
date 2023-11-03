@@ -14,6 +14,8 @@ import IngredientButton from '../components/IngredientButton';
 import UserInfosAPI from '../api/UserInfos';
 import * as SecureStore from 'expo-secure-store';
 import AppletDetails from '../api/AppletDetails';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -340,9 +342,13 @@ const ConnectAuthEdit = ({ navigation, route }) => {
     return (
       <View style={{backgroundColor: color, height : "100%", paddingTop: 30}}>
         <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Edit", {id : id})} />
+        <KeyboardAwareScrollView
+          contentContainerStyle={{ padding: 16 }}
+          extraScrollHeight={200}
+        >
         <ScrollView style={{width : "100%"}} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
           <View style={[{ backgroundColor: color }]}>
-            <Image source={{ uri: url }} style={styles.logo} />
+            <Image source={{ uri: url, cache: 'force-cache' }} style={styles.logo} />
             <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
           </View>
           <View style={[{ backgroundColor: color },styles.action]}>
@@ -354,6 +360,7 @@ const ConnectAuthEdit = ({ navigation, route }) => {
               </TouchableOpacity>
           </View>
         </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }

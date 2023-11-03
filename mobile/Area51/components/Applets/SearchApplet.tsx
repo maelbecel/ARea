@@ -7,11 +7,18 @@ import AppletComponent from "./AppletComponent";
 import AppletMe from "../../api/AppletMe";
 import { ScrollView } from "react-native-gesture-handler";
 
+import { useNavigation } from "@react-navigation/native";
+
 const SearchApplet: React.FC = () => {
 	const [applets, setApplets] = useState<any>(null); // State to store applets
 	const [dispApplets, setDispApplets] = useState<any>(null); // State to store applets
 	const [loading, setLoading] = useState<boolean>(true); // State to store loading state
 	const [refreshing, setRefreshing] = useState<boolean>(false); // State to store refreshing state
+	const navigation: any = useNavigation();
+
+	const listener = navigation.addListener("focus", () => {
+		dataFetch();
+	});
 
 	const reduceTitle = (title: string) => {
 		if (title.length > 50) {

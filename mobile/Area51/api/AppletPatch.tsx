@@ -4,9 +4,6 @@
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Input} from  './ServiceInfo'
-import { Alert } from 'react-native';
-
-// TODO Documentation github
 
 /**
  * The function `AppletPatch` is an asynchronous function that updates an applet with the provided

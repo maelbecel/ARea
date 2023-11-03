@@ -121,7 +121,7 @@ const ServiceTemplate = ({ navigation, route }) => {
       {/* <StatusBar backgroundColor={color} /> */}
       <View style={[{ backgroundColor: color }, styles.container]}>
         <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Create")} />
-        <Image source={{ uri: url }} style={styles.logo} />
+        <Image source={{ uri: url, cache: 'force-cache' }} style={styles.logo} />
         <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
       </View>
       <ScrollView >
