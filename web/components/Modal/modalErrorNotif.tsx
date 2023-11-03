@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-
+import React from "react";
 import Modal from 'react-modal';
-import Button from "../Button/Button";
 
 interface ModalErrorProps {
-    closeModal: () => void;
-    openModal: () => void;
+    closeModal : () => void;
+    openModal  : () => void;
     modalIsOpen: boolean;
-    text: string;
+    text       : string;
 }
 
 const ModalError = ({closeModal, openModal, modalIsOpen, text} : ModalErrorProps ) => {

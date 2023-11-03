@@ -1,24 +1,30 @@
+// --- Imports --- //
 import React, { useEffect, useState } from "react";
 
+// --- API --- //
 import { PatchProfile } from "../../utils/api/user/me";
-import { UserProfile } from "../../utils/api/user/interface/interface";
-import { useUser } from "../../utils/api/user/Providers/UserProvider";
-import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+
+// --- Components --- //
 import ModalError from "../Modal/modalErrorNotif";
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
 
-
+// --- Interfaces --- //
 interface UpdateButtonProps {
-    token: string;
-    email: string;
+    token   : string;
+    email   : string;
     username: string;
     setToken: (token: string) => void;
 }
 
 const UpdateButton = ({token, email, username, setToken} : UpdateButtonProps) => {
-
+    // --- Variables --- //
     const [data, setData] = useState<any>();
     const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
 
+    // --- Providers --- //
+    const { user, setUser } = useUser();
+
+    // --- Functions --- //
     const openModalError = () => {
         setIsErrorOpen(true);
     };
@@ -38,25 +44,21 @@ const UpdateButton = ({token, email, username, setToken} : UpdateButtonProps) =>
             setData(data);
     }
 
+    // --- UseEffect --- //
     useEffect(() => {
         if (data === undefined)
             return;
-        console.log("data -> ", data);
-        // write the new token in the local storage
-        localStorage.removeItem("token");
-        if (data) {
-            localStorage.setItem("token", data);
+        localStorage.setItem("token", data);
 
-            setToken(localStorage.getItem("token") as string);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        setToken(localStorage.getItem("token") as string);
+
+        setUser({
+            ...user,
+            email   : email,
+            username: username
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
-
-    useEffect(() => {
-
-        console.log("token -> ", token);
-
-    }, [token]);
 
     return (
         <div>

@@ -1,14 +1,24 @@
 import { useState } from "react";
 import Button from "../Button/Button";
 import Modal from 'react-modal';
+import ModalError from "./modalErrorNotif";
 
 const ChangeAddressComponent = () => {
     const [show, setShow] = useState<boolean>(false);
     const [address, setAddress] = useState<string>("");
+    const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
+
+    const openModalError = () => {
+        setIsErrorOpen(true);
+    };
+
+    const closeModalError = () => {
+        setIsErrorOpen(false);
+    };
 
     const validateAddress = async () => {
         try {
-            await fetch(address + "/about.json", {
+            const response = await fetch(address + "/about.json", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -20,6 +30,8 @@ const ChangeAddressComponent = () => {
             setShow(false);
         } catch (e) {
             console.log("Invalid Address : ", address);
+            openModalError();
+            setShow(false);
         }
     }
 
@@ -33,36 +45,35 @@ const ChangeAddressComponent = () => {
                     Change server address
                 </div>
             </div>
-            {show &&
-                <Modal isOpen={show}
-                       onRequestClose={() => { setShow(false) }}
-                       style={{
-                            overlay: {
-                                zIndex: 1000
-                            },
-                            content: {
-                                width: "75%",
-                                height: "50%",
-                                left: '15%',
-                                top: '25%',
-                                borderRadius: "50px",
-                            }
-                        }}
-                >
-                    <div className="flex flex-col items-center justify-around font-bold h-full w-full text-[#363841]">
-                        <div className="text-[16px] sm:text-[24px] md:text-[34px] lg:text-[42px]">
-                            Change server address
-                        </div>
-                        <input
-                            className="w-[75%] h-[40px] md:h-[60px] rounded-[15px] outline-none text-[14px] md:text-[24px] px-[15px] bg-[#d9d9d9]"
-                            placeholder="Ex: https://server.fr"
-                            value={address}
-                            onChange={(e) => { setAddress(e.target.value) }}
-                        />
-                        <Button callBack={() => { validateAddress() }} text="Validate" backgroundColor="#363841" textColor="#ffffff" half={3} size={true} />
+            <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
+            <Modal isOpen={show}
+                    onRequestClose={() => { setShow(false) }}
+                    style={{
+                        overlay: {
+                            zIndex: 1000
+                        },
+                        content: {
+                            width: "75%",
+                            height: "50%",
+                            left: '15%',
+                            top: '25%',
+                            borderRadius: "50px",
+                        }
+                    }}
+            >
+                <div className="flex flex-col items-center justify-around font-bold h-full w-full text-[#363841]">
+                    <div className="text-[16px] sm:text-[24px] md:text-[34px] lg:text-[42px]">
+                        Change server address
                     </div>
-                </Modal>
-            }
+                    <input
+                        className="w-[75%] h-[40px] md:h-[60px] rounded-[15px] outline-none text-[14px] md:text-[24px] px-[15px] bg-[#d9d9d9]"
+                        placeholder="Ex: https://server.fr"
+                        value={address}
+                        onChange={(e) => { setAddress(e.target.value) }}
+                    />
+                    <Button callBack={() => { validateAddress() }} text="Validate" backgroundColor="#363841" textColor="#ffffff" half={3} size={true} />
+                </div>
+            </Modal>
         </>
     )
 }
