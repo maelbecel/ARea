@@ -21,7 +21,13 @@ public class UserTypeAdapter extends TypeAdapter<User> {
             jsonWriter.value(service.getSlug());
         }
         jsonWriter.endArray();
-        jsonWriter.name("passwordLength").value((user.getPassword().length() / 5));
+        if (user.getPassword() != null) {
+            jsonWriter.name("passwordLength").value((user.getPassword().length() / 5));
+            jsonWriter.name("loginWithService").value(false);
+        } else {
+            jsonWriter.name("passwordLength").value(0);
+            jsonWriter.name("loginWithService").value(true);
+        }
         jsonWriter.endObject();
     }
 
