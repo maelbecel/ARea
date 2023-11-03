@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import ModalError from "./modalErrorNotif";
 
 const ChangeAddressComponent = () => {
-    const [show, setShow] = useState<boolean>(false);
+    const [show, setShow] = useState<boolean>(true);
     const [address, setAddress] = useState<string>("");
     const [modalErrorIsOpen, setIsErrorOpen] = useState(false);
 

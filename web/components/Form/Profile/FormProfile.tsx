@@ -40,6 +40,7 @@ interface FormProfileProps {
     mail                : string
     username            : string
     password            : string
+    loginWithService   ?: boolean
     setUsernameFunction : Dispatch<SetStateAction<string>>;
     setMailFunction     : Dispatch<SetStateAction<string>>;
 }
@@ -52,12 +53,14 @@ const InputDiv = ({ placeholder, value, secureMode = false, setValue, label } : 
     )
 };
 
-const FormProfile = ({username, mail, password, setUsernameFunction, setMailFunction} : FormProfileProps) => {
+const FormProfile = ({username, mail, password, setUsernameFunction, setMailFunction, loginWithService = false} : FormProfileProps) => {
     return (
         <div className="flex justify-center flex-col items-center gap-y-10 w-[100%]">
             <label className="text-[#363841] font-bold text-[42px] text-center">Account</label>
             <InputDiv placeholder="Username" value={username} setValue={setUsernameFunction} label="Username"/>
-            <InputDiv placeholder="Password" secureMode={true} value={password} setValue={setUsernameFunction} label="Password"/>
+            {loginWithService === false &&
+                <InputDiv placeholder="Password" secureMode={true} value={password} setValue={setUsernameFunction} label="Password"/>
+            }
             <InputDiv placeholder="Mail" value={mail} setValue={setMailFunction} label="Mail"/>
         </div>
     );
