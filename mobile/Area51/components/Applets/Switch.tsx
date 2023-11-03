@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet, DimensionValue } from "react-
 import { getWriteColor } from "../ActionCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UpdateAppletEnableWithID } from "../../api/UpdateApplet";
+import { useNavigation } from "@react-navigation/native";
 
 export const darkenColor = (color: string, factor: number, darkMode: boolean): string => {
     if (!darkMode) {
@@ -43,14 +44,13 @@ interface ToggleSwitchProps {
 }
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, darkMode = true, bigSwitch = false, onChange }) => {
-
     const [isChekedState, setIsChecked] = useState<boolean>(false);
-    const [darkenBg, setDarkenColor] = useState<string>("#ffffff");
+    const [darkenBg, setDarkenColor] = useState<string>(bgColor);
 
     useEffect(() => {
         setIsChecked(isChecked);
         setDarkenColor(darkenColor(bgColor, 1.2, darkMode));
-    }, [bgColor]);
+    }, [isChecked]);
 
     const handleSwitchChange = async () => {
         setIsChecked(!isChekedState);
@@ -66,14 +66,14 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
                 backgroundColor: darkenBg,
                 width: bigSwitch ? '100%' : '60%',
                 borderRadius: bigSwitch ? 50 : 100,
-                justifyContent: isChekedState ? 'space-between' : 'flex-start',
+                justifyContent: isChekedState ? 'flex-end' : 'flex-start',
             }]}
             disabled={isDisabled}
         >
             {isChekedState ? (
                 <>
                 <Text style={[styles.label, {
-                    marginLeft: bigSwitch ? '35%' : '12.5%',
+                    marginRight: bigSwitch ? '15%' : '20%',
                     color: getWriteColor(darkenBg),
                     fontSize: bigSwitch ? 30 : 15,
                 }]}>{isChekedState ? yesLabel : noLabel}</Text>
@@ -93,9 +93,9 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
                     backgroundColor: toggleColor ? toggleColor : bgColor }
                 ]}/>
                 <Text style={[styles.label, {
-                    marginLeft: bigSwitch ? '15%' : '12.5%',
+                    marginLeft: bigSwitch ? '15%' : '15%',
                     color: getWriteColor(darkenBg),
-                    fontSize: bigSwitch ? 30 : 14,
+                    fontSize: bigSwitch ? 30 : 15,
                 }]}>{isChekedState ? yesLabel : noLabel}</Text>
             </>
             )}
