@@ -1,4 +1,4 @@
-import SearchService from "../../service/SearchService";
+import SearchService from "../../Service/SearchService";
 
 const HomeExploreContainer = () => {
     return (

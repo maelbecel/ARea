@@ -4,8 +4,8 @@ FROM node:16
 ARG JDK_VERSION=11
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y --no-install-recommends openjdk-${JDK_VERSION}-jdk && \
-    apt-get install -y --no-install-recommends git wget unzip && \
+    apt-get install -y --no-install-recommends ca-certificates-java openjdk-${JDK_VERSION}-jdk && \
+    apt-get install -y --no-install-recommends git wget unzip libncurses5 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # download and install Android SDK

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 
 // --- Components import --- //
-import Input from "../../../components/formProfile/input";
+import Input from "../../../components/Form/Profile/Input";
 import { GetProfile, PatchProfilePassword } from "../../../utils/api/user/me";
 import Icon from "../../../components/NavBar/components/Icon";
 import Profile from "../../../components/NavBar/components/Profile";
@@ -14,7 +14,7 @@ import SimpleLink from "../../../components/NavBar/components/SimpleLink";
 import { useToken } from "../../../utils/api/user/Providers/TokenProvider";
 import { NavigateButton } from "../../../components/NavBar/components/Button";
 import NavBar, { LeftSection, RightSection } from "../../../components/NavBar/navbar";
-import ModalError from "../../../components/modalErrorNotif";
+import ModalError from "../../../components/Modal/modalErrorNotif";
 
 const IndexPage: NextPage = () => {
 
@@ -64,11 +64,7 @@ const IndexPage: NextPage = () => {
     const handleConfirm = async () => {
         const data = await PatchProfilePassword(token, currentPassword, newPassword, confirmPassword);
         
-        if (data === null) {
-            openModalError();
-        } else {
-            closeModalError();
-        }
+        (data === null) ? openModalError() : closeModalError();
     }
 
     return (

@@ -2,6 +2,7 @@ import React, { createRef, useEffect, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet, DimensionValue } from "react-native";
 import { getWriteColor } from "../ActionCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UpdateAppletEnableWithID } from "../../api/UpdateApplet";
 
 export const darkenColor = (color: string, factor: number, darkMode: boolean): string => {
     if (!darkMode) {
@@ -53,9 +54,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
 
     const handleSwitchChange = async () => {
         setIsChecked(!isChekedState);
-        if (onChange) {
-            onChange();
-        }
+        await UpdateAppletEnableWithID(await AsyncStorage.getItem("appletID"), !isChekedState);
     }
 
     return (
@@ -74,13 +73,13 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
                 <Text style={[styles.label, {
                     marginLeft: bigSwitch ? '35%' : '12.5%',
                     color: getWriteColor(darkenBg),
-                    fontSize: bigSwitch ? 30 : 14,
+                    fontSize: bigSwitch ? 30 : 15,
                 }]}>{isChekedState ? yesLabel : noLabel}</Text>
                 <View style={[, {
                     width: bigSwitch ? 75 : 30,
                     height: bigSwitch ? 75 : 30,
-                    borderRadius: bigSwitch ? 35 : 15 },
-                    isChecked && { backgroundColor: toggleColor ? toggleColor : bgColor }
+                    borderRadius: bigSwitch ? 37.5 : 15,
+                    backgroundColor: toggleColor ? toggleColor : bgColor }
                 ]}/>
                 </>
             ) : (
@@ -88,8 +87,8 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesL
                 <View style={[, {
                     width: bigSwitch ? 75 : 30,
                     height: bigSwitch ? 75 : 30,
-                    borderRadius: bigSwitch ? 35 : 15 },
-                    isChecked && { backgroundColor: toggleColor ? toggleColor : bgColor }
+                    borderRadius: bigSwitch ? 37.5 : 15,
+                    backgroundColor: toggleColor ? toggleColor : bgColor }
                 ]}/>
                 <Text style={[styles.label, {
                     marginLeft: bigSwitch ? '15%' : '12.5%',
