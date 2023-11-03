@@ -37,7 +37,7 @@ const SearchServiceHeader = ({ callback }: { callback: () => void }) => {
     )
 }
 
-const SearchServicePages = ({ setPages } : { setPages: Dispatch<SetStateAction<number>> }) => {
+const SearchServicePages = ({ setPages, pages } : { setPages: Dispatch<SetStateAction<number>>, pages: number }) => {
   // --- Variables --- //
   const [filter, setFilter] = useState<string>("action");
 
@@ -47,11 +47,11 @@ const SearchServicePages = ({ setPages } : { setPages: Dispatch<SetStateAction<n
    * First frame useEffect
    */
   useEffect(() => {
-    if (localStorage.getItem("index") as string === null)
-      setFilter("action")
+    if ((localStorage.getItem("index") as string) === null)
+      setFilter("action");
     else
       setFilter("reaction");
-  }, []);
+  }, [pages]);
 
   // --- Function --- //
 

@@ -141,8 +141,8 @@ const IndexPage: NextPage = () => {
     return (
         <>
             {(pages === 0 || pages === -1) ? (<CreatePages setPages={setPages} setEditMode={setEditMode} action={action} setAction={setAction} reactions={reactions} setReactions={setReactions} />) : null}
-            {(pages === 1) ? (<SearchServicePages          setPages={setPages} />) : null}
-            {(pages === 2) ? (<AllActionFromServicePages   setPages={setPages} back={back}/>) : null}
+            {(pages === 1) ? (<SearchServicePages          setPages={setPages} pages={pages} />) : null}
+            {(pages === 2) ? (<AllActionFromServicePages   setPages={setPages} back={back} />) : null}
             {(pages === 3) ? (<ServiceConnexionPages       setPages={setPages} />) : null}
             {(pages === 4) ? (<FillActionInputsPages       setPages={setPages} EditMode={editMode} setAction={setAction} setReactions={setReactions} setEditMode={setEditMode} />) : null}
             {(pages === 5) ? (<ValidatePages               setPages={setPages} />) : null}

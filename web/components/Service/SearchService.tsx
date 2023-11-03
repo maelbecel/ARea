@@ -89,7 +89,7 @@ const SearchService = ({ type = 'link', callback = (slug: string) => {}, filterT
             setServiceSearch(services.filter((item: any) => item?.reactions.length > 0));
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [services]);
+    }, [services, filterType]);
 
     useEffect(() => {
         if (services.length !== 0)
