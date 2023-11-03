@@ -124,6 +124,7 @@ const Profile = ({navigation}) => {
       }
       await AsyncStorage.removeItem('username');
       await AsyncStorage.removeItem('email');
+      Alert.alert('Success', 'Your profile has been updated.');
     } catch (error) {
       console.error(error);
     }
