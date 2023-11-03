@@ -20,11 +20,15 @@ import ProfilePicture from "../../components/ProfilePage/ProfilePicture";
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
 
 const IndexPage: NextPage = () => {
-    const { user, setUser } = useUser();
+    // --- Variables --- //
+    const [username, setUsername] = useState<string>("");
+    const [email   , setEmail]    = useState<string>("");
+
+    // --- Providers --- //
+    const { user , setUser  } = useUser();
     const { token, setToken } = useToken();
 
-    const [username, setUsername] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
+    // --- UseEffect --- //
 
     /**
      * Get the user profile
@@ -34,9 +38,8 @@ const IndexPage: NextPage = () => {
             setUser(await GetProfile(token) as UserProfile)
         }
 
-        if (user?.email === undefined || user?.email === "" || user?.email === null) {
+        if (user?.email === undefined || user?.email === "" || user?.email === null)
             getProfile(token);
-        }
     }, [setUser, token, user]);
 
     useEffect(() => {
@@ -61,15 +64,17 @@ const IndexPage: NextPage = () => {
                     <div className="my-[32px]">
                         <ProfilePicture/>
                     </div>
-                    { user && <FormProfile
-                        username={username}
-                        mail={email}
-                        password={"a".repeat(user?.passwordLength)}
-                        setUsernameFunction={setUsername}
-                        setMailFunction={setEmail}
-                    /> }
+                    {user &&
+                        <FormProfile
+                            username={username}
+                            mail={email}
+                            password={"a".repeat(user?.passwordLength)}
+                            setUsernameFunction={setUsername}
+                            setMailFunction={setEmail}
+                        />
+                    }
                     <UpdateButton username={username} email={email} token={token} setToken={setToken}/>
-                    <LinkedAccounts linkedAccountsDataArray={user?.connectedServices}/>
+                    <LinkedAccounts />
                 </div>
                 <LogoutButton/>
                 <DeleteButton token={token}/>
