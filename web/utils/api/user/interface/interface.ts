@@ -4,4 +4,5 @@ export interface UserProfile {
     id: number;
     passwordLength: number;
     username: string;
+    loginWithService: boolean;
 };

@@ -61,7 +61,7 @@ const MainContainer = () => {
     }
 
     return (
-        <div className="h-screen flex flex-col justify-center items-center p-[15px]">
+        <div className="h-screen flex flex-col justify-start items-center p-[15px]">
             <ChangeAddressComponent />
             <TextContainer title="Sign up" handleClick={handleClick}>
                 <InputContainer placeholder='Username' value={username} setValue={setUsername} icon="/Icons/person.svg" />

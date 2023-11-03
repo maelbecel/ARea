@@ -1,7 +1,9 @@
 // --- Librairies import --- //
 import Link from "next/link"
 import Image from "next/image"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import express, { Request, Response } from 'express';
+import fetch from 'node-fetch';
 
 // --- Interfaces --- //
 interface ButtonProps {
@@ -21,6 +23,7 @@ interface ContainerProps {
     title        : string
     submit      ?: string
     children    ?: React.ReactNode
+    noAccount   ?: boolean
     handleClick ?: () => void
 }
 
@@ -33,7 +36,7 @@ const Title = ({ title }: { title: string }) => {
     )
 }
 
-const Forgot = ({ text, redirectUri }: { text: string, redirectUri: string }) => {
+const RedirectText = ({ text, redirectUri }: { text: string, redirectUri: string }) => {
     return (
         <Link href={redirectUri}>
             <div className="text-[#363841] text-[1rem] font-bold underline cursor-pointer">
@@ -79,17 +82,52 @@ const InputContainer = ({ placeholder, secureMode = false, value, setValue, icon
     )
 }
 
-const TextContainer = ({ title, submit, children, handleClick }: ContainerProps) => {
+const ConnectWithGoogle = () => {
+    const handleClick = async () => {
+        try {
+            const response = await fetch(`${localStorage.getItem('address') as string}/user/login/google?redirecturi=http://localhost:8081/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+  return (
+    <div className="w-[90%] sm:w-[50%] xl:w-[50%] h-auto md:w-[80%] bg-[#363841] rounded-[50px] p-5 flex items-center justify-between cursor-pointer"
+         onClick={() => handleClick()}
+    >
+        <div className="text-[20px] xl:text-[22px] 2xl:text-[28px] text-white font-bold">
+            Log in with Google
+        </div>
+        <Image src="/Icons/Google.png" width={36} height={36} alt="Google" />
+    </div>
+  );
+};
+
+const TextContainer = ({ title, submit, children, handleClick, noAccount = false }: ContainerProps) => {
     return (
-        <div className="h-[75%] max-w-[36em] flex justify-around items-center flex-col">
+        <div className="min-h-[75%] w-full md:w-[50%] flex justify-around items-center flex-col">
             <Title title={title} />
-            <div className="h-auto flex justify-between items-center flex-col">
+            <div className="flex justify-between items-center flex-col">
                 {children}
             </div>
             <RequestButton text={submit ? submit : title} handleClick={handleClick} />
+            {noAccount &&
+                <RedirectText text="No account ? Sign up here" redirectUri="/sign-up" />
+            }
+            <div className="font-bold text-[48px] text-[#363841]">
+                Or
+            </div>
+            {/*TODO: setup Connect with google : <ConnectWithGoogle />*/}
         </div>
     )
 }
 
-export { Forgot, InputContainer }
+export { RedirectText, InputContainer }
 export default TextContainer

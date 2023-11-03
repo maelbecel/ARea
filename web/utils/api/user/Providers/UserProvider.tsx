@@ -9,12 +9,12 @@ const UserContext = createContext<{
     user: UserProfile;
     setUser: (user: UserProfile) => void;
 }>({
-    user: { id: 0, username: '', email: '', passwordLength: 0, connectedServices: [] },
+    user: { id: 0, username: '', email: '', passwordLength: 0, connectedServices: [], loginWithService: false },
     setUser: () => {}
 });
 
 export const UserProviders = ({ children }: any) => {
-    const [user, setUser] = useState<UserProfile>({ id: 0, username: '', email: '', passwordLength: 0, connectedServices: [] });
+    const [user, setUser] = useState<UserProfile>({ id: 0, username: '', email: '', passwordLength: 0, connectedServices: [], loginWithService: false });
 
     useEffect(() => {
         const token: string = localStorage.getItem("token") as string;
