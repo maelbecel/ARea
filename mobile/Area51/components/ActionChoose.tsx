@@ -185,7 +185,7 @@ const ActionChoose: React.FC<CardProps> = ({ type, slug , onPress, onPressCross=
             <TouchableOpacity onPress={onPress} style={[{ backgroundColor: info.decoration.backgroundColor }, styles.container]}>
                 <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
                     <Text style={[styles.ifthen, { color: getWriteColor(info.decoration.backgroundColor) }]}>{(type === "action") ? "If" : "Then"}</Text>
-                    <View style={{flexDirection: 'row', alignItems: "center"}}>
+                    <View style={{flexDirection: 'row', alignItems: "center", width: "50%"}}>
                         <Image source={{ uri: info.decoration.logoUrl, cache: 'force-cache' }} style={styles.logo} />
                         <Text style={[styles.desc, { color: getWriteColor(info.decoration.backgroundColor) }]}>{action}</Text>
                     </View>
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
         height: 40,
         width: 40,
         marginVertical: 10,
-        marginHorizontal: 20,
+        marginRight: 10,
         alignSelf: 'center',
     },
     area: {
@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     ifthen: {
         fontSize: 30,
         fontWeight: 'bold',
+        marginRight: "-10%",
     },
     name: {
       fontSize: 25,
