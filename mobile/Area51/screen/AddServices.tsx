@@ -35,7 +35,7 @@ const AddServices = ({navigation, route}) => {
     setLoadingInfo("Getting actions")
     const actionInputs = await Action(action)
     let reactionInputs = [];
-    
+
     setLoading(10);
     setLoadingInfo("Getting reactions")
     for (const input of reaction) {
