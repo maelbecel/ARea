@@ -12,7 +12,46 @@ import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navba
 import Profile from "../../components/NavBar/components/Profile";
 import Footer from "../../components/Footer/Footer";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
+import Link from "next/link";
 
+const Title = ({ title } : { title: string }) => {
+    return (
+        <div className="pb-[15%] sm:pb-[2%] text-[48px] font-bold text-[#363841] flex flex-col items-center sm:items-start">
+            {title}
+        </div>
+    );
+};
+
+const Description = ({ title, description } : { title: string, description: string }) => {
+    return (
+        <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
+            <div className="text-[#00B2FF] font-bold text-[28px] break-all">
+                {title}
+            </div>
+            <div className="text-[#363841] font-medium text-[28px]">
+                {description}
+            </div>
+        </div>
+    );
+};
+
+const DescriptionWithNavigation = ({ title, description, hyperlink, textOfLink } : { title: string, description: string, hyperlink: string, textOfLink: string }) => {
+    return (
+        <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
+            <div className="text-[#00B2FF] font-bold text-[28px] break-all">
+                {title}
+            </div>
+            <div className="text-[#363841] font-medium text-[28px]">
+                {description}
+                <Link href={hyperlink}>
+                    <a className="text-[#00B2FF]">
+                        {textOfLink}
+                    </a>
+                </Link>
+            </div>
+        </div>
+    );
+};
 
 const IndexPage: NextPage = () => {
     
@@ -63,69 +102,17 @@ const IndexPage: NextPage = () => {
                 </RightSection>
                 </NavBar>
             )}
-            <div className="min-h-screen flex flex-col w-3/5 mx-auto justify-start py-[2%]">
-                <div className="pb-[15%] sm:pb-[2%] text-[48px] font-bold text-[#363841] flex flex-col items-center sm:items-start">
-                    <div>Contact</div>
-                </div>
-                <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
-                    <div className="text-[#00B2FF] font-bold text-[28px]">
-                        lucas.dupont@epitech.eu
-                    </div>
-                    <div className="text-[#363841] font-medium text-[28px]">
-                        Backend developer, server
-                    </div>
-                </div>
-                <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
-                    <div className="text-[#00B2FF] font-bold text-[28px]">
-                        mael.becel@epitech.eu
-                    </div>
-                    <div className="text-[#363841] font-medium text-[28px]">
-                        SCRUM Master, mobile
-                    </div>
-                </div>
-                <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
-                    <div className="text-[#00B2FF] font-bold text-[28px]">
-                        enzo.garnier@epitech.eu
-                    </div>
-                    <div className="text-[#363841] font-medium text-[28px]">
-                        Frontend developer, mobile
-                    </div>
-                </div>
-                <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
-                    <div className="text-[#00B2FF] font-bold text-[28px]">
-                        jovan.hillion@epitech.eu
-                    </div>
-                    <div className="text-[#363841] font-medium text-[28px]">
-                        Frontend developer, web
-                    </div>
-                </div>
-                <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
-                    <div className="text-[#00B2FF] font-bold text-[28px]">
-                        ethan.hernou@epitech.eu
-                    </div>
-                    <div className="text-[#363841] font-medium text-[28px]">
-                        Frontend developer, web
-                    </div>
-                </div>
-                <div className="pb-[15%] sm:pb-[2%] text-[48px] font-bold text-[#363841] flex flex-col items-center sm:items-start">
-                    <div>Project</div>
-                </div>
-                <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
-                    <div className="text-[#00B2FF] font-bold text-[28px]">
-                        Github of the project
-                    </div>
-                    <div className="text-[#363841] font-medium text-[28px]">
-                        You can find the github of the project here
-                    </div>
-                </div>
-                <div className="pb-[15%] sm:pb-[2%] flex flex-col items-center sm:items-start">
-                    <div className="text-[#00B2FF] font-bold text-[28px]">
-                        Help
-                    </div>
-                    <div className="text-[#363841] font-medium text-[28px]">
-                        Explore help articles about many IFTTT topics and file support tickets.
-                    </div>
-                </div>
+            <div className="min-h-screen flex flex-col w-[90%] md:w-3/4 mx-auto justify-start py-[2%] overflow-x-hidden">
+                <Title title={"Contact"} />
+                <Description title={"lucas.dupont@epitech.eu"}  description={"Backend developer, server"} />
+                <Description title={"mael.becel@epitech.eu"}    description={"SCRUM Master, mobile"} />
+                <Description title={"enzo.garnier@epitech.eu"}  description={"Frontend developer, mobile"} />
+                <Description title={"ethan1.hernou@epitech.eu"} description={"Frontend developer, web"} />
+                <Description title={"jovan.hillion@epitech.eu"} description={"Frontend developer, web"} />
+
+                <Title title={"Project"} />
+                <DescriptionWithNavigation title={"Github of the project"}  description={"You can find the github of the project "} hyperlink={"https://github.com/maelbecel/ARea"} textOfLink={"here"} />
+                <Description title={"Help"}  description={"Explore help articles about many AREA51 topics and file support tickets."} />
             </div>
             <Footer/>
         </>
