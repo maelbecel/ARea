@@ -13,6 +13,7 @@ import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
 import RegisterAPI from '../api/Register';
 import ServerModal from '../components/ServerModal';
+import LoginService from '../api/LoginService';
 
 /* The code is defining a functional component called `Signup` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -48,9 +49,8 @@ const Signup = ({ navigation }) => {
           <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
           <SubmitButton title="Sign up" onPress={connect} />
           <Text style={styles.forgot} onPress={() => navigation.navigate('Login')} >Already an account ? Log in here</Text>
-          {/* <Text style={styles.or}>or</Text>
-          <SubmitButton title="Sign up with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
-          <SubmitButton title="Sign up with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} /> */}
+          <Text style={styles.or}>or</Text>
+          <SubmitButton title="Sign up with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27}} onPress={async () => (await LoginService("google")) ? navigation.navigate("Area 51") : null }/>
         </View>
     )
 }

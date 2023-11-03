@@ -23,6 +23,7 @@ const EditApplet = ({navigation, route}) => {
   const [reactionInput, setReactionInput] = React.useState(route.params != undefined ? route.params : [])
   const [title, setTitle] = React.useState("")
   const [loading, setLoading] = React.useState<number>(0);
+  const [isloading, setisLoading] = React.useState<boolean>(true);
   const [loadingInfo, setLoadingInfo] = React.useState<string>("");
   const {id} = route.params
 
@@ -63,6 +64,7 @@ const EditApplet = ({navigation, route}) => {
       }
     };
     fetchData();
+    setisLoading(false);
   }, []);
 
 
@@ -107,25 +109,6 @@ const EditApplet = ({navigation, route}) => {
     }
   }
 
-  useFocusEffect(() => {
-    const fetchData = async () => {
-      try {
-        const action = await AsyncStorage.getItem('action');
-        const reaction = await AsyncStorage.getItem('reaction');
-        setAction((action === null) ? "default" : action);
-        setReaction((reaction === null) ? [] : JSON.parse(reaction));
-      } catch (error) {
-        if (error == 'TypeError: Network request failed') {
-          Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
-        } else {
-            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
-        }
-        console.error("Error while getting info : ", error);
-      }
-    };
-    fetchData();
-  });
-
   const removeItem = async (item : number) => {
     const tmp = [...reactionInput];
     tmp.splice(item, 1);
@@ -156,10 +139,20 @@ const EditApplet = ({navigation, route}) => {
     await AsyncStorage.setItem('reaction', "[]");
   }
 
+  if (isloading) {
+    return (
+      <View>
+        <View style={{backgroundColor: "#FFF", paddingTop: 50}}>
+          <TopBar title="Edit"  iconLeft='arrow-back' onPressLeft={() => (navigation.goBack(), resetAll())} color={"#363841"} />
+        </View>
+      </View>
+    )
+  }
+
   return (loading == 0) ? (
     <View>
       <View style={{backgroundColor: "#FFF", paddingTop: 50}}>
-        <TopBar title="Edit"  iconLeft='arrow-back' onPressLeft={() => navigation.goBack()} color={"#363841"} />
+        <TopBar title="Edit"  iconLeft='arrow-back' onPressLeft={() => (navigation.goBack(), resetAll())} color={"#363841"} />
       </View>
       <ScrollView style={{ backgroundColor: "#FFF", height: "80%", paddingTop: 0, marginTop: 0}} contentContainerStyle={{alignItems: 'center', flex: 0, justifyContent: "center"}}>
         <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={resetAll}/>

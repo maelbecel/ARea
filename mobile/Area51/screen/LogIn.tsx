@@ -15,6 +15,7 @@ import ServerModal from '../components/ServerModal';
 import LoginAPI from '../api/Login';
 import AutoLoginAPI from '../api/AutoLogin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginService from '../api/LoginService';
 
 /* The code is defining a functional component called `Login` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -79,8 +80,7 @@ const Login = ({ navigation }) => {
               <SubmitButton title="Log in" onPress={connect} />
               <Text style={styles.forgot} onPress={() => navigation.navigate('SignUp')} >No account ? Sign up here</Text>
               <Text style={styles.or}>or</Text>
-              <SubmitButton title="Log in with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
-              <SubmitButton title="Log in with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} />
+              <SubmitButton title="Log in with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} onPress={async () => (await LoginService("google")) ? navigation.navigate("Area 51") : null}/>
             </View>
           </View>
         </View>
