@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 // --- Components import --- //
 import NavBar, {RightSection, LeftSection} from "../../components/NavBar/navbar";
 import Icon from "../../components/NavBar/components/Icon";
-import SearchApplet from "../../components/applet/searchApplet";
-import Footer from '../../components/footer'
+import SearchApplet from "../../components/Applet/Components/SearchApplet";
+import Footer from '../../components/Footer/Footer'
 import Profile from "../../components/NavBar/components/Profile";
 import { useUser } from "../../utils/api/user/Providers/UserProvider";
 import { GetProfile } from "../../utils/api/user/me";

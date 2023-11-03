@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import TextContainer, { Forgot, InputContainer } from "../auth/TextContainer";
+import TextContainer, { Forgot, InputContainer } from "../Auth/TextContainer";
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
 import { useRouter } from "next/router";
 import React from "react";
 import ChangeAddressComponent from "../Modal/ChangeAddress";
 import { UserLogin } from "../../utils/api/user/login";
-import ModalError from "../modalErrorNotif";
+import ModalError from "../Modal/modalErrorNotif";
 
 const MainContainer = () => {
     // --- Form Values --- //
@@ -64,7 +64,7 @@ const MainContainer = () => {
             <TextContainer title="Log in" handleClick={handleClick}>
                 <InputContainer placeholder='Email / Username' value={email}    setValue={setEmail}    icon="/Icons/mail.svg" />
                 <InputContainer placeholder='Password'         value={password} setValue={setPassword} icon="/Icons/lock.svg" secureMode={true} />
-                <Forgot text="Forgot your password ?" redirectUri="/passwords/forgot" />
+                {/*TODO: <Forgot text="Forgot your password ?" redirectUri="/passwords/forgot" />*/}
             </TextContainer>
             <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </div>
