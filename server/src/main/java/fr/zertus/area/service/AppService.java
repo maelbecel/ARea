@@ -7,6 +7,7 @@ import fr.zertus.area.app.gmail.GmailApp;
 import fr.zertus.area.app.google.GoogleApp;
 import fr.zertus.area.app.notion.NotionApp;
 import fr.zertus.area.app.spotify.SpotifyApp;
+import fr.zertus.area.app.time.TimeApp;
 import fr.zertus.area.app.twitch.TwitchApp;
 import fr.zertus.area.app.weather.WeatherApp;
 import fr.zertus.area.app.youtube.YoutubeApp;
@@ -32,6 +33,9 @@ public class AppService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RegisterUserService registerUserService;
 
     private static final Map<String, App> apps = new HashMap<>();
     static {
@@ -61,6 +65,9 @@ public class AppService {
 
         WeatherApp weatherApp = new WeatherApp();
         apps.put(weatherApp.getSlug(), weatherApp);
+
+        TimeApp timeApp = new TimeApp();
+        apps.put(timeApp.getSlug(), timeApp);
     }
 
     private static final Map<Long, String> redirectUris = new HashMap<>();
@@ -81,7 +88,11 @@ public class AppService {
      * @return a response entity with the redirection
      * @throws DataNotFoundException if the app is not found
      */
-    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String redirectUri) {
+    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, long userId, String redirectUri) {
+        return redirectOAuth2App(slug, userId, redirectUri, false);
+    }
+
+    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String redirectUri, boolean userLogin) {
         App app = getApp(slug);
         if (app == null)
             return ApiResponse.notFound("Service not found").toResponseEntity();
@@ -100,6 +111,10 @@ public class AppService {
         Set<String> scope = clientRegistration.getScopes();
         String state = app.getOAuth2Handler().getState();
         state += "-" + userId;
+
+        if (userLogin) {
+            state += "-login";
+        }
 
         // This part is for redirect when process is done (check callbackOAuth2App)
         String redirectUriFinal = redirectUri != null ? redirectUri : defaultRedirectUri;
@@ -135,7 +150,7 @@ public class AppService {
         redirectUris.remove(Long.parseLong(state.split("-")[1]));
 
         if (error != null) {
-            return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
+            return ResponseEntity.status(302).location(URI.create(redirectUri + "?error=" + error)).build();
         }
 
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(slug);
@@ -150,6 +165,12 @@ public class AppService {
         // We need to give a redirect Uri (I don't know why, because token result is the return of this request) so we give the default one
         MultiValueMap<String, String> body = app.getOAuth2Handler().getBody(code, clientId, clientSecret, defaultRedirectUri);
         ConnectedService connectedService = app.getOAuth2Handler().getToken(tokenUrl, body);
+
+        if (state.split("-").length == 3) {
+            String url = registerUserService.registerLoginUserByGoogle(connectedService, redirectUri);
+            return ResponseEntity.status(302).location(URI.create(url)).build();
+        }
+
         long userId = Long.parseLong(state.split("-")[1]);
 
         User user = userService.getUser(userId);
