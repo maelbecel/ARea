@@ -12,12 +12,15 @@ import Action from '../api/Action';
 import Reaction from '../api/Reaction';
 import ActionInfo from '../api/ActionInfo';
 import ReactionInfo from '../api/ReactionInfo';
+import * as Progress from 'react-native-progress';
 
 /* The code defines a functional component called `AddServices` that takes two props, `navigation` and
 `route`. */
 const AddServices = ({navigation, route}) => {
   const [action, setAction] = React.useState("default");
   const [reaction, setReaction] = React.useState<string[]>([]);
+  const [loading, setLoading] = React.useState<number>(0);
+  const [loadingInfo, setLoadingInfo] = React.useState<string>("");
   let {actionInput} = (route.params != undefined ? route.params : "")
   let {reactionInput} = (route.params != undefined ? route.params : [])
 
@@ -27,19 +30,33 @@ const AddServices = ({navigation, route}) => {
    * Applets" screen.
    */
   const newApplet = async () => {
+
+    setLoading(1);
+    setLoadingInfo("Getting actions")
     const actionInputs = await Action(action)
     let reactionInputs = [];
+
+    setLoading(10);
+    setLoadingInfo("Getting reactions")
     for (const input of reaction) {
       const reactionInput = await Reaction(input, action)
       reactionInputs.push(reactionInput)
     }
+
+    setLoading(30);
+    setLoadingInfo("Getting action informations")
     const actionInfo = await ActionInfo(action)
     const reactionInfo = [];
+
+    setLoading(40);
+    setLoadingInfo("Getting reaction informations")
     for (const input of reaction) {
       const reactionInf = await ReactionInfo(input)
       reactionInfo.push(reactionInf)
     }
-    // await ReactionInfo(reaction)
+
+    setLoading(60);
+    setLoadingInfo("Creating title")
     let title = reactionInfo[0].name
     for (let i = 1; i < reactionInfo.length; i++) {
       title += " and " + reactionInfo[i].name
@@ -49,15 +66,18 @@ const AddServices = ({navigation, route}) => {
       alert("Error")
       return
     }
+
+    setLoading(80);
+    setLoadingInfo("Creating the applet")
     const data = await AppletApi(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput);
     if (data == false) {
       return
     } else {
-
       await AsyncStorage.setItem('action', "default");
       await AsyncStorage.setItem('reaction', "[]");
       navigation.navigate("MyApplets", { id: data.id});
     }
+    setLoading(0);
   }
 
   /* The `useFocusEffect` hook is a React Navigation hook that allows you to perform side effects when
@@ -103,7 +123,7 @@ const AddServices = ({navigation, route}) => {
 
   /* The `return` statement in the code is rendering the JSX elements that will be displayed on the
   screen when the `AddServices` component is rendered. */
-  return (
+  return (loading == 0) ? (
       <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 0, marginTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
         <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={() => actionInput = "default"}/>
         {showReactions()}
@@ -122,6 +142,12 @@ const AddServices = ({navigation, route}) => {
           : null
         }
       </ScrollView>
+  ) : (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ textAlign: 'center', fontSize: 30, fontWeight: 'bold', color: '#363841' }}>Loading...</Text>
+      <Text style={{ textAlign: 'center', fontSize: 25, color: '#363841' }}>{loadingInfo}</Text>
+      <Progress.Bar progress={loading / 100.0} width={300} height={30} style={{borderRadius : 90}} color="#363841"/>
+    </View>
   );
 }
 

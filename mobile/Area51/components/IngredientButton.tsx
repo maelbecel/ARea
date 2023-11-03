@@ -100,7 +100,7 @@ const IngredientButton: React.FC<IngredientsProps>  = ({input, placeholders, typ
       return strings;
     }
     return (
-      <View key={input.name} style={{width:"100%"}}>
+      <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
         <View >
           <TextInput value={value} placeholder={input.label} multiline={true} textBreakStrategy="highQuality" placeholderTextColor={getWriteColor(color, true)} onChangeText={(text) => {onChangeText(text); setValue(text)}} style={[styles.input, { backgroundColor: getWriteColor(getWriteColor(color, true)), color: getWriteColor(color, true) }]}/>
         </View>

@@ -1,5 +1,6 @@
 package fr.zertus.area.security.oauth2;
 
+import fr.zertus.area.entity.ConnectedService;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -26,7 +27,11 @@ public abstract class OAuth2CodeAuthorizationHandler {
         return body;
     }
 
-    public abstract String getToken(String token, MultiValueMap<String, String> body);
+    public abstract ConnectedService getToken(String token, MultiValueMap<String, String> body);
+
+    public ConnectedService refreshToken(ConnectedService service, MultiValueMap<String, String> body) {
+        return null;
+    }
 
     public abstract String getState();
 
@@ -42,5 +47,7 @@ public abstract class OAuth2CodeAuthorizationHandler {
     public boolean isStateValid(String state) {
         return state.equals(getState());
     }
+
+    public abstract String getClientRegistrationId();
 
 }

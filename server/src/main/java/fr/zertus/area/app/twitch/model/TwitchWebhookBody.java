@@ -35,11 +35,13 @@ public class TwitchWebhookBody {
     @Data
     public static class Event {
         private String id;
+        private String user_name;
         private String broadcaster_user_id;
         private String broadcaster_user_login;
         private String broadcaster_user_name;
         private String type;
         private String started_at;
+        private String tier;
     }
 
 }

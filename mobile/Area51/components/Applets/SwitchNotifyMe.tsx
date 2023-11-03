@@ -26,7 +26,7 @@ const SwitchNotifyMe = ({ isChecked, isDisabled }: SwitchProps) => {
     };
 
     return (
-        <View>
+        <View style={{ marginTop: 5 }}>
             <RNSwitch
                 value={isChekedState}
                 onValueChange={handleSwitchChange}

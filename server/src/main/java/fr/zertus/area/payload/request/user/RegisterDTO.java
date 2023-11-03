@@ -7,8 +7,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class RegisterDTO {
 
-    String email = "";
-    String username = "";
-    String password = "";
+    String email;
+    String username;
+    String password;
+    String currentPassword;
+    String newPassword;
 
 }

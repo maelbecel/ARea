@@ -41,11 +41,11 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) =
         return (
             onPress ? ( // Vérifiez si onPress est défini
                 <TouchableOpacity onPress={onPress} style={[{ backgroundColor: isLight(color) ? null : bgColor }, styles.container]}>
-                    <Image source={{ uri: logo }} style={[styles.logopti]} />
+                    <Image source={{ uri: logo, cache: 'force-cache'}} style={[styles.logopti]} />
                 </TouchableOpacity>
             ) : (
                 <View style={[{ backgroundColor: isLight(color) ? null : bgColor }, styles.container]}>
-                    <Image source={{ uri: logo }} style={[styles.logopti]} />
+                    <Image source={{ uri: logo, cache: 'force-cache' }} style={[styles.logopti]} />
                 </View>
             )
         );

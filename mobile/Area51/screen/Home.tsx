@@ -77,7 +77,7 @@ const Home = ({ navigation }) => {
       <View style={ styles.input }>
         <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => {filterApplets(text)}} size='85%' />
       </View>
-      <ScrollView style={{ marginBottom : 50}}>
+      <ScrollView >
         <View style={ styles.services }>
           {displayApplets()}
         </View>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 50,
     backgroundColor: '#fff',
-    paddingBottom: 0,
+    height: '100%',
   },
   input: {
     alignContent: "center",
