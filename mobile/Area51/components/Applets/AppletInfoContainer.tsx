@@ -10,6 +10,7 @@ import { getWriteColor } from "../ActionCard";
 import TitleModal from "../TitleModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeleteModal from "../DeleteModal";
+import OutlinedTitleBox from "../OutlinedTitleBox";
 
 interface ReactionListProps {
     reactionSlug: string;
@@ -91,13 +92,9 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
                 </View>
 
                 {/* The title of the applet */}
-                <Text style={ [styles.title, { color: getWriteColor(color)}] }>{name}</Text>
+                <OutlinedTitleBox value={name} bgColor={color} author={user} />
+                {/* <Text style={ [styles.title, { color: getWriteColor(color)}] }>{name}</Text> */}
 
-                {/* The user who created the applet and the button to edit the title */}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{...styles.text, fontWeight: 'bold', color: getWriteColor(color) }}>by {user}</Text>
-                    <TitleModal color={color} title={name}/>
-                </View>
             </View>
 
             <View style={ styles.body }>
