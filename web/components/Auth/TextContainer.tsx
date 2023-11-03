@@ -83,56 +83,19 @@ const InputContainer = ({ placeholder, secureMode = false, value, setValue, icon
 }
 
 const ConnectWithGoogle = () => {
-    // --- Window --- //
-    let oauth2Window: Window | null = null;
-
-    /**
-     * Listen for the OAuth2 callback
-     */
-    useEffect(() => {
-        const handleMessage = (event: MessageEvent) => {
-            if (event.data === 'OAuth2CallbackCompleted') {
-                console.log('OAuth2 callback completed');
-            }
-        };
-
-        window.addEventListener('message', handleMessage);
-
-        return () => {
-            window.removeEventListener('message', handleMessage);
-        };
-    }, []);
-
     const handleClick = async () => {
-        const openOAuth2Window = async () => {
-            const handleRedirect = () => {
-                if (oauth2Window) oauth2Window.close();
-            };
+        try {
+            const response = await fetch(`${localStorage.getItem('address') as string}/user/login/google?redirecturi=http://localhost:8081/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-            try {
-                // Open the OAuth2 authorization window
-                oauth2Window = window.open(
-                    `${localStorage.getItem('address') as string}/user/login/google?redirecturi=`,
-                    'Connexion with Google',
-                    'width=720,height=480'
-                );
-
-                // Check if the window has been closed
-                const checkWindowClosed = () => {
-                    if (!oauth2Window || oauth2Window.closed) {
-                        // Callback to handle the redirect
-                        handleRedirect();
-                        clearInterval(checkInterval);
-                    }
-                };
-
-                const checkInterval = setInterval(checkWindowClosed, 1000);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        openOAuth2Window();
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
   return (
@@ -161,7 +124,7 @@ const TextContainer = ({ title, submit, children, handleClick, noAccount = false
             <div className="font-bold text-[48px] text-[#363841]">
                 Or
             </div>
-            <ConnectWithGoogle />
+            {/*TODO: setup Connect with google : <ConnectWithGoogle />*/}
         </div>
     )
 }
