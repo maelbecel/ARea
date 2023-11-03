@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator } from "react-native";
 import ServiceInfo from '../../api/ServiceInfo';
 import { useNavigation } from '@react-navigation/native';
 import LogoApplet from "./Logo";
@@ -38,20 +38,25 @@ const ReactionLogo: React.FC<ReactionProps> = ({ reaction, bgColor }) => {
 const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reactionsList, enabled, author }) => {
     const [bgColor, setBgColor] = useState<string>("");
     const navigation: any = useNavigation();
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const dataFetch = async (slug : string) => {
+        try {
+            const data = await AppletDetails(slug);
+            setBgColor(data?.data?.decoration?.backgroundColor);
+            setLoading(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
-        const dataFetch = async (slug : string) => {
-            try {
-                const data = await AppletDetails(slug);
-                setBgColor(data?.data?.decoration?.backgroundColor);
-            } catch (error) {
-                console.error(error);
-            }
-        };
         dataFetch(actionSlug);
-    }, []);
+    }, [navigation]);
 
     return (
+        console.log(enabled),
+        loading ? (
         <TouchableOpacity style={{ ...styles.container, backgroundColor: bgColor} } onPress={() => navigation.navigate('MyApplets', { id: id })}>
             <View style={[ styles.card, {marginBottom: 10, flexWrap: "wrap" }]}>
                     {actionSlug && (
@@ -81,13 +86,16 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
             <View style={[ styles.card, { marginTop: '3%'}] }>
                 <ToggleSwitch
                     isChecked={enabled}
-                    isDisabled={enabled}
+                    isDisabled={false}
                     yesLabel="Enabled"
                     noLabel="Disabled"
                     bgColor={bgColor}
                 />
             </View>
         </TouchableOpacity>
+        ) : (
+        <ActivityIndicator size="large" color="#363841" />
+        )
     );
 };
 
