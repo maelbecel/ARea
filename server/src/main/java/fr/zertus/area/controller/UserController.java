@@ -180,7 +180,7 @@ public class UserController {
                         @ExampleObject(
                             name = "Example response with user",
                             description = "This is an example with user information",
-                            value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":1,\"email\":\"lucas1.dupont@epitech.eu\",\"username\":\"Zertus\",\"connectedServices\":[\"github\"]}}"
+                            value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":1,\"email\":\"lucas1.dupont@epitech.eu\",\"username\":\"Zertus\",\"connectedServices\":[\"github\"],\"passwordLength\":12,\"loginWithService\":false}}"
                         )
                     }
                 )
@@ -249,7 +249,7 @@ public class UserController {
                     @ExampleObject(
                         name = "Example response",
                         description = "This is an example with user information",
-                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":8,\"email\":\"billy.bob@zertus.fr\",\"username\":\"Billy Bob\",\"connectedServices\":[\"twitch\",\"discord\"],\"passwordLength\":12}}"
+                        value = "{\"status\":200,\"message\":\"OK\",\"data\":{\"id\":8,\"email\":\"billy.bob@zertus.fr\",\"username\":\"Billy Bob\",\"connectedServices\":[\"twitch\",\"discord\"],\"passwordLength\":12,\"loginWithService\":false}}"
                     )
                 }
             )
