@@ -3,8 +3,10 @@ package fr.zertus.area.app.discord;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.Reaction;
+import fr.zertus.area.app.discord.reaction.DiscordSendEmbedMessageWithWebhookReaction;
 import fr.zertus.area.app.discord.reaction.DiscordSendMessageWithWebhookReaction;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
+import fr.zertus.area.utils.IPGetter;
 
 import java.util.List;
 
@@ -28,7 +30,8 @@ public class DiscordApp extends App {
     @Override
     public List<Reaction> getReactions() {
         return List.of(
-            new DiscordSendMessageWithWebhookReaction(getName())
+            new DiscordSendMessageWithWebhookReaction(getName()),
+            new DiscordSendEmbedMessageWithWebhookReaction(getName())
         );
     }
 
@@ -40,6 +43,7 @@ public class DiscordApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://imgur.com/kcALSJQ.png", "#7388D9");
+        return new AppDecoration(IPGetter.getServerBaseAddress() + "/service/discord/image", "#7388D9",
+            "Whether you’re part of a school club, gaming group, worldwide art community, or just a handful of friends that want to spend time together, Discord makes it easy to talk every day and hang out more often.", "https://discord.com");
     }
 }

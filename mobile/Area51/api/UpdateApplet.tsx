@@ -16,9 +16,9 @@ import { Alert } from 'react-native';
  */
 const UpdateAppletTitleWithID = async (id: string, title: string ): Promise<void> => {
     try {
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/applet/${id}`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/applet/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -29,7 +29,7 @@ const UpdateAppletTitleWithID = async (id: string, title: string ): Promise<void
             })
         });
 
-        const json = await response.json();
+        const json : any = await response.json();
         if (json.data == undefined) return null;
         return json.data;
     } catch (error) {
@@ -54,9 +54,9 @@ const UpdateAppletTitleWithID = async (id: string, title: string ): Promise<void
  */
 const UpdateAppletEnableWithID = async (id: string, enable: boolean ): Promise<void> => {
     try {
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/applet/${id}`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/applet/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -67,7 +67,7 @@ const UpdateAppletEnableWithID = async (id: string, enable: boolean ): Promise<v
             })
         });
 
-        const json = await response.json();
+        const json : any = await response.json();
         if (json.data == undefined) return null;
         return json.data;
     } catch (error) {

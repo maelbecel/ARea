@@ -1,7 +1,7 @@
 /* The `import` statement is used to import specific modules or components from external libraries or
 files. In this case, it is importing various components and types from the `react-native` and
 `react-native-gesture-handler` libraries. */
-import { View, TouchableOpacityProps, StyleSheet, InputModeOptions, Image, DimensionValue } from 'react-native';
+import { View, TouchableOpacityProps, StyleSheet, InputModeOptions, DimensionValue } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 

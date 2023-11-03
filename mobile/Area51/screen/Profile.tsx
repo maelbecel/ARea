@@ -67,7 +67,8 @@ const Profile = ({navigation}) => {
         const serv : Applet[] = await Services();
         let tmp : string[] = [];
         for (let i = 0; i < serv.length; i++) {
-          tmp.push(serv[i].slug);
+          if (serv[i].hasAuthentification)
+            tmp.push(serv[i].slug);
         }
         setServicesCon(response.data.connectedServices);
         setServices(orderByFirstConnected(response.data.connectedServices, tmp));
@@ -104,7 +105,7 @@ const Profile = ({navigation}) => {
     try {
       const email = await AsyncStorage.getItem('email');
       const username = await AsyncStorage.getItem('username');
-      const res = await PatchUser(email, null, username);
+      const res = await PatchUser(email, null, null, username);
       await SecureStore.setItemAsync('token_api', res.data);
       if (!res) {
         Alert.alert('Error', 'An error occurred while updating your profile.');
@@ -163,11 +164,6 @@ const Profile = ({navigation}) => {
           </ScrollView>
         </View>
         <View style={styles.separator} />
-        <View style={styles.userInfo}>
-          <View style={{marginBottom: 20, opacity: 0.5}}>
-            <Text style={styles.subtitle}>Conditions et confidentialité</Text>
-          </View>
-        </View>
         <TouchableOpacity
           onPress={() => {
             handleLogout();

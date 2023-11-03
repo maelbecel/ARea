@@ -38,4 +38,8 @@ public class IPGetter {
         return request.getRemoteAddr();
     }
 
+    public static String getServerBaseAddress() {
+        return (System.getenv("SERVER_BASE_URL") != null ? System.getenv("SERVER_BASE_URL") : "https://area51.zertus.fr");
+    }
+
 }

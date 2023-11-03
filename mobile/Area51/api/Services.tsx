@@ -17,6 +17,7 @@ export type Applet = {
     name: string;
     action : boolean;
     reaction: boolean;
+    hasAuthentification: boolean;
     decoration: {
         backgroundColor: string;
         logoUrl: string;
@@ -35,6 +36,7 @@ const Services = async (): Promise<Applet[]> => {
         const serverAddress : string = await AsyncStorage.getItem('serverAddress');
         const response : Response = await fetch(`${serverAddress}/service`, {
             method: 'GET',
+            cache: 'force-cache',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
@@ -45,7 +47,7 @@ const Services = async (): Promise<Applet[]> => {
         for (let i : number = 0; i < json.data.length; i++) {
             let action : boolean = (json.data[i].actions.length > 0);
             let reaction : boolean = (json.data[i].reactions.length > 0);
-            let tmp : Applet = {slug : json.data[i].slug, name : json.data[i].name, action : action, reaction : reaction, decoration : {backgroundColor : json.data[i].decoration.backgroundColor, logoUrl : json.data[i].decoration.logoUrl}};
+            let tmp : Applet = {hasAuthentification: json.data[i].hasAuthentification, slug : json.data[i].slug, name : json.data[i].name, action : action, reaction : reaction, decoration : {backgroundColor : json.data[i].decoration.backgroundColor, logoUrl : json.data[i].decoration.logoUrl}};
             applets.push(tmp);
         }
         return applets;

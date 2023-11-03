@@ -49,11 +49,17 @@ const TopBar: React.FC<TopBarProps> = ({ title, iconLeft, onPressLeft, iconRight
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={onPressLeft}>
-        <Icon name={iconLeft} size={30} color={color} />
-      </TouchableOpacity>
-      <Text style={[styles.text, {color: color}]}>{title}</Text>
-      {showIconRight(iconRight, onPressRight, color)}
+      <View style={{ width: '10%', alignItems: 'flex-start'}}>
+        <TouchableOpacity onPress={onPressLeft}>
+          <Icon name={iconLeft} size={30} color={color} />
+        </TouchableOpacity>
+      </View>
+      <View style={{ width: '80%', alignItems: 'center'}}>
+        <Text style={[styles.text, {color: color}]}>{title}</Text>
+      </View>
+      <View style={{ width: '10%', alignItems: 'flex-end'}}>
+        {showIconRight(iconRight, onPressRight, color)}
+      </View>
     </View>
   );
 }
