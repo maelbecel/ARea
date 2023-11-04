@@ -1774,5 +1774,305 @@ the `import` statement.
 ```Typescript
 export default DeleteModal;
 ```
-
 For more information about this file you can check his complete code here : [DeleteModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteModal.tsx)
+
+## [FormInput.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/FormInput.tsx)
+
+The `FormInput` component is the component that will be used to display the form for a text input in the mobile application.
+
+![FormInput.png](../images/mobileComponents/FormInput.png)
+
+The `interface InputProps` is defining the props that can be passed to the `FormInput` component.
+It extends the `TouchableOpacityProps` interface, which means it inherits all the props from that
+interface. Here's a breakdown of each prop:
+* `label` : the label of the input
+* `secure` : a boolean that indicates if the input is secure or not
+* `inputMode` : the input mode of the input
+* `icon` : the icon of the input
+* `onChangeText` : a function that will be called when the text of the input changes
+* `children` : the children of the input
+* `size` : the size of the input
+
+```Typescript
+interface InputProps extends TouchableOpacityProps {
+    title        : string;
+    secure      ?: boolean;
+    inputMode   ?: InputModeOptions;
+    icon         : { name: string, width: number, height: number };
+    onChangeText : (text: string) => void;
+    children    ?: React.ReactNode;
+    size        ?: DimensionValue;
+}
+```
+The FormInput component is a reusable input field with an optional icon, title, secure text entry, input mode, and custom styling.
+
+```Typescript
+const FormInput: React.FC<InputProps> = ({ title, secure = false, inputMode, icon, onChangeText, children, size = '70%' })
+```
+
+The `return` statement is returning a JSX element that represents the structure and content of the
+`FormInput` component.
+
+```Typescript
+return (
+    <View style={[{width: size}, styles.container]}>
+      <Icon name={icon.name} size={24} color="#00000080" />
+      <TextInput
+        style={styles.input}
+        placeholder={title}
+        placeholderTextColor={'#00000040'}
+        maxLength={30}
+        secureTextEntry={secure}
+        inputMode={inputMode}
+        onChangeText={onChangeText}
+      />
+      {children}
+    </View>
+  );
+```
+
+The `const styles = StyleSheet.create({})` block is creating a stylesheet object using the
+`StyleSheet.create()` method provided by React Native. This allows you to define styles for your
+components in a structured and optimized way.
+
+```Typescript
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 10,
+    backgroundColor: '#D9D9D9',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingRight: 26,
+    paddingLeft: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  input: {
+    width: '80%',
+    paddingLeft: 10,
+    color: '#00000080',
+
+    fontSize: 20,
+    fontStyle: 'normal',
+    fontWeight: '400',
+  },
+});
+```
+
+The `export default FormInput;` statement is exporting the `FormInput` component as the default
+export of this module. This means that when another file imports this module, it can import the
+`FormInput` component directly without having to specify its name. For example, in another file, you
+can import the `FormInput` component like this: `import FormInput from './FormInput';`.
+
+```Typescript
+export default FormInput;
+```
+
+For more information about this file you can check his complete code here : [FormInput.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/FormInput.tsx)
+
+
+## [IngredientButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/IngredientButton.tsx)
+
+The `IngredientButton` is a component that is display when you want to display a text input with a button to add a placeholder in the mobile application.
+
+![IngredientButton.png](../images/mobileComponents/IngredientButton.png)
+
+The `interface InputProps` is defining the props that can be passed to the `IngredientButton` component.
+Here's a breakdown of each prop:
+* `input` : the input of the text input
+* `placeholders` : the placeholders of the text input
+* `type` : the type of the text input
+* `color` : the color of the text input
+* `onSelect` : a function that will be called when the user select a placeholder
+* `onChangeText` : a function that will be called when the text of the input changes
+
+
+```Typescript
+interface IngredientsProps {
+    input : Input;
+    placeholders : Dict;
+    type : string;
+    color : string;
+    onSelect : (text: string) => void;
+    onChangeText : (text: string) => void;
+}
+```
+
+The `IngredientButton` component is a functional component that renders a view containing a text
+input field and an optional dropdown menu.
+
+```Typescript
+const IngredientButton: React.FC<IngredientsProps>  = ({input, placeholders, type, color, onSelect, onChangeText})
+```
+
+The `React.useState` hook is used to define and initialize state variables in the `IngredientButton`
+component.
+
+```Typescript
+    const [dropdownOpen, setDropdownOpen] = React.useState(false);
+    const [value, setValue] = React.useState("");
+```
+
+The function "openDropdown" sets the state variable "dropdownOpen" to true.
+
+```Typescript
+    const openDropdown = () => {
+        setDropdownOpen(true);
+    }
+```
+
+The function "closeDropdown" sets the state variable "dropdownOpen" to false.
+
+```Typescript
+    const closeDropdown = () => {
+        setDropdownOpen(false);
+    }
+```
+
+The function `getPlaceHolder` takes a placeholder string as input and returns the corresponding
+key from the `placeholders` object, or an empty string if no match is found.
+The `placeholder` parameter is a string that represents the placeholder value
+that you want to find the index of in the `placeholders` array.
+The function `getPlaceHolder` returns the index of the placeholder in the `placeholders` array if it exists, otherwise it returns an empty string.
+
+```Typescript
+    const getPlaceHolder = (placeholder: string) => {
+        for (let x in placeholders) {
+            if (placeholders[x] == placeholder) {
+                return x;
+            }
+        }
+        return "";
+    }
+```
+
+The function `displayPlaceHolders` returns an array of strings containing the values of the
+`placeholders` object. The function `displayPlaceHolders` returns an array of strings.
+
+```Typescript
+    const displayPlaceHolders = () => {
+        let array: string[] = [];
+        for (let x in placeholders) {
+            array.push(placeholders[x]);
+        }
+        return array;
+    }
+```
+
+The `return` statement is returning a JSX element that represents the structure and content of
+the `IngredientButton` component.
+
+```Typescript
+    return (
+      <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
+        <View >
+          <TextInput value={value} placeholder={input.label} multiline={true} textBreakStrategy="highQuality" placeholderTextColor={getWriteColor(color, true)} onChangeText={(text) => {onChangeText(text); setValue(text)}} style={[styles.input, { backgroundColor: getWriteColor(getWriteColor(color, true)), color: getWriteColor(color, true) }]}/>
+        </View>
+        {(type == "reaction") ? <View style={{alignSelf: "flex-end", marginRight : "15%"}} >
+          {(!dropdownOpen) ? (
+          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.ingredients]} onPress={openDropdown}>
+            <Text style={[{color: color}, styles.buttoningr]}>Add Ingredients</Text>
+          </TouchableOpacity>)
+          : (
+            <View style={[{backgroundColor: getWriteColor(color)}, styles.option]} >
+                <SelectDropdown data={displayPlaceHolders()} onSelect={(text) => {onSelect(text); setValue(value + "{" + getPlaceHolder(text) + "}"); closeDropdown()}} buttonTextStyle={[{color: color}, styles.buttoningr]} buttonStyle={[{backgroundColor: 'transparent', margin: -5}]}/>
+            </View>
+          )}
+        </View> : null}
+     </View>
+    )
+```
+
+The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. Each key-value pair in the `styles` object represents a specific style rule.
+
+```Typescript
+const styles = StyleSheet.create({
+    logo: {
+      height: 100,
+      marginTop: 10,
+      width: 100,
+      alignSelf: 'center',
+    },
+    button : {
+        marginVertical: 10,
+        width: '50%',
+        padding: 5,
+        borderRadius: 10,
+        marginBottom: 30,
+    },
+    ingredients : {
+      padding: 5,
+      marginVertical: 10,
+      width: '50%',
+      borderRadius: 10,
+      marginBottom: 30,
+    },
+    option : {
+        marginVertical: 10,
+        width: 'auto',
+        borderRadius: 10,
+        marginBottom: 30,
+      },
+    buttoningr: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      padding: 5,
+    },
+    buttonText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      padding: 5,
+    },
+    container: {
+      paddingTop: 30,
+    },
+    name: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      marginBottom: 40,
+    },
+    desc: {
+      fontSize: 20,
+      alignSelf: 'center',
+      width: '70%',
+      textAlign: 'center',
+      marginBottom: 40,
+    },
+    input: {
+      fontSize: 20,
+      alignSelf: 'center',
+      borderColor: '#D9D9D9',
+      borderWidth: 1,
+      width: '70%',
+      borderRadius: 10,
+      paddingLeft: 20,
+      paddingRight: 20,
+      paddingVertical: 10,
+      flexWrap: 'wrap',
+    },
+    action: {
+      paddingTop: 50,
+      alignContent: "center",
+      alignItems: "center",
+      height: "100%",
+    }
+  });
+```
+
+The line `export default IngredientButton;` is exporting the `IngredientButton` component as the
+default export of the module. This means that when another file imports this module, it can access
+the `IngredientButton` component directly without having to specify its name in curly braces. For
+example, in another file, you can import the `IngredientButton` component like this: `import
+IngredientButton from './IngredientButton'`.
+
+```Typescript
+export default IngredientButton;
+```
+
+For more information about this file you can check his complete code here : [IngredientButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/IngredientButton.tsx)
