@@ -1167,11 +1167,104 @@ export default SwitchNotifyMe;
 
 For more information about this file you can check his complete code here : [SwitchNotifyMe.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/SwitchNotifyMe.tsx)
 
+## [ActionCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionCard.tsx)
 
+The `ActionCard` component is the component that will be used to display the action card of the applets in the mobile application. It is a simple component that will display an action/reaction in a card.
 
+![ActionCard.png](../images/mobileComponents/ActionCard.png)
 
+The `CardProps` interface is defining the type of props that the `ActionCard` component expects to
+receive. It has three properties:
+* `name` : the name of the action/reaction
+* `color` : the color of the action/reaction
+* `description` : the description of the action/reaction
+* `onPress` : a function that will be called when the user presses the card
 
+```Typescript
+interface CardProps extends TouchableOpacityProps {
+    name   : string;
+    color   : string;
+    description    : string;
+    onPress: () => void;
+}
+```
 
+The following code is defining a functional component called `ActionCard`.
 
+```Typescript
+const ActionCard: React.FC<CardProps> = ({ name, color, description, onPress })
+```
 
+First, we set a color by default if the color is an empty string.
 
+```Typescript
+    if (color == "") {
+        color = "#EEEEEE";
+    }
+```
+
+Then we return a `TouchableOpacity` that contain the card.
+
+```Typescript
+    return (
+        <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+          <View>
+            <Text style={[styles.name, {color: getWriteColor(color)}]}>{name}</Text>
+            <Text style={[styles.desc, {color: getWriteColor(color)}]}>{description}</Text>
+          </View>
+        </TouchableOpacity>
+    );
+```
+
+The `const styles = StyleSheet.create({ ... })` block is defining a JavaScript object called
+`styles` that contains various style properties for the `ActionCard` component. Each property in
+the `styles` object represents a different style rule, such as `container`, `logo`, and `name`.
+These style rules define the visual appearance of the `ActionCard` component.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+      paddingTop: 20,
+      paddingHorizontal: 20,
+      marginVertical: 15,
+      width: '85%',
+      borderRadius: 10,
+      shadowColor: '#000',
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    logo: {
+        height: 70,
+        width: 70,
+        marginVertical: 10,
+        alignSelf: 'center',
+    },
+    name: {
+      fontSize: 25,
+      fontWeight: 'bold',
+      marginTop: 2,
+      marginBottom: 20,
+    },
+    desc: {
+        fontSize: 20,
+        marginTop: 5,
+        marginBottom: 20,
+      }
+  });
+```
+
+The line `export default ActionCard;` is exporting the `ActionCard` component as the default
+export of the module. This means that when another file imports this module, it can import the
+`ActionCard` component using the default import syntax, like `import ActionCard from
+'./ActionCard'`. 
+
+```Typescript
+export default ActionCard;
+```
+
+For more information about this file you can check his complete code here : [ActionCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionCard.tsx)

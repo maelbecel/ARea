@@ -1,8 +1,8 @@
 /* The `import` statement is used to import specific modules or components from external libraries or
 files. In this case, it is importing various components and types from the `react-native` and
 `react-native-gesture-handler` libraries. */
-import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text } from 'react-native';
 
+import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text } from 'react-native';
 
 /* The `interface CardProps` is defining a new interface called `CardProps` that extends the
 `TouchableOpacityProps` interface. It specifies the expected props for the `ActionCard` component. */

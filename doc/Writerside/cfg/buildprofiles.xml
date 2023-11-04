@@ -1,0 +1,12 @@
+<buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <variables>
+        <color-preset>Vivid</color-preset>
+        <primary-color>ruby</primary-color>
+        <header-logo>logo.png</header-logo>
+        <algolia-id>V9FHLHGL81</algolia-id>
+        <algolia-index>AreaR1</algolia-index>
+        <algolia-api-key>9a3bcb9768e8dd4d06af98a55a65bf09</algolia-api-key>
+        <web-root>http://etipech.me/</web-root>
+    </variables>
+</buildprofiles>
