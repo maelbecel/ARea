@@ -26,7 +26,7 @@ const LoginAPI  = async (email: string, password : string) : Promise<any> => {
             body: JSON.stringify({email, password}),
         });
         const json : any = await response.json();
-        SecureStore.setItemAsync('token_api', json.data);
+        await SecureStore.setItemAsync('token_api', json.data);
         return json;
     } catch (error) {
         if (error == 'TypeError: Network request failed') {
