@@ -1643,3 +1643,136 @@ export default DeleteAccount;
 ```
 
 For more information about this file you can check his complete code here : [DeleteAccount.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteAccount.tsx)
+
+## [DeleteModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteModal.tsx)
+
+The `DeleteModal` component is the component that will be used to display the delete modal in the mobile application.
+It allows the user to delete an applet.
+
+![DeleteModal.png](../images/mobileComponents/DeleteModal.png)
+
+`DeleteModalProps` is an interface that defines the props that can be passed to the `DeleteModal`
+component. Here's a breakdown of each prop:
+* `id` : the id of the applet
+
+```Typescript
+interface DeleteModalProps {
+    id: number;
+}
+```
+
+The code defines a functional component called `DeleteModal` using TypeScript and React.
+```Typescript
+const DeleteModal: React.FC<DeleteModalProps> = ({ id })
+```
+
+The following code is using the `React.useState` hook to define and initialize state variables in
+the `DeleteModal` component.
+
+```Typescript
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const navigation: any = useNavigation();
+```
+
+The function `deleteApplet` is an asynchronous function that sets the modal visibility to false,
+deletes an applet using the `DeleteApplet` function, and navigates to the "My Applets" screen.
+
+```Typescript
+    const deleteApplet = async () => {
+        try {
+            setModalVisible(false);
+            await DeleteApplet(id);
+            navigation.navigate('My Applets');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+```
+
+The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
+UI of the `DeleteModal` component.
+
+```Typescript
+return (
+        <View style={styles.container}>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Text style={{...styles.text, fontWeight: 'bold', color: 'red' }}>Delete Applet</Text>
+            </TouchableOpacity>
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={ styles.title }>Delete applet</Text>
+                  <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <View>
+                        <Text style={ styles.text }>Are you sure you want to delete this applet ?</Text>
+                        <Text style={ styles.subtitles }>This action cannot be undone.</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
+                        <Button title="Cancel" onPress={() => setModalVisible(false)} color="#363841" />
+                        <Button title="Delete" onPress={deleteApplet} color="#363841" />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+        </View>
+    );
+```
+
+The `const styles = StyleSheet.create({})` block is defining a JavaScript object that contains
+styles for different elements in the component. The `StyleSheet.create()` function is used to create
+a stylesheet object that optimizes the styles for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+        width: '80%',
+    },
+    text: {
+        fontSize: 22,
+    },
+    subtitles: {
+        fontSize: 18,
+        color: '#363841',
+        marginTop: 10,
+        fontWeight: 'bold',
+    },
+});
+```
+
+The line `export default DeleteModal;` is exporting the `DeleteModal` component as the default
+export of the file. This allows other files to import and use the `DeleteModal` component by using
+the `import` statement.
+
+```Typescript
+export default DeleteModal;
+```
+
+For more information about this file you can check his complete code here : [DeleteModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteModal.tsx)
