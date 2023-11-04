@@ -1,9 +1,7 @@
 // --- Librairies import --- //
 import Link from "next/link"
 import Image from "next/image"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import express, { Request, Response } from 'express';
-import fetch from 'node-fetch';
+import { Dispatch, SetStateAction, useState } from "react"
 
 // --- Interfaces --- //
 interface ButtonProps {
