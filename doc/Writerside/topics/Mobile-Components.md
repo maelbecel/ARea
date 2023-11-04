@@ -1268,3 +1268,378 @@ export default ActionCard;
 ```
 
 For more information about this file you can check his complete code here : [ActionCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionCard.tsx)
+
+
+## [ActionChoose.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionChoose.tsx)
+
+The `ActionChoose` component is the component that will be used to display the action choose of the applets in the mobile application. It is a simple component that will display the action choose of the applets.
+It's used at the creation/edit of an applet to show either "Action" or "Reaction" in a card if no slug exist.
+
+![ActionChoose-2.png](../images/mobileComponents/ActionChoose-2.png)
+
+Or a card that corresponding to the slug if he is defined.
+
+![ActionChoose-1.png](../images/mobileComponents/ActionChoose-1.png)
+
+The `interface CardProps` is defining a new interface called `CardProps` that extends the
+`TouchableOpacityProps` interface. It specifies the expected props for the `ActionCard` component.
+The `CardProps` interface has four properties:
+* `slug` : the slug of the action/reaction
+* `type` : the type of the card (action or reaction)
+* `onPress` : a function that will be called when the user presses the card
+* `onPressCross` : a function that will be called when the user presses the cross
+
+```Typescript
+interface CardProps extends TouchableOpacityProps {
+slug    : string;
+type    : string;
+onPress : () => void;
+onPressCross ?: () => void;
+}
+````
+
+The `ActionChoose` function is a React functional component that renders an action card based on the
+provided `type`, `slug`, and `onPress` props.
+
+```Typescript
+const ActionChoose: React.FC<CardProps> = ({ slug, type, onPress, onPressCross })
+```
+
+Then we create multiple function to render the component
+
+The function `getServiceFromSlug` takes a slug as input and returns the service name by splitting
+the slug at the first occurrence of a period. That return the service name extracted from the given slug.
+```Typescript
+const getServiceFromSlug = (slug: string): string => {
+    const service = slug.split(".")[0];
+    return service;
+}
+```
+
+The function `getActionName` takes in a `Service` object and a `slug` string, and returns the name
+of the action or reaction that matches the given slug. The `info` parameter is of type `Service`, which likely represents some
+information about a service or platform. It could contain properties like `actions` and `reactions`,
+which are arrays of objects representing different actions and reactions available in the service.
+The `slug` parameter is a string that represents the unique identifier of an action or reaction.
+The function `getActionName` returns a string.
+
+```Typescript
+const getActionName = (info : Service, slug: string): string => {
+    let i : number = 0;
+    if (info == null)
+        return "";
+    while (info.actions[i]) {
+        if (info.actions[i].slug === slug) {
+            return info.actions[i].name;
+        }
+        i++;
+    }
+    i = 0;
+    while (info.reactions[i]) {
+        if (info.reactions[i].slug === slug) {
+            return info.reactions[i].name;
+        }
+        i++;
+    }
+    return "";
+}
+```
+
+The function `ActionCard` returns a React component that renders a TouchableOpacity with a
+background color based on the name prop, and a Text component with a color based on the background
+color. \
+The name parameter is a string that represents the name of the action card.
+It could be any text that you want to display on the action card. \
+The `onPress` parameter is a function that will be called when the
+`TouchableOpacity` component is pressed. It is typically used to handle the action or event that
+should occur when the component is pressed. \
+It returns a TouchableOpacity component with a View and Text component inside. The TouchableOpacity
+component has an onPress event handler and a style prop that sets the background color based on the
+value of the name parameter. The Text component has a style prop that sets the color based on the
+result of the getWriteColor function.
+
+```Typescript
+const ActionCard = (name : string, onPress : any) => {
+    if (name === "Action") {
+        var color = "#D9D9D9"
+    } else {
+        var color = "#363841"
+    }
+    return (
+        <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+            <View>
+                <Text style={[styles.area, {color: getWriteColor(color)}]}>{name}</Text>
+            </View>
+        </TouchableOpacity>
+    )
+}
+```
+
+The `ActionChoose` use the `React.useState` hook to define and initialize state variables in the
+`ActionChoose` component.
+
+```Typescript
+    const [info, setInfo] = React.useState<any>(null);
+    const [action, setAction] = React.useState<string>("");
+```
+
+The `React.useEffect` hook is used to perform side effects in a functional component. In this
+case, the `useEffect` hook is being used to fetch data and update the component's state based on
+the `type` and `slug` props.
+
+```Typescript
+     React.useEffect(() => {
+      if (type !== 'action' && type !== 'reaction' && slug === "default") {
+        return;
+      }
+      const fetchData = async () => {
+        if (slug === "default") {
+            return;
+        }
+        try {
+          const serviceInfo = await ServiceInfo(getServiceFromSlug(slug));
+          setInfo(serviceInfo);
+          setAction(getActionName(serviceInfo, slug));
+        } catch (error) {
+          console.error("Error while getting info : ", error);
+        }
+      };
+
+      fetchData();
+    }, [type, slug]);
+```
+
+The code block is checking if the `type` prop is equal to `'action'` and the `slug` prop is
+equal to `"default"`. If this condition is true, it returns an `ActionCard` component with the
+name `'Action'` and the `onPress` prop.
+
+```Typescript
+    if (type === 'action' && slug === "default") {
+      return ActionCard('Action', onPress);
+    } else if (type === 'reaction' && slug === "default") {
+      return ActionCard('Reaction', onPress);
+    }
+```
+
+The line `const width = (type == "action") ? '70%' : '60%'` is assigning a value to the `width`
+variable based on the condition `(type == "action")`.
+```Typescript
+const width = (type == "action") ? '70%' : '60%'
+```
+
+
+The code block is conditionally rendering a `TouchableOpacity` component with a specific style
+and content based on the value of the `info` variable. If the `info` variable is `null`, nothing happens.
+
+```Typescript
+    if (info) {
+        return (
+            <TouchableOpacity onPress={onPress} style={[{ backgroundColor: info.decoration.backgroundColor }, styles.container]}>
+                <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+                    <Text style={[styles.ifthen, { color: getWriteColor(info.decoration.backgroundColor) }]}>{(type === "action") ? "If" : "Then"}</Text>
+                    <View style={{flexDirection: 'row', alignItems: "center", width: "45%"}}>
+                        <Image source={{ uri: info.decoration.logoUrl, cache: 'force-cache' }} style={styles.logo} />
+                        <Text style={[styles.desc, { color: getWriteColor(info.decoration.backgroundColor) }]}>{action}</Text>
+                    </View>
+                    <Icon name="close" size={30} color={getWriteColor(info.decoration.backgroundColor)} onPress={onPressCross} />
+                </View>
+            </TouchableOpacity>
+
+        );
+    }
+```
+
+The `const styles = StyleSheet.create({ ... })` block is defining a JavaScript object called
+`styles` that contains various style properties for the `ActionCard` component. Each property in
+the `styles` object represents a different style rule, such as `container`, `logo`, and `name`.
+These style rules define the visual appearance of the `ActionCard` component.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+      paddingHorizontal: 20,
+      marginVertical: 15,
+      width: '85%',
+      height: 85,
+      alignContent: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      shadowColor: '#000',
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    logo: {
+        height: 40,
+        width: 40,
+        marginVertical: 10,
+        marginRight: 10,
+        alignSelf: 'center',
+    },
+    area: {
+        paddingTop: 15,
+        fontSize: 40,
+        alignSelf: 'center',
+        fontWeight: 'bold',
+        marginTop: 2,
+        marginBottom: 20,
+      },
+    ifthen: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginRight: "-10%",
+    },
+    name: {
+      fontSize: 25,
+      fontWeight: 'bold',
+      marginTop: 2,
+      marginBottom: 20,
+    },
+    desc: {
+        flexWrap: 'wrap',
+        textAlign: 'left',
+        fontSize: 20,
+        fontWeight: 'bold',
+      }
+  });
+```
+
+The line `export default ActionChoose;` is exporting the `ActionChoose` component as the default
+export of the module. This means that when another file imports this module, it can import the
+`ActionChoose` component using the default import syntax, like `import ActionChoose from
+'./ActionChoose'`. 
+
+```Typescript
+export default ActionChoose;
+```
+
+For more information about this file you can check his complete code here : [ActionChoose.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionChoose.tsx)
+
+## [DeleteAccount.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteAccount.tsx)
+
+The `DeleteAccount` component is the component that will be used to display the delete account page in the mobile application. It is a simple component that will display the delete account modal.
+
+![DeleteAccount.png](../images/mobileComponents/DeleteAccount.png)
+
+The code defines a functional component called `DeleteAccount` using TypeScript and React.
+
+```Typescript
+const DeleteAccount: React.FC = ()
+```
+
+The following code is using the `React.useState` hook to define and initialize state variables in
+the `DeleteAccount` component.
+
+```Typescript
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const navigation: any = useNavigation();
+```
+
+The function `handleDelete` deletes a user, removes a token from SecureStore, and navigates to
+the Login screen.
+
+```Typescript
+ const handleDelete = async () => {
+        try {
+          await DeleteUser();
+          await SecureStore.deleteItemAsync('token_api');
+          navigation.navigate('Login');
+        } catch (error) {
+          console.error(error);
+        }
+    };
+```
+
+The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
+UI of the `DeleteAccount` component.
+
+```Typescript
+    return (
+        <View style={styles.container}>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Text style={styles.text}>Delete Account</Text>
+            </TouchableOpacity>
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={ styles.title }>Delete account</Text>
+                  <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <View>
+                        <Text style={ styles.text }>Are you sure you want to delete your account ?</Text>
+                        <Text style={ styles.subtitles }>This action cannot be undone.</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
+                        <Button title="Cancel" onPress={() => setModalVisible(false)} color="#363841" />
+                        <Button title="Delete" onPress={handleDelete} color="red" />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+        </View>
+    );
+```
+
+The `const styles = StyleSheet.create({})` block is defining a JavaScript object that contains
+styles for different elements in the component. The `StyleSheet.create()` function is used to create
+a stylesheet object that optimizes the styles for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+        width: '80%',
+    },
+    text: {
+        fontSize: 16,
+        color: 'red',
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    subtitles: {
+        fontSize: 18,
+        color: '#363841',
+        marginTop: 10,
+        fontWeight: 'bold',
+    },
+});
+```
+The line `export default DeleteAccount;` is exporting the `DeleteAccount` component as the default
+export of the file. This allows other files to import and use the `DeleteAccount` component by using
+the `import` statement.
+
+```Typescript
+export default DeleteAccount;
+```
+
+For more information about this file you can check his complete code here : [DeleteAccount.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteAccount.tsx)

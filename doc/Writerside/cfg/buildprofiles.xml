@@ -9,4 +9,9 @@
         <algolia-api-key>9a3bcb9768e8dd4d06af98a55a65bf09</algolia-api-key>
         <web-root>http://etipech.me/</web-root>
     </variables>
+    <build-profile instance="hi">
+        <variables>
+            <noindex-content>false</noindex-content>
+        </variables>
+    </build-profile>
 </buildprofiles>
