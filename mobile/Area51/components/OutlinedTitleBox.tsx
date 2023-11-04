@@ -94,6 +94,9 @@ const OutlinedTitleBox: React.FC<OutlinedTitleBoxProps> = ({onChangeText, value,
   );
 };
 
+/* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. These styles are then used to style the components in the `OutlinedTitleBox`
+component. */
 const styles = StyleSheet.create({
   container: {
     borderWidth: 3, // Largeur de la bordure
@@ -115,4 +118,8 @@ const styles = StyleSheet.create({
   },
 });
 
+/* The line `export default OutlinedTitleBox;` is exporting the `OutlinedTitleBox` component as the
+default export of the file. This means that when another file imports this module, it can import the
+`OutlinedTitleBox` component using any name of its choice. For example, in another file, you can
+import the `OutlinedTitleBox` component like this: */
 export default OutlinedTitleBox;
