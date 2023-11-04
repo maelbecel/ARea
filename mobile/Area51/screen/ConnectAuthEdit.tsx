@@ -167,6 +167,7 @@ const ConnectAuthEdit = ({ navigation, route }) => {
     return (
       <View key={input.name} style={{marginBottom : 30, width:"100%"}}>
         <View >
+          <Text style={[styles.select, { color: getWriteColor(color), width: "30%" }]}>{input.label}:</Text>
           <SelectDropdown defaultValue={input.options[0]} data={input.options.sort((a : string, b : string) => a.toLowerCase().localeCompare(b.toLowerCase()))} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
         </View>
      </View>
@@ -461,6 +462,12 @@ const styles = StyleSheet.create({
     width: '70%',
     textAlign: 'center',
     marginBottom: 40,
+  },
+  select: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+    marginTop: 10,
   },
   input: {
     fontSize: 20,

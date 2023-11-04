@@ -2,18 +2,26 @@ import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputMo
 import React from 'react';
 import ServiceInfo from '../../api/ServiceInfo';
 
+/* The `interface CardProps` is defining the props that can be passed to the `LogoApplet` component. It
+extends the `TouchableOpacityProps` interface, which includes all the props that can be passed to
+the `TouchableOpacity` component from React Native. */
 interface CardProps extends TouchableOpacityProps {
     slug    : string;
     onPress ?: () => void;
     color   ?: string;
 }
 
+/* The code defines a functional component called `LogoApplet` which takes in props of type
+`CardProps`. The component renders a `TouchableOpacity` or `View` depending on whether the `onPress`
+prop is defined or not. */
 const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) => {
-
     const [bgColor, setColor] = React.useState<string>("EEEEEE");
     const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
     const [loading, setLoading] = React.useState<boolean>(true);
 
+    /* The `React.useEffect` hook is used to perform side effects in functional components. In this
+    case, it is used to fetch information from the `ServiceInfo` API and update the component's
+    state. */
     React.useEffect(() => {
         const fetchInfos = async () => {
             const res = await ServiceInfo(slug);
@@ -24,6 +32,12 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) =
         fetchInfos();
     }, []);
 
+    /**
+     * The function checks if a given color is light or not.
+     * @param {string} color - The `color` parameter is a string representing a color.
+     * @returns a boolean value. It returns true if the color is considered light, and false if it is
+     * not.
+     */
     const isLight = (color: string) => {
         if (color.charAt(0) === '#') {
             color = color.substr(1);
@@ -37,6 +51,8 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) =
         return true;
     }
 
+    /* The code block is checking if the `loading` state is `false`. If it is `false`, it means that
+    the data has been fetched and the component is ready to render. */
     if (!loading) {
         return (
             onPress ? ( // Vérifiez si onPress est défini
@@ -53,6 +69,8 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) =
 }
 
 
+/* The `const styles` variable is an object that contains style definitions for the `LogoApplet`
+component. It uses the `StyleSheet.create` method from React Native to create a stylesheet object. */
 const styles = StyleSheet.create({
     container: {
         alignContent: 'center',
