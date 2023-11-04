@@ -51,6 +51,8 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) =
         return true;
     }
 
+    /* The code block is checking if the `loading` state is `false`. If it is `false`, it means that
+    the data has been fetched and the component is ready to render. */
     if (!loading) {
         return (
             onPress ? ( // Vérifiez si onPress est défini
@@ -67,6 +69,8 @@ const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) =
 }
 
 
+/* The `const styles` variable is an object that contains style definitions for the `LogoApplet`
+component. It uses the `StyleSheet.create` method from React Native to create a stylesheet object. */
 const styles = StyleSheet.create({
     container: {
         alignContent: 'center',
