@@ -13,7 +13,10 @@ const HomeDownloadAPKContainer = () => {
                 <div className="font-medium">
                     Automate from anywhere, anytime. Our iOS and Android apps make it simple.
                 </div>
-                <Button callBack={() => { router.push("/install-step") }} text="Download APK" backgroundColor={"#363841"} textColor={"#ffffff"} size={true} />
+
+                <a href='app.apk' download={'app.apk'} className="bg-[#363841] text-white font-bold items-center justify-center flex rounded-[50px] w-2/3 p-5">
+                    Download APK
+                </a>
             </div>
         </div>
     )
