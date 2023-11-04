@@ -67,8 +67,6 @@ const DeleteProfile = async (token: string, router: NextRouter): Promise<boolean
             }
         });
 
-        console.log("response -> ", response.status);
-
         if (response.status === 400) {
             console.log("[DELETE] .../user/me (Error: 400): \"Bad user id\".");
             return false;

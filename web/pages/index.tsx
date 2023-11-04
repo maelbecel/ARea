@@ -3,7 +3,6 @@ import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 
 // --- Components --- //
-import SearchService from '../components/Service/SearchService';
 import Footer from '../components/Footer/Footer';
 import { useUser } from '../utils/api/user/Providers/UserProvider';
 import { GetProfile } from '../utils/api/user/me';
@@ -14,11 +13,18 @@ import HomeDownloadAPKContainer from '../components/HomePage/Container/HomeDownl
 import PageHeaders from '../components/HomePage/Headers';
 import HomeExploreContainer from '../components/HomePage/Container/HomeExploreContainer';
 import { useToken } from '../utils/api/user/Providers/TokenProvider';
+import { useRouter } from 'next/router';
 
 const IndexPage: NextPage = () => {
+  // --- Variables --- //
   const [connected, setConnected] = useState<boolean>(false);
+
+  // --- Providers --- //
   const { user, setUser } = useUser();
   const { token, setToken } = useToken();
+
+  // --- Router --- //
+  const router = useRouter();
 
   useEffect(() => {
     setToken(localStorage.getItem("token") as string);
@@ -28,6 +34,23 @@ const IndexPage: NextPage = () => {
     else
       setConnected(false);
   }, [setToken, token]);
+
+  useEffect(() => {
+    const queryToken = router.query.token as string;
+
+    if (queryToken === undefined)
+      return;
+    setToken(queryToken);
+
+    localStorage.setItem("token", queryToken);
+
+    setConnected(true);
+    setUser({
+      ...user,
+      loginWithService: true
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
 
   useEffect(() => {
     if (connected === false)
