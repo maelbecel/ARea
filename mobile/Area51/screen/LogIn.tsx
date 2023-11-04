@@ -134,4 +134,6 @@ const styles = StyleSheet.create({
   },
 });
 
+/* The `export default Login;` statement is exporting the `Login` component as the default export of
+the module. This allows other modules to import and use the `Login` component in their code. */
 export default Login;

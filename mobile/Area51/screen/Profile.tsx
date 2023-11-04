@@ -28,6 +28,15 @@ const Profile = ({navigation}) => {
   const [services, setServices] = useState<string[]>([]);
   const [servicesCon, setServicesCon] = useState<string[]>([]);
 
+  /**
+   * The function `orderByFirstConnected` takes two arrays, `connected` and `allserv`, and returns a
+   * new array that contains the elements from `connected` followed by the elements from `allserv` that
+   * are not already in `connected`.
+   * @param {string[]} connected - An array of strings representing the services that are currently
+   * connected.
+   * @param {string[]} allserv - An array of all available servers.
+   * @returns The function `orderByFirstConnected` returns an array of strings.
+   */
   const orderByFirstConnected = (connected : string[], allserv : string[]) => {
     let tmp : string[] = [];
     for (let i = 0; i < connected.length; i++) {
@@ -101,6 +110,10 @@ const Profile = ({navigation}) => {
     }
   };
 
+  /**
+   * The function `handleDelete` deletes a user, removes a token from SecureStore, and navigates to the
+   * Login screen in a React Native app.
+   */
   const handleDelete = async () => {
     try {
       await DeleteUser();
@@ -111,8 +124,12 @@ const Profile = ({navigation}) => {
     }
   };
 
-  /**
-   */
+
+ /**
+  * The function handles a button press event, retrieves user data from AsyncStorage, updates the
+  * user's profile using an API call, stores the API token in SecureStore, and displays success or
+  * error messages.
+  */
   const handlePress = async () => {
     try {
       const email = await AsyncStorage.getItem('email');
@@ -130,6 +147,13 @@ const Profile = ({navigation}) => {
     }
   };
 
+  /**
+   * The function `displayServices` maps over an array of services and returns a JSX element for each
+   * service, either with an `onPress` function that logs out of the service if it is included in
+   * `servicesCon`, or with an `onPress` function that logs into the service if it is not included in
+   * `servicesCon`.
+   * @returns The function `displayServices` returns an array of JSX elements.
+   */
   const displayServices = () => {
     if (services == undefined || services == null) return;
     return services.map((service) => ((servicesCon.includes(service)) ?
