@@ -1,18 +1,25 @@
 // --- Librairies import --- //
-import type { NextPage } from "next";
 import { useEffect, useState } from "react";
+import type { NextPage } from "next";
+import Link from "next/link";
+
+// --- API --- //
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
+import { GetProfile } from "../../utils/api/user/me";
+
+// --- Interface --- //
+import { UserProfile } from "../../utils/api/user/interface/interface";
 
 // --- Components import --- //
-import { GetProfile } from "../../utils/api/user/me";
-import Icon from "../../components/NavBar/components/Icon";
-import { useUser } from "../../utils/api/user/Providers/UserProvider";
-import { UserProfile } from "../../utils/api/user/interface/interface";
-import { NavigateButton } from "../../components/NavBar/components/Button";
+    // --- NavBar --- //
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
-import Profile from "../../components/NavBar/components/Profile";
-import Footer from "../../components/Footer/Footer";
+import { NavigateButton } from "../../components/NavBar/components/Button";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
-import Link from "next/link";
+import Profile from "../../components/NavBar/components/Profile";
+import Icon from "../../components/NavBar/components/Icon";
+    // --- Footer --- //
+import Footer from "../../components/Footer/Footer";
 
 const Title = ({ title } : { title: string }) => {
     return (
@@ -54,32 +61,37 @@ const DescriptionWithNavigation = ({ title, description, hyperlink, textOfLink }
 };
 
 const IndexPage: NextPage = () => {
-    
-    const [token, setToken] = useState<string>('');
-    const [connected  , setConnected] = useState<boolean>(false);
-    const { user, setUser } = useUser();
+    // --- States --- //
+    const [connected, setConnected] = useState<boolean>(false);
+
+    // --- Providers --- //
+    const { token, setToken } = useToken();
+    const { user , setUser  } = useUser();
 
     useEffect(() => {
         setToken(localStorage.getItem("token") as string);
-        if (token) {
+    
+        if (token)
             setConnected(true);
-            console.log("token -> ", token);
-        } else
-            // set router to login page
+        else
             setConnected(false);
-    }, [token]);
+    }, [token, setToken]);
 
     useEffect(() => {
+        if (connected === false)
+            return;
+
         const getProfile = async (token: string) => {
             setUser(await GetProfile(token) as UserProfile);
         }
 
         if (user?.email === "" || user?.email === null)
             getProfile(token);
-    }, [setUser, token, user]);
+    }, [setUser, token, user, connected]);
 
     return (
         <>
+            {/* --- NavBar --- */}
             {connected ? (
                 <NavBar>
                 <LeftSection>
@@ -102,6 +114,8 @@ const IndexPage: NextPage = () => {
                 </RightSection>
                 </NavBar>
             )}
+    
+            {/* --- Body --- */}
             <div className="min-h-screen flex flex-col w-[90%] md:w-3/4 mx-auto justify-start py-[2%] overflow-x-hidden">
                 <Title title={"Contact"} />
                 <Description title={"lucas.dupont@epitech.eu"}  description={"Backend developer, server"} />
@@ -109,14 +123,16 @@ const IndexPage: NextPage = () => {
                 <Description title={"enzo.garnier@epitech.eu"}  description={"Frontend developer, mobile"} />
                 <Description title={"ethan1.hernou@epitech.eu"} description={"Frontend developer, web"} />
                 <Description title={"jovan.hillion@epitech.eu"} description={"Frontend developer, web"} />
-
+    
                 <Title title={"Project"} />
                 <DescriptionWithNavigation title={"Github of the project"}  description={"You can find the github of the project "} hyperlink={"https://github.com/maelbecel/ARea"} textOfLink={"here"} />
                 <Description title={"Help"}  description={"Explore help articles about many AREA51 topics and file support tickets."} />
             </div>
+    
+            {/* --- Footer --- */}
             <Footer/>
         </>
-    )
+    );
 }
 
 export default IndexPage;

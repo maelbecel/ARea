@@ -55,6 +55,7 @@ const IndexPage: NextPage = () => {
 
     return (
         <>
+            {/* --- NavBar --- */}
             <NavBar>
                 <LeftSection>
                     <Icon />
@@ -65,11 +66,17 @@ const IndexPage: NextPage = () => {
                     <Profile email={user?.email} />
                 </RightSection>
             </NavBar>
+    
+            {/* --- Body --- */}
             <div className="min-h-screen flex flex-col items-center">
+                {/* --- Profile --- */}
                 <div className="w-[75%] lg:w-[30%]">
+                    {/* --- Profile Picture --- */}
                     <div className="my-[32px]">
                         <ProfilePicture/>
                     </div>
+                        
+                    {/* --- Form --- */}
                     {user &&
                         <FormProfile
                             username={username}
@@ -81,13 +88,17 @@ const IndexPage: NextPage = () => {
                         />
                     }
                     <UpdateButton username={username} email={email} token={token} setToken={setToken}/>
+    
+                    {/* --- Linked Accounts --- */}
                     <LinkedAccounts />
                 </div>
+    
+                {/* --- Logout & Delete --- */}
                 <LogoutButton/>
                 <DeleteButton token={token}/>
             </div>
         </>
-    )
+    );
 }
 
 export default IndexPage;

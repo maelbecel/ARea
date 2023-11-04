@@ -1,26 +1,28 @@
 // --- Librairies import --- //
-import type { NextPage } from "next";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import type { NextPage } from "next";
+
+// --- API --- //
+import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+
+// --- Interface --- //
+import { ActionApplet, ReactionApplet, defaultActionApplet, defaultReactionsApplet } from "../../components/Applet/Interface/interface";
 
 // --- Components --- //
 import CreatePages from "../../components/Applet/Create/Pages/CreatePages";
-import Footer from "../../components/Footer/Footer";
-import { useEffect, useState } from "react";
 import SearchServicePages from "../../components/Applet/Create/Pages/SearchServicePages";
-import { ActionApplet, ReactionApplet, defaultActionApplet, defaultReactionsApplet } from "../../components/Applet/Interface/interface";
 import AllActionFromServicePages from "../../components/Applet/Create/Pages/AllActionFromServicePages";
 import ServiceConnexionPages from "../../components/Applet/Create/Pages/ServiceConnexionPages";
 import FillActionInputsPages from "../../components/Applet/Create/Pages/FillActionInputsPages";
 import ValidatePages from "../../components/Applet/Create/Pages/ValidatePages";
-
-// --- Providers --- //
-import { useToken } from "../../utils/api/user/Providers/TokenProvider";
+import Footer from "../../components/Footer/Footer";
 
 const IndexPage: NextPage = () => {
     // --- Variables --- //
-    const [pages, setPages] = useState<number>(-1); // The page we are on
+    const [pages    , setPages] = useState<number>(-1); // The page we are on
     const [editMode, setEditMode] = useState<boolean>(false);
-    const [back, setBack] = useState<boolean>(false);
+    const [back    , setBack] = useState<boolean>(false);
 
     // --- Providers Hookers --- //
     const [token, setToken] = useState<string | null | undefined>("");
@@ -151,10 +153,10 @@ const IndexPage: NextPage = () => {
             {(pages === 3) ? (<ServiceConnexionPages       setPages={setPages} />) : null}
             {(pages === 4) ? (<FillActionInputsPages       setPages={setPages} EditMode={editMode} setAction={setAction} setReactions={setReactions} setEditMode={setEditMode} />) : null}
             {(pages === 5) ? (<ValidatePages               setPages={setPages} />) : null}
-
+    
             {pages !== 3 && pages !== 4 && <Footer />}
         </>
-    )
+    );
 }
 
 export default IndexPage;

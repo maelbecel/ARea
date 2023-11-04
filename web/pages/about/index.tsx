@@ -1,30 +1,59 @@
 // --- Librairies import --- //
-import Image from 'next/image';
-import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import type { NextPage } from "next";
+import Image from 'next/image';
+
+// --- API --- //
+import { useToken } from '../../utils/api/user/Providers/TokenProvider';
+import { useUser } from "../../utils/api/user/Providers/UserProvider";
+import { GetProfile } from "../../utils/api/user/me";
+
+// --- Interface --- //
+import { UserProfile } from "../../utils/api/user/interface/interface";
 
 // --- Components import --- //
-import { GetProfile } from "../../utils/api/user/me";
-import Icon from "../../components/NavBar/components/Icon";
-import { NavigateButton } from "../../components/NavBar/components/Button";
+    // --- NavBar --- //
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
-import Profile from "../../components/NavBar/components/Profile";
-import Footer from "../../components/Footer/Footer";
+import { NavigateButton } from "../../components/NavBar/components/Button";
 import SimpleLink from "../../components/NavBar/components/SimpleLink";
+import Profile from "../../components/NavBar/components/Profile";
+import Icon from "../../components/NavBar/components/Icon";
+    // --- Body --- //
 import Button from "../../components/Button/Button";
+    // --- Footer --- //
+import Footer from "../../components/Footer/Footer";
 
-// --- API import --- //
-import { UserProfile } from "../../utils/api/user/interface/interface";
-import { useUser } from "../../utils/api/user/Providers/UserProvider";
+const Container = ({ title, subtitle, description, url, alt } : { title: string, subtitle: string, description: string, url: string, alt: string }) => {
+    return (
+        <>
+            <div className="flex flex-col justify-start p-[5%] h-[50%]">
+                <div className="flex flex-col">
+                    <div className="text-[18px] font-bold text-[#363841] pb-[10%]">
+                        {subtitle}
+                    </div>
+                    <div className="text-[28px] font-bold text-[#363841] pb-[10%]">
+                        {title}
+                    </div>
+                    <div className="text-[24px] font-bold text-[#363841] pb-[10%]">
+                        {description}
+                    </div>
+                </div>
+            </div>
+            <div className="flex justify-center p-[5%] w-auto h-[50%]">
+                <Image src={url} alt={alt} width={500} height={500}/>
+            </div>
+        </>
+    );
+};
 
 const IndexPage: NextPage = () => {
     // --- Variables --- //
-    const [token    , setToken]     = useState<string>('');
     const [connected, setConnected] = useState<boolean>(false);
 
     // --- Providers --- //
-    const { user, setUser } = useUser();
+    const { user , setUser  } = useUser();
+    const { token, setToken } = useToken();
 
     // --- Router --- //
     const router = useRouter();
@@ -33,33 +62,32 @@ const IndexPage: NextPage = () => {
 
     useEffect(() => {
         setToken(localStorage.getItem("token") as string);
-        if (token) {
+    
+        if (token)
             setConnected(true);
-        } else {
-            // set router to login page
+        else
             setConnected(false);
-        }
-    }, [token]);
+    }, [token, setToken]);
 
     useEffect(() => {
+        if (connected === false)
+            return;
+    
         const getProfile = async (token: string) => {
             setUser(await GetProfile(token) as UserProfile);
         }
-
+    
         if (user?.email === "" || user?.email === null)
             getProfile(token);
-    }, [setUser, token, user]);
+    }, [token, user, setUser, connected]);
 
     const handleClick = () => {
         router.push("/help")
     }
 
-    const handleDownloadApk = () => {
-        console.log("download apk");
-    }
-
     return (
         <>
+            {/* --- NavBar --- */}
             {connected ? (
                 <NavBar>
                 <LeftSection>
@@ -82,42 +110,23 @@ const IndexPage: NextPage = () => {
                 </RightSection>
                 </NavBar>
             )}
+    
+            {/* --- Body --- */}
             <div className="min-h-screen flex flex-col w-3/5 mx-auto justify-start py-[2%]">
+                {/* Title */}
                 <div className="text-[28px] md:text-[48px] font-bold text-[#363841] flex justify-center text-center pb-[10%]">
                     <div>Area51 helps all your apps and devices work better together</div>
                 </div>
+    
+                {/* Container */}
                 <div className="flex flex-col justify-center">
                     <div className="flex flex-col md:grid md:grid-cols-4 w-[100%]">
-                        <div className="flex flex-col justify-start p-[5%] h-[50%]">
-                            <div className="flex flex-col">
-                                <div className="text-[18px] font-bold text-[#363841] pb-[10%]">
-                                    what are
-                                </div>
-                                <div className="text-[28px] font-bold text-[#363841] pb-[10%]">
-                                    Applets?
-                                </div>
-                                <div className="text-[24px] font-bold text-[#363841] pb-[10%]">
-                                    Applets bring your services together to create remarkable, new experiences.
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex justify-center p-[5%] w-auto h-[50%]">
-                            <Image src="/Images/applet.svg" alt="applet" width={500} height={500}/>
-                        </div>
-                        <div className="flex flex-col justify-start p-[5%]">
-                            <div className="text-[18px] font-bold text-[#363841] pb-[10%]">
-                                what are
-                            </div>
-                            <div className="text-[28px] font-bold text-[#363841] pb-[10%]">
-                                Services?
-                            </div>
-                            <div className="text-[24px] font-bold text-[#363841] pb-[10%]">
-                                Services are the apps and devices you use every day. There are countless useful ways to connect services with Applets.
-                            </div>
-                        </div>
-                        <div className="flex justify-center p-[5%] w-auto h-[50%]">
-                            <Image src="/Images/service.svg" alt="service" width={500} height={500}/>
-                        </div>
+                        <Container title={"Applets"} subtitle={'what are'} description={'Applets bring your services together to create remarkable, new experiences.'}
+                                    url={"/Images/applet.svg"} alt={"applet"} 
+                        />
+                        <Container title={"Services ?"} subtitle={'what are'} description={'Services are the apps and devices you use every day. There are countless useful ways to connect services with Applets.'}
+                                    url={"/Images/service.svg"} alt={"Services"}
+                        />
                     </div>
                     <div className="flex flex-col items-center py-[10%]">
                         <div className="flex justify-center w-[80%] sm:w-[40%] md:w-[30%] lg:w-[25%]">
@@ -132,9 +141,11 @@ const IndexPage: NextPage = () => {
                     </div>
                 </div>
             </div>
+    
+            {/* --- Footer --- */}
             <Footer/>
         </>
-    )
-}
+    );
+};
 
 export default IndexPage;
