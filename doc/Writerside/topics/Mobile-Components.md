@@ -890,7 +890,282 @@ export default SearchApplet;
 
 For more information about this file you can check his complete code here : [SearchApplet.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/SearchApplet.tsx)
 
+## [Switch.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/Switch.tsx)
 
+The `ToggleSwitch` component is the component that will be used to display the toggle switch of the applets in the mobile application. It is a simple component that will display the toggle switch of the applets.
+
+![Switch.png](../images/mobileComponents/Switch.png)
+
+The `ToggleSwitchProps` interface defines the props that can be passed to the `ToggleSwitch`
+component. Here's a breakdown of each prop:
+* `isChecked` : a boolean that indicates if the switch is checked or not
+* `isDisabled` : a boolean that indicates if the switch is disabled or not
+* `yesLabel` : the label of the switch when it is checked
+* `noLabel` : the label of the switch when it is not checked
+* `bgColor` : the background color of the switch
+* `toggleColor` : the color of the switch
+* `darkMode` : a boolean that indicates if the switch is in dark mode or not
+* `bigSwitch` : a boolean that indicates if the switch is big or not
+* `onChange` : a function that will be called when the switch is changed
+
+
+```Typescript
+interface ToggleSwitchProps {
+    isChecked: boolean;
+    isDisabled: boolean;
+    yesLabel: string;
+    noLabel: string;
+    bgColor: string;
+    toggleColor?: string;
+    darkMode?: boolean;
+    bigSwitch?: boolean;
+    onChange?: () => void;
+}
+```
+
+The `ToggleSwitch` component is a functional component that takes the `ToggleSwitchProps` as a
+parameter.
+
+```Typescript
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, isDisabled, yesLabel, noLabel, bgColor, toggleColor, darkMode = true, bigSwitch = false, onChange })
+```
+
+The code is using the `React.useState` hook to define and initialize state variables in the
+`ToggleSwitch` component.
+
+```Typescript
+    const [isChekedState, setIsChecked] = useState<boolean>(false);
+    const [darkenBg, setDarkenColor] = useState<string>(bgColor);
+```
+
+We can now create the `darkenColor` function that takes a color, a factor, and a dark mode flag, and returns a darkened version of the color if dark mode is enabled.
+The `color` parameter is a string representing a color in hexadecimal format (e.g., "#FF0000" for red).
+The `factor` parameter determines how much the color should be darkened. It is a number that represents the intensity of darkening. A higher factor value will result in a darker color.
+And a boolean value indicating whether the dark mode is enabled or not.
+The function `darkenColor` returns a string representing the darkened color.
+
+```Typescript
+export const darkenColor = (color: string, factor: number, darkMode: boolean): string => {
+    if (!darkMode) {
+        return color;
+    }
+    if (!color) {
+        return "#FFFFFF";
+    }
+    /**
+     * The function `hexToRgb` takes a hexadecimal color code as input and returns an array of RGB
+     * values representing the color.
+     * @param {string} hex - The `hex` parameter is a string representing a hexadecimal color value.
+     * @returns The function `hexToRgb` returns an array of numbers representing the RGB values of a
+     * given hexadecimal color code. If the input `hex` is a valid string, the function converts it to
+     * an array of numbers and returns it. If the input `hex` is not a valid string or is empty, the
+     * function returns `[0, 0, 0]`, representing black.
+     */
+    const hexToRgb = (hex: string): number[] => {
+        if (hex) {
+            const match = hex.match(/\w\w/g);
+            if (match) {
+                return match.map((x) => parseInt(x, 16));
+            }
+        }
+        return [0, 0, 0];
+    };
+    const rgbToHex = (r: number, g: number, b: number): string =>
+        `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+    const [r, g, b] = hexToRgb(color);
+    const darkenedR = Math.max(0, Math.floor(r / factor));
+    const darkenedG = Math.max(0, Math.floor(g / factor));
+    const darkenedB = Math.max(0, Math.floor(b / factor));
+    const darkenedHex = rgbToHex(darkenedR, darkenedG, darkenedB);
+    return rgbToHex(darkenedR, darkenedG, darkenedB);
+};
+```
+
+The `useEffect` hook is used to perform side effects in a functional component. In this case,
+the `useEffect` hook is used to update the state variables `isChekedState` and `darkenBg`
+whenever the `isChecked` prop changes.
+
+```Typescript
+    useEffect(() => {
+        setIsChecked(isChecked);
+        setDarkenColor(darkenColor(bgColor, 1.2, darkMode));
+    }, [isChecked]);
+```
+The function `handleSwitchChange` updates the state of a switch component and calls an
+asynchronous function to update the enable status of an applet if a condition is met.
+
+```Typescript
+    const handleSwitchChange = async () => {
+        setIsChecked(!isChekedState);
+        if (bigSwitch) {
+            await UpdateAppletEnableWithID(await AsyncStorage.getItem("appletID"), !isChekedState);
+        };
+    }
+```
+
+The `return` statement in the code is rendering the JSX elements based on the value of the
+`bigSwitch` prop. If the `bigSwitch` prop is `true`, the `ToggleSwitch` component will be rendered.
+
+```Typescript
+return (
+        <TouchableOpacity
+            onPress={handleSwitchChange}
+            style={[styles.container, {
+                backgroundColor: darkenBg,
+                width: bigSwitch ? '100%' : '60%',
+                borderRadius: bigSwitch ? 50 : 100,
+                justifyContent: isChekedState ? 'flex-end' : 'flex-start',
+            }]}
+            disabled={isDisabled}
+        >
+            {isChekedState ? (
+                <>
+                <Text style={[styles.label, {
+                    marginRight: bigSwitch ? '15%' : '20%',
+                    color: getWriteColor(darkenBg),
+                    fontSize: bigSwitch ? 30 : 15,
+                }]}>{isChekedState ? yesLabel : noLabel}</Text>
+                <View style={[, {
+                    width: bigSwitch ? 75 : 30,
+                    height: bigSwitch ? 75 : 30,
+                    borderRadius: bigSwitch ? 37.5 : 15,
+                    backgroundColor: toggleColor ? toggleColor : bgColor }
+                ]}/>
+                </>
+            ) : (
+            <>
+                <View style={[, {
+                    width: bigSwitch ? 75 : 30,
+                    height: bigSwitch ? 75 : 30,
+                    borderRadius: bigSwitch ? 37.5 : 15,
+                    backgroundColor: toggleColor ? toggleColor : bgColor }
+                ]}/>
+                <Text style={[styles.label, {
+                    marginLeft: bigSwitch ? '15%' : '15%',
+                    color: getWriteColor(darkenBg),
+                    fontSize: bigSwitch ? 30 : 15,
+                }]}>{isChekedState ? yesLabel : noLabel}</Text>
+            </>
+            )}
+        </TouchableOpacity>
+    );
+};
+```
+
+The `const styles` variable is an object that contains style definitions for different elements in
+the `ToggleSwitch` component. It uses the `StyleSheet.create` method from the `react-native` library
+to create a stylesheet with optimized performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 4,
+    },
+    label: {
+        fontWeight: "bold",
+    },
+    disabled: {
+        opacity: 1, // Opacité lorsque le toggle est désactivé
+    },
+});
+```
+
+The `export default ToggleSwitch;` statement is exporting the `ToggleSwitch` component as the
+default export of the module. This means that when another file imports this module, it can access
+the `ToggleSwitch` component directly without having to specify its name in curly braces. For
+example, in another file, you can import the `ToggleSwitch` like this: `import ToggleSwitch from
+'./ToggleSwitch';`.
+
+```Typescript
+export default ToggleSwitch;
+```
+
+
+For more information about this file you can check his complete code here : [Switch.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/Switch.tsx)
+
+## [SwitchNotifyMe.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/SwitchNotifyMe.tsx)
+
+The `SwitchNotifyMe` component is the component that will be used to display the toggle switch of the applets in the mobile application. It is a simple component that will display the toggle switch of the applets.
+
+![SwitchNotifyMe.png](../images/mobileComponents/SwitchNotifyMe.png)
+
+The `SwitchProps` interface defines the props that can be passed to the `SwitchNotifyMe`
+component. Here's a breakdown of each prop:
+* `isChecked` : a boolean that indicates if the switch is checked or not
+* `isDisabled` : a boolean that indicates if the switch is disabled or not
+
+```Typescript
+interface SwitchProps {
+    isChecked: boolean;
+    isDisabled: boolean;
+}
+```
+
+The SwitchNotifyMe component is a switch toggle that allows the user to enable or disable
+notifications for a specific applet.
+
+```Typescript
+const SwitchNotifyMe: React.FC<SwitchProps> = ({ isChecked, isDisabled })
+```
+
+The code is using the `React.useState` hook to define and initialize state variables in the
+`SwitchNotifyMe` component.
+
+```Typescript
+    const [isChekedState, setIsChecked] = useState<boolean>(isChecked);
+    const [appletID, setAppletID] = useState<string>("");
+```
+The `useEffect` hook is used to perform side effects in a functional component. In this case,
+the `useEffect` hook is being used to fetch data from the AsyncStorage, which is an asynchronous
+storage system in React Native.
+
+```Typescript
+    useEffect(() => {
+        const getData = async () => {
+            const id = await AsyncStorage.getItem("appletID");
+            setAppletID(id);
+        };
+        getData();
+    }, []);
+```
+
+The function `handleSwitchChange` toggles the value of `isChecked` state and updates an applet
+notification with the new value.
+
+```Typescript
+    const handleSwitchChange = async () => {
+        setIsChecked(!isChekedState);
+        await UpdateAppletNotifWithID(appletID, !isChekedState);
+    };
+```
+
+The `return` statement in the code is rendering the JSX elements.
+
+```Typescript
+    return (
+        <View style={{ marginTop: 5 }}>
+            <RNSwitch
+                value={isChekedState}
+                onValueChange={handleSwitchChange}
+                disabled={isDisabled}
+            />
+        </View>
+    );
+```
+
+The line `export default SwitchNotifyMe;` is exporting the `SwitchNotifyMe` component as the default
+export of the module. This means that when another file imports this module, it can import the
+`SwitchNotifyMe` component directly without having to specify its name in curly braces. For example,
+in another file, you can import the `SwitchNotifyMe` component like this: `import SwitchNotifyMe
+from "./SwitchNotifyMe";`.
+
+```Typescript
+export default SwitchNotifyMe;
+```
+
+For more information about this file you can check his complete code here : [SwitchNotifyMe.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/SwitchNotifyMe.tsx)
 
 
 
