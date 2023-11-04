@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -16,8 +16,12 @@ const IndexPage: NextPage = () => {
 
     const router = useRouter();
     const { id } = router.query;
-    const { token, setToken } = useToken();
+    const [token, setToken] = useState<string | null | undefined>("");
     const [newTitle, setNewTitle] = React.useState<string>("");
+
+    useEffect(() => {
+        setToken(localStorage.getItem("token") as string); 
+    }, []);
 
     const handleConfirm = async () => {
         const data = await UpdateAppletTitleWithID(token as string, id as string, newTitle as string);
@@ -39,6 +43,14 @@ const IndexPage: NextPage = () => {
     const closeModalError = () => {
         setIsErrorOpen(false);
     };
+
+    useEffect(() => {
+
+        console.log(id, token);
+
+        if (token === null || token === undefined)
+            router.push("/")
+    }, [token, router]);
         
     return (
         <>

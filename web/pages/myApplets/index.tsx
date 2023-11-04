@@ -12,6 +12,7 @@ import { useUser } from "../../utils/api/user/Providers/UserProvider";
 import { GetProfile } from "../../utils/api/user/me";
 import { UserProfile } from "../../utils/api/user/interface/interface";
 import { NavigateButton } from "../../components/NavBar/components/Button";
+import router from "next/router";
 
 const IndexPage: NextPage = () => {
 
@@ -37,6 +38,11 @@ const IndexPage: NextPage = () => {
         if (user?.email === "" || user?.email === null)
             getProfile(token);
     }, [setUser, token, user]);
+
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token, router]);
 
     return (
         <>

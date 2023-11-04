@@ -128,6 +128,11 @@ const IndexPage: NextPage = () => {
         setTheme(getTheme(bgColor));
     }, [bgColor]);
 
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token, router]);
+
     return (
         <div>
             {dataApplet &&
