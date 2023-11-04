@@ -31,9 +31,6 @@ public class TwitchWebhook {
     @Autowired
     private AppletService appletService;
 
-    @Autowired
-    private ActionReactionService actionReactionService;
-
     private static final List<String> messagesId = new ArrayList<>();
 
     @Hidden
@@ -86,6 +83,23 @@ public class TwitchWebhook {
                         "channel", body.getEvent().getBroadcaster_user_name(),
                         "started_at", body.getEvent().getStarted_at(),
                         "link", "https://twitch.tv/" + body.getEvent().getBroadcaster_user_login()
+                    )
+                );
+            }
+            case "channel.follow" -> {
+                appletService.triggerAction("twitch.new-follower",
+                    Map.of("broadcaster_user_id", body.getEvent().getBroadcaster_user_id()),
+                    Map.of(
+                        "username", body.getEvent().getUser_name()
+                    )
+                );
+            }
+            case "channel.subscribe" -> {
+                appletService.triggerAction("twitch.new-subscriber",
+                    Map.of("broadcaster_user_id", body.getEvent().getBroadcaster_user_id()),
+                    Map.of(
+                        "username", body.getEvent().getUser_name(),
+                        "tier", body.getEvent().getTier()
                     )
                 );
             }

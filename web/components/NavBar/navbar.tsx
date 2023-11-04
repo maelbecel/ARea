@@ -39,13 +39,13 @@ const MiddleSection = ({ children }: { children: React.ReactNode }) => {
  * @param color  Background color of the dropdown menu
  * @param theme  Theme of the navbar
  */
-const RightSection = ({ children, color = "ffffff", theme = 'light' }: { children: React.ReactNode, color?: string, theme?: string }) => {
+const RightSection = ({ children, color = "ffffff", theme = 'light', width = false }: { children: React.ReactNode, color?: string, theme?: string, width?: boolean }) => {
     const [active, setActive] = useState<boolean>(false);
 
     return (
         <>
             {/* Desktop View */}
-            <div className="flex-row items-center gap-7 hidden md:flex">
+            <div className={`flex-row hidden md:flex ${width ? '' : 'min-w-[50%]'} items-center justify-end gap-7`}>
                 {children}
             </div>
 
@@ -59,12 +59,12 @@ const RightSection = ({ children, color = "ffffff", theme = 'light' }: { childre
                         height: 'calc(100vh - 75px)',
                         backgroundColor: `#${color}`,
                     }}
-                        className='w-full z-50 absolute left-0 top-[75px] pt-[10px]'
+                        className='w-full z-50 absolute left-0 top-[75px] p-[10px]'
                     >
                         {children}
                     </div>
                 ) : (
-                    <div></div>
+                    <></>
                 )}
             </div>
         </>

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import OutlinedTextBox from '../components/OutlinedTextBox';
+import PasswordModal from '../components/PasswordModal';
 
 /* The `interface ProfileFormProps` is defining the type of props that the `ProfileForm` component
 expects to receive. In this case, it expects a single prop called `data` of type `any`. The `data`
@@ -92,32 +93,25 @@ const ProfileForm: React.FC<ProfileFormProps> = ({data}) => {
     return (
         <View style={styles.userInfo}>
             <View style={{marginBottom: 10}}>
-                <Text style={styles.title}>Compte</Text>
+                <Text style={styles.title}>Account</Text>
             </View>
             <View style={{marginTop: 10}}>
-                <Text style={styles.subtitle}>Nom d'utilisateur</Text>
+                <Text style={styles.subtitle}>Username</Text>
                 <OutlinedTextBox
                 onChangeText={handleUsernameChange}
                 value={username}
                 />
             </View>
+            {(data.loginWithService == false) ? (
             <View style={{marginTop: 10}}>
-                <Text style={styles.subtitle}>Mot de passe</Text>
+                <Text style={styles.subtitle}>Password</Text>
                 <View style={styles.rectangle}>
                     <SecureText passwordLength={data.passwordLength} />
                 </View>
-                <TouchableOpacity
-                    onPress={() => {
-                        // Navigate to the 'ChangePassword' screen when the user clicks on 'Modifier le mot de passe'
-                        // navigation.navigate('ChangePassword');
-                        console.log('Change password');
-                    }}
-                >
-                    <Text style={styles.link}>Modifier le mot de passe</Text>
-                </TouchableOpacity>
-            </View>
+                <PasswordModal/>
+            </View>) : null}
             <View style={{marginTop: 10}}>
-                <Text style={styles.subtitle}>Adresse e-mail</Text>
+                <Text style={styles.subtitle}>E-mail</Text>
                 <OutlinedTextBox
                     onChangeText={handleEmailChange}
                     value={email}
@@ -161,7 +155,8 @@ const styles = StyleSheet.create({
         borderRadius: 5, // Rayon des coins de la boîte
         paddingVertical: 10, // Rembourrage vertical pour l'espace interne
         paddingHorizontal: 10, // Rembourrage horizontal pour l'espace interne
-        marginVertical: 10, // Marge verticale pour l'espace externe
+        marginTop: 10, // Marge verticale pour l'espace externe
+        marginBottom: 5, // Marge verticale pour l'espace externe
     },
 });
 

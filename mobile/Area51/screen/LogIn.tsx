@@ -15,6 +15,7 @@ import ServerModal from '../components/ServerModal';
 import LoginAPI from '../api/Login';
 import AutoLoginAPI from '../api/AutoLogin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginService from '../api/LoginService';
 
 /* The code is defining a functional component called `Login` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -30,7 +31,7 @@ const Login = ({ navigation }) => {
 
         const clearStorage = async () => {
           await AsyncStorage.setItem('action', "default");
-          await AsyncStorage.setItem('reaction', "default");
+          await AsyncStorage.setItem('reaction', "[]");
         }
 
         clearStorage();
@@ -40,7 +41,6 @@ const Login = ({ navigation }) => {
          */
         const autoLogin = async () => {
             const response = await AutoLoginAPI();
-            console.log(response);
             if (response == true) {
                 navigation.navigate('Area 51');
             }
@@ -58,7 +58,6 @@ const Login = ({ navigation }) => {
         if (response == null) {
             alert("An Error occcur");
         } else if (response.status == 200) {
-            console.log("Token :" + response.data);
             navigation.navigate('Area 51');
         } else {
             alert("Error " + response.status + "\n" + response.message);
@@ -70,20 +69,22 @@ const Login = ({ navigation }) => {
     `Text`, `FormInput`, and `SubmitButton`. */
     return (
         /* The code is returning a JSX element that contains other JSX elements. */
-        <View style={{marginTop: 50, backgroundColor: "#FFF"}}>
-          <View style={styles.container}>
+        <View style={styles.container}>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
             <ServerModal />
-            <View style={styles.form}>
-              <Text style={styles.login}>Log in</Text>
-              <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
-              <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
-              <Text style={styles.forgot}>Forgot your password ?</Text>
-              <SubmitButton title="Log in" onPress={connect} />
-              <Text style={styles.forgot} onPress={() => navigation.navigate('SignUp')} >No account ? Sign up here</Text>
-              <Text style={styles.or}>or</Text>
-              <SubmitButton title="Log in with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
-              <SubmitButton title="Log in with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} />
+          </View>
+          <View style={{marginVertical: 20}}/>
+          <View style={styles.form}>
+            <Text style={styles.login}>Log in</Text>
+            <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
+            <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
+            <SubmitButton title="Log in" onPress={connect} />
+            <View style={{marginVertical: 5, flexDirection: 'row'}}>
+              <Text style={styles.sub} onPress={() => navigation.navigate('SignUp')} >No account ? </Text>
+              <Text style={[styles.sub, { textDecorationLine: 'underline' }]} onPress={() => navigation.navigate('SignUp')} >Sign up here</Text>
             </View>
+            <Text style={styles.or}>or</Text>
+            <SubmitButton title="Log in with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} onPress={async () => (await LoginService("google")) ? navigation.navigate("Area 51") : null}/>
           </View>
         </View>
     )
@@ -93,17 +94,22 @@ const Login = ({ navigation }) => {
 the React Native library. This object contains two properties: `container` and `login`. */
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    paddingHorizontal: 20,
     backgroundColor: '#fff',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   form : {
     alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   forgot : {
     color: '#363841',
-    fontSize: 12,
+    fontSize: 18,
     fontStyle: 'normal',
     fontWeight: "700",
-    textDecorationLine: 'underline',
   },
   or : {
     color: '#363841',
@@ -120,6 +126,14 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: "700",
   },
+  sub : {
+    color: '#363841',
+    fontSize: 16,
+    fontStyle: 'normal',
+    fontWeight: "700",
+  },
 });
 
+/* The `export default Login;` statement is exporting the `Login` component as the default export of
+the module. This allows other modules to import and use the `Login` component in their code. */
 export default Login;

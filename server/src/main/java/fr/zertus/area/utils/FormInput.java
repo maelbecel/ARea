@@ -26,26 +26,25 @@ public class FormInput {
     Type type = Type.TEXT;
 
     public boolean isValid() throws BadFormInputException {
-        if (value == null || value.isEmpty()) {
-            throw new BadFormInputException("The value of the input " + name + " is null or empty");
-        }
 
         switch (type) {
             case NUMBER -> {
                 try {
-                    Integer.parseInt(value);
+                    Double.parseDouble(value);
                 } catch (NumberFormatException e) {
                     throw new BadFormInputException("The value of the input " + name + " is not a number");
                 }
             }
             case SELECT -> {
-                if (options == null || !options.contains(value)) {
-                    throw new BadFormInputException("The value of the input " + name + " is not in the options");
-                }
+//                if (options == null || !options.contains(value)) {
+//                    throw new BadFormInputException("The value of the input " + name + " is not in the options");
+//                }
             }
             case URL -> {
-                if (!value.startsWith("http://") || !value.startsWith("https://")) {
-                    throw new BadFormInputException("The value of the input " + name + " is not an url");
+                if (value != null) {
+                    if (!value.startsWith("http://") && !value.startsWith("https://")) {
+                        throw new BadFormInputException("The value of the input " + name + " is not an url");
+                    }
                 }
             }
         }

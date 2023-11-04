@@ -3,11 +3,14 @@ package fr.zertus.area.app.twitch;
 import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.Reaction;
+import fr.zertus.area.app.twitch.action.TwitchNewFollowerAction;
+import fr.zertus.area.app.twitch.action.TwitchNewSubscriberAction;
 import fr.zertus.area.app.twitch.action.TwitchStreamStartAction;
 import fr.zertus.area.app.twitch.model.TwitchAppToken;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.security.oauth2.OAuth2CodeAuthorizationHandler;
 import fr.zertus.area.utils.BasicApiClient;
+import fr.zertus.area.utils.IPGetter;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -35,7 +38,9 @@ public class TwitchApp extends App {
     @Override
     public List<Action> getActions() {
         return List.of(
-            new TwitchStreamStartAction(getName())
+            new TwitchStreamStartAction(getName()),
+            new TwitchNewFollowerAction(getName()),
+            new TwitchNewSubscriberAction(getName())
         );
     }
 
@@ -56,7 +61,9 @@ public class TwitchApp extends App {
 
     @Override
     public AppDecoration getDecoration() {
-        return new AppDecoration("https://i.imgur.com/ah2XKZW.png", "#A970FF");
+        return new AppDecoration(IPGetter.getServerBaseAddress() + "/service/twitch/image", "#A970FF",
+            "Twitch is the world’s leading social video platform and community for gamers, video game culture, and the creative arts. Turn on Applets to grow your Twitch audience, and keep up with your favorite broadcasters' videos and livestreams.",
+            "https://www.twitch.tv/");
     }
 
 

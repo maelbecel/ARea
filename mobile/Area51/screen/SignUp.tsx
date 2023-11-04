@@ -12,6 +12,8 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
 import RegisterAPI from '../api/Register';
+import ServerModal from '../components/ServerModal';
+import LoginService from '../api/LoginService';
 
 /* The code is defining a functional component called `Signup` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
@@ -28,12 +30,11 @@ const Signup = ({ navigation }) => {
     const connect = async () => {
       const response = await RegisterAPI(email, password, username);
       if (response == null) {
-          alert("An Error occcur");
+        alert("An Error occcur");
       } else if (response.status == 200) {
-        console.log("Token :" + response.data);
-          navigation.navigate('Area 51');
+        navigation.navigate('Area 51');
       } else {
-          alert(response.message);
+        alert(response.message);
       }
   }
 
@@ -41,15 +42,23 @@ const Signup = ({ navigation }) => {
   /* The code is rendering a view with various components inside it. */
   return (
         <View style={styles.container}>
-          <Text style={styles.login}>Sign up</Text>
-          <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
-          <FormInput title="Username" icon={{ name: "person", width: 27, height: 27 }} onChangeText={setUsername} />
-          <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
-          <SubmitButton title="Sign up" onPress={connect} />
-          <Text style={styles.forgot} onPress={() => navigation.navigate('Login')} >Already an account ? Log in here</Text>
-          {/* <Text style={styles.or}>or</Text>
-          <SubmitButton title="Sign up with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27 }} />
-          <SubmitButton title="Sign up with Facebook" icon={{ uri: require('../assets/icon/facebook.png'), width: 27, height: 27 }} /> */}
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+            <ServerModal />
+          </View>
+          <View style={{marginVertical: 20}}/>
+          <View style={styles.form}>
+            <Text style={styles.login}>Sign up</Text>
+            <FormInput title="Email" icon={{ name: "mail", width: 27, height: 27 }} onChangeText={setEmail} />
+            <FormInput title="Username" icon={{ name: "person", width: 27, height: 27 }} onChangeText={setUsername} />
+            <FormInput title="Password" secure={true} icon={{ name: "lock", width: 27, height: 27 }} onChangeText={setPassword} />
+            <SubmitButton title="Sign up" onPress={connect} />
+            <View style={{marginVertical: 5, flexDirection: 'row'}}>
+              <Text style={styles.sub} onPress={() => navigation.navigate('Login')} >Already have an account? </Text>
+              <Text style={[styles.sub, { textDecorationLine: 'underline' }]} onPress={() => navigation.navigate('Login')} >Sign in</Text>
+            </View>
+            <Text style={styles.or}>or</Text>
+            <SubmitButton title="Sign up with Google" icon={{ uri: require('../assets/icon/google.png'), width: 27, height: 27}} onPress={async () => (await LoginService("google")) ? navigation.navigate("Area 51") : null }/>
+          </View>
         </View>
     )
 }
@@ -59,15 +68,10 @@ the React Native library. This object contains two properties: `container` and `
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20,
     backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-  forgot : {
-    color: '#363841',
-    fontSize: 12,
-    fontStyle: 'normal',
-    fontWeight: "700",
-    textDecorationLine: 'underline',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   or : {
     color: '#363841',
@@ -78,12 +82,22 @@ const styles = StyleSheet.create({
   },
   login : {
     color: '#363841',
-    marginTop: 150,
     marginBottom: 30,
     fontSize: 54,
     fontStyle: 'normal',
     fontWeight: "700",
-  }
+  },
+  form : {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  sub : {
+    color: '#363841',
+    fontSize: 16,
+    fontStyle: 'normal',
+    fontWeight: "700",
+  },
 });
 
 export default Signup;

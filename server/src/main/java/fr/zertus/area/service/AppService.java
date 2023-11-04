@@ -1,17 +1,21 @@
 package fr.zertus.area.service;
 
-import fr.zertus.area.app.Action;
 import fr.zertus.area.app.App;
 import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
+import fr.zertus.area.app.gmail.GmailApp;
+import fr.zertus.area.app.google.GoogleApp;
+import fr.zertus.area.app.notion.NotionApp;
+import fr.zertus.area.app.spotify.SpotifyApp;
+import fr.zertus.area.app.time.TimeApp;
 import fr.zertus.area.app.twitch.TwitchApp;
+import fr.zertus.area.app.weather.WeatherApp;
+import fr.zertus.area.app.youtube.YoutubeApp;
 import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.DataNotFoundException;
 import fr.zertus.area.payload.response.ApiResponse;
-import fr.zertus.area.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -30,6 +34,9 @@ public class AppService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RegisterUserService registerUserService;
+
     private static final Map<String, App> apps = new HashMap<>();
     static {
         GithubApp githubApp = new GithubApp();
@@ -40,6 +47,27 @@ public class AppService {
 
         DiscordApp discordApp = new DiscordApp();
         apps.put(discordApp.getSlug(), discordApp);
+
+        SpotifyApp spotifyApp = new SpotifyApp();
+        apps.put(spotifyApp.getSlug(), spotifyApp);
+
+        NotionApp notionApp = new NotionApp();
+        apps.put(notionApp.getSlug(), notionApp);
+
+        GoogleApp googleApp = new GoogleApp();
+        apps.put(googleApp.getSlug(), googleApp);
+
+        YoutubeApp youtubeApp = new YoutubeApp();
+        apps.put(youtubeApp.getSlug(), youtubeApp);
+
+        GmailApp gmailApp = new GmailApp();
+        apps.put(gmailApp.getSlug(), gmailApp);
+
+        WeatherApp weatherApp = new WeatherApp();
+        apps.put(weatherApp.getSlug(), weatherApp);
+
+        TimeApp timeApp = new TimeApp();
+        apps.put(timeApp.getSlug(), timeApp);
     }
 
     private static final Map<Long, String> redirectUris = new HashMap<>();
@@ -49,7 +77,9 @@ public class AppService {
     }
 
     public List<App> getApps() {
-        return new ArrayList<>(apps.values());
+        List<App> tmp = new ArrayList<>(apps.values());
+        tmp.remove(apps.get("google")); // Google is not an app, it's a group of apps, maybe I will change this later
+        return tmp;
     }
 
     /**
@@ -58,13 +88,18 @@ public class AppService {
      * @return a response entity with the redirection
      * @throws DataNotFoundException if the app is not found
      */
-    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String redirectUri) {
+    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, long userId, String redirectUri) {
+        return redirectOAuth2App(slug, userId, redirectUri, false);
+    }
+
+    public ResponseEntity<ApiResponse<String>> redirectOAuth2App(String slug, Long userId, String redirectUri, boolean userLogin) {
         App app = getApp(slug);
         if (app == null)
             return ApiResponse.notFound("Service not found").toResponseEntity();
         if (!app.isOAuth2() || app.getOAuth2Handler() == null)
             return ApiResponse.badRequest("Service is not OAuth2, you can't call this").toResponseEntity();
-        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(slug);
+        String clientRegistrationId = app.getOAuth2Handler().getClientRegistrationId();
+        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(clientRegistrationId);
         if (clientRegistration == null)
             return ApiResponse.internalServerError("Service OAuth2 is not configure").toResponseEntity();
 
@@ -76,6 +111,10 @@ public class AppService {
         Set<String> scope = clientRegistration.getScopes();
         String state = app.getOAuth2Handler().getState();
         state += "-" + userId;
+
+        if (userLogin) {
+            state += "-login";
+        }
 
         // This part is for redirect when process is done (check callbackOAuth2App)
         String redirectUriFinal = redirectUri != null ? redirectUri : defaultRedirectUri;
@@ -111,7 +150,7 @@ public class AppService {
         redirectUris.remove(Long.parseLong(state.split("-")[1]));
 
         if (error != null) {
-            return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
+            return ResponseEntity.status(302).location(URI.create(redirectUri + "?error=" + error)).build();
         }
 
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(slug);
@@ -125,16 +164,40 @@ public class AppService {
 
         // We need to give a redirect Uri (I don't know why, because token result is the return of this request) so we give the default one
         MultiValueMap<String, String> body = app.getOAuth2Handler().getBody(code, clientId, clientSecret, defaultRedirectUri);
-        String token = app.getOAuth2Handler().getToken(tokenUrl, body);
+        ConnectedService connectedService = app.getOAuth2Handler().getToken(tokenUrl, body);
+
+        if (state.split("-").length == 3) {
+            String url = registerUserService.registerLoginUserByGoogle(connectedService, redirectUri);
+            return ResponseEntity.status(302).location(URI.create(url)).build();
+        }
+
         long userId = Long.parseLong(state.split("-")[1]);
 
         User user = userService.getUser(userId);
         if (user == null)
             throw new DataNotFoundException("User not found");
-        user.addConnectedService(new ConnectedService(slug, token));
+        user.addConnectedService(connectedService);
+        if (connectedService.getSlug().equals("google")) {
+            user.addConnectedService(new ConnectedService("gmail", connectedService.getToken(), connectedService.getData(), connectedService.getRefreshToken(), connectedService.getExpiration(), connectedService.getTokenDate()));
+            user.addConnectedService(new ConnectedService("youtube", connectedService.getToken(), connectedService.getData(), connectedService.getRefreshToken(), connectedService.getExpiration(), connectedService.getTokenDate()));
+        }
         userService.save(user);
 
         return ResponseEntity.status(302).location(URI.create(redirectUri)).build();
+    }
+
+    public MultiValueMap<String, String> getTokenRequestsBodyFor(String slug) {
+        App app = getApp(slug);
+        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(slug);
+        if (clientRegistration == null)
+            return null;
+
+        String clientId = clientRegistration.getClientId();
+        String clientSecret = clientRegistration.getClientSecret();
+        String defaultRedirectUri = clientRegistration.getRedirectUri();
+
+        // We need to give a redirect Uri (I don't know why, because token result is the return of this request) so we give the default one
+        return app.getOAuth2Handler().getBody("", clientId, clientSecret, defaultRedirectUri);
     }
 
     public boolean deleteOAuth2(String slug) throws DataNotFoundException {
@@ -143,6 +206,7 @@ public class AppService {
             throw new DataNotFoundException("User is not connected to this service");
         }
         user.removeConnectedService(slug);
+        userService.save(user);
         return true;
     }
 

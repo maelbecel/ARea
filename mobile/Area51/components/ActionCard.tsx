@@ -1,7 +1,7 @@
 /* The `import` statement is used to import specific modules or components from external libraries or
 files. In this case, it is importing various components and types from the `react-native` and
 `react-native-gesture-handler` libraries. */
-import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
+import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text } from 'react-native';
 
 
 /* The `interface CardProps` is defining a new interface called `CardProps` that extends the
@@ -24,7 +24,7 @@ interface CardProps extends TouchableOpacityProps {
  * (black), indicating that the text color should be dark. Otherwise, it returns "#FFFFFF" (white),
  * indicating that the text color should be light.
  */
-const getWriteColor = (color: string): string => {
+export const getWriteColor = (color: string): string => {
     /* The line `const hexColor = color.startsWith("#") ? color : `#`;` is checking if the
     `color` variable starts with a `#` symbol. If it does, then `hexColor` is assigned the value of
     `color`. If it doesn't start with `#`, then `hexColor` is assigned the value of `#`,

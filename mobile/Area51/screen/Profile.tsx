@@ -1,6 +1,6 @@
 // --- Libraires --- //
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, Alert, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Button } from "react-native-paper";
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
@@ -8,16 +8,49 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserInfosAPI from "../api/UserInfos";
 import ProfileForm from "../components/ProfileForm";
 import SVGImg from '../assets/svg/iconProfile.svg'
+import PatchUser from "../api/PatchUser";
+import ServiceLogo from "../components/ServiceLogo";
+import Services, {Applet} from "../api/Services";
+import OAuthLogin from "../api/OAuth";
+import OAuthLogout from "../api/OAuthLogout";
+import DeleteUser from "../api/DeleteUser";
+import DeleteAccount from "../components/DeleteAccount";
 
 /* The above code is a TypeScript React component called "Profile". It is responsible for rendering a
 user profile screen. */
-const Profile: React.FC = () => {
-  const navigation = useNavigation();
+const Profile = ({navigation}) => {
 
   const [data, setData] = useState<any>([]);
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(true);
+  const [services, setServices] = useState<string[]>([]);
+  const [servicesCon, setServicesCon] = useState<string[]>([]);
+
+  /**
+   * The function `orderByFirstConnected` takes two arrays, `connected` and `allserv`, and returns a
+   * new array that contains the elements from `connected` followed by the elements from `allserv` that
+   * are not already in `connected`.
+   * @param {string[]} connected - An array of strings representing the services that are currently
+   * connected.
+   * @param {string[]} allserv - An array of all available servers.
+   * @returns The function `orderByFirstConnected` returns an array of strings.
+   */
+  const orderByFirstConnected = (connected : string[], allserv : string[]) => {
+    let tmp : string[] = [];
+    for (let i = 0; i < connected.length; i++) {
+      if (allserv.includes(connected[i])) {
+        tmp.push(connected[i]);
+      }
+    }
+    for (let i = 0; i < allserv.length; i++) {
+      if (!tmp.includes(allserv[i])) {
+        tmp.push(allserv[i]);
+      }
+    }
+    return tmp;
+  }
 
   /* The `useEffect` hook in this code is used to fetch user information from an API and update the
   component's state with the retrieved data. */
@@ -40,12 +73,20 @@ const Profile: React.FC = () => {
           navigation.navigate('Login');
           return;
         }
-
         const response = await UserInfosAPI(token, serverAddress);
         setData(response.data);
+        const serv : Applet[] = await Services();
+        let tmp : string[] = [];
+        for (let i = 0; i < serv.length; i++) {
+          if (serv[i].hasAuthentification)
+            tmp.push(serv[i].slug);
+        }
+        setServicesCon(response.data.connectedServices);
+        setServices(orderByFirstConnected(response.data.connectedServices, tmp));
         await AsyncStorage.setItem('username', response.data.username);
         await AsyncStorage.setItem('email', response.data.email);
         setLoading(false); // Mettez à jour l'état de chargement une fois les données disponibles
+        setReload(false);
       } catch (error) {
         console.error(error);
         setLoading(false); // Mettez à jour l'état de chargement en cas d'erreur
@@ -53,7 +94,7 @@ const Profile: React.FC = () => {
     };
 
     fetchData();
-  }, []); // Assurez-vous de passer un tableau vide de dépendances pour exécuter l'effet uniquement après le premier rendu
+  }, [reload]); // Assurez-vous de passer un tableau vide de dépendances pour exécuter l'effet uniquement après le premier rendu
 
 
   /**
@@ -70,28 +111,68 @@ const Profile: React.FC = () => {
   };
 
   /**
+   * The function `handleDelete` deletes a user, removes a token from SecureStore, and navigates to the
+   * Login screen in a React Native app.
    */
-  const handlePress = async () => {
+  const handleDelete = async () => {
     try {
-      const email = await AsyncStorage.getItem('email');
-      console.log(username, email);
-      await AsyncStorage.removeItem('username');
-      await AsyncStorage.removeItem('email');
+      await DeleteUser();
+      await SecureStore.deleteItemAsync('token_api');
+      navigation.navigate('Login');
     } catch (error) {
       console.error(error);
     }
   };
 
+
+ /**
+  * The function handles a button press event, retrieves user data from AsyncStorage, updates the
+  * user's profile using an API call, stores the API token in SecureStore, and displays success or
+  * error messages.
+  */
+  const handlePress = async () => {
+    try {
+      const email = await AsyncStorage.getItem('email');
+      const username = await AsyncStorage.getItem('username');
+      const res = await PatchUser(email, null, null, username);
+      await SecureStore.setItemAsync('token_api', res.data);
+      if (!res) {
+        Alert.alert('Error', 'An error occurred while updating your profile.');
+      }
+      await AsyncStorage.removeItem('username');
+      await AsyncStorage.removeItem('email');
+      Alert.alert('Success', 'Your profile has been updated.');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * The function `displayServices` maps over an array of services and returns a JSX element for each
+   * service, either with an `onPress` function that logs out of the service if it is included in
+   * `servicesCon`, or with an `onPress` function that logs into the service if it is not included in
+   * `servicesCon`.
+   * @returns The function `displayServices` returns an array of JSX elements.
+   */
+  const displayServices = () => {
+    if (services == undefined || services == null) return;
+    return services.map((service) => ((servicesCon.includes(service)) ?
+      <ServiceLogo key={service} slug={service} onPress={ async () =>  {await OAuthLogout(service); setReload(true)}} />
+      : <ServiceLogo key={service} slug={service} onPress={async () => {await OAuthLogin(service); setReload(true)}} disabled={true}/>
+    ));
+  };
+
   /* The `return` statement in the code is rendering the JSX elements that make up the Profile
   component. */
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <View style={styles.container}>
     {loading ? (
       <ActivityIndicator size="large" color="#0000ff" /> // Affichez un indicateur de chargement pendant le chargement des données
     ) : (
       <ScrollView
         showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
         showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
+        style={{height: Dimensions.get('window').height - 100, width: Dimensions.get('window').width, paddingHorizontal: 30}}
       >
         <View style={styles.profilePicture}>
           <SVGImg width={150} height={150} />
@@ -106,36 +187,32 @@ const Profile: React.FC = () => {
           ]}
           disabled={username === data.username && email === data.email}
         >
-          Appliquer les changements
+          Apply changes
         </Button>
         <View style={styles.separator} />
         <View style={styles.userInfo}>
           <View style={{marginBottom: 10}}>
-            <Text style={styles.title}>Comptes associés</Text>
+            <Text style={styles.title}>Connected accounts</Text>
           </View>
-          {/* <View style={{marginTop: 10}}>
-            <Text style={styles.subtitle}>Google</Text>
-            <Text style={styles.link}>Associer un compte Google</Text>
-            <Text style={styles.subtitle}>Facebook</Text>
-            <Text style={styles.link}>Associer un compte Facebook</Text>
-          </View> */}
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={true}
+          >
+            {displayServices()}
+          </ScrollView>
         </View>
         <View style={styles.separator} />
-        <View style={styles.userInfo}>
-          <View style={{marginBottom: 20, opacity: 0.5}}>
-            <Text style={styles.subtitle}>Conditions et confidentialité</Text>
-          </View>
-        </View>
         <TouchableOpacity
           onPress={() => {
             handleLogout();
           }}
         >
-            <Text style={styles.logout}>Se déconnecter</Text>
+            <Text style={styles.logout}>Logout</Text>
         </TouchableOpacity>
+        <DeleteAccount />
       </ScrollView>
     )}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -144,7 +221,7 @@ React Native. Each key in the object represents a style name, and its value is a
 defines the specific style properties for that name. */
 const styles = StyleSheet.create({
   container: {
-    padding: 40,
+    paddingTop: 40,
     backgroundColor: '#fff',
   },
   profilePicture: {
@@ -191,8 +268,8 @@ const styles = StyleSheet.create({
     opacity: 0.5, // Opacité de la ligne
   },
   logout: {
-    color: 'red',
-    fontSize: 16,
+    color: '#363841',
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },

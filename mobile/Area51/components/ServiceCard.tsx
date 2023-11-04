@@ -76,7 +76,7 @@ const ServiceCard: React.FC<CardProps> = ({ title, color, slug, onPress, logo })
     return (
     <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
         <View>
-            <Image source={{ uri: logo }} style={styles.logo}/>
+            <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logo}/>
             <Text style={[styles.name, {color: getWriteColor(color)}]}>{title}</Text>
         </View>
     </TouchableOpacity>

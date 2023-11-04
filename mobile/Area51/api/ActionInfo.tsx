@@ -3,7 +3,7 @@
 `ServiceInfo` file in the same directory. */
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Input} from  './ServiceInfo'
+import { Alert } from 'react-native';
 
 /**
  * The function `ActionInfo` is an asynchronous function that retrieves information about an action
@@ -14,20 +14,24 @@ import {Input} from  './ServiceInfo'
  */
 const ActionInfo = async (slug : string): Promise<any> => {
     try {
-        const token = await SecureStore.getItemAsync('token_api');
-        const serverAddress = await AsyncStorage.getItem('serverAddress');
-        const response = await fetch(`${serverAddress}/action/info/${slug}`, {
+        const token : string = await SecureStore.getItemAsync('token_api');
+        const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+        const response : Response = await fetch(`${serverAddress}/action/info/${slug}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             },
         });
-        console.log(response.status);
-        const json = await response.json();
+        const json : any = await response.json();
         if (json.data == undefined) return null;
         return json.data;
     } catch (error) {
+        if (error == 'TypeError: Network request failed') {
+            Alert.alert('Error', 'Please verify your network connection or the server address in the settings.');
+        } else {
+            Alert.alert('Error', 'An error occurred while trying to connect to the server. Please retry later.');
+        }
         console.error(error);
         return null;
     }

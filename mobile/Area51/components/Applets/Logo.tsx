@@ -1,57 +1,85 @@
-import React, { useEffect, useState } from "react";
-import { View, Image } from "react-native";
-import * as SecureStore from "expo-secure-store";
+import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputModeOptions, Image, DimensionValue } from 'react-native';
+import React from 'react';
+import ServiceInfo from '../../api/ServiceInfo';
 
-interface LogoProps {
-    slug: string;
-    width?: number;
-    height?: number;
-    toggleBackground: boolean;
+/* The `interface CardProps` is defining the props that can be passed to the `LogoApplet` component. It
+extends the `TouchableOpacityProps` interface, which includes all the props that can be passed to
+the `TouchableOpacity` component from React Native. */
+interface CardProps extends TouchableOpacityProps {
+    slug    : string;
+    onPress ?: () => void;
+    color   ?: string;
 }
 
-interface Logo {
-    logoUrl: string;
-    backgroundColor?: string;
+/* The code defines a functional component called `LogoApplet` which takes in props of type
+`CardProps`. The component renders a `TouchableOpacity` or `View` depending on whether the `onPress`
+prop is defined or not. */
+const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) => {
+    const [bgColor, setColor] = React.useState<string>("EEEEEE");
+    const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
+    const [loading, setLoading] = React.useState<boolean>(true);
+
+    /* The `React.useEffect` hook is used to perform side effects in functional components. In this
+    case, it is used to fetch information from the `ServiceInfo` API and update the component's
+    state. */
+    React.useEffect(() => {
+        const fetchInfos = async () => {
+            const res = await ServiceInfo(slug);
+            setColor(res.decoration.backgroundColor);
+            setLogo(res.decoration.logoUrl);
+            setLoading(false);
+        }
+        fetchInfos();
+    }, []);
+
+    /**
+     * The function checks if a given color is light or not.
+     * @param {string} color - The `color` parameter is a string representing a color.
+     * @returns a boolean value. It returns true if the color is considered light, and false if it is
+     * not.
+     */
+    const isLight = (color: string) => {
+        if (color.charAt(0) === '#') {
+            color = color.substr(1);
+        }
+        if (color.length === 3) {
+            color = color.charAt(0) + color.charAt(0) + color.charAt(1) + color.charAt(1) + color.charAt(2) + color.charAt(2);
+        }
+        if (color.toLocaleLowerCase() === 'ffffff') {
+            return false;
+        }
+        return true;
+    }
+
+    if (!loading) {
+        return (
+            onPress ? ( // Vérifiez si onPress est défini
+                <TouchableOpacity onPress={onPress} style={[{ backgroundColor: isLight(color) ? null : bgColor }, styles.container]}>
+                    <Image source={{ uri: logo, cache: 'force-cache'}} style={[styles.logopti]} />
+                </TouchableOpacity>
+            ) : (
+                <View style={[{ backgroundColor: isLight(color) ? null : bgColor }, styles.container]}>
+                    <Image source={{ uri: logo, cache: 'force-cache' }} style={[styles.logopti]} />
+                </View>
+            )
+        );
+    }
 }
 
-const LogoApplet = ({ slug, width = 40, height = 40, toggleBackground = true }: LogoProps) => {
-    const [logo, setLogo] = useState<Logo | null>(null);
 
-    useEffect(() => {
-        const dataFetch = async (slug: string) => {
-            try {
-                const token = await SecureStore.getItemAsync("token_api");
-                const response = await fetch(`http://zertus.fr:8001/service/${slug}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                const data = await response.json();
-                setLogo({
-                    logoUrl: data?.data?.decoration?.logoUrl,
-                    backgroundColor: data?.data?.decoration?.backgroundColor,
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        dataFetch(slug);
-    }, []); // Assurez-vous de gérer correctement les dépendances du useEffect dans React Native
-
-    return (
-        <View style={{ borderRadius: toggleBackground ? width / 2 : 0, overflow: 'hidden' }}>
-            {logo && logo.logoUrl && (
-                <Image
-                    source={{ uri: logo.logoUrl }}
-                    style={{ width: width, height: height, backgroundColor: toggleBackground ? logo.backgroundColor : 'transparent' }}
-                />
-            )}
-        </View>
-    );
-};
+const styles = StyleSheet.create({
+    container: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        height: 50,
+        width: 50,
+        borderRadius: 10,
+    },
+    logopti: {
+        height: 40,
+        width: 40,
+        alignSelf: 'center',
+    }
+  });
 
 export default LogoApplet;
