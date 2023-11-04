@@ -128,14 +128,16 @@ const EditApplet = ({navigation, route}) => {
     setLoading(70);
     setLoadingInfo("Creating the applet")
     const data = await AppletPatch(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput, id);
-    setLoading(0);
+
     if (data == false) {
+      setLoading(0);
       return
     } else {
       await AsyncStorage.setItem('action', "default");
       await AsyncStorage.setItem('reaction', "[]");
       navigation.navigate("MyApplets", { id: data.id});
     }
+    setLoading(0);
   }
 
   /**

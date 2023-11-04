@@ -66,6 +66,7 @@ const AddServices = ({navigation, route}) => {
     title += " if " + actionInfo.name
     if (title == undefined || action == "default" || actionInputs == undefined || reactionInputs == undefined || reaction.length == 0) {
       alert("Error")
+      setLoading(0);
       return
     }
 
@@ -73,6 +74,7 @@ const AddServices = ({navigation, route}) => {
     setLoadingInfo("Creating the applet")
     const data : any = await AppletApi(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput);
     if (data == false) {
+      setLoading(0);
       return
     } else {
       await AsyncStorage.setItem('action', "default");
