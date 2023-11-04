@@ -55,9 +55,6 @@ const IndexPage: NextPage = () => {
     };
 
     useEffect(() => {
-
-        console.log(id, token);
-
         if (token === null || token === undefined)
             router.push("/")
     }, [token, router]);
