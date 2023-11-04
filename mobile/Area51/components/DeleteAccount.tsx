@@ -2,32 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import DeleteApplet from '../api/DeleteApplet';
 import { useNavigation } from '@react-navigation/native';
+import DeleteUser from '../api/DeleteUser';
+import * as SecureStore from 'expo-secure-store';
 
-interface DeleteModalProps {
-    id: number;
-}
-
-/* The code defines a functional component called `DeleteModal` using TypeScript and React. */
-const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
+/* The code defines a functional component called `DeleteAccount` using TypeScript and React. */
+const DeleteAccount: React.FC = () => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const navigation: any = useNavigation();
 
-    const deleteApplet = async () => {
+    const handleDelete = async () => {
         try {
-            setModalVisible(false);
-            await DeleteApplet(id);
-            navigation.navigate('My Applets');
+          await DeleteUser();
+          await SecureStore.deleteItemAsync('token_api');
+          navigation.navigate('Login');
         } catch (error) {
-            console.error(error);
+          console.error(error);
         }
     };
 
     /* The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
-    UI of the `DeleteModal` component. */
+    UI of the `DeleteAccount` component. */
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Text style={{...styles.text, fontWeight: 'bold', color: 'red' }}>Delete Applet</Text>
+                <Text style={styles.text}>Delete Account</Text>
             </TouchableOpacity>
             <Modal
                 transparent={true}
@@ -38,15 +36,15 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
             >
               <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                  <Text style={ styles.title }>Delete applet</Text>
+                  <Text style={ styles.title }>Delete account</Text>
                   <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
                     <View>
-                        <Text style={ styles.text }>Are you sure you want to delete this applet ?</Text>
+                        <Text style={ styles.text }>Are you sure you want to delete your account ?</Text>
                         <Text style={ styles.subtitles }>This action cannot be undone.</Text>
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
                         <Button title="Cancel" onPress={() => setModalVisible(false)} color="#363841" />
-                        <Button title="Delete" onPress={deleteApplet} color="#363841" />
+                        <Button title="Delete" onPress={handleDelete} color="red" />
                     </View>
                   </View>
                 </View>
@@ -85,7 +83,10 @@ const styles = StyleSheet.create({
         width: '80%',
     },
     text: {
-        fontSize: 22,
+        fontSize: 16,
+        color: 'red',
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
     subtitles: {
         fontSize: 18,
@@ -95,4 +96,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DeleteModal;
+export default DeleteAccount;

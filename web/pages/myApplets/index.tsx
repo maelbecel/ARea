@@ -1,6 +1,7 @@
 // --- Librairies import --- //
 import type { NextPage } from "next";
 import { useEffect } from "react";
+import router from "next/router";
 
 // --- API --- //
 import { useToken } from "../../utils/api/user/Providers/TokenProvider";
@@ -33,6 +34,11 @@ const IndexPage: NextPage = () => {
         if (user?.email === "" || user?.email === null)
             getProfile(token);
     }, [setUser, token, user]);
+
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token, router]);
 
     return (
         <>

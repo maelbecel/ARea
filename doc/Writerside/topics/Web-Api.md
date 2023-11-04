@@ -25,6 +25,8 @@ Here we have all components for API calls.
 * [/user/me](#deleteuserts) [**PATCH**]
 ***
 
+
+
 ## [Action.ts](https://github.com/maelbecel/ARea/blob/master/web/utils/api/action/action.ts)
 
 The function `GetActionInputs` is an asynchronous function that takes a `token` and `slug` parameter and returns a promise that resolves to an array of `Input` objects. It's used to have all inputs required by an action.

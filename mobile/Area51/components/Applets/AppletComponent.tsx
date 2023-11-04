@@ -55,7 +55,6 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
     }, [navigation]);
 
     return (
-        console.log(enabled),
         loading ? (
         <TouchableOpacity style={{ ...styles.container, backgroundColor: bgColor} } onPress={() => navigation.navigate('MyApplets', { id: id })}>
             <View style={[ styles.card, {marginBottom: 10, flexWrap: "wrap" }]}>
@@ -94,7 +93,9 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
             </View>
         </TouchableOpacity>
         ) : (
-        <ActivityIndicator size="large" color="#363841" />
+            <View style={{backgroundColor: bgColor, flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="#363841" />
+            </View>
         )
     );
 };

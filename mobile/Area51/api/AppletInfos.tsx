@@ -16,7 +16,7 @@ const AppletInfos = async (id: number) : Promise<any> => {
     try {
         const token : string = await SecureStore.getItemAsync("token_api");
         if (id === undefined) {
-            console.log("something went wrong");
+            console.error("something went wrong");
             return;
         }
         const serverAddress : string = await AsyncStorage.getItem('serverAddress');

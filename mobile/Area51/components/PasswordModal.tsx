@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
       textAlign: 'left',
       fontWeight: 'bold',
       marginBottom: 10,
+      fontSize: 14
     },
     input: {
       height: 40,
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
       color: '#363841',
       fontSize: 14,
       marginBottom: 5,
+      fontWeight: 'bold',
     },
 });
 

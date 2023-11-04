@@ -14,22 +14,22 @@ services:
     ports:
       - 3306:3306
 
-  server:
-    image: area51/server:latest
-    build: ./server
-    restart: always
-    ports:
-      - 8080:8080
-    depends_on:
-      - db
-    environment:
-      - TZ=Europe/Paris
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_NAME=area51
-      - DB_USER=area51
-      - DB_PASSWORD=bD8TEW2iwL6WbK
-      - SERVER_BASE_URL=http://localhost:8080
+  #server:
+  #  image: area51/server:latest
+ #build: ./server
+# restart: always
+# ports:
+##- 8080:8080
+# depends_on:
+##- db
+# environment:
+##- TZ=Europe/Paris
+##- DB_HOST=db
+##- DB_PORT=3306
+##- DB_NAME=area51
+##- DB_USER=area51
+##- DB_PASSWORD=bD8TEW2iwL6WbK
+##- SERVER_BASE_URL=http://localhost:8080
 
   web:
     image: area51/web:latest
@@ -37,16 +37,14 @@ services:
     restart: always
     ports:
       - 8081:8081
-    depends_on:
-      - server
     volumes:
-      - ./apk:/app/public/
+      - ./apk:/app/public/apk
 
-  mobile:
-    image: area51/mobile:latest
-    build: ./mobile/Area51
-    restart: always
-    volumes:
-      - ./apk:/output
+  #mobile:
+   # image: area51/mobile:latest
+    #build: ./mobile/Area51
+    #restart: always
+    #volumes:
+    #  - ./apk:/output
 
 

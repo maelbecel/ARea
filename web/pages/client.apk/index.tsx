@@ -6,7 +6,7 @@ const IndexPage: NextPage = () => {
     useEffect(() => {
 
         const downloadFile = async () => {
-            const res = await fetch('/app.apk');
+            const res = await fetch('apk/app.apk');
             const blob = await res.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');

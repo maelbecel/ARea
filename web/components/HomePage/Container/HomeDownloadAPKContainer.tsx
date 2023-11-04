@@ -14,7 +14,7 @@ const HomeDownloadAPKContainer = () => {
                     Automate from anywhere, anytime. Our iOS and Android apps make it simple.
                 </div>
 
-                <a href='app.apk' download={'app.apk'} className="bg-[#363841] text-white font-bold items-center justify-center flex rounded-[50px] w-2/3 p-5">
+                <a href='apk/app.apk' download={'apk/app.apk'} className="bg-[#363841] text-white font-bold items-center justify-center flex rounded-[50px] w-2/3 p-5">
                     Download APK
                 </a>
             </div>

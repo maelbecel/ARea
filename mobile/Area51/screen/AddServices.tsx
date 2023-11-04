@@ -17,6 +17,8 @@ import * as Progress from 'react-native-progress';
 /* The code defines a functional component called `AddServices` that takes two props, `navigation` and
 `route`. */
 const AddServices = ({navigation, route}) => {
+  /* The code is using the `React.useState` hook to define and initialize state variables in the
+  `AddServices` component. */
   const [action, setAction] = React.useState("default");
   const [reaction, setReaction] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState<number>(0);
@@ -33,31 +35,31 @@ const AddServices = ({navigation, route}) => {
 
     setLoading(1);
     setLoadingInfo("Getting actions")
-    const actionInputs = await Action(action)
-    let reactionInputs = [];
+    const actionInputs : any[] = await Action(action)
+    let reactionInputs : any[] = [];
 
     setLoading(10);
     setLoadingInfo("Getting reactions")
     for (const input of reaction) {
-      const reactionInput = await Reaction(input, action)
+      const reactionInput : any[] = await Reaction(input, action)
       reactionInputs.push(reactionInput)
     }
 
     setLoading(30);
     setLoadingInfo("Getting action informations")
-    const actionInfo = await ActionInfo(action)
-    const reactionInfo = [];
+    const actionInfo : any = await ActionInfo(action)
+    const reactionInfo : any[] = [];
 
     setLoading(40);
     setLoadingInfo("Getting reaction informations")
     for (const input of reaction) {
-      const reactionInf = await ReactionInfo(input)
+      const reactionInf : any = await ReactionInfo(input)
       reactionInfo.push(reactionInf)
     }
 
     setLoading(60);
     setLoadingInfo("Creating title")
-    let title = reactionInfo[0].name
+    let title : string = reactionInfo[0].name
     for (let i = 1; i < reactionInfo.length; i++) {
       title += " and " + reactionInfo[i].name
     }
@@ -69,7 +71,7 @@ const AddServices = ({navigation, route}) => {
 
     setLoading(80);
     setLoadingInfo("Creating the applet")
-    const data = await AppletApi(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput);
+    const data : any = await AppletApi(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput);
     if (data == false) {
       return
     } else {
@@ -86,8 +88,8 @@ const AddServices = ({navigation, route}) => {
   useFocusEffect(() => {
     const fetchData = async () => {
       try {
-        const action = await AsyncStorage.getItem('action');
-        const reaction = await AsyncStorage.getItem('reaction');
+        const action : string = await AsyncStorage.getItem('action');
+        const reaction : string = await AsyncStorage.getItem('reaction');
         setAction((action === null) ? "default" : action);
         setReaction((reaction === null) ? [] : JSON.parse(reaction));
       } catch (error) {
@@ -102,16 +104,27 @@ const AddServices = ({navigation, route}) => {
     fetchData();
   });
 
+  /**
+   * The function `removeItem` removes an item from an array and updates the state and AsyncStorage
+   * accordingly.
+   * @param {number} item - The `item` parameter is a number that represents the index of the item you
+   * want to remove from the `reactionInput` and `reaction` arrays.
+   */
   const removeItem = async (item : number) => {
-    const tmp = [...reactionInput];
+    const tmp : any[] = [...reactionInput];
     tmp.splice(item, 1);
     reactionInput = tmp;
-    const rec = [...reaction]
+    const rec : any[] = [...reaction]
     rec.splice(item, 1);
     setReaction(rec);
     await AsyncStorage.setItem('reaction', JSON.stringify(rec));
   };
 
+  /**
+   * The function "showReactions" returns a list of React components based on the "reaction" array,
+   * with each component containing an "ActionChoose" component.
+   * @returns The function `showReactions` returns a JSX element.
+   */
   const showReactions = () => {
     if (reaction.length == 0) {
       return (null)
@@ -125,6 +138,9 @@ const AddServices = ({navigation, route}) => {
     })
   }
 
+  /**
+   * The function resets the values of actionInput and reactionInput and saves them in AsyncStorage.
+   */
   const resetAll = async () => {
     actionInput = "default";
     await AsyncStorage.setItem('action', "default");
@@ -135,7 +151,7 @@ const AddServices = ({navigation, route}) => {
   /* The `return` statement in the code is rendering the JSX elements that will be displayed on the
   screen when the `AddServices` component is rendered. */
   return (loading == 0) ? (
-      <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 0, marginTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
+      <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
         <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={resetAll}/>
         {showReactions()}
         {

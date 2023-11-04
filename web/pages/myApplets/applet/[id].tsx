@@ -137,8 +137,12 @@ const IndexPage: NextPage = () => {
         setTheme(getTheme(bgColor));
     }, [bgColor]);
 
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token, router]);
+    
     // --- Functions --- //
-
     const getServices = async (token: string) => {
         setServices(await GetServices(token));
     };

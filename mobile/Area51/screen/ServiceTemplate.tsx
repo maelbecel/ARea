@@ -80,7 +80,7 @@ const ServiceTemplate = ({ navigation, route }) => {
 
   /**
    * The function `displayReactions` maps over an array of `reaction` objects and returns an array of
-   * `ActionCard` components with specific props.
+   *  
    * @returns The `displayReactions` function is returning an array of `ActionCard` components.
    */
   const displayReactions = () => {

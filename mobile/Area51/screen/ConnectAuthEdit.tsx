@@ -1,4 +1,4 @@
-import * as React from 'react';
+  import * as React from 'react';
 import { Text, View, Alert, StatusBar, TouchableOpacity, Image, TextInput, StyleSheet, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
 import ServiceInfo, {Action, Reaction, Input} from '../api/ServiceInfo';
@@ -15,6 +15,7 @@ import UserInfosAPI from '../api/UserInfos';
 import * as SecureStore from 'expo-secure-store';
 import AppletDetails from '../api/AppletDetails';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { ActivityIndicator } from 'react-native-paper';
 
 
 /**
@@ -34,7 +35,7 @@ const getWriteColor = (color: string, attenuation : boolean = false): string => 
   `color`. If it doesn't start with `#`, then `hexColor` is assigned the value of `#`,
   which adds the `#` symbol to the beginning of the `color` string. This ensures that the
   `hexColor` variable always contains a valid hexadecimal color value. */
-  const hexColor = color.startsWith("#") ? color : `#${color}`;
+  const hexColor : string = color.startsWith("#") ? color : `#${color}`;
 
   /**
    * The function calculates the luminance of a given hex color.
@@ -45,9 +46,9 @@ const getWriteColor = (color: string, attenuation : boolean = false): string => 
    * the given hex color.
    */
   const getLuminance = (hexColor: string): number => {
-      const r = parseInt(hexColor.slice(1, 3), 16);
-      const g = parseInt(hexColor.slice(3, 5), 16);
-      const b = parseInt(hexColor.slice(5, 7), 16);
+      const r : number = parseInt(hexColor.slice(1, 3), 16);
+      const g : number = parseInt(hexColor.slice(3, 5), 16);
+      const b : number = parseInt(hexColor.slice(5, 7), 16);
       return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   };
 
@@ -56,7 +57,7 @@ const getWriteColor = (color: string, attenuation : boolean = false): string => 
   the luminance of a given hex color by converting the color to its RGB components and applying a
   luminance formula. The resulting luminance value represents the brightness of the color, with
   higher values indicating brighter colors and lower values indicating darker colors. */
-  const luminance = getLuminance(hexColor);
+  const luminance : number = getLuminance(hexColor);
 
   /* The code block is determining the appropriate text color based on the luminance of the
   background color. */
@@ -82,9 +83,9 @@ if all form fields have been filled. If all form fields are filled, it opens an 
 session using the WebBrowser API and navigates to a different screen based on the type of form. The
 view includes a top bar with a title and icons for navigation, an image, and text components for
 displaying the service name, action title, and description */
+
 const ConnectAuthEdit = ({ navigation, route }) => {
   const {id, slug, type, actionInput, reactionInput, index } = route.params;
-  console.log("Params ConnectAuth:", route.params);
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
   const [name, setName] = React.useState<string>("");
@@ -101,6 +102,15 @@ const ConnectAuthEdit = ({ navigation, route }) => {
   const [loggedIn, setLoggedIn] = React.useState(false);
   let inputsResp = [];
 
+  /**
+   * The function "displayTextForm" returns a React component that renders an IngredientButton with
+   * specific props and handles the onChangeText and onSelect events.
+   * @param {Input} input - The `input` parameter is an object that represents an ingredient. It likely
+   * has properties such as `name`, `quantity`, and `unit`.
+   * @param {number} index - The `index` parameter is a number that represents the index of the current
+   * input in the array of inputs. It is used to keep track of the position of the input in the array.
+   * @returns a JSX element.
+   */
   const displayTextForm = (input : Input, index : number) => {
     return (<IngredientButton key={input.name}
       input={input}
@@ -112,6 +122,12 @@ const ConnectAuthEdit = ({ navigation, route }) => {
     />)
   }
 
+  /* The above code is a TypeScript React component that renders a number input form. It takes an input
+  object and an index as parameters. It returns a View component with a TextInput component inside.
+  The TextInput component has a numeric keyboard type and a placeholder text based on the input
+  object's label property. The onChangeText event handler updates the inputsResp array at the
+  specified index with the entered text and calls the isAllFormFill function. The style of the
+  TextInput component is determined by the color variable. */
   const displayNumberForm = (input : any, index : number) => {
     return (
       <View key={input.name} style={{width:"100%"}}>
@@ -122,7 +138,17 @@ const ConnectAuthEdit = ({ navigation, route }) => {
     )
   }
 
-  const displayOther = (input : any, index : number) => {
+  /**
+   * The function `displayOther` logs an error message with the unknown type and index, and returns
+   * null.
+   * @param {any} input - The `input` parameter is of type `any`, which means it can accept any data
+   * type. It represents the value that needs to be displayed or processed.
+   * @param {number} index - The `index` parameter is a number that represents the position or index of
+   * the element in an array or collection. It is used to identify the specific element that is being
+   * processed or accessed.
+   * @returns The function `displayOther` is returning `null`.
+   */
+  const displayOther = (input : any, index : number) : null => {
     console.error("###############")
     console.error("Unknown type : ", input.type);
     console.error("At index : ", index);
@@ -130,6 +156,9 @@ const ConnectAuthEdit = ({ navigation, route }) => {
     return null;
   }
 
+  /* The above code is a function called `displaySelectForm` that takes in two parameters: `input` and
+  `index`. It checks if the `input` object has an `options` property. If it does not, it returns
+  `null`. */
   const displaySelectForm = (input : any, index : number) => {
     if (!input.options) {
       return null;
@@ -164,16 +193,24 @@ const ConnectAuthEdit = ({ navigation, route }) => {
    */
   const isAllFormFill = () : boolean => {
     if (inputs == null) return false;
-    for (let i = 0; i < inputs.length; i++) {
+    for (let i : number = 0; i < inputs.length; i++) {
       if (inputsResp[i] == null || inputsResp[i] == "" || inputsResp[i] == undefined)
         return false;
     }
     return true;
   }
 
+  /**
+   * The function checks if a user is connected to a specific service and has authentication, and
+   * returns a boolean value indicating the connection status.
+   * @param {string} slug - The `slug` parameter is a string that represents a unique identifier for a
+   * specific resource or service. It is used to check if the user is connected to that resource or
+   * service.
+   * @returns The function `isConnected` returns a Promise that resolves to a boolean value.
+   */
   const isConnected = async (slug : string) : Promise<boolean> => {
-    const serverAddress = await AsyncStorage.getItem('serverAddress');
-    const token = await SecureStore.getItemAsync('token_api');
+    const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+    const token : string = await SecureStore.getItemAsync('token_api');
 
 
     if (!token || !serverAddress) {
@@ -181,9 +218,9 @@ const ConnectAuthEdit = ({ navigation, route }) => {
       return;
     }
 
-    const response = await UserInfosAPI(token, serverAddress);
-    const services = response.data.connectedServices;
-    const hasAuth = (await AppletDetails(slug.split('.')[0])).data.hasAuthentification
+    const response : any = await UserInfosAPI(token, serverAddress);
+    const services : any[] = response.data.connectedServices;
+    const hasAuth : boolean = (await AppletDetails(slug.split('.')[0])).data.hasAuthentification
 
     if (services.includes(slug) || !hasAuth) {
       setoAuthStatus(true);
@@ -363,6 +400,12 @@ const ConnectAuthEdit = ({ navigation, route }) => {
         </KeyboardAwareScrollView>
       </View>
     );
+  } else {
+    return (
+      <View style={{backgroundColor: color, flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color={getWriteColor(color)} />
+      </View>
+    )
   }
 };
 
@@ -438,8 +481,7 @@ const styles = StyleSheet.create({
 });
 
 
-/* The line `export default ConnectAuth;` is exporting the `ConnectAuth` component as the default
-export of the module. This means that when another module imports this module, it can access the
-`ConnectAuth` component using the default import syntax, like `import ConnectAuth from
-'./ConnectAuth';`. */
+
+/* The above code is exporting a component called "ConnectAuthEdit" as the default export. It is
+written in TypeScript and is specifically for a React application. */
 export default ConnectAuthEdit;

@@ -25,16 +25,26 @@ const IndexPage: NextPage = () => {
     const [back    , setBack] = useState<boolean>(false);
 
     // --- Providers Hookers --- //
-    const { token } = useToken();
+    const [token, setToken] = useState<string | null | undefined>("");
 
     // --- Router --- //
     const router = useRouter();
+
+    useEffect(() => {
+
+        console.log("token -> ", token);
+
+        if (token === null)
+            router.push("/")
+    }, [token, router]);
 
     /**
      * First frame useEffect,
      * that clear the "action and reactions" already created in localstorage
      */
     useEffect(() => {
+        setToken(localStorage.getItem("token") as string);
+
         if (pages === -1) {
             localStorage.removeItem("action");
             localStorage.removeItem("reactions");
@@ -80,11 +90,6 @@ const IndexPage: NextPage = () => {
             setBack(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router]);
-
-    useEffect(() => {
-        if (token === null)
-            router.push("/")
-    }, [token, router]);
 
     useEffect(() => {
         if (pages === 0)

@@ -33,6 +33,11 @@ const IndexPage: NextPage = () => {
     // --- Query --- //
     const { id } = router.query;
 
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token, router]);
+        
     /**
      * First frame useEffect and when id is updated,
      * that fill "action" and "reactions" in localStorage with the applet

@@ -136,7 +136,7 @@ const IndexPage: NextPage = () => {
                             <div className="text-[18px] font-bold text-[#363841] text-center">
                                 You want to use mobile version ? You can download it
                             </div>
-                            <a href='app.apk' download={'app.apk'} className="text-[18px] font-bold text-[#00B2FF]">here</a>
+                            <a href='apk/app.apk' download={'apk/app.apk'} className="text-[18px] font-bold text-[#00B2FF]">here</a>
                         </div>
                     </div>
                 </div>
