@@ -40,6 +40,14 @@ const OutlinedTitleBox: React.FC<OutlinedTitleBoxProps> = ({onChangeText, value,
     await UpdateAppletTitleWithID(appletID, value);
   };
 
+  /**
+   * The function `titleLen` returns the length of a given value as a string, followed by "/140", or an
+   * empty string if the value is undefined.
+   * 
+   * @return The function `titleLen` returns a string that represents the length of a value. If the
+   * length of the value is greater than or equal to 0, it returns the length followed by "/140".
+   * Otherwise, it returns an empty string.
+   */
   const titleLen = () => {
       if (value.length >= 0) {
           return `${value.length}/140`;
