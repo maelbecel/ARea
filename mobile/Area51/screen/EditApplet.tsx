@@ -4,8 +4,6 @@ import ActionChoose from '../components/ActionChoose';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SubmitButton from '../components/SubmitButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
-import AppletApi from '../api/Applet';
 import Action from '../api/Action';
 import Reaction from '../api/Reaction';
 import ActionInfo from '../api/ActionInfo';
@@ -27,7 +25,14 @@ const EditApplet = ({navigation, route}) => {
   const [loadingInfo, setLoadingInfo] = React.useState<string>("");
   const {id} = route.params
 
+  /* The `React.useEffect` hook is used to perform side effects in functional components. In this case,
+  it is used to fetch data from the server and update the component's state. */
   React.useEffect(() => {
+    /**
+     * The above function fetches data from an API and sets various states based on the received data.
+     * @returns The function `fetchData` returns a Promise that resolves to `null` if the `data`
+     * variable is `null`. Otherwise, it does not explicitly return anything.
+     */
     const fetchData = async () => {
       try {
         const data = await AppletID(id);
@@ -66,13 +71,28 @@ const EditApplet = ({navigation, route}) => {
   }, []);
 
 
+  /**
+   * The function `newApplet` is an asynchronous function that creates a new applet by fetching actions
+   * and reactions, getting their information, and then creating the applet with the provided data.
+   * @returns nothing (undefined) if the condition `data == false` is true. Otherwise, it is navigating
+   * to the "MyApplets" screen with the `id` parameter set to `data.id`.
+   */
   const newApplet = async () => {
 
+    /* The code is setting the loading state to 1 and displaying the loading information as "Getting
+    actions". Then, it is calling the `Action` function with the `action` parameter to fetch the
+    action inputs. After that, it initializes an empty array called `reactionInputs`. */
     setLoading(1);
     setLoadingInfo("Getting actions")
     const actionInputs = await Action(action)
     let reactionInputs = [];
 
+    /* The code is setting the loading state to 10 and displaying the loading information as "Getting
+    reactions". Then, it is iterating over the `reaction` array and calling the `Reaction` function
+    with each reaction and action as parameters. The result of each function call is pushed into the
+    `reactionInputs` array. After each iteration, the loading state is updated by adding `(i *
+    (20/reaction.length))` to the current loading state. This is done to show the progress of
+    fetching reactions. */
     setLoading(10);
     setLoadingInfo("Getting reactions")
     for (let i = 0; i < reaction.length; i++) {
@@ -81,11 +101,21 @@ const EditApplet = ({navigation, route}) => {
       setLoading(10 + (i * (20/reaction.length)));
     }
 
+    /* The code is setting the loading state to 30 and displaying the loading information as "Getting
+    action informations". Then, it is calling the `ActionInfo` function with the `action` parameter
+    to fetch information about the action. After that, it initializes an empty array called
+    `reactionInfo`. */
     setLoading(30);
-    setLoadingInfo("Getting action informations")
+    setLoadingInfo("Getting action information")
     const actionInfo = await ActionInfo(action)
     const reactionInfo = [];
 
+    /* The code is setting the loading state to 40 and displaying the loading information as "Getting
+    reaction informations". Then, it is iterating over the `reaction` array and calling the
+    `ReactionInfo` function with each reaction as a parameter. The result of each function call is
+    pushed into the `reactionInfo` array. After each iteration, the loading state is updated by
+    adding `(i * (30/reaction.length))` to the current loading state. This is done to show the
+    progress of fetching reaction information. */
     setLoading(40);
     setLoadingInfo("Getting reaction informations")
     for (let i = 0; i < reaction.length; i++) {
@@ -94,6 +124,7 @@ const EditApplet = ({navigation, route}) => {
       setLoading(40 + (i * (30/reaction.length)));
     }
 
+    /* The code block is responsible for creating a new applet. */
     setLoading(70);
     setLoadingInfo("Creating the applet")
     const data = await AppletPatch(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput, id);
@@ -107,6 +138,11 @@ const EditApplet = ({navigation, route}) => {
     }
   }
 
+  /**
+   * The function removes an item from an array and updates the state and AsyncStorage accordingly.
+   * @param {number} item - The `item` parameter is a number that represents the index of the item to
+   * be removed from the `reactionInput` and `reaction` arrays.
+   */
   const removeItem = async (item : number) => {
     const tmp = [...reactionInput];
     tmp.splice(item, 1);
@@ -117,6 +153,11 @@ const EditApplet = ({navigation, route}) => {
     await AsyncStorage.setItem('reaction', JSON.stringify(rec));
   };
 
+  /**
+   * The function "showReactions" returns a list of React components based on the "reaction" array,
+   * with each component containing an "ActionChoose" component.
+   * @returns The function `showReactions` returns a JSX element.
+   */
   const showReactions = () => {
     if (reaction.length == 0) {
       return (null)
@@ -130,6 +171,10 @@ const EditApplet = ({navigation, route}) => {
     })
   }
 
+  /**
+   * The function "resetAll" resets the action and reaction inputs and saves the default values in
+   * AsyncStorage.
+   */
   const resetAll = async () => {
     setActionInput("default");
     await AsyncStorage.setItem('action', "default");
@@ -179,5 +224,9 @@ const EditApplet = ({navigation, route}) => {
     </View>
   );
 }
+/* The line `export default EditApplet;` is exporting the `EditApplet` component as the default export
+of the file. This means that when another file imports this file, they can import the `EditApplet`
+component directly without having to specify its name. For example, in another file, you can write
+`import EditApplet from './EditApplet';` to import the `EditApplet` component. */
 
 export default EditApplet;

@@ -54,7 +54,7 @@ const Home = ({ navigation }) => {
    */
   const filterApplets = (name : string) => {
     if (applets == null) return;
-    let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
+    let tmp : any = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
     setDispApplets(tmp);
   }
 

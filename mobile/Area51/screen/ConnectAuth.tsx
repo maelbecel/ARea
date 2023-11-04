@@ -34,7 +34,7 @@ const getWriteColor = (color: string, attenuation : boolean = false): string => 
   `color`. If it doesn't start with `#`, then `hexColor` is assigned the value of `#`,
   which adds the `#` symbol to the beginning of the `color` string. This ensures that the
   `hexColor` variable always contains a valid hexadecimal color value. */
-  const hexColor = color.startsWith("#") ? color : `#${color}`;
+  const hexColor : string = color.startsWith("#") ? color : `#${color}`;
 
   /**
    * The function calculates the luminance of a given hex color.
@@ -45,9 +45,9 @@ const getWriteColor = (color: string, attenuation : boolean = false): string => 
    * the given hex color.
    */
   const getLuminance = (hexColor: string): number => {
-      const r = parseInt(hexColor.slice(1, 3), 16);
-      const g = parseInt(hexColor.slice(3, 5), 16);
-      const b = parseInt(hexColor.slice(5, 7), 16);
+      const r : number = parseInt(hexColor.slice(1, 3), 16);
+      const g : number = parseInt(hexColor.slice(3, 5), 16);
+      const b : number = parseInt(hexColor.slice(5, 7), 16);
       return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   };
 
@@ -56,7 +56,7 @@ const getWriteColor = (color: string, attenuation : boolean = false): string => 
   the luminance of a given hex color by converting the color to its RGB components and applying a
   luminance formula. The resulting luminance value represents the brightness of the color, with
   higher values indicating brighter colors and lower values indicating darker colors. */
-  const luminance = getLuminance(hexColor);
+  const luminance : number = getLuminance(hexColor);
 
   /* The code block is determining the appropriate text color based on the luminance of the
   background color. */
@@ -100,6 +100,15 @@ const ConnectAuth = ({ navigation, route }) => {
   const [loggedIn, setLoggedIn] = React.useState(false);
   let inputsResp = [];
 
+  /**
+   * The function `displayTextForm` returns a React component that renders an IngredientButton with
+   * specific props and handles the onChangeText and onSelect events.
+   * @param {Input} input - The `input` parameter is an object that represents an ingredient. It likely
+   * has properties such as `name`, `quantity`, and `unit`.
+   * @param {number} index - The `index` parameter is a number that represents the index of the input
+   * in the array of inputs. It is used to keep track of the position of the input in the array.
+   * @returns a JSX element.
+   */
   const displayTextForm = (input : Input, index : number) => {
     return (<IngredientButton key={input.name}
       input={input}
@@ -107,11 +116,12 @@ const ConnectAuth = ({ navigation, route }) => {
       type={type}
       color={color}
       onChangeText={(text) => {inputsResp[index] = text; isAllFormFill()}}
-      onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}
-}
+      onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}}
     />)
   }
 
+  /* The above code is defining a function called `displayNumberForm` that takes two parameters:
+  `input` and `index`. */
   const displayNumberForm = (input : any, index : number) => {
     return (
       <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
@@ -122,6 +132,16 @@ const ConnectAuth = ({ navigation, route }) => {
     )
   }
 
+  /**
+   * The function `displayOther` logs an error message with the unknown type and index, and returns
+   * null.
+   * @param {any} input - The `input` parameter is of type `any`, which means it can accept any data
+   * type. It represents the value that needs to be displayed or processed.
+   * @param {number} index - The `index` parameter is a number that represents the position or index of
+   * the element in an array or collection. It is used to identify the specific element that is being
+   * processed or accessed.
+   * @returns The function `displayOther` is returning `null`.
+   */
   const displayOther = (input : any, index : number) => {
     console.error("###############")
     console.error("Unknown type : ", input.type);
@@ -130,6 +150,8 @@ const ConnectAuth = ({ navigation, route }) => {
     return null;
   }
 
+  /* The above code is a function called `displaySelectForm` that takes in two parameters: `input` and
+  `index`. It is written in TypeScript and React. */
   const displaySelectForm = (input : any, index : number) => {
     if (!input.options) {
       return null;
@@ -145,7 +167,11 @@ const ConnectAuth = ({ navigation, route }) => {
     )
   }
 
-  /* The `showForm` function is a helper function that generates a form based on the `inputs` array. */
+  /**
+   * The function "showForm" checks for errors and inputs, and then displays different types of forms
+   * based on the input type.
+   * @returns The function `showForm` returns a JSX element or an array of JSX elements.
+   */
   const showForm = () => {
     if (error == false && inputs == null) {
       Alert.alert("Authentification Error", "An error occurred while trying to connect to the API")
@@ -153,7 +179,8 @@ const ConnectAuth = ({ navigation, route }) => {
       seterror(true);
       return null;
     } else if (inputs == null) return null;
-    return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : displayOther(input, index)))}
+    return inputs.map((input, index) => ((input.type == "TEXT" || input.type == "URL") ? displayTextForm(input, index) : (input.type == "NUMBER") ? displayNumberForm(input, index) : (input.type == "SELECT") ? displaySelectForm(input, index) : displayOther(input, index)))
+  }
 
   /**
    * The function `isAllFormFill` checks if all the form inputs have been filled and returns true if
@@ -165,16 +192,23 @@ const ConnectAuth = ({ navigation, route }) => {
    */
   const isAllFormFill = () : boolean => {
     if (inputs == null) return false;
-    for (let i = 0; i < inputs.length; i++) {
+    for (let i : number = 0; i < inputs.length; i++) {
       if (inputsResp[i] == null || inputsResp[i] == "" || inputsResp[i] == undefined)
         return false;
     }
     return true;
   }
 
+  /**
+   * The function `isConnected` checks if a user is connected to a server and has authentication for a
+   * specific service.
+   * @param {string} slug - The `slug` parameter is a string that represents a unique identifier for a
+   * specific service or API. It is used to check if the user is connected to that service or API.
+   * @returns The function `isConnected` returns a Promise that resolves to a boolean value.
+   */
   const isConnected = async (slug : string) : Promise<boolean> => {
-    const serverAddress = await AsyncStorage.getItem('serverAddress');
-    const token = await SecureStore.getItemAsync('token_api');
+    const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+    const token : string = await SecureStore.getItemAsync('token_api');
 
 
     if (!token || !serverAddress) {
@@ -182,9 +216,9 @@ const ConnectAuth = ({ navigation, route }) => {
       return;
     }
 
-    const response = await UserInfosAPI(token, serverAddress);
-    const services = response.data.connectedServices;
-    const hasAuth = (await AppletDetails(slug.split('.')[0])).data.hasAuthentification
+    const response : any= await UserInfosAPI(token, serverAddress);
+    const services : any[] = response.data.connectedServices;
+    const hasAuth : boolean = (await AppletDetails(slug.split('.')[0])).data.hasAuthentification
 
     if (services.includes(slug) || !hasAuth) {
       setoAuthStatus(true);
@@ -198,22 +232,19 @@ const ConnectAuth = ({ navigation, route }) => {
       navigation.goBack();
       return false;
     }
-    if (await AsyncStorage.getItem('serverAddressWarning') == 'true') {
-      Alert.alert("Warning", "You need to set a server address in the settings to use this app");
-      navigation.goBack();
-      return false;
-    }
   }
 
   /**
-   * The function `_openAuthSessionAsync` is an asynchronous function that retrieves a server address
-   * and token from AsyncStorage, and then opens an authentication session using the WebBrowser API.
+   * The function `_openAuthSessionAsync` is an asynchronous function that opens an authentication
+   * session using a server address, token, and redirect URI.
+   * @returns The function `_openAuthSessionAsync` returns a boolean value. If the `result.type` is
+   * "success", it returns `true`, otherwise it returns `false`.
    */
   const _openAuthSessionAsync = async () => {
     try {
-      const serverAddress = await AsyncStorage.getItem('serverAddress');
-      const token = await TokenApi(slug.split(".")[0])
-      let result = await WebBrowser.openAuthSessionAsync(
+      const serverAddress : string = await AsyncStorage.getItem('serverAddress');
+      const token : string = await TokenApi(slug.split(".")[0])
+      let result : WebBrowser.WebBrowserAuthSessionResult = await WebBrowser.openAuthSessionAsync(
         `${serverAddress}/service/${slug.split(".")[0]}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
       );
       if (result.type == "success") {
@@ -234,9 +265,16 @@ const ConnectAuth = ({ navigation, route }) => {
     }
   }, [useUrl]);
 
+  /* The above code is a React useEffect hook that is used to perform side effects in a functional
+  component. It is called when the component mounts for the first time (empty dependency array []). */
   React.useEffect(() => {
+    /**
+     * The function checks if the type is "reaction" and the actionSlug is "default", and if so, it
+     * navigates to the "Create" screen, otherwise it calls the isConnected function.
+     * @returns The function `callingAction` returns nothing (undefined).
+     */
     const callingAction = async () => {
-      const actionSlug = await AsyncStorage.getItem("action");
+      const actionSlug : string = await AsyncStorage.getItem("action");
       if (type == "reaction" && actionSlug == "default") {
         navigation.removeListener
         navigation.navigate("Create");
@@ -260,9 +298,9 @@ const ConnectAuth = ({ navigation, route }) => {
      */
     const fetchServiceInfo = async () => {
       const info = await ServiceInfo(slug.split(".")[0])
-      const actionSlug = await AsyncStorage.getItem("action");
-      const infoInput = (type == "action") ? await ActionApi(slug) : await ReactionApi(slug, actionSlug);
-      const placeHolders = (type == "action") ? null : await PlaceHolders(slug, actionSlug)
+      const actionSlug : string = await AsyncStorage.getItem("action");
+      const infoInput : any[] = (type == "action") ? await ActionApi(slug) : await ReactionApi(slug, actionSlug);
+      const placeHolders : Dict = (type == "action") ? null : await PlaceHolders(slug, actionSlug)
 
       if (info == null) {
         return;
@@ -274,7 +312,7 @@ const ConnectAuth = ({ navigation, route }) => {
       setAction(info.actions);
       setReaction(info.reactions);
       setPlaceholders(placeHolders);
-      for (let i = 0; i < info.actions.length; i++) {
+      for (let i : number = 0; i < info.actions.length; i++) {
         inputsResp[i] = null;
       }
       isAllFormFill();
@@ -292,14 +330,14 @@ const ConnectAuth = ({ navigation, route }) => {
      * @returns The function `findAction` returns nothing.
      */
     const findAction = () => {
-      for (let i = 0; i < action.length; i++) {
+      for (let i : number = 0; i < action.length; i++) {
         if (action[i].slug == slug) {
           setTitle(action[i].name);
           setDescription(action[i].description);
           return;
         }
       }
-      for (let i = 0; i < reaction.length; i++) {
+      for (let i : number = 0; i < reaction.length; i++) {
         if (reaction[i].slug == slug) {
           setTitle(reaction[i].name);
           setDescription(reaction[i].description);

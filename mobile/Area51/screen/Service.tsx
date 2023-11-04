@@ -3,9 +3,6 @@ import {Alert, Text, View, StatusBar, Image, StyleSheet, ScrollView } from 'reac
 import TopBar from '../components/TopBar';
 import ServiceInfo, {Action, Reaction} from '../api/ServiceInfo';
 import ActionCard from '../components/ActionCard';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -120,22 +117,22 @@ const Service = ({ navigation, route }) => {
 
   /* The `return` statement in the `Service` component is returning a JSX expression that represents
   the structure and content of the component's rendered output. */
-  return (
-    <View>
-      {/* <StatusBar backgroundColor={color} /> */}
-      <View style={[{ backgroundColor: color }, styles.container]}>
-        <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='info' onPressRight={() => navigation.navigate("Info", {slug : slug})} />
-        <Image source={{ uri: url, cache: 'force-cache' }} style={styles.logo} />
-        <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
-      </View>
-      <ScrollView>
-        <View style={styles.action}>
-          {displayActions()}
-          {displayReactions()}
+    return (
+      <View>
+        {/* <StatusBar backgroundColor={color} /> */}
+        <View style={[{ backgroundColor: color }, styles.container]}>
+          <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='info' onPressRight={() => navigation.navigate("Info", {slug : slug})} />
+          <Image source={{ uri: url, cache: 'force-cache' }} style={styles.logo} />
+          <Text style={[styles.name, { color: getWriteColor(color) }]}>{name}</Text>
         </View>
-      </ScrollView>
-    </View>
-  );
+        <ScrollView>
+          <View style={styles.action}>
+            {displayActions()}
+            {displayReactions()}
+          </View>
+        </ScrollView>
+      </View>
+    );
 };
 
 /* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
