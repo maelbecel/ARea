@@ -1,4 +1,4 @@
-# Api
+# Web-Api
 
 Here we have all components for API calls.
 * [/action/{slug}](#actionts) [**GET**]
