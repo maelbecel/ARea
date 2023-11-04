@@ -725,3 +725,178 @@ export default MoreDetailsButton;
 ```
 
 For more information about this file you can check his complete code here : [MoreDetails.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/MoreDetails.tsx)
+
+
+## [SearchApplet.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/SearchApplet.tsx)
+
+The `SearchApplet` component is the component that will be used to display the search bar of the applets in the mobile application. It is a simple component that will display the search bar of the applets.
+
+![SearchApplet-1.png](../images/mobileComponents/SearchApplet-1.png)
+
+The code defines a functional component called `SearchApplet` using TypeScript and React.
+```typescript 
+const SearchApplet: React.FC = () 
+```
+
+The code is using the `React.useState` hook to define and initialize state variables in the
+`SearchApplet` component.
+
+```typescript
+    const [applets, setApplets] = useState<any>(null); // State to store applets
+	const [dispApplets, setDispApplets] = useState<any>(null); // State to store applets
+	const [loading, setLoading] = useState<boolean>(true); // State to store loading state
+	const [refreshing, setRefreshing] = useState<boolean>(false); // State to store refreshing state
+	const navigation: any = useNavigation(); // Navigation hook
+```
+
+The function `reduceTitle` takes a string `title` as input and returns a shortened version of the
+title if it exceeds 50 characters, otherwise it returns the original title.
+The `title` parameter is a string that represents the title of a text or document.
+The function `reduceTitle` returns a modified version of the input `title` string. If the
+length of the `title` is greater than 50 characters, it returns the first 50 characters of the `title` followed by an ellipsis ("..."). Otherwise, it returns the original `title` string.
+
+```Typescript
+    const reduceTitle = (title: string) => {
+		if (title.length > 50) {
+			return title.slice(0, 50) + "...";
+		}
+		return title;
+	};
+```
+
+The `onRefresh` function is a callback function that is used to handle the refresh action in the
+ScrollView component. It sets the `refreshing` state to true and calls the `fetchApplets` function.
+
+```typescript
+    const onRefresh = useCallback(async () => {
+		setRefreshing(true);
+		setApplets(null);
+		setDispApplets(null);
+		await dataFetch();
+		setTimeout(() => {
+		  setRefreshing(false);
+		}, 1000);
+	}, []);
+```
+
+The function filters an array of applets based on a given name and updates the displayed applets.
+
+```Typescript
+    const filterApplets = (name : string) => {
+		if (applets == null) return;
+		let tmp = applets.filter((service: any) => service.name.toLowerCase().includes(name.toLowerCase()));
+		setDispApplets(tmp);
+	}
+```
+
+The function `dataFetch` is an asynchronous function that fetches data from the `AppletMe` API and
+updates the state variables `applets`, `dispApplets`, and `loading` accordingly.
+
+```typescript 
+    const dataFetch = async () => {
+	  try {
+		const data: any = await AppletMe();
+		setApplets(data.data);
+		setDispApplets(data.data);
+		setLoading(false);
+	} catch (error) {
+		console.error("error applet component", error);
+	  }
+	};
+```
+
+The `useEffect` hook is used to perform side effects in functional components. In this case, the
+`useEffect` hook is used to add a listener to the navigation focus event.
+
+```Typescript
+    useEffect(() => {
+		const listener = navigation.addListener("focus", () => {
+			dataFetch();
+		});
+	}, []);
+```
+
+The `return` statement in the code is rendering the JSX elements divide in two parts:
+
+* The first part is the search bar :
+
+![SearchApplet-2.png](../images/mobileComponents/SearchApplet-2.png)
+
+
+```Typescript
+            <View style={styles.input}>
+			  <FormInput
+				title="Search"
+				icon={{ name: "search", width: 27, height: 27 }}
+				onChangeText={(text) => {
+				  filterApplets(text);
+				}}
+				size="85%"
+			  />
+			</View>
+```
+
+* The second part is the applet display:
+
+![SearchApplet-3.png](../images/mobileComponents/SearchApplet-3.png)
+
+
+```Typescript
+            {(!loading && dispApplets) ? dispApplets.map((item: any) => (
+			  <View style={styles.applet} key={item.id}>
+				<AppletComponent
+				  id={item.id}
+				  name={reduceTitle(item.name)}
+				  reactionsList={item.reactions}
+				  actionSlug={item.actionSlug.split(".")[0]}
+				  enabled={item.enabled}
+				  author={item.user.username}
+				/>
+			  </View>
+			)):
+			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+				<ActivityIndicator size="large" color="#363841" />
+			</View>
+			}
+```
+
+The `const styles` declaration is creating a JavaScript object that contains a set of styles for the
+components in the React Native code. The `StyleSheet.create()` function is used to create a
+stylesheet object that optimizes the styles for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+	input: {
+		alignContent: 'center',
+		alignItems: 'center',
+		marginBottom: 20,
+	},
+	applet: {
+		alignContent: 'center',
+		alignItems: 'center',
+	},
+});
+```
+
+The `export default SearchApplet;` statement is exporting the `SearchApplet` component as the
+default export of the module. This means that when another file imports this module, it can access
+the `SearchApplet` component directly without having to specify its name in curly braces. For
+example, in another file, you can import the `SearchApplet` like this: `import SearchApplet from
+'./SearchApplet';`.
+
+```typescript
+export default SearchApplet;
+```
+
+For more information about this file you can check his complete code here : [SearchApplet.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/SearchApplet.tsx)
+
+
+
+
+
+
+
+
+
+
+
