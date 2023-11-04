@@ -202,3 +202,357 @@ export default AppletComponent;
 ```
 
 For more information about this file you can check his complete code here : [Activity.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/AppletComponent.tsx)
+
+
+## [AppletInfoContainer.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/AppletInfoContainer.tsx)
+
+The `AppletInfoContainer` component is the component that will be used to display the information of an applet in the mobile application. It is a simple component that will display the name of the applet, the icon of the applet, the description of the applet, the author of the applet and the reactions of the applet.
+
+![AppletInfoContainer-1.png](../images/mobileComponents/AppletInfoContainer-1.png)
+
+<img height="684" alt="AppletInfoContainer" src="AppletInfoContainer-2.png" width="364"/>
+
+The `AppletInfoContainerProps` interface is defining the type of props that the
+`AppletInfoContainer` component expects to receive. It specifies the names and
+types of the props, such as `name` (a string), `color` (a string), `actionSlug`
+(a string), `reactionSlug` (a string), `user` (a string), `enabled` (a
+boolean), `createdAt` (a number), and `lastTriggerDate` (a number). By defining
+this interface, it helps ensure that the component is used correctly and that
+the props passed to it have the expected types. Here are the props that the
+`AppletInfoContainer` component expects to receive:
+* `name` : the name of the applet
+* `color` : the color of the applet
+* `actionSlug` : the slug of the action of the applet
+* `reactionsList` : the list of the reactions of the applet
+* `user` : the author of the applet
+* `enabled` : a boolean that indicates if the applet is enabled or not
+* `id` : the id of the applet
+* `createdAt` : the date of creation of the applet
+* `lastTriggerDate` : the date of the last trigger of the applet
+* `notif` : a boolean that indicates if the applet has notifications or not
+
+```typescript
+interface AppletInfoContainerProps {
+    name: string;
+    color: string;
+    actionSlug: string;
+    reactionsList: ReactionListProps[];
+    user: string;
+    enabled: boolean;
+    id: number;
+    createdAt?: number;
+    lastTriggerDate?: number;
+    notif: boolean;
+}
+```
+
+The `ReactionListProps` interface is defining the type of props that the `AppletInfoContainer`
+component expects to receive for the `reactionsList` prop. It specifies that the `reactionsList`
+prop should be an array of objects with two properties:
+* `reactionSlug` : the slug of the reaction
+* `reactionData` : the data of the reaction
+
+```typescript
+interface ReactionListProps {
+    reactionSlug: string;
+    reactionData: any[];
+}
+```
+
+The `AppletInfoContainer` component is a functional component that takes the
+`AppletInfoContainerProps` as a parameter. It returns a `View` component that
+contains the JSX elements that will be rendered by the component.
+
+```Typescript
+const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, actionSlug, reactionsList, user, enabled, id, createdAt = 0, lastTriggerDate = 0, notif })
+```
+
+The code is using the `React.useState` hook to define and initialize state variables in the
+`AppletInfoContainer` component.
+
+```Typescript 
+    const [formattedDate, setFormattedDate] = useState<string>("");
+    const [LastUseDate, setLastUseDate] = useState<string>("");
+    const [title, setTitle] = useState<string>(name);
+    const navigation: any = useNavigation();
+```
+
+The `useEffect` hook in this code is used to perform side effects in a
+functional component. It takes two arguments: a callback function and an array
+of dependencies. The function `dataFetch` retrieves data, formats dates, and stores an applet ID in AsyncStorage.
+
+```Typescript
+    useEffect(() => {
+        const dataFetch = async () => {
+            if (createdAt !== 0) {
+                const createdAtDate = new Date(createdAt * 1000);
+                const lastUpdateDate = new Date(lastTriggerDate * 1000);
+                const formattedDate = createdAtDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
+                const formattedLastUseDate = lastUpdateDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: 'numeric' });
+                setLastUseDate(formattedLastUseDate);
+                setFormattedDate(formattedDate);
+            }
+            await AsyncStorage.setItem('appletID', id.toString());
+        };
+        dataFetch();
+    }, []);
+```
+
+The function `handleTitleChange` updates the title state and saves it to AsyncStorage if the text length is less than 141 characters. The `text` parameter is a string that represents the new title value that
+is being passed to the `handleTitleChange` function.
+
+```typescript 
+    const handleTitleChange = async (text: string) => {
+        if (text.length < 141) {
+            setTitle(text);
+            await AsyncStorage.setItem('title', text);
+        }
+    };
+```
+
+The return statement in the code is rendering the JSX elements in two parts:
+* The first part contain the header of the applet :
+
+![AppletInfoContainer-3.png](../images/mobileComponents/AppletInfoContainer-3.png)
+
+```typescript 
+            <View style={{ ...styles.header, backgroundColor: color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color }}>
+                {/* The applet's logo */}
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignContent: 'center', justifyContent: 'flex-start' }}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Info', { slug: actionSlug.split('.')[0] })}>
+                        {actionSlug &&
+                            <LogoApplet
+                                slug={actionSlug.split('.')[0]}
+                                color={color}
+                            />}
+                    </TouchableOpacity>
+                    {/* Loop through reactionsList */}
+                    {reactionsList && reactionsList.map((reaction: any, index: number) => (
+                        <View key={index}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Info', { slug: reaction.reactionSlug.split('.')[0] })}>
+                                <LogoApplet
+                                    slug={reaction.reactionSlug.split('.')[0]}
+                                    color={color}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ))}
+                </View>
+
+                {/* The title of the applet */}
+                <OutlinedTitleBox value={title} bgColor={color} author={user} onChangeText={handleTitleChange} />
+
+            </View>
+```
+
+* The second part is the body of the container :
+
+![AppletInfoContainer-4.png](../images/mobileComponents/AppletInfoContainer-4.png)
+
+```Typescript
+            <View style={styles.body}>
+                {/* The toggle switch that enables or disables the applet */}
+                <View style={styles.toggleSwitch}>
+                    <ToggleSwitch
+                        isChecked={enabled}
+                        isDisabled={false}
+                        yesLabel="Enabled"
+                        noLabel="Disabled"
+                        bgColor='#121212'
+                        toggleColor={color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color}
+                        darkMode={false}
+                        bigSwitch={true}
+                    />
+                </View>
+
+                <MoreDetailsButton isToggle={false} actionSlug={actionSlug} reactionsList={reactionsList} />
+
+                <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>
+                    {formattedDate ? (
+                        `Created at ${formattedDate}`
+                    ) : (
+                        "Date of creation not accessible"
+                    )}
+                </Text>
+                <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22, marginTop: '1%' }}>
+                    {LastUseDate ? (
+                        `Last use ${formattedDate}`
+                    ) : (
+                        "Never used yet"
+                    )}
+                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: '10%', alignContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: '#363841', fontWeight: 'bold', fontSize: 22, alignContent: 'center', alignItems: 'center' }}>Notify me</Text>
+                    <SwitchNotifyMe isChecked={notif} isDisabled={false} />
+                </View>
+                <DeleteModal id={id} />
+            </View>
+```
+
+The `const styles` declaration is creating a JavaScript object that contains a set of styles for
+different elements in the `AppletInfoContainer` component. Each key in the object represents a style
+property, such as `container`, `header`, `title`, `text`, `toggleSwitch`, and `body`. The
+corresponding value for each key is an object that defines the specific style properties and their
+values for that element.
+
+```typescript
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#fff',
+    },
+    header: {
+        paddingHorizontal: '5%',
+        paddingTop: '3%',
+        paddingBottom: '10%',
+        marginBottom: '5%',
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        paddingVertical: '2%',
+        paddingHorizontal: '2%',
+        marginBottom: '2%',
+    },
+    text: {
+        fontSize: 16,
+    },
+    toggleSwitch: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: '5%',
+    },
+    body: {
+        paddingHorizontal: '5%',
+        marginBottom: '5%',
+    },
+});
+```
+
+The `export default AppletInfoContainer;` statement is exporting the `AppletInfoContainer` component
+as the default export of the module. This means that when another file imports this module, it can
+access the `AppletInfoContainer` component directly without having to specify its name in curly
+braces. For example, in another file, you can import the `AppletInfoContainer` like this: `import
+AppletInfoContainer from './AppletInfoContainer';`.
+
+```typescript
+export default AppletInfoContainer;
+```
+
+For more information about this file you can check his complete code here : [AppletInfoContainer.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/AppletInfoContainer.tsx)
+
+## [Logo.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/Logo.tsx)
+
+The `Logo` component is the component that will be used to display the logo of an applet in the mobile application. It is a simple component that will display the logo of the applet.
+
+![Logo.png](../images/mobileComponents/Logo.png)
+
+The `interface CardProps` is defining the props that can be passed to the `LogoApplet` component. It
+extends the `TouchableOpacityProps` interface, which includes all the props that can be passed to
+the `TouchableOpacity` component from React Native. It has the following properties:
+* `slug` : the slug of the service
+* `onPress` : a function that will be called when the user presses the logo
+* `color` : the color of the logo background
+
+```typescript 
+interface CardProps extends TouchableOpacityProps {
+    slug    : string;
+    onPress ?: () => void;
+    color   ?: string;
+}
+```
+
+The `LogoApplet` component is a functional component that takes the `CardProps` as a parameter. The component renders a `TouchableOpacity` or `View` depending on whether the `onPress`
+prop is defined or not. It displays a logo from of a service.
+
+```typescript
+const LogoApplet: React.FC<CardProps> = ({ slug , onPress, color = "#ffffff"}) 
+```
+
+The code is using the `React.useState` hook to define and initialize state variables in the
+`LogoApplet` component.
+
+```typescript
+    const [bgColor, setColor] = React.useState<string>("EEEEEE");
+    const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
+    const [loading, setLoading] = React.useState<boolean>(true);
+```
+
+The `React.useEffect` hook is used to perform side effects in functional components. In this
+case, it is used to fetch information from the `ServiceInfo` API and update the component's
+state.
+
+```typescript 
+    React.useEffect(() => {
+        const fetchInfos = async () => {
+            const res = await ServiceInfo(slug);
+            setColor(res.decoration.backgroundColor);
+            setLogo(res.decoration.logoUrl);
+            setLoading(false);
+        }
+        fetchInfos();
+    }, []);
+```
+
+The function checks if a given color is light or not. It uses a `color` parameter that is a string representing a color.
+It returns true if the color is considered light, and false if not
+```typescript
+    const isLight = (color: string) => {
+        if (color.charAt(0) === '#') {
+            color = color.substr(1);
+        }
+        if (color.length === 3) {
+            color = color.charAt(0) + color.charAt(0) + color.charAt(1) + color.charAt(1) + color.charAt(2) + color.charAt(2);
+        }
+        if (color.toLocaleLowerCase() === 'ffffff') {
+            return false;
+        }
+        return true;
+    }
+```
+
+Then, if `loading` is true the component will be display in two different ways :
+* If `onPress` is defined, a `TouchableOpacity`
+```typescript 
+<TouchableOpacity onPress={onPress} style={[{ backgroundColor: isLight(color) ? null : bgColor }, styles.container]}>
+    <Image source={{ uri: logo, cache: 'force-cache'}} style={[styles.logopti]} />
+</TouchableOpacity>
+```
+* Otherwise, a `View`
+```typescript
+<View style={[{ backgroundColor: isLight(color) ? null : bgColor }, styles.container]}>
+    <Image source={{ uri: logo, cache: 'force-cache' }} style={[styles.logopti]} />
+</View>
+```
+
+The `const styles` variable is an object that contains style definitions for the `LogoApplet`
+component. It uses the `StyleSheet.create` method from React Native to create a stylesheet object.
+
+```typescript
+  const styles = StyleSheet.create({
+    container: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        height: 50,
+        width: 50,
+        borderRadius: 10,
+    },
+    logopti: {
+        height: 40,
+        width: 40,
+        alignSelf: 'center',
+    }
+  });
+```
+
+The `export default LogoApplet;` statement is exporting the `LogoApplet` component as the default
+export of the module. This means that when another file imports this module, it can access the
+`LogoApplet` component directly without having to specify its name in curly braces. For example, in
+another file, you can import the `LogoApplet` like this: `import LogoApplet from './LogoApplet';`.
+
+```typescript
+export default LogoApplet;
+```
+
+For more information about this file you can check his complete code here : [Logo.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/Logo.tsx)
+
