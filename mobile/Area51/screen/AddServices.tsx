@@ -167,7 +167,7 @@ const AddServices = ({navigation, route}) => {
           )
         }
         {(action != "default" && reaction.length > 0) ?
-          <SubmitButton title="Continuer" onPress={newApplet} textcolor='#FFF' style={{}}/>
+          <SubmitButton title="Continue" onPress={newApplet} textcolor='#FFF' style={{}}/>
           : null
         }
       </ScrollView>

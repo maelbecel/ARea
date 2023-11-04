@@ -48,5 +48,3 @@ services:
     restart: always
     volumes:
       - ./apk:/output
-
-

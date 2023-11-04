@@ -18,6 +18,7 @@ import { NavigateButton } from "../../components/NavBar/components/Button";
 import LinkedAccounts from "../../components/ProfilePage/LinkedAccounts";
 import ProfilePicture from "../../components/ProfilePage/ProfilePicture";
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
+import router from "next/router";
 
 const IndexPage: NextPage = () => {
     // --- Variables --- //
@@ -46,6 +47,11 @@ const IndexPage: NextPage = () => {
         setUsername(user?.username as string);
         setEmail(user?.email as string);
     }, [user]);
+
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token]);
 
     return (
         <>
