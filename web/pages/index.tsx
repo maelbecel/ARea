@@ -1,19 +1,22 @@
-// --- Librairies --- //
-import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router';
+import type { NextPage } from 'next'
 
-// --- Components --- //
-import Footer from '../components/Footer/Footer';
+// --- API --- //
+import { useToken } from '../utils/api/user/Providers/TokenProvider';
 import { useUser } from '../utils/api/user/Providers/UserProvider';
 import { GetProfile } from '../utils/api/user/me';
+
+// --- Interface --- //
 import { UserProfile } from '../utils/api/user/interface/interface';
-import HomeStartContainer from '../components/HomePage/Container/HomeStartContainer';
-import HomeDetailsContainer from '../components/HomePage/Container/HomeDetailsContainer';
-import HomeDownloadAPKContainer from '../components/HomePage/Container/HomeDownloadAPKContainer';
+
+// --- Components --- //
 import PageHeaders from '../components/HomePage/Headers';
+import HomeDownloadAPKContainer from '../components/HomePage/Container/HomeDownloadAPKContainer';
 import HomeExploreContainer from '../components/HomePage/Container/HomeExploreContainer';
-import { useToken } from '../utils/api/user/Providers/TokenProvider';
-import { useRouter } from 'next/router';
+import HomeDetailsContainer from '../components/HomePage/Container/HomeDetailsContainer';
+import HomeStartContainer from '../components/HomePage/Container/HomeStartContainer';
+import Footer from '../components/Footer/Footer';
 
 const IndexPage: NextPage = () => {
   // --- Variables --- //
@@ -45,12 +48,7 @@ const IndexPage: NextPage = () => {
     localStorage.setItem("token", queryToken);
 
     setConnected(true);
-    setUser({
-      ...user,
-      loginWithService: true
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  }, [router, setToken]);
 
   useEffect(() => {
     if (connected === false)
@@ -66,23 +64,30 @@ const IndexPage: NextPage = () => {
 
   return (
     <>
+      {/* --- Headers --- */}
       <PageHeaders connected={connected} email={user?.email} />
 
+      {/* --- Body --- */}
       <div className="w-full min-h-screen">
         {connected ? (
-          <HomeExploreContainer />
+          <>
+            {/* --- Connected --- */}
+            <HomeExploreContainer />
+          </>
         ) : (
           <>
+            {/* --- Not Connected --- */}
             <HomeStartContainer />
             <HomeDownloadAPKContainer />
             <HomeDetailsContainer />
           </>
         )}
       </div>
-
+  
+      {/* --- Footer --- */}
       <Footer />
     </>
-  )
+  );
 }
 
-export default IndexPage
+export default IndexPage;
