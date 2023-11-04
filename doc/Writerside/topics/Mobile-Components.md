@@ -2076,3 +2076,107 @@ export default IngredientButton;
 ```
 
 For more information about this file you can check his complete code here : [IngredientButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/IngredientButton.tsx)
+
+
+## [OutlinedTextBox.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/OutlinedTextBox.tsx)
+
+The `OutlinedTextBox` component is the component that will be used to display the form for a text input in the mobile application.
+
+![OutlinedTextBox.png](../images/mobileComponents/OutlinedTextBox.png)
+
+The `interface OutlinedTextBoxProps` defines the props that can be passed to the `OutlinedTextBox`
+component. Here's a breakdown of each prop:
+* `onChangeText` : a function that will be called when the text of the input changes
+* `value` : the value of the input
+* `secureTextEntry` : a boolean that indicates if the input is secure or not
+
+```Typescript
+interface OutlinedTextBoxProps {
+  onChangeText : (text: string) => void;
+  value: string;
+  secureTextEntry?: boolean;
+}
+```
+
+The above code defines a React functional component called OutlinedTextBox that renders a text input
+field with an outline, and updates its focus state based on user interaction.
+
+```Typescript
+const OutlinedTextBox: React.FC<OutlinedTextBoxProps> = ({onChangeText, value, secureTextEntry})
+```
+
+The `React.useState` hook is used to define and initialize state variables in the `OutlinedTextBox`
+component.
+
+```Typescript
+    const [isFocused, setIsFocused] = React.useState(false);
+```
+
+The handleFocus function sets the state variable isFocused to true.
+
+```Typescript
+        const handleFocus = () => setIsFocused(true);
+```
+
+The handleBlur function sets the state variable isFocused to false.
+
+```Typescript
+        const handleBlur = () => setIsFocused(false);
+```
+
+The `return` statement in the `OutlinedTextBox` component is rendering the JSX code that will be
+displayed on the screen.
+
+```Typescript
+return (
+    <View style={[styles.container, isFocused ? null : styles.focused]}>
+      <TextInput
+        onChangeText={onChangeText}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        style={[styles.textInput, isFocused ? null : styles.focused]} // Si isFocused est vrai, on ne met pas de style, sinon on met le style [styles.focused
+        value={value}
+      />
+    </View>
+  );
+```
+
+The `const styles` variable is an object that contains style definitions for different elements in
+the `OutlinedTextBox` component. It uses the `StyleSheet.create` method from the `react-native`
+library to create a stylesheet with optimized performance.
+
+```Typescript
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 3, // Largeur de la bordure
+    borderColor: '#363841', // Couleur de la bordure
+    borderRadius: 5, // Rayon des coins de la boîte
+    paddingVertical: 10, // Rembourrage vertical pour l'espace interne
+    paddingHorizontal: 10, // Rembourrage horizontal pour l'espace interne
+    marginVertical: 10, // Marge verticale pour l'espace externe
+  },
+  textInput: {
+    width: '100%', // Largeur de la boîte
+    fontSize: 18, // Taille de la police
+    fontWeight: 'bold', // Texte en gras
+    color: '#363841', // Couleur du texte
+  },
+  focused: {
+    borderColor: '#D9D9D9', // Couleur de la bordure
+    color: '#363841', // Couleur du texte
+    opacity: 0.5, // Opacité du texte
+  },
+});
+```
+
+The `export default OutlinedTextBox;` statement is exporting the `OutlinedTextBox` component as the
+default export of this module. This means that when another file imports this module, it can import
+the `OutlinedTextBox` component directly without having to specify its name in curly braces. For
+example, in another file, you can import the `OutlinedTextBox` component like this: `import
+OutlinedTextBox from './OutlinedTextBox'`.
+
+```Typescript
+export default OutlinedTextBox;
+```
+
+For more information about this file you can check his complete code here : [OutlinedTextBox.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/OutlinedTextBox.tsx)
