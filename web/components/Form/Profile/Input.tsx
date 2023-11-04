@@ -20,7 +20,7 @@ const Input = ({placeholder, secureMode = false, label, value, onChangeFunction}
             <label className="text-[#363841] font-bold text-[18px] md:text-[28px]">
                 {label}
             </label>
-            <div className="flex flex-row border-[#363841] rounded-md outline px-[5px]">
+            <div className="flex flex-row justify-between border-[#363841] rounded-md outline px-[5px]">
                 <input className="text-[#363841] font-bold text-[18px] py-[12px] outline-none"
                     type={mode ? "password" : "text"}
                     name="name"

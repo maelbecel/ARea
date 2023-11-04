@@ -33,6 +33,11 @@ const IndexPage: NextPage = () => {
     // --- Query --- //
     const { id } = router.query;
 
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token, router]);
+        
     /**
      * First frame useEffect and when id is updated,
      * that fill "action" and "reactions" in localStorage with the applet
@@ -62,7 +67,7 @@ const IndexPage: NextPage = () => {
     }, [dataApplet]);
 
     useEffect(() => {
-        if (token === null)
+        if (token === null || token === undefined || token == "")
             router.push("/")
     }, [token, router]);
 
@@ -122,16 +127,16 @@ const IndexPage: NextPage = () => {
 
     const parseDataAppletToAREA = (data: any) => {
         let action: ActionApplet = {
-            actionSlug: data.actionSlug,
-            actionInputs: data.actionData
+            actionSlug: data?.actionSlug,
+            actionInputs: data?.actionData
         };
 
         let reactions: ReactionApplet[] = [];
 
-        for (let i = 0; i < data.reactions.length; i++) {
+        for (let i = 0; i < data?.reactions?.length; i++) {
             reactions.push({
-                reactionSlug: data.reactions[i].reactionSlug,
-                reactionInputs: data.reactions[i].reactionData
+                reactionSlug: data?.reactions[i]?.reactionSlug,
+                reactionInputs: data?.reactions[i]?.reactionData
             });
         }
 

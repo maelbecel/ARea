@@ -88,6 +88,11 @@ const IndexPage: NextPage = () => {
             getProfile(token);
     }, [setUser, token, user])
 
+    useEffect(() => {
+        if (token === null || token === undefined || token === "")
+            router.push("/");
+    }, [token, router]);
+
     return (
         <>
             {/* --- NavBar --- */}
