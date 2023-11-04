@@ -106,6 +106,10 @@ const AddServices = ({navigation, route}) => {
     const tmp = [...reactionInput];
     tmp.splice(item, 1);
     reactionInput = tmp;
+    const rec = [...reaction]
+    rec.splice(item, 1);
+    setReaction(rec);
+    await AsyncStorage.setItem('reaction', JSON.stringify(rec));
   };
 
   const showReactions = () => {
@@ -121,11 +125,18 @@ const AddServices = ({navigation, route}) => {
     })
   }
 
+  const resetAll = async () => {
+    actionInput = "default";
+    await AsyncStorage.setItem('action', "default");
+    reactionInput = [];
+    await AsyncStorage.setItem('reaction', "[]");
+  }
+
   /* The `return` statement in the code is rendering the JSX elements that will be displayed on the
   screen when the `AddServices` component is rendered. */
   return (loading == 0) ? (
       <ScrollView style={{ backgroundColor: "#FFF", height: "100%", paddingTop: 0, marginTop: 20}} contentContainerStyle={{alignItems: 'center', flex: (reaction.length > 4) ? 0 : 1, justifyContent: "center"}}>
-        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={() => actionInput = "default"}/>
+        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={resetAll}/>
         {showReactions()}
         {
           (reaction.length >= 9) ? null : (

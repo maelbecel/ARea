@@ -1,14 +1,20 @@
 package fr.zertus.area.service;
 
+import fr.zertus.area.app.google.GoogleApp;
+import fr.zertus.area.app.google.model.GoogleUserInfo;
+import fr.zertus.area.entity.ConnectedService;
 import fr.zertus.area.entity.User;
 import fr.zertus.area.exception.AlreadyUsedException;
 import fr.zertus.area.payload.request.user.RegisterDTO;
 import fr.zertus.area.payload.response.ApiResponse;
 import fr.zertus.area.repository.UserRepository;
+import fr.zertus.area.security.utils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +53,40 @@ public class RegisterUserService {
         } else {
             return ApiResponse.ok(userRepository.save(user));
         }
+    }
+
+    public String registerLoginUserByGoogle(ConnectedService service, String redirectUri) {
+        if (service == null || !service.getSlug().equalsIgnoreCase("google"))
+            return redirectUri + "?error=Invalid%20service";
+        GoogleUserInfo userInfo = GoogleApp.getUserInfo(service);
+        if (userInfo == null) {
+            return redirectUri + "?error=Fail%20to%20get%20user%20info";
+        }
+        User user = userRepository.findByEmail(userInfo.getEmail()).orElse(null);
+        if (user != null) {
+            String userToken = JwtTokenProvider.createToken(user.getEmail());
+            return redirectUri + "?token=" + userToken;
+        }
+
+        if (userRepository.findByUsername(userInfo.getGiven_name()).isPresent()) {
+            return redirectUri + "?error=Username%20already%20in%20use";
+        }
+
+        user = new User();
+        user.setEmail(userInfo.getEmail());
+        user.setUsername(userInfo.getGiven_name());
+        user.setPassword(null);
+        user.setConnectedServices(new ArrayList<>());
+
+        user.addConnectedService(service);
+        service.setSlug("youtube");
+        user.addConnectedService(service);
+        service.setSlug("gmail");
+        user.addConnectedService(service);
+        userRepository.save(user);
+
+        String userToken = JwtTokenProvider.createToken(user.getEmail());
+        return redirectUri + "?token=" + userToken;
     }
 
     /**

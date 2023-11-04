@@ -93,24 +93,25 @@ const ProfileForm: React.FC<ProfileFormProps> = ({data}) => {
     return (
         <View style={styles.userInfo}>
             <View style={{marginBottom: 10}}>
-                <Text style={styles.title}>Compte</Text>
+                <Text style={styles.title}>Account</Text>
             </View>
             <View style={{marginTop: 10}}>
-                <Text style={styles.subtitle}>Nom d'utilisateur</Text>
+                <Text style={styles.subtitle}>Username</Text>
                 <OutlinedTextBox
                 onChangeText={handleUsernameChange}
                 value={username}
                 />
             </View>
+            {(data.loginWithService == false) ? (
             <View style={{marginTop: 10}}>
-                <Text style={styles.subtitle}>Mot de passe</Text>
+                <Text style={styles.subtitle}>Password</Text>
                 <View style={styles.rectangle}>
                     <SecureText passwordLength={data.passwordLength} />
                 </View>
                 <PasswordModal/>
-            </View>
+            </View>) : null}
             <View style={{marginTop: 10}}>
-                <Text style={styles.subtitle}>Adresse e-mail</Text>
+                <Text style={styles.subtitle}>E-mail</Text>
                 <OutlinedTextBox
                     onChangeText={handleEmailChange}
                     value={email}
