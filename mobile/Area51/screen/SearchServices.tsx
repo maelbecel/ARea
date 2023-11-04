@@ -12,7 +12,6 @@ and `route`, which are provided by React Navigation. */
 const SearchServices = ({ navigation, route }) => {
   const [applets, setApplets] = useState([]); // State to store applets
   const [dispApplets, setDispApplets] = useState([]); // State to store applets
-
   const { type, actionInput, reactionInput, index }  = route.params;
 
   /* The `useEffect` hook is used to perform side effects in functional components. In this case, the

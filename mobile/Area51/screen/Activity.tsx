@@ -1,7 +1,7 @@
 /* The code `import * as React from 'react';` is importing the entire React library and assigning it to
 the variable `React`. This allows us to use React components and functions in our code. */
 import * as React from 'react';
-import { Alert, View, StyleSheet, Image, ScrollView, StatusBar } from 'react-native';
+import { Alert, View, StyleSheet, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import ActivityCard from '../components/ActivityCard';
 

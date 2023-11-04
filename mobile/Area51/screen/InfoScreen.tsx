@@ -2,11 +2,7 @@ import * as React from 'react';
 import {Alert, Text, View, StatusBar, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import TopBar from '../components/TopBar';
 import ServiceInfo, {Action, Reaction} from '../api/ServiceInfo';
-import ActionCard from '../components/ActionCard';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
-import LogoApplet from '../components/Applets/Logo';
 
 /**
  * The `getWriteColor` function takes a color value and returns the appropriate text color (either
@@ -58,8 +54,9 @@ const getWriteColor = (color: string): string => {
   }
 };
 
-/* The `Service` component is a functional component that represents a screen in a React Native app. It
-receives two props, `navigation` and `route`, from the React Navigation library. */
+
+/* The `InfoService` function is a React component that displays information about a service. It takes
+two props, `navigation` and `route`, which are provided by React Navigation. */
 const InfoService = ({ navigation, route }) => {
   const { slug } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
@@ -68,6 +65,10 @@ const InfoService = ({ navigation, route }) => {
   const [link, setLink] = React.useState<string>("");
   const [desc, setDesc] = React.useState<string>("");
 
+  /**
+   * The function `openPage` is an asynchronous function that tries to open a browser using the
+   * `WebBrowser.openBrowserAsync` method and displays an error message if it fails.
+   */
   const openPage = async () => {
     try {
       await WebBrowser.openBrowserAsync(link);
@@ -101,11 +102,10 @@ const InfoService = ({ navigation, route }) => {
     fetchData();
   }, [slug]);
 
-  /* The `return` statement in the `Service` component is returning a JSX expression that represents
-  the structure and content of the component's rendered output. */
+  /* The `return` statement in the `InfoService` component is returning a JSX (JavaScript XML)
+  expression that represents the structure and content of the component's rendered output. */
   return (
     <View>
-      {/* <StatusBar backgroundColor={color} /> */}
       <View style={[{ backgroundColor: color }, styles.container]}>
         <TopBar title="Explore" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} />
         <Image source={{ uri: url, cache: 'force-cache' }} style={styles.logo} />
@@ -182,4 +182,7 @@ const styles = StyleSheet.create({
 });
 
 
+/* The line `export default InfoService;` is exporting the `InfoService` component as the default
+export of the module. This allows other modules to import and use the `InfoService` component by
+using the `import InfoService from './InfoService';` syntax. */
 export default InfoService;

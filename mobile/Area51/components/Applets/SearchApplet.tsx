@@ -74,7 +74,6 @@ const SearchApplet: React.FC = () => {
 
 			{/* Liste des applets */}
 			{(!loading && dispApplets) ? dispApplets.map((item: any) => (
-				console.log(item.enabled),
 			  <View style={styles.applet} key={item.id}>
 				<AppletComponent
 				  id={item.id}
@@ -86,7 +85,9 @@ const SearchApplet: React.FC = () => {
 				/>
 			  </View>
 			)):
-			<ActivityIndicator size="large" color="#363841" />
+			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+				<ActivityIndicator size="large" color="#363841" />
+			</View>
 			}
 		  </ScrollView>
 	  );
