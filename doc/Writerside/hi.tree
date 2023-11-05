@@ -19,6 +19,7 @@
             <toc-element topic="Web-Pages1.md">
             </toc-element>
             <toc-element topic="Web-Api.md"/>
+            <toc-element topic="Web-Components1.md"/>
         </toc-element>
     </toc-element>
 </instance-profile>

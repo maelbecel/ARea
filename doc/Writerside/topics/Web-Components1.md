@@ -17,7 +17,7 @@ Here is an example with the result:
     </RightSection>
 </NavBar>
 ```
-![NavBar.png](../images/webComponents/NavBar.png)
+![NavBar.png](NavBar1.png)
 
 ## [navbar.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/navbar.tsx)
 
@@ -126,7 +126,8 @@ Example:
 ```
 
 The result:
-![ButtonIconNavigate.png](../images/webComponents/ButtonIconNavigate.png)
+
+![ButtonIconNavigate.png](ButtonIconNavigate1.png)
 
 Here is the navigate button component:
 ```typescript
@@ -156,7 +157,8 @@ Example:
 ```
 
 The result:
-![ButtonNavigate.png](../images/webComponents/ButtonNavigate.png)
+
+![ButtonNavigate.png](ButtonNavigate1.png)
 
 ## [Icon.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/NavBar/components/Icon.tsx)
 
@@ -177,7 +179,7 @@ const Icon = ({ theme = 'light' } : { theme ?: string }) => {
 };
 ```
 
-![Icon.png](../images/webComponents/Icon.png)
+![Icon.png](Icon1.png)
 
 ## [Profile.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/NavBar/components/Profile.tsx)
 
@@ -213,9 +215,12 @@ const Profile = ({ url, theme = "light", email }: { url ?: string, theme ?: stri
 **Note**: The component have two different view, one for the mobile and one for the desktop.
 
 Desktop view:
-![Profile.png](../images/webComponents/ProfileDesk.png)
+
+![Profile.png](ProfileDesk1.png)
+
 Mobile view:
-![Profile.png](../images/webComponents/ProfileMob.png)
+
+![Profile.png](ProfileMob1.png)
 
 ## [SimpleLink.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/NavBar/components/SimpleLink.tsx)
 
@@ -232,7 +237,7 @@ const SimpleLink = ({ href, text, theme = 'light' }: { href: string, text: strin
 };
 ```
 
-![SimpleLink.png](../images/webComponents/SimpleLink.png)
+![SimpleLink.png](SimpleLink1.png)
 
 ## [Title.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/NavBar/components/Title.tsx)
 
@@ -247,7 +252,7 @@ const Title = ({ text, theme = 'light' }: { text: string, theme?: string }) => {
 };
 ```
 
-![Title.png](../images/webComponents/Title.png)
+![Title.png](Title1.png)
 
 # [Footer.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/Footer/Footer.tsx)
 
@@ -287,7 +292,7 @@ For use the footer, you just need to put the component at the end of the page:
 <Footer />
 ```
 
-![Footer.png](../images/webComponents/Footer.png)
+![Footer.png](Footer1.png)
 
 # [TextContainer.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/Auth/TextContainer.tsx)
 
@@ -303,7 +308,8 @@ Here is an example with the result:
 </TextContainer>
 ```
 Here is the result:
-![TextContainer.png](../images/webComponents/TextContainer.png)
+
+![TextContainer.png](TextContainer1.png)
 
 Here is the main component:
 ```typescript
@@ -340,7 +346,7 @@ const Title = ({ title }: { title: string }) => {
     );
 };
 ```
-![Title.png](../images/webComponents/TitleText.png)
+![Title.png](TitleText1.png)
 
 * The `RedirectText` component:
 ```typescript
@@ -354,7 +360,7 @@ const RedirectText = ({ text, redirectUri }: { text: string, redirectUri: string
     );
 };
 ```
-![RedirectText.png](../images/webComponents/RedirectText.png)
+![RedirectText.png](RedirectText1.png)
 
 * The `RequestButton` component:
 ```typescript
@@ -369,7 +375,7 @@ const RequestButton = ({ text, handleClick }: ButtonProps) => {
     );
 };
 ```
-![RequestButton.png](../images/webComponents/RequestButton.png)
+![RequestButton.png](RequestButton1.png)
 
 * The `InputContainer` component:
 ```typescript
@@ -398,7 +404,7 @@ const InputContainer = ({ placeholder, secureMode = false, value, setValue, icon
     );
 };
 ```
-![InputContainer.png](../images/webComponents/InputContainer.png)
+![InputContainer.png](InputContainer1.png)
 
 * The `ConnectWithGoogle` component:
 ```typescript
@@ -419,7 +425,7 @@ const ConnectWithGoogle = () => {
     );
 };
 ```
-![ConnectWithGoogle.png](../images/webComponents/ConnectWithGoogle.png)
+![ConnectWithGoogle.png](ConnectWithGoogle1.png)
 
 ## [ChangeAddress.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/Modal/ChangeAddress.tsx)
 
@@ -522,8 +528,11 @@ return (
 ```
 
 Here is the result:
-![ChangeAddress.png](../images/webComponents/ChangeAddressOff.png)
-![ChangeAddress.png](../images/webComponents/ChangeAddressOn.png)
+
+![ChangeAddress.png](ChangeAddressOff1.png)
+
+
+![ChangeAddress.png](ChangeAddressOn1.png)
 
 For more information about the modal, you can go to the [react-modal](https://www.npmjs.com/package/react-modal) documentation.
 
@@ -568,7 +577,8 @@ const ModalError = ({ closeModal, openModal, modalIsOpen, text } : ModalErrorPro
 ```
 
 Here is the result:
-![ModalErrorNotif.png](../images/webComponents/ModalErrorNotif.png)
+
+![ModalErrorNotif.png](ModalErrorNotif1.png)
 
 For more information about the modal, you can go to the [react-modal](https://www.npmjs.com/package/react-modal) documentation.
 
@@ -700,7 +710,8 @@ const AppletComponent = ({id, name, actionSlug, reactions , actionTrigger, lastT
 ```
 
 This applet component look like this:
-![Applet.png](../images/webComponents/Applet.png)
+
+![Applet.png](Applet1.png)
 
 Then in the main component, we create the state of the component:
 ```typescript
@@ -790,7 +801,8 @@ return (
 ```
 
 Here is the result:
-![SearchApplet.png](../images/webComponents/SearchApplets.png)
+
+![SearchApplet.png](SearchApplets1.png)
 
 For more information about this component you can go to the [SearchApplet.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/Applet/Components/SearchApplet.tsx)
 
@@ -821,15 +833,19 @@ return (
 ```
 
 Here is the result:
-![Logo.png](../images/webComponents/Logo.png)
+
+![Logo.png](Logo1.png)
 
 ## [ReactionButton.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/Applet/Components/ReactionButton.tsx)
 
 The reaction button component, have two different display mode depending if the user choose a service or not.
 
 Here it's how the component look like:
-![ReactionButton.png](../images/webComponents/ReactionButtonEmpty.png)
-![ReactionButton.png](../images/webComponents/ReactionButton.png)
+
+![ReactionButton.png](ReactionButtonEmpty1.png)
+
+
+![ReactionButton.png](ReactionButton1.png)
 
 Here is the Empty component:
 ```typescript
@@ -911,8 +927,11 @@ const ReactionCardComponent = ({ reaction, setReactions, onEdit } : { reaction :
 The action button component, have two different display mode depending if the user choose a service or not.
 
 Here it's how the component look like:
-![ActionButton.png](../images/webComponents/ActionButtonEmpty.png)
-![ActionButton.png](../images/webComponents/ActionButton.png)
+
+![ActionButton.png](ActionButtonEmpty1.png)
+
+
+![ActionButton.png](ActionButton1.png)
 
 Here is the Empty component:
 ```typescript
@@ -983,7 +1002,8 @@ const ActionCardComponent = ({ action, setAction, onEdit } : ActionCardComponent
 ```
 
 Here is the result when you have an action, and multiple reactions:
-![MultipleAction.png](../images/webComponents/MultipleAction.png)
+
+![MultipleAction.png](MultipleAction1.png)
 
 ## [AddReaction.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/Applet/Components/AddReactions.tsx)
 
@@ -1014,17 +1034,18 @@ const AddReactions = ({ setReactions, index } : { setReactions: Dispatch<SetStat
 ```
 
 Here is the result (it's the little plus between the two reactions or actions):
-![MultipleAction.png](../images/webComponents/MultipleAction.png)
+
+![MultipleAction.png](MultipleAction1.png)
 
 ## [FieldsInput.tsx](https://github.com/maelbecel/ARea/blob/master/web/components/Applet/Components/LittleComponents/FieldsInput.tsx)
 
 The fields input is an important component that is used to create or edit an applet.
 He have a currently three different mode, depending of the type of the field, but can be easily extended.
 Here is the different mode:
-* `TEXT`: ![FieldsInput.png](../images/webComponents/FieldsInput.png)
-* `NUMBER`: ![FieldsInputNumber.png](../images/webComponents/FieldsInput.png)
-* `URL`: ![FieldsInputUrl.png](../images/webComponents/FieldsInput.png)
-* `SELECT`: ![FieldsInputSelect.png](../images/webComponents/FieldsInputSelect.png)
+* `TEXT`: ![FieldsInput.png](FieldsInput1.png)
+* `NUMBER`: ![FieldsInputNumber.png](FieldsInput1.png)
+* `URL`: ![FieldsInputUrl.png](FieldsInput1.png)
+* `SELECT`: ![FieldsInputSelect.png](FieldsInputSelect1.png)
 
 Each component is composed of a `LabelComponent` and a `InputComponent` or a `SelectComponent`:
 ```typescript
@@ -1103,9 +1124,12 @@ const LabelComponent = ({ label, theme }: { label: string, theme: string }) => {
 This button have two state, when is enable and when is disable.
 
 Here is the component enable:
-![ToggleSwitch.png](../images/webComponents/ToggleButtonEnable.png)
+
+![ToggleSwitch.png](ToggleButtonEnable1.png)
+
 Here is the component disable:
-![ToggleSwitch.png](../images/webComponents/ToggleButtonDisabled.png)
+
+![ToggleSwitch.png](ToggleButtonDisabled1.png)
 
 Here is the renderer of the component:
 ```typescript
