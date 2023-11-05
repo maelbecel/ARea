@@ -1,5 +1,7 @@
 # Mobile-Components
 
+Here is the folder where all components used in screen are stored.
+
 ## [AppletComponent.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/AppletComponent.tsx)
 
 The `AppletComponent` is the component that will be used to display the applets in the mobile application. It is a simple component that will display the name of the applet and the icon of the applet. It will also display the number of unread messages in the applet.

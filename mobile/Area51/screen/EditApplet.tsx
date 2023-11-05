@@ -200,7 +200,7 @@ const EditApplet = ({navigation, route}) => {
         <TopBar title="Edit"  iconLeft='arrow-back' onPressLeft={() => (navigation.goBack(), resetAll())} color={"#363841"} />
       </View>
       <ScrollView style={{ backgroundColor: "#FFF", height: "80%", paddingTop: 0, marginTop: 0}} contentContainerStyle={{alignItems: 'center', flex: 0, justifyContent: "center"}}>
-        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={resetAll}/>
+        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServicesEdit', {type: "action"})} onPressCross={resetAll}/>
         {showReactions()}
         {
           (reaction.length >= 9) ? null : (

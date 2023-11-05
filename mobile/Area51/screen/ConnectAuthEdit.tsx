@@ -165,8 +165,8 @@ const ConnectAuthEdit = ({ navigation, route }) => {
     }
     inputsResp[index] = input.options[0];
     return (
-      <View key={input.name} style={{marginBottom : 30, width:"100%"}}>
-        <View >
+      <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
+        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
           <Text style={[styles.select, { color: getWriteColor(color), width: "30%" }]}>{input.label}:</Text>
           <SelectDropdown defaultValue={input.options[0]} data={input.options.sort((a : string, b : string) => a.toLowerCase().localeCompare(b.toLowerCase()))} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
         </View>
@@ -379,7 +379,7 @@ const ConnectAuthEdit = ({ navigation, route }) => {
   if (name != "") {
     return (
       <View style={{backgroundColor: color, height : "100%", paddingTop: 30}}>
-        <TopBar title="Create" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Edit", {id : id})} />
+        <TopBar title="Edit" iconLeft='arrow-back' color={getWriteColor(color)} onPressLeft={() => navigation.goBack()} iconRight='close' onPressRight={() => navigation.navigate("Edit", {id : id})} />
         <KeyboardAwareScrollView
           contentContainerStyle={{ padding: 16 }}
           extraScrollHeight={200}
