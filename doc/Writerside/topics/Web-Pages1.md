@@ -839,7 +839,7 @@ We can conclude by exporting the component :
 export default IndexPage;
 ```
 
-For more information about this file you can check his complete code here : [Applet.tsx]([id].tsx)
+For more information about this file you can check his complete code here : [Applet.tsx](https://github.com/maelbecel/ARea/blob/master/web/pages/myApplets/applet/[id].tsx)
 
 ## [Applet/ModifyTitle.tsx](modifyTitle_[id].tsx)
 
@@ -958,7 +958,7 @@ We can conclude by exporting the component :
 export default IndexPage;
 ```
 
-For more information about this file you can check his complete code here : [Applet/ModifyTitle.tsx](modifyTitle_[id].tsx)
+For more information about this file you can check his complete code here : [Applet/ModifyTitle.tsx](https://github.com/maelbecel/ARea/blob/master/web/pages/myApplets/applet/modifyTitle/[id].tsx)
 
 ## [Applet/ModifyApplet.tsx](modifyApplet_[id].tsx)
 
@@ -1125,7 +1125,7 @@ We can conclude by exporting the component :
 export default IndexPage;
 ```
 
-For more information about this file you can check his complete code here : [Applet/ModifyApplet.tsx](modifyApplet_[id].tsx)
+For more information about this file you can check his complete code here : [Applet/ModifyApplet.tsx](https://github.com/maelbecel/ARea/blob/master/web/pages/myApplets/applet/modifyApplet/[id].tsx)
 
 ## [Install-step.tsx](https://github.com/maelbecel/ARea/blob/master/web/pages/install-step/index.tsx)
 

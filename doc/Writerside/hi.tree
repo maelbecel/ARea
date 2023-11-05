@@ -4,7 +4,7 @@
 
 <instance-profile id="hi"
                  name="Area51 documentation"
-                 start-page="Web-Components1.md">
+                 start-page="Home.md">
 
     <toc-element topic="Home.md">
         <toc-element topic="User-Documentation.md">
