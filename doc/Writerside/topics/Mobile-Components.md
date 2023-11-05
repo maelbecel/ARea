@@ -2505,3 +2505,474 @@ import PasswordModal from './PasswordModal';
 ```
 
 For more information about this file you can check his complete code here : [PasswordModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/PasswordModal.tsx)
+
+
+
+## [ProfileForm.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ProfileForm.tsx)
+
+The `ProfileForm` component is the component that will be used to display the form for the profile page.
+
+![ProfileForm.png](../images/mobileComponents/ProfileForm.png)
+
+The `interface ProfileFormProps` defines the props that can be passed to the `ProfileForm`
+component. Here's a breakdown of each prop:
+* `data` : the data of the user
+
+```Typescript
+interface ProfileFormProps {
+  data: any;
+}
+```
+
+The secureText function replaces each character in a string with an asterisk (*) to hide sensitive
+information like passwords. The `passwordLength` parameter is a number that represents the
+length of the password.
+
+```Typescript
+const secureText = (passwordLength: number) => {
+    return '•'.repeat(passwordLength); // Remplace chaque caractère par un astérisque (*)
+};
+```
+
+The SecureText component displays a secure text value based on the provided password length.
+The `SecureText` component takes in a `passwordLength` parameter, which is used as an
+argument for the `secureText` function. The `secureText` function is not defined in the code snippet
+provided, so it is unclear what it does. However, the result of the `secure
+
+```Typescript
+const SecureText = ({ passwordLength }) => {
+    const secureTextValue = secureText(passwordLength);
+
+    return (
+      <Text style={styles.secureText}>{secureTextValue}</Text>
+    );
+};
+```
+The `ProfileForm` component is a functional component that displays a form for editing user profile
+information.
+
+```Typescript
+const ProfileForm: React.FC<ProfileFormProps> = ({ data })
+```
+
+The `React.useState` hook is used to define and initialize state variables in the `ProfileForm`
+component.
+
+```Typescript
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('password');
+    const [email, setEmail] = useState<string>('');
+```
+
+The `useEffect` hook in the `ProfileForm` component is used to fetch data from AsyncStorage and
+update the component's state with the retrieved data.
+
+```Typescript
+    useEffect(() => {
+        const dataFetch = async () => {
+            const username = await AsyncStorage.getItem('username');
+            const email = await AsyncStorage.getItem('email');
+            setUsername(username);
+            setEmail(email);
+        };
+        dataFetch();
+    }, []);
+```
+
+The function `handleUsernameChange` updates the username state and saves it to AsyncStorage.
+The `text` parameter is a string that represents the new username value
+that needs to be saved.
+
+```Typescript
+    const handleUsernameChange = async (text: string) => {
+        setUsername(text);
+        await AsyncStorage.setItem('username', text);
+    };
+```
+
+The function `handlePasswordChange` is used to update the password state in a React component.
+The `text` parameter is a string that represents the new password value.
+
+```Typescript
+    const handlePasswordChange = async (text: string) => {
+        setPassword(text);
+    };
+```
+
+The function `handleEmailChange` updates the email state and saves it to AsyncStorage.
+The `text` parameter is a string that represents the new email address
+that needs to be updated.
+
+```Typescript
+    const handleEmailChange = async (text: string) => {
+        setEmail(text);
+        await AsyncStorage.setItem('email', text);
+    };
+```
+
+The `return` statement in the `ProfileForm` component is rendering the JSX code that represents
+the form for editing user profile information. It will not display the password form if the user account has been created by a service
+
+```Typescript
+return (
+        <View style={styles.userInfo}>
+            <View style={{marginBottom: 10}}>
+                <Text style={styles.title}>Account</Text>
+            </View>
+            <View style={{marginTop: 10}}>
+                <Text style={styles.subtitle}>Username</Text>
+                <OutlinedTextBox
+                onChangeText={handleUsernameChange}
+                value={username}
+                />
+            </View>
+            {(data.loginWithService == false) ? (
+            <View style={{marginTop: 10}}>
+                <Text style={styles.subtitle}>Password</Text>
+                <View style={styles.rectangle}>
+                    <SecureText passwordLength={data.passwordLength} />
+                </View>
+                <PasswordModal/>
+            </View>) : null}
+            <View style={{marginTop: 10}}>
+                <Text style={styles.subtitle}>E-mail</Text>
+                <OutlinedTextBox
+                    onChangeText={handleEmailChange}
+                    value={email}
+                />
+            </View>
+        </View>
+    );
+```
+
+The `const styles` object is defining a set of styles using the `StyleSheet.create` method from
+React Native. Each key-value pair in the `styles` object represents a specific style that can be
+applied to a component in the `ProfileForm` component.
+
+```Typescript
+const styles = StyleSheet.create({
+    userInfo: {
+        marginHorizontal: 10, // Marge à gauche de l'avatar pour l'espace entre l'image et le texte
+    },
+    title: {
+        fontSize: 20, // Taille de la police pour le titre
+        fontWeight: 'bold', // Texte en gras pour le titre
+        color: '#363841',
+    },
+    subtitle: {
+        fontSize: 16, // Taille de la police pour le nom d'utilisateur
+        fontWeight: 'bold', // Texte en gras pour le nom d'utilisateur
+        color: '#363841',
+    },
+    link: {
+        color: '#00C2FF',
+        textAlign: 'left',
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    secureText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#363841',
+        opacity: 0.5,
+    },
+    rectangle: {
+        backgroundColor: '#D9D9D9', // Couleur de la boîte
+        borderRadius: 5, // Rayon des coins de la boîte
+        paddingVertical: 10, // Rembourrage vertical pour l'espace interne
+        paddingHorizontal: 10, // Rembourrage horizontal pour l'espace interne
+        marginTop: 10, // Marge verticale pour l'espace externe
+        marginBottom: 5, // Marge verticale pour l'espace externe
+    },
+});
+```
+
+The line `export default ProfileForm;` is exporting the `ProfileForm` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`ProfileForm` component using any name of its choice. For example, in another file, you can
+import the `ProfileForm` component like this:
+
+```Typescript
+import ProfileForm from './ProfileForm';
+```
+
+For more information about this file you can check his complete code here : [ProfileForm.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ProfileForm.tsx)
+
+## [ServerModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServerModal.tsx)
+
+The `ServerModal` component is the component that will be used to display the server modal in the mobile application.
+It will allow the user to choose the server address where the application will be connected.
+
+![ServerModal.png](../images/mobileComponents/ServerModal.png)
+
+The code defines a functional component called `ServerModal` using TypeScript and React.
+
+```Typescript
+const ServerModal: React.FC = ()
+```
+
+The following code is using the `React.useState` hook to define and initialize state variables in
+component.
+
+```Typescript
+    const [serverAddress, setServerAddress] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+```
+
+he `useEffect` hook is used to perform side effects in functional components. In this code, the
+`useEffect` hook is used to check if the server address is already saved in the local storage.
+
+```Typescript
+    useEffect(() => {
+      const checkAndShowModal = async () => {
+        try {
+          const savedAddress = await AsyncStorage.getItem('serverAddress');
+          if (!savedAddress) {
+            // Si l'adresse du serveur n'est pas enregistrée, ouvrez le modal
+            setModalVisible(true);
+          } else {
+            setServerAddress(savedAddress);
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération de l\'adresse du serveur :', error);
+        }
+      };
+      checkAndShowModal();
+    }, []); 
+```
+
+The function saves the server address in local storage and checks if the server is reachable.
+```Typescript
+    const saveServerAddress = async () => {
+        // Enregistrez l'adresse du serveur dans le stockage local
+        // use this regex ^((?!-)[A-Za-z0-9-]{1,63}(?<!-).)+[A-Za-z]{2,6}$
+        if (!serverAddress.match(/^(http:\/\/|https:\/\/)?([a-zA-Z0-9][a-zA-Z0-9_-]*(\.[a-zA-Z0-9_-]*)+)(\/.*)?$/)) {
+          Alert.alert(
+            'Warning',
+            'The server is not on a valid domain name. Therefore, the application may not function properly. By clicking OK, you agree to use the application at your own risk.',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => {
+                  return;
+                },
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: async () => {
+                  try {
+                    await fetch(`${serverAddress}/about.json`);
+
+                    await AsyncStorage.setItem('serverAddress', serverAddress);
+                    await AsyncStorage.setItem('serverAddressWarning', 'false');
+                    setModalVisible(false);
+                  } catch (error) {
+                    Alert.alert('Error', 'Unable to connect to the server. Please check the server address.');
+                  }
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        } else {
+          try {
+            await fetch(`${serverAddress}/about.json`);
+
+            await AsyncStorage.setItem('serverAddress', serverAddress);
+            await AsyncStorage.setItem('serverAddressWarning', 'true');
+            setModalVisible(false);
+          } catch (error) {
+            Alert.alert('Error', 'Unable to connect to the server. Please check the server address.');
+          }
+          return;
+        }
+    };
+```
+
+The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
+UI of the `ServerModal` component.
+
+```Typescript
+    return (
+        <View style={styles.container}>
+            {/* <StatusBar backgroundColor={modalVisible ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.0)'}/> */}
+            <TouchableOpacity style={styles.settingsButton} onPress={() => setModalVisible(true)}>
+                <MaterialIcons name="settings" size={50} color="#363841" />
+            </TouchableOpacity>
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={{ marginBottom: 10 }}>Please enter the server address:</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={serverAddress}
+                    onChangeText={(text) => setServerAddress(text)}
+                  />
+                  <Button title="Save" onPress={saveServerAddress} color="#363841" />
+                </View>
+              </View>
+            </Modal>
+        </View>
+    );
+```
+
+The `const styles = StyleSheet.create({})` block is defining a JavaScript object that contains
+styles for different elements in the component. The `StyleSheet.create()` function is used to create
+a stylesheet object that optimizes the styles for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        marginTop: 20,
+        marginLeft: 20,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+    },
+    input: {
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      marginBottom: 20,
+      paddingHorizontal: 10,
+    },
+    settingsButton: {
+    },
+});
+```
+
+The line `export default ServerModal;` is exporting the `ServerModal` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`ServerModal` component using any name of its choice. For example, in another file, you can
+import the `ServerModal` component like this:
+
+```Typescript
+import ServerModal from './ServerModal';
+```
+
+For more information about this file you can check his complete code here : [ServerModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServerModal.tsx)
+
+## [ServiceCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceCard.tsx)
+
+The `ServiceCard` component is the component that will be used to display the service card in the mobile application.
+
+![ServiceCard.png](../images/mobileComponents/ServiceCard.png)
+
+The `interface CardProps` is defining a new interface called `CardProps` that extends the
+`TouchableOpacityProps` interface. It specifies the expected props for the `ServiceCard` component. Here's a breakdown of each prop:
+* `title` : the title of the service
+* `logo` : the logo of the service
+* `color` : the color of the service
+* `slug` : the slug of the service
+* `onPress` : a function that will be called when the card is pressed
+
+```Typescript
+interface CardProps extends TouchableOpacityProps {
+    title   : string;
+    logo    : string;
+    color   : string;
+    slug    : string;
+    onPress: () => void;
+}
+```
+
+The `ServiceCard` component is a functional component that displays a card for a service.
+
+```Typescript
+const ServiceCard: React.FC<CardProps> = ({ title, logo, color, slug, onPress })
+```
+
+We start by handling the case there is no color for the service.
+
+```Typescript
+    if (color === '') {
+        color = '#EEEEEE';
+    }
+```
+
+Then we handle the case there is no logo for the service.
+
+```Typescript
+    if (logo === '') {
+        logo = 'https://via.placeholder.com/70';
+    }
+```
+
+The `return` statement in the `ServiceCard` component is rendering the JSX code that represents
+the card for a service.
+
+```Typescript
+    return (
+        <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logo}/>
+            <View>
+                <Text style={[styles.name, {color: getWriteColor(color)}]}>{title}</Text>
+            </View>
+        </TouchableOpacity>
+  );
+```
+
+The `const styles = StyleSheet.create({ ... })` block is defining a JavaScript object called
+`styles` that contains various style properties for the `ServiceCard` component. Each property in
+the `styles` object represents a different style rule, such as `container`, `logo`, and `name`.
+These style rules define the visual appearance of the `ServiceCard` component.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+      paddingTop: 30,
+      marginVertical: 15,
+      width: '85%',
+      borderRadius: 10,
+      shadowColor: '#000',
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    logo: {
+        height: 70,
+        width: 70,
+        marginVertical: 10,
+        alignSelf: 'center',
+    },
+    name: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      marginTop: 5,
+      marginBottom: 20,
+    },
+  });
+```
+
+The line `export default ServiceCard;` is exporting the `ServiceCard` component as the default
+export of the module. This means that when another file imports this module, it can import the
+`ServiceCard` component using the default import syntax, like `import ServiceCard from
+'./ServiceCard'`.
+
+```Typescript
+export default ServiceCard;
+```
+
+For more information about this file you can check his complete code here : [ServiceCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceCard.tsx)

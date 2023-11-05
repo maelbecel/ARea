@@ -74,12 +74,12 @@ const ServiceCard: React.FC<CardProps> = ({ title, color, slug, onPress, logo })
         logo = "https://via.placeholder.com/70";
     }
     return (
-    <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
-        <View>
-            <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logo}/>
-            <Text style={[styles.name, {color: getWriteColor(color)}]}>{title}</Text>
-        </View>
-    </TouchableOpacity>
+        <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logo}/>
+            <View>
+                <Text style={[styles.name, {color: getWriteColor(color)}]}>{title}</Text>
+            </View>
+        </TouchableOpacity>
   );
 }
 
