@@ -2976,3 +2976,335 @@ export default ServiceCard;
 ```
 
 For more information about this file you can check his complete code here : [ServiceCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceCard.tsx)
+
+
+## [ServiceLogo.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceLogo.tsx)
+
+The `ServiceLogo` component is the component that will be used to display the service logo in the mobile application.
+
+![ServiceLogo.png](../images/mobileComponents/ServiceLogo.png)
+
+The `interface CardProps` is defining the props that can be passed to the `ServiceLogo` component.
+It extends the `TouchableOpacityProps` interface, which includes all the props that can be passed to
+the `TouchableOpacity` component from the `react-native` library.
+Here is a breakdown of each prop:
+
+
+```Typescript
+interface CardProps extends TouchableOpacityProps {
+    slug    : string;
+    onPress : () => void;
+    disabled ?: boolean;
+}
+```
+
+The `ServiceLogo` component is a functional component that displays a logo for a service.
+
+```Typescript
+const ServiceLogo: React.FC<CardProps> = ({ slug , onPress, disabled = false})
+```
+
+The `ServiceLogo` uses the `useState` hook to define and initialize state variables in the
+`ServiceLogo` component.
+
+```Typescript
+    const [color, setColor] = React.useState<string>("EEEEEE");
+    const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
+    const [loading, setLoading] = React.useState<boolean>(true);
+```
+
+The `React.useEffect` hook is used to perform side effects in functional components. In this
+case, it is used to fetch information about a service and update the state variables `color`,
+`logo`, and `loading` based on the fetched data.
+
+```Typescript
+    React.useEffect(() => {
+        const fetchInfos = async () => {
+            const res = await ServiceInfo(slug);
+            setColor(res.decoration.backgroundColor);
+            setLogo(res.decoration.logoUrl);
+            setLoading(false);
+        }
+        fetchInfos();
+    }, []);
+```
+
+Then we can render the component if `loading` is false.
+
+We have two cases :
+
+* If the component is not disabled, we render the logo with the color and the logo of the service and write _Log Out_.
+
+![ServiceLogo.png](../images/mobileComponents/ServiceLogo.png) 
+
+```Typescript
+                <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                    <View>
+                        <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logopti}/>
+                        <Text style={{color : getWriteColor(color), fontWeight : 'bold', fontSize : 9.9, alignSelf : 'center'}}>Log Out</Text>
+                    </View>
+                </TouchableOpacity>
+```
+
+* If the component is disabled, we render the logo with the color and the logo of the service and write _Log In_.
+
+![ServiceLogo.png](../images/mobileComponents/ServiceLogo-1.png)
+
+```Typescript
+                <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                    <View>
+                        <Image source={{ uri: logo, cache: 'force-cache' }} style={[styles.logopti]}/>
+                        <Text style={{color : getWriteColor(color), fontWeight : 'bold', fontSize : 13, alignSelf : 'center'}}>Log In</Text>
+                    </View>
+                </TouchableOpacity>
+```
+
+The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. This method ensures that the styles are optimized for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+      height: 80,
+      width: 80,
+      marginVertical: 15,
+      marginRight: 15,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      shadowColor: '#000',
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    logo: {
+        height: 50,
+        width: 50,
+        marginVertical: 15,
+        alignSelf: 'center',
+    },
+    logopti: {
+        height: 30,
+        width: 30,
+        marginVertical: 15,
+        alignSelf: 'center',
+    }
+});
+```
+
+The line `export default ServiceLogo;` is exporting the `ServiceLogo` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`ServiceLogo` component using any name of its choice. For example, in another file, you can
+import the `ServiceLogo` component like this:
+
+```Typescript
+import ServiceLogo from './ServiceLogo';
+```
+
+For more information about this file you can check his complete code here : [ServiceLogo.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceLogo.tsx)
+
+## [SubmitButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/SubmitButton.tsx)
+
+The `SubmitButton` component is the component that will be used to display the submit button in the mobile application.
+
+![SubmitButton.png](../images/mobileComponents/SubmitButton-1.png)
+
+The `interface InputProps` is defining the props that can be passed to the `FormInput` component.
+It extends the `TouchableOpacityProps` interface, which means it inherits all the props from that
+interface. Here is a breakdown of each prop:
+* `title` : the title of the button
+* `icon` : the icon of the button
+* `textcolor` : the color of the text
+* `onPress` : a function that will be called when the button is pressed
+
+```Typescript
+interface SubmitButtonProps extends TouchableOpacityProps {
+    title        : string;
+    icon        ?: { uri: any, width: number, height: number };
+    textcolor   ?: string;
+    onPress     ?: () => void;
+}
+```
+
+The `SubmitButton` component is a functional component that displays a button for a service.
+
+```Typescript
+const SubmitButton: React.FC<SubmitButtonProps> = ({ title, icon, textcolor = '#363841', onPress })
+```
+
+It has two possible return :
+
+* If the icon is not defined, we return a button with the title and the color of the text.
+
+![SubmitButton.png](../images/mobileComponents/SubmitButton-1.png)
+
+```Typescript
+            <TouchableOpacity style={styles.containerimg} onPress={onPress}>
+                <Text style={[{color: textcolor}, styles.title]}>{title}</Text>
+                <Image source={icon.uri} style={{ width: icon.width, height: icon.height, marginLeft: 10 }} />
+            </TouchableOpacity>
+```
+
+* If the icon is defined, we return a button with the title, the color of the text and the icon.
+
+![SubmitButton.png](../images/mobileComponents/SubmitButton-2.png)
+
+```Typescript
+            <TouchableOpacity style={styles.container} onPress={onPress}>
+                <Text style={[{color: textcolor}, styles.title]}>{title}</Text>
+            </TouchableOpacity>
+```
+
+The `const styles = StyleSheet.create({ ... })` block is creating a JavaScript object that contains
+styles for different components in the `SubmitButton` component. Each key-value pair in the object
+represents a style property and its corresponding value.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        marginVertical: 10,
+        alignItems: 'center',
+        width: '40%',
+        padding: 10,
+        backgroundColor: '#363841',
+        borderRadius: 90,
+        marginTop: 20,
+    },
+    containerimg: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+        flexDirection: 'row',
+        width: '65%',
+        paddingVertical: 18,
+        paddingHorizontal: 20,
+        backgroundColor: '#363841',
+        borderRadius: 90,
+    },
+    title: {
+        fontSize: 20,
+        fontStyle: 'normal',
+        fontWeight: "700",
+    }
+});
+```
+
+The line `export default SubmitButton;` is exporting the `SubmitButton` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`SubmitButton` component using any name of its choice. For example, in another file, you can
+import the `SubmitButton` component like this:
+
+```Typescript
+import SubmitButton from './SubmitButton';
+```
+
+For more information about this file you can check his complete code here : [SubmitButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/SubmitButton.tsx)
+
+## [TopBar.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/TopBar.tsx)
+
+The `TopBar` component is the component that will be used to display the top bar in the mobile application.
+
+![TopBar.png](../images/mobileComponents/TopBar.png)
+
+The `interface TopBarProps` is defining the props (properties) that can be passed to the `TopBar`
+component. It extends the `TouchableOpacityProps` interface, which provides props related to the
+`TouchableOpacity` component. Here is a breakdown of each prop:
+* `title` : the title of the top bar
+* `iconLeft` : the icon on the left of the top bar
+* `onPressLeft` : a function that will be called when the icon on the left is pressed
+* `color` : the color of the top bar
+* `iconRight` : the icon on the right of the top bar
+* `onPressRight` : a function that will be called when the icon on the right is pressed
+
+```Typescript
+interface TopBarProps extends TouchableOpacityProps {
+    title         : string;
+    iconLeft      : string;
+    onPressLeft   : () => void;
+    color         : string;
+    iconRight     ?: string;
+    onPressRight  ?: () => void;
+}
+```
+
+The TopBar component is a functional component in TypeScript React that displays a title, left and
+right icons, and handles onPress events for the icons.
+
+```Typescript
+const TopBar: React.FC<TopBarProps> = ({ title, iconLeft, onPressLeft, color, iconRight, onPressRight })
+```
+
+The function "showIconRight" returns a TouchableOpacity component with an Icon component inside, if
+both "iconRight" and "onPressRight" are not null; otherwise, it returns an empty View component.
+The `iconRight` parameter is the name of the icon that you want to display on the
+right side. It is a string value. The `onPressRight` parameter is a function that will be called when the user
+presses the icon on the right. The "color" parameter is the color of the icon. It is used to set the color of the
+icon in the Icon component.
+
+```Typescript
+const showIconRight = (iconRight, onPressRight, color) => {
+  return (iconRight !== null && onPressRight !== null) ? (
+    <TouchableOpacity onPress={onPressRight}>
+      <Icon name={iconRight} size={30}  color={color}/>
+    </TouchableOpacity>
+  ) : (
+    <View></View>
+  )
+}
+```
+
+The `return` statement is returning a JSX expression that represents the structure and content of
+the `TopBar` component.
+
+```Typescript
+  return (
+    <View style={styles.container}>
+      <View style={{ width: '10%', alignItems: 'flex-start'}}>
+        <TouchableOpacity onPress={onPressLeft}>
+          <Icon name={iconLeft} size={30} color={color} />
+        </TouchableOpacity>
+      </View>
+      <View style={{ width: '80%', alignItems: 'center'}}>
+        <Text style={[styles.text, {color: color}]}>{title}</Text>
+      </View>
+      <View style={{ width: '10%', alignItems: 'flex-end'}}>
+        {showIconRight(iconRight, onPressRight, color)}
+      </View>
+    </View>
+  );
+```
+
+The `const styles` variable is an object that contains style definitions for the `TopBar` component.
+It uses the `StyleSheet.create` method from the `react-native` library to create a stylesheet with
+the specified styles.
+
+```Typescript
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 30,
+    fontWeight: 'bold',
+  }
+});
+```
+
+`export default TopBar;` is exporting the `TopBar` component as the default export of the module.
+This means that when another file imports this module, it can import the `TopBar` component directly
+without having to specify its name. For example, in another file, you can import the `TopBar`
+component like this:
+
+```Typescript
+export default TopBar;
+```
+
+For more information about this file you can check his complete code here : [TopBar.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/TopBar.tsx)
+
+

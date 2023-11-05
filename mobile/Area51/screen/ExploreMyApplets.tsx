@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 50,
     backgroundColor: '#fff',
-    paddingBottom: 100,
+    paddingBottom: 60,
   },
   contentContainer: {
     justifyContent: 'center',
