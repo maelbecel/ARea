@@ -40,6 +40,14 @@ const OutlinedTitleBox: React.FC<OutlinedTitleBoxProps> = ({onChangeText, value,
     await UpdateAppletTitleWithID(appletID, value);
   };
 
+  /**
+   * The function `titleLen` returns the length of a given value as a string, followed by "/140", or an
+   * empty string if the value is undefined.
+   * 
+   * @return The function `titleLen` returns a string that represents the length of a value. If the
+   * length of the value is greater than or equal to 0, it returns the length followed by "/140".
+   * Otherwise, it returns an empty string.
+   */
   const titleLen = () => {
       if (value.length >= 0) {
           return `${value.length}/140`;
@@ -86,6 +94,9 @@ const OutlinedTitleBox: React.FC<OutlinedTitleBoxProps> = ({onChangeText, value,
   );
 };
 
+/* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. These styles are then used to style the components in the `OutlinedTitleBox`
+component. */
 const styles = StyleSheet.create({
   container: {
     borderWidth: 3, // Largeur de la bordure
@@ -107,4 +118,8 @@ const styles = StyleSheet.create({
   },
 });
 
+/* The line `export default OutlinedTitleBox;` is exporting the `OutlinedTitleBox` component as the
+default export of the file. This means that when another file imports this module, it can import the
+`OutlinedTitleBox` component using any name of its choice. For example, in another file, you can
+import the `OutlinedTitleBox` component like this: */
 export default OutlinedTitleBox;

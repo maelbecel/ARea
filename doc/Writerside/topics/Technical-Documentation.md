@@ -364,9 +364,9 @@ Next, like action, add this reaction to reactions list of app and it's done !
 # Web
 
 The web part is divided into 4 principal sections:
-* [Pages/](Web-Pages.md) is the folder where all the application screens are located. Since it's Next.JS, the pages are organized to correspond to their respective URL addresses.
+* [Pages/](Web-Pages1.md) is the folder where all the application screens are located. Since it's Next.JS, the pages are organized to correspond to their respective URL addresses.
 * [Api/](Web-Api.md) is the folder that contains all components requiring API requests. All API requests are extracted from the pages and reside within this folder.
-* [Components/](Web-Components.md) is the folder that houses all components used within the screens, such as search bars or form inputs.
+* [Components/](Web-Components1.md) is the folder that houses all components used within the screens, such as search bars or form inputs.
 
 ### [_app.tsx](https://github.com/maelbecel/ARea/blob/master/web/pages/_app.tsx) {id="app-tsx_1"}
 The _app.tsx is the beginning of the project.

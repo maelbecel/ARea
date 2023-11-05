@@ -10,6 +10,10 @@ const DeleteAccount: React.FC = () => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const navigation: any = useNavigation();
 
+    /**
+     * The function `handleDelete` deletes a user, removes a token from SecureStore, and navigates to
+     * the Login screen.
+     */
     const handleDelete = async () => {
         try {
           await DeleteUser();
@@ -96,4 +100,7 @@ const styles = StyleSheet.create({
     },
 });
 
+/* The line `export default DeleteAccount;` is exporting the `DeleteAccount` component as the default
+export of the file. This allows other files to import and use the `DeleteAccount` component by using
+the `import` statement. */
 export default DeleteAccount;

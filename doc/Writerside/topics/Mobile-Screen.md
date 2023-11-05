@@ -1,5 +1,6 @@
 # Mobile-Screen
 
+Here is the list of the screen of the mobile application :
 
 ## [Activity.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/Activity.tsx)
 
@@ -114,6 +115,12 @@ For more information about this file you can check his complete code here : [Act
 ## [AddServices.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/AddServices.tsx)
 
 The component `AddServices` is a screen where the user can add a new service to create a new applet.
+
+![AddService.png](../images/mobileComponents/AddServices-1.png)
+
+**or**
+
+![AddService.png](../images/mobileComponents/AddServices-2.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -319,6 +326,8 @@ For more information about this file you can check his complete code here : [Add
 ## [ConnectAuth.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/ConnectAuth.tsx)
 
 The component `ConnectAuth` is a screen where the user can validate an action or reaction service into the applet creation, including the forms and the OAuth verification.
+
+![ConnectAuth.png](../images/mobileComponents/ConnectAuth.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -830,6 +839,8 @@ For more information about this file you can check his complete code here : [Con
 
 The component `ConnectAuthEdit` is a screen where the user can validate an action or reaction service into the applet edition, including the forms and the OAuth verification.
 
+![ConnectAuthEdit.png](../images/mobileComponents/ConnectAuthEdit.png)
+
 We start by importing the required modules and components :
 ```typescript
   import * as React from 'react';
@@ -1331,6 +1342,8 @@ For more information about this file you can check his complete code here : [Con
 
 The component `EditApplet` is a screen where the user can edit an applet.
 
+![EditApplet.png](../images/mobileComponents/EditApplet.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -1618,6 +1631,8 @@ For more information about this file you can check his complete code here : [Edi
 
 The component `ExploreMyApplets` is a screen where the user can explore his applets.
 
+![ExploreMyApplets.png](../images/mobileComponents/ExploreMyApplets.png)
+
 We start by importing the required modules and components :
 ```typescript
 import React from 'react';
@@ -1686,6 +1701,8 @@ For more information about this file you can check his complete code here : [Exp
 ## [Home.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/Home.tsx)
 
 The component `Home` is a screen where the user can see all the services.
+
+![Home.png](../images/mobileComponents/Home.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -1812,6 +1829,8 @@ For more information about this file you can check his complete code here : [Hom
 ## [InfoScreen.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/InfoScreen.tsx)
 
 The component `InfoScreen` is a screen where the user can see the information of a service.
+
+![InfoScreen.png](../images/mobileComponents/InfoScreen.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -1986,6 +2005,8 @@ The code is defining a functional component called `Login` that takes a paramete
 `navigation` parameter is likely being passed from a parent component and is used for navigating
 between screens in a React Native application.
 
+![Login.png](../images/mobileComponents/Login.png)
+
 We start by importing the required modules and components :
 ```typescript
 import React, { useState, useEffect } from 'react';
@@ -2142,6 +2163,8 @@ For more information about this file you can check his complete code here : [Log
 ## [MyApplets.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/MyApplets.tsx)
 
 The component `MyApplets` is a screen where the user can see his applets.
+
+![MyApplets.png](../images/mobileComponents/MyApplets.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -2331,6 +2354,8 @@ For more information about this file you can check his complete code here : [MyA
 ## [Profile.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/Profile.tsx)
 
 The component `Profile` is a screen where the user can see his profile.
+
+![Profile.png](../images/mobileComponents/Profile.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -2638,6 +2663,8 @@ For more information about this file you can check his complete code here : [Pro
 
 The component `SearchServices` is a screen where the user can search services.
 
+![SearchServices.png](../images/mobileComponents/SearchServices.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -2769,6 +2796,8 @@ For more information about this file you can check his complete code here : [Sea
 
 The component `SearchServices` is a screen where the user can search services.
 
+![SearchServicesEdit.png](../images/mobileComponents/SearchServicesEdit.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -2899,6 +2928,8 @@ For more information about this file you can check his complete code here : [Sea
 ## [Service.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/Service.tsx)
 
 The component `Service` is a screen where the user can see the service information.
+
+![Service.png](../images/mobileComponents/Service.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -3096,6 +3127,8 @@ For more information about this file you can check his complete code here : [Ser
 ## [ServiceTemplate.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/ServiceTemplate.tsx)
 
 The component `ServiceTemplate` is a screen where the user can select the action/Reaction from the service.
+
+![ServiceTemplate.png](../images/mobileComponents/ServiceTemplate.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -3295,6 +3328,8 @@ For more information about this file you can check his complete code here : [Ser
 
 The component `ServiceTemplate` is a screen where the user can select the action/Reaction from the service.
 
+![ServiceTemplateEdit.png](../images/mobileComponents/ServiceTemplateEdit.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -3493,6 +3528,8 @@ For more information about this file you can check his complete code here : [Ser
 ## [SignUp.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/SignUp.tsx)
 
 The component `SignUp` is a screen where the user can create an account.
+
+![SignUp.png](../images/mobileComponents/SignUp.png)
 
 We start by importing the required modules and components :
 ```typescript

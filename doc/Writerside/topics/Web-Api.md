@@ -1,28 +1,28 @@
-# Api
+# Web-Api
 
 Here we have all components for API calls.
-* [/action/{slug}](#actionts) [**GET**]
-* [/action/info/{slug}](#actioninfots) [**GET**]
-* [/reaction/{slug}/{actionSlug}](#reactionts) [**GET**]
-* [/reaction/info/{slug}](#reactioninfots) [**GET**]
+* [/action/\{slug}](#action-ts) [**GET**]
+* [/action/info/\{slug}](#actioninfo-ts) [**GET**]
+* [/reaction/\{slug}/\{actionSlug}](#reaction-ts) [**GET**]
+* [/reaction/info/\{slug}](#reactioninfo-ts) [**GET**]
 ***
-* [/applet](#appletts) [**POST**]
-* [/applet/{id}](#appletidts) [**GET**]
-* [/applet/{id}](#deleteappletts) [**DELETE**]
-* [/applet/{id}](#appletpatchts) [**PATCH**]
-* [/applet/me](#appletmets) [**GET**]
+* [/applet](#applet-ts) [**POST**]
+* [/applet/\{id}](#appletid-ts) [**GET**]
+* [/applet/\{id}](#deleteapplet-ts) [**DELETE**]
+* [/applet/\{id}](#appletpatch-ts) [**PATCH**]
+* [/applet/me](#appletme-ts) [**GET**]
 ***
-* [/service](#servicests) [**GET**]
-* [/service/{slug}](#servicedetailsts) [**GET**]
-* [/service/{slug}/oauth2](#oauth2deletets) [**DELETE**]
-* [/service/{slug}/oauth2/token](#oauth2tokents) [**GET**]
+* [/service](#services-ts) [**GET**]
+* [/service/\{slug}](#servicedetails-ts) [**GET**]
+* [/service/\{slug}/oauth2](#oauth2delete-tsx) [**DELETE**]
+* [/service/\{slug}/oauth2/token](#oauth2token-ts) [**GET**]
 ***
-* [/user/verify](#verifyts) [**GET**]
-* [/user/login](#logints) [**POST**]
-* [/user/register](#registerts) [**POST**]
-* [/user/me](#mets) [**GET**]
-* [/user/me](#patchuserts) [**PATCH**]
-* [/user/me](#deleteuserts) [**PATCH**]
+* [/user/verify](#verify-ts) [**GET**]
+* [/user/login](#login-ts) [**POST**]
+* [/user/register](#register-ts) [**POST**]
+* [/user/me](#appletme-ts) [**GET**]
+* [/user/me](#patchuser-ts) [**PATCH**]
+* [/user/me](#deleteuser-ts) [**PATCH**]
 ***
 
 

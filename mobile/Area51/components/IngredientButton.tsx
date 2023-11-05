@@ -71,10 +71,15 @@ interface IngredientsProps {
     onChangeText : (text: string) => void;
 }
 
-const IngredientButton: React.FC<IngredientsProps>  = ({input, placeholders, type, color, onSelect, onChangeText}) => {
+/* The `IngredientButton` component is a functional component that renders a view containing a text
+input field and an optional dropdown menu. */
+  const IngredientButton: React.FC<IngredientsProps>  = ({input, placeholders, type, color, onSelect, onChangeText}) => {
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
     const [value, setValue] = React.useState("");
 
+    /**
+     * The function "openDropdown" sets the state variable "dropdownOpen" to true.
+     */
     const openDropdown = () => {
       setDropdownOpen(true);
     };
@@ -83,6 +88,16 @@ const IngredientButton: React.FC<IngredientsProps>  = ({input, placeholders, typ
       setDropdownOpen(false);
     };
 
+    /**
+     * The function `getPlaceHolder` takes a placeholder string as input and returns the corresponding
+     * key from the `placeholders` object, or an empty string if no match is found.
+     * 
+     * @param placeholder The `placeholder` parameter is a string that represents the placeholder value
+     * that you want to find the index of in the `placeholders` array.
+     * 
+     * @return The function `getPlaceHolder` returns the index of the placeholder in the `placeholders`
+     * array if it exists, otherwise it returns an empty string.
+     */
     const getPlaceHolder = (placeholder: string) => {
         for (let x in placeholders) {
             if (placeholders[x] == placeholder) {
@@ -92,6 +107,12 @@ const IngredientButton: React.FC<IngredientsProps>  = ({input, placeholders, typ
         return "";
     }
 
+    /**
+     * The function `displayPlaceHolders` returns an array of strings containing the values of the
+     * `placeholders` object.
+     * 
+     * @return The function `displayPlaceHolders` returns an array of strings.
+     */
     const displayPlaceHolders = () : string[] => {
       let strings = [];
       for (let x in placeholders) {
@@ -99,6 +120,9 @@ const IngredientButton: React.FC<IngredientsProps>  = ({input, placeholders, typ
       }
       return strings;
     }
+
+    /* The `return` statement is returning a JSX element that represents the structure and content of
+    the `IngredientButton` component. */
     return (
       <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
         <View >
@@ -197,4 +221,9 @@ const styles = StyleSheet.create({
   });
 
 
+/* The line `export default IngredientButton;` is exporting the `IngredientButton` component as the
+default export of the module. This means that when another file imports this module, it can access
+the `IngredientButton` component directly without having to specify its name in curly braces. For
+example, in another file, you can import the `IngredientButton` component like this: `import
+IngredientButton from './IngredientButton'`. */
 export default IngredientButton;
