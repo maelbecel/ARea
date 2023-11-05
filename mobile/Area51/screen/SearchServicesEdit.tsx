@@ -60,7 +60,7 @@ const SearchServicesEdit = ({ navigation, route }) => {
   if (applets != undefined && applets != null) {
     return (
       <View style={styles.container}>
-        <TopBar title="Create" iconLeft='arrow-back' color="#000" onPressLeft={() => navigation.goBack()} />
+        <TopBar title="Edit" iconLeft='arrow-back' color="#000" onPressLeft={() => navigation.goBack()} />
         <View style={styles.input}>
           <FormInput title="Search" icon={{ name: "search", width: 27, height: 27 }} onChangeText={(text) => { filterApplets(text) }} size='85%' />
         </View>

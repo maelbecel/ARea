@@ -1,5 +1,7 @@
 # Mobile-Components
 
+Here is the folder where all components used in screen are stored.
+
 ## [AppletComponent.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/AppletComponent.tsx)
 
 The `AppletComponent` is the component that will be used to display the applets in the mobile application. It is a simple component that will display the name of the applet and the icon of the applet. It will also display the number of unread messages in the applet.
@@ -1167,11 +1169,2144 @@ export default SwitchNotifyMe;
 
 For more information about this file you can check his complete code here : [SwitchNotifyMe.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/Applets/SwitchNotifyMe.tsx)
 
+## [ActionCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionCard.tsx)
+
+The `ActionCard` component is the component that will be used to display the action card of the applets in the mobile application. It is a simple component that will display an action/reaction in a card.
+
+![ActionCard.png](../images/mobileComponents/ActionCard.png)
+
+The `CardProps` interface is defining the type of props that the `ActionCard` component expects to
+receive. It has three properties:
+* `name` : the name of the action/reaction
+* `color` : the color of the action/reaction
+* `description` : the description of the action/reaction
+* `onPress` : a function that will be called when the user presses the card
+
+```Typescript
+interface CardProps extends TouchableOpacityProps {
+    name   : string;
+    color   : string;
+    description    : string;
+    onPress: () => void;
+}
+```
+
+The following code is defining a functional component called `ActionCard`.
+
+```Typescript
+const ActionCard: React.FC<CardProps> = ({ name, color, description, onPress })
+```
+
+First, we set a color by default if the color is an empty string.
+
+```Typescript
+    if (color == "") {
+        color = "#EEEEEE";
+    }
+```
+
+Then we return a `TouchableOpacity` that contain the card.
+
+```Typescript
+    return (
+        <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+          <View>
+            <Text style={[styles.name, {color: getWriteColor(color)}]}>{name}</Text>
+            <Text style={[styles.desc, {color: getWriteColor(color)}]}>{description}</Text>
+          </View>
+        </TouchableOpacity>
+    );
+```
+
+The `const styles = StyleSheet.create({ ... })` block is defining a JavaScript object called
+`styles` that contains various style properties for the `ActionCard` component. Each property in
+the `styles` object represents a different style rule, such as `container`, `logo`, and `name`.
+These style rules define the visual appearance of the `ActionCard` component.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+      paddingTop: 20,
+      paddingHorizontal: 20,
+      marginVertical: 15,
+      width: '85%',
+      borderRadius: 10,
+      shadowColor: '#000',
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    logo: {
+        height: 70,
+        width: 70,
+        marginVertical: 10,
+        alignSelf: 'center',
+    },
+    name: {
+      fontSize: 25,
+      fontWeight: 'bold',
+      marginTop: 2,
+      marginBottom: 20,
+    },
+    desc: {
+        fontSize: 20,
+        marginTop: 5,
+        marginBottom: 20,
+      }
+  });
+```
+
+The line `export default ActionCard;` is exporting the `ActionCard` component as the default
+export of the module. This means that when another file imports this module, it can import the
+`ActionCard` component using the default import syntax, like `import ActionCard from
+'./ActionCard'`. 
+
+```Typescript
+export default ActionCard;
+```
+
+For more information about this file you can check his complete code here : [ActionCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionCard.tsx)
+
+
+## [ActionChoose.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionChoose.tsx)
+
+The `ActionChoose` component is the component that will be used to display the action choose of the applets in the mobile application. It is a simple component that will display the action choose of the applets.
+It's used at the creation/edit of an applet to show either "Action" or "Reaction" in a card if no slug exist.
+
+![ActionChoose-2.png](../images/mobileComponents/ActionChoose-2.png)
+
+Or a card that corresponding to the slug if he is defined.
+
+![ActionChoose-1.png](../images/mobileComponents/ActionChoose-1.png)
+
+The `interface CardProps` is defining a new interface called `CardProps` that extends the
+`TouchableOpacityProps` interface. It specifies the expected props for the `ActionCard` component.
+The `CardProps` interface has four properties:
+* `slug` : the slug of the action/reaction
+* `type` : the type of the card (action or reaction)
+* `onPress` : a function that will be called when the user presses the card
+* `onPressCross` : a function that will be called when the user presses the cross
+
+```Typescript
+interface CardProps extends TouchableOpacityProps {
+slug    : string;
+type    : string;
+onPress : () => void;
+onPressCross ?: () => void;
+}
+````
+
+The `ActionChoose` function is a React functional component that renders an action card based on the
+provided `type`, `slug`, and `onPress` props.
+
+```Typescript
+const ActionChoose: React.FC<CardProps> = ({ slug, type, onPress, onPressCross })
+```
+
+Then we create multiple function to render the component
+
+The function `getServiceFromSlug` takes a slug as input and returns the service name by splitting
+the slug at the first occurrence of a period. That return the service name extracted from the given slug.
+```Typescript
+const getServiceFromSlug = (slug: string): string => {
+    const service = slug.split(".")[0];
+    return service;
+}
+```
+
+The function `getActionName` takes in a `Service` object and a `slug` string, and returns the name
+of the action or reaction that matches the given slug. The `info` parameter is of type `Service`, which likely represents some
+information about a service or platform. It could contain properties like `actions` and `reactions`,
+which are arrays of objects representing different actions and reactions available in the service.
+The `slug` parameter is a string that represents the unique identifier of an action or reaction.
+The function `getActionName` returns a string.
+
+```Typescript
+const getActionName = (info : Service, slug: string): string => {
+    let i : number = 0;
+    if (info == null)
+        return "";
+    while (info.actions[i]) {
+        if (info.actions[i].slug === slug) {
+            return info.actions[i].name;
+        }
+        i++;
+    }
+    i = 0;
+    while (info.reactions[i]) {
+        if (info.reactions[i].slug === slug) {
+            return info.reactions[i].name;
+        }
+        i++;
+    }
+    return "";
+}
+```
+
+The function `ActionCard` returns a React component that renders a TouchableOpacity with a
+background color based on the name prop, and a Text component with a color based on the background
+color. \
+The name parameter is a string that represents the name of the action card.
+It could be any text that you want to display on the action card. \
+The `onPress` parameter is a function that will be called when the
+`TouchableOpacity` component is pressed. It is typically used to handle the action or event that
+should occur when the component is pressed. \
+It returns a TouchableOpacity component with a View and Text component inside. The TouchableOpacity
+component has an onPress event handler and a style prop that sets the background color based on the
+value of the name parameter. The Text component has a style prop that sets the color based on the
+result of the getWriteColor function.
+
+```Typescript
+const ActionCard = (name : string, onPress : any) => {
+    if (name === "Action") {
+        var color = "#D9D9D9"
+    } else {
+        var color = "#363841"
+    }
+    return (
+        <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+            <View>
+                <Text style={[styles.area, {color: getWriteColor(color)}]}>{name}</Text>
+            </View>
+        </TouchableOpacity>
+    )
+}
+```
+
+The `ActionChoose` use the `React.useState` hook to define and initialize state variables in the
+`ActionChoose` component.
+
+```Typescript
+    const [info, setInfo] = React.useState<any>(null);
+    const [action, setAction] = React.useState<string>("");
+```
+
+The `React.useEffect` hook is used to perform side effects in a functional component. In this
+case, the `useEffect` hook is being used to fetch data and update the component's state based on
+the `type` and `slug` props.
+
+```Typescript
+     React.useEffect(() => {
+      if (type !== 'action' && type !== 'reaction' && slug === "default") {
+        return;
+      }
+      const fetchData = async () => {
+        if (slug === "default") {
+            return;
+        }
+        try {
+          const serviceInfo = await ServiceInfo(getServiceFromSlug(slug));
+          setInfo(serviceInfo);
+          setAction(getActionName(serviceInfo, slug));
+        } catch (error) {
+          console.error("Error while getting info : ", error);
+        }
+      };
+
+      fetchData();
+    }, [type, slug]);
+```
+
+The code block is checking if the `type` prop is equal to `'action'` and the `slug` prop is
+equal to `"default"`. If this condition is true, it returns an `ActionCard` component with the
+name `'Action'` and the `onPress` prop.
+
+```Typescript
+    if (type === 'action' && slug === "default") {
+      return ActionCard('Action', onPress);
+    } else if (type === 'reaction' && slug === "default") {
+      return ActionCard('Reaction', onPress);
+    }
+```
+
+The line `const width = (type == "action") ? '70%' : '60%'` is assigning a value to the `width`
+variable based on the condition `(type == "action")`.
+```Typescript
+const width = (type == "action") ? '70%' : '60%'
+```
+
+
+The code block is conditionally rendering a `TouchableOpacity` component with a specific style
+and content based on the value of the `info` variable. If the `info` variable is `null`, nothing happens.
+
+```Typescript
+    if (info) {
+        return (
+            <TouchableOpacity onPress={onPress} style={[{ backgroundColor: info.decoration.backgroundColor }, styles.container]}>
+                <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+                    <Text style={[styles.ifthen, { color: getWriteColor(info.decoration.backgroundColor) }]}>{(type === "action") ? "If" : "Then"}</Text>
+                    <View style={{flexDirection: 'row', alignItems: "center", width: "45%"}}>
+                        <Image source={{ uri: info.decoration.logoUrl, cache: 'force-cache' }} style={styles.logo} />
+                        <Text style={[styles.desc, { color: getWriteColor(info.decoration.backgroundColor) }]}>{action}</Text>
+                    </View>
+                    <Icon name="close" size={30} color={getWriteColor(info.decoration.backgroundColor)} onPress={onPressCross} />
+                </View>
+            </TouchableOpacity>
+
+        );
+    }
+```
+
+The `const styles = StyleSheet.create({ ... })` block is defining a JavaScript object called
+`styles` that contains various style properties for the `ActionCard` component. Each property in
+the `styles` object represents a different style rule, such as `container`, `logo`, and `name`.
+These style rules define the visual appearance of the `ActionCard` component.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+      paddingHorizontal: 20,
+      marginVertical: 15,
+      width: '85%',
+      height: 85,
+      alignContent: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      shadowColor: '#000',
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    logo: {
+        height: 40,
+        width: 40,
+        marginVertical: 10,
+        marginRight: 10,
+        alignSelf: 'center',
+    },
+    area: {
+        paddingTop: 15,
+        fontSize: 40,
+        alignSelf: 'center',
+        fontWeight: 'bold',
+        marginTop: 2,
+        marginBottom: 20,
+      },
+    ifthen: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginRight: "-10%",
+    },
+    name: {
+      fontSize: 25,
+      fontWeight: 'bold',
+      marginTop: 2,
+      marginBottom: 20,
+    },
+    desc: {
+        flexWrap: 'wrap',
+        textAlign: 'left',
+        fontSize: 20,
+        fontWeight: 'bold',
+      }
+  });
+```
+
+The line `export default ActionChoose;` is exporting the `ActionChoose` component as the default
+export of the module. This means that when another file imports this module, it can import the
+`ActionChoose` component using the default import syntax, like `import ActionChoose from
+'./ActionChoose'`. 
+
+```Typescript
+export default ActionChoose;
+```
+
+For more information about this file you can check his complete code here : [ActionChoose.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ActionChoose.tsx)
+
+## [DeleteAccount.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteAccount.tsx)
+
+The `DeleteAccount` component is the component that will be used to display the delete account page in the mobile application. It is a simple component that will display the delete account modal.
+
+![DeleteAccount.png](../images/mobileComponents/DeleteAccount.png)
+
+The code defines a functional component called `DeleteAccount` using TypeScript and React.
+
+```Typescript
+const DeleteAccount: React.FC = ()
+```
+
+The following code is using the `React.useState` hook to define and initialize state variables in
+the `DeleteAccount` component.
+
+```Typescript
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const navigation: any = useNavigation();
+```
+
+The function `handleDelete` deletes a user, removes a token from SecureStore, and navigates to
+the Login screen.
+
+```Typescript
+ const handleDelete = async () => {
+        try {
+          await DeleteUser();
+          await SecureStore.deleteItemAsync('token_api');
+          navigation.navigate('Login');
+        } catch (error) {
+          console.error(error);
+        }
+    };
+```
+
+The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
+UI of the `DeleteAccount` component.
+
+```Typescript
+    return (
+        <View style={styles.container}>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Text style={styles.text}>Delete Account</Text>
+            </TouchableOpacity>
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={ styles.title }>Delete account</Text>
+                  <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <View>
+                        <Text style={ styles.text }>Are you sure you want to delete your account ?</Text>
+                        <Text style={ styles.subtitles }>This action cannot be undone.</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
+                        <Button title="Cancel" onPress={() => setModalVisible(false)} color="#363841" />
+                        <Button title="Delete" onPress={handleDelete} color="red" />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+        </View>
+    );
+```
+
+The `const styles = StyleSheet.create({})` block is defining a JavaScript object that contains
+styles for different elements in the component. The `StyleSheet.create()` function is used to create
+a stylesheet object that optimizes the styles for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+        width: '80%',
+    },
+    text: {
+        fontSize: 16,
+        color: 'red',
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    subtitles: {
+        fontSize: 18,
+        color: '#363841',
+        marginTop: 10,
+        fontWeight: 'bold',
+    },
+});
+```
+The line `export default DeleteAccount;` is exporting the `DeleteAccount` component as the default
+export of the file. This allows other files to import and use the `DeleteAccount` component by using
+the `import` statement.
+
+```Typescript
+export default DeleteAccount;
+```
+
+For more information about this file you can check his complete code here : [DeleteAccount.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteAccount.tsx)
+
+## [DeleteModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteModal.tsx)
+
+The `DeleteModal` component is the component that will be used to display the delete modal in the mobile application.
+It allows the user to delete an applet.
+
+![DeleteModal.png](../images/mobileComponents/DeleteModal.png)
+
+`DeleteModalProps` is an interface that defines the props that can be passed to the `DeleteModal`
+component. Here's a breakdown of each prop:
+* `id` : the id of the applet
+
+```Typescript
+interface DeleteModalProps {
+    id: number;
+}
+```
+
+The code defines a functional component called `DeleteModal` using TypeScript and React.
+```Typescript
+const DeleteModal: React.FC<DeleteModalProps> = ({ id })
+```
+
+The following code is using the `React.useState` hook to define and initialize state variables in
+the `DeleteModal` component.
+
+```Typescript
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const navigation: any = useNavigation();
+```
+
+The function `deleteApplet` is an asynchronous function that sets the modal visibility to false,
+deletes an applet using the `DeleteApplet` function, and navigates to the "My Applets" screen.
+
+```Typescript
+    const deleteApplet = async () => {
+        try {
+            setModalVisible(false);
+            await DeleteApplet(id);
+            navigation.navigate('My Applets');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+```
+
+The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
+UI of the `DeleteModal` component.
+
+```Typescript
+return (
+        <View style={styles.container}>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Text style={{...styles.text, fontWeight: 'bold', color: 'red' }}>Delete Applet</Text>
+            </TouchableOpacity>
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={ styles.title }>Delete applet</Text>
+                  <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <View>
+                        <Text style={ styles.text }>Are you sure you want to delete this applet ?</Text>
+                        <Text style={ styles.subtitles }>This action cannot be undone.</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 25 }}>
+                        <Button title="Cancel" onPress={() => setModalVisible(false)} color="#363841" />
+                        <Button title="Delete" onPress={deleteApplet} color="#363841" />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+        </View>
+    );
+```
+
+The `const styles = StyleSheet.create({})` block is defining a JavaScript object that contains
+styles for different elements in the component. The `StyleSheet.create()` function is used to create
+a stylesheet object that optimizes the styles for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+        width: '80%',
+    },
+    text: {
+        fontSize: 22,
+    },
+    subtitles: {
+        fontSize: 18,
+        color: '#363841',
+        marginTop: 10,
+        fontWeight: 'bold',
+    },
+});
+```
+
+The line `export default DeleteModal;` is exporting the `DeleteModal` component as the default
+export of the file. This allows other files to import and use the `DeleteModal` component by using
+the `import` statement.
+
+```Typescript
+export default DeleteModal;
+```
+For more information about this file you can check his complete code here : [DeleteModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/DeleteModal.tsx)
+
+## [FormInput.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/FormInput.tsx)
+
+The `FormInput` component is the component that will be used to display the form for a text input in the mobile application.
+
+![FormInput.png](../images/mobileComponents/FormInput.png)
+
+The `interface InputProps` is defining the props that can be passed to the `FormInput` component.
+It extends the `TouchableOpacityProps` interface, which means it inherits all the props from that
+interface. Here's a breakdown of each prop:
+* `label` : the label of the input
+* `secure` : a boolean that indicates if the input is secure or not
+* `inputMode` : the input mode of the input
+* `icon` : the icon of the input
+* `onChangeText` : a function that will be called when the text of the input changes
+* `children` : the children of the input
+* `size` : the size of the input
+
+```Typescript
+interface InputProps extends TouchableOpacityProps {
+    title        : string;
+    secure      ?: boolean;
+    inputMode   ?: InputModeOptions;
+    icon         : { name: string, width: number, height: number };
+    onChangeText : (text: string) => void;
+    children    ?: React.ReactNode;
+    size        ?: DimensionValue;
+}
+```
+The FormInput component is a reusable input field with an optional icon, title, secure text entry, input mode, and custom styling.
+
+```Typescript
+const FormInput: React.FC<InputProps> = ({ title, secure = false, inputMode, icon, onChangeText, children, size = '70%' })
+```
+
+The `return` statement is returning a JSX element that represents the structure and content of the
+`FormInput` component.
+
+```Typescript
+return (
+    <View style={[{width: size}, styles.container]}>
+      <Icon name={icon.name} size={24} color="#00000080" />
+      <TextInput
+        style={styles.input}
+        placeholder={title}
+        placeholderTextColor={'#00000040'}
+        maxLength={30}
+        secureTextEntry={secure}
+        inputMode={inputMode}
+        onChangeText={onChangeText}
+      />
+      {children}
+    </View>
+  );
+```
+
+The `const styles = StyleSheet.create({})` block is creating a stylesheet object using the
+`StyleSheet.create()` method provided by React Native. This allows you to define styles for your
+components in a structured and optimized way.
+
+```Typescript
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 10,
+    backgroundColor: '#D9D9D9',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingRight: 26,
+    paddingLeft: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  input: {
+    width: '80%',
+    paddingLeft: 10,
+    color: '#00000080',
+
+    fontSize: 20,
+    fontStyle: 'normal',
+    fontWeight: '400',
+  },
+});
+```
+
+The `export default FormInput;` statement is exporting the `FormInput` component as the default
+export of this module. This means that when another file imports this module, it can import the
+`FormInput` component directly without having to specify its name. For example, in another file, you
+can import the `FormInput` component like this: `import FormInput from './FormInput';`.
+
+```Typescript
+export default FormInput;
+```
+
+For more information about this file you can check his complete code here : [FormInput.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/FormInput.tsx)
+
+
+## [IngredientButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/IngredientButton.tsx)
+
+The `IngredientButton` is a component that is display when you want to display a text input with a button to add a placeholder in the mobile application.
+
+![IngredientButton.png](../images/mobileComponents/IngredientButton.png)
+
+The `interface InputProps` is defining the props that can be passed to the `IngredientButton` component.
+Here's a breakdown of each prop:
+* `input` : the input of the text input
+* `placeholders` : the placeholders of the text input
+* `type` : the type of the text input
+* `color` : the color of the text input
+* `onSelect` : a function that will be called when the user select a placeholder
+* `onChangeText` : a function that will be called when the text of the input changes
+
+
+```Typescript
+interface IngredientsProps {
+    input : Input;
+    placeholders : Dict;
+    type : string;
+    color : string;
+    onSelect : (text: string) => void;
+    onChangeText : (text: string) => void;
+}
+```
+
+The `IngredientButton` component is a functional component that renders a view containing a text
+input field and an optional dropdown menu.
+
+```Typescript
+const IngredientButton: React.FC<IngredientsProps>  = ({input, placeholders, type, color, onSelect, onChangeText})
+```
+
+The `React.useState` hook is used to define and initialize state variables in the `IngredientButton`
+component.
+
+```Typescript
+    const [dropdownOpen, setDropdownOpen] = React.useState(false);
+    const [value, setValue] = React.useState("");
+```
+
+The function "openDropdown" sets the state variable "dropdownOpen" to true.
+
+```Typescript
+    const openDropdown = () => {
+        setDropdownOpen(true);
+    }
+```
+
+The function "closeDropdown" sets the state variable "dropdownOpen" to false.
+
+```Typescript
+    const closeDropdown = () => {
+        setDropdownOpen(false);
+    }
+```
+
+The function `getPlaceHolder` takes a placeholder string as input and returns the corresponding
+key from the `placeholders` object, or an empty string if no match is found.
+The `placeholder` parameter is a string that represents the placeholder value
+that you want to find the index of in the `placeholders` array.
+The function `getPlaceHolder` returns the index of the placeholder in the `placeholders` array if it exists, otherwise it returns an empty string.
+
+```Typescript
+    const getPlaceHolder = (placeholder: string) => {
+        for (let x in placeholders) {
+            if (placeholders[x] == placeholder) {
+                return x;
+            }
+        }
+        return "";
+    }
+```
+
+The function `displayPlaceHolders` returns an array of strings containing the values of the
+`placeholders` object. The function `displayPlaceHolders` returns an array of strings.
+
+```Typescript
+    const displayPlaceHolders = () => {
+        let array: string[] = [];
+        for (let x in placeholders) {
+            array.push(placeholders[x]);
+        }
+        return array;
+    }
+```
+
+The `return` statement is returning a JSX element that represents the structure and content of
+the `IngredientButton` component.
+
+```Typescript
+    return (
+      <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
+        <View >
+          <TextInput value={value} placeholder={input.label} multiline={true} textBreakStrategy="highQuality" placeholderTextColor={getWriteColor(color, true)} onChangeText={(text) => {onChangeText(text); setValue(text)}} style={[styles.input, { backgroundColor: getWriteColor(getWriteColor(color, true)), color: getWriteColor(color, true) }]}/>
+        </View>
+        {(type == "reaction") ? <View style={{alignSelf: "flex-end", marginRight : "15%"}} >
+          {(!dropdownOpen) ? (
+          <TouchableOpacity style={[{backgroundColor: getWriteColor(color)}, styles.ingredients]} onPress={openDropdown}>
+            <Text style={[{color: color}, styles.buttoningr]}>Add Ingredients</Text>
+          </TouchableOpacity>)
+          : (
+            <View style={[{backgroundColor: getWriteColor(color)}, styles.option]} >
+                <SelectDropdown data={displayPlaceHolders()} onSelect={(text) => {onSelect(text); setValue(value + "{" + getPlaceHolder(text) + "}"); closeDropdown()}} buttonTextStyle={[{color: color}, styles.buttoningr]} buttonStyle={[{backgroundColor: 'transparent', margin: -5}]}/>
+            </View>
+          )}
+        </View> : null}
+     </View>
+    )
+```
+
+The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. Each key-value pair in the `styles` object represents a specific style rule.
+
+```Typescript
+const styles = StyleSheet.create({
+    logo: {
+      height: 100,
+      marginTop: 10,
+      width: 100,
+      alignSelf: 'center',
+    },
+    button : {
+        marginVertical: 10,
+        width: '50%',
+        padding: 5,
+        borderRadius: 10,
+        marginBottom: 30,
+    },
+    ingredients : {
+      padding: 5,
+      marginVertical: 10,
+      width: '50%',
+      borderRadius: 10,
+      marginBottom: 30,
+    },
+    option : {
+        marginVertical: 10,
+        width: 'auto',
+        borderRadius: 10,
+        marginBottom: 30,
+      },
+    buttoningr: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      padding: 5,
+    },
+    buttonText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      padding: 5,
+    },
+    container: {
+      paddingTop: 30,
+    },
+    name: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      marginBottom: 40,
+    },
+    desc: {
+      fontSize: 20,
+      alignSelf: 'center',
+      width: '70%',
+      textAlign: 'center',
+      marginBottom: 40,
+    },
+    input: {
+      fontSize: 20,
+      alignSelf: 'center',
+      borderColor: '#D9D9D9',
+      borderWidth: 1,
+      width: '70%',
+      borderRadius: 10,
+      paddingLeft: 20,
+      paddingRight: 20,
+      paddingVertical: 10,
+      flexWrap: 'wrap',
+    },
+    action: {
+      paddingTop: 50,
+      alignContent: "center",
+      alignItems: "center",
+      height: "100%",
+    }
+  });
+```
+
+The line `export default IngredientButton;` is exporting the `IngredientButton` component as the
+default export of the module. This means that when another file imports this module, it can access
+the `IngredientButton` component directly without having to specify its name in curly braces. For
+example, in another file, you can import the `IngredientButton` component like this: `import
+IngredientButton from './IngredientButton'`.
+
+```Typescript
+export default IngredientButton;
+```
+
+For more information about this file you can check his complete code here : [IngredientButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/IngredientButton.tsx)
+
+
+## [OutlinedTextBox.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/OutlinedTextBox.tsx)
+
+The `OutlinedTextBox` component is the component that will be used to display the form for a text input in the mobile application.
+
+![OutlinedTextBox.png](../images/mobileComponents/OutlinedTextBox.png)
+
+The `interface OutlinedTextBoxProps` defines the props that can be passed to the `OutlinedTextBox`
+component. Here's a breakdown of each prop:
+* `onChangeText` : a function that will be called when the text of the input changes
+* `value` : the value of the input
+* `secureTextEntry` : a boolean that indicates if the input is secure or not
+
+```Typescript
+interface OutlinedTextBoxProps {
+  onChangeText : (text: string) => void;
+  value: string;
+  secureTextEntry?: boolean;
+}
+```
+
+The above code defines a React functional component called OutlinedTextBox that renders a text input
+field with an outline, and updates its focus state based on user interaction.
+
+```Typescript
+const OutlinedTextBox: React.FC<OutlinedTextBoxProps> = ({onChangeText, value, secureTextEntry})
+```
+
+The `React.useState` hook is used to define and initialize state variables in the `OutlinedTextBox`
+component.
+
+```Typescript
+    const [isFocused, setIsFocused] = React.useState(false);
+```
+
+The handleFocus function sets the state variable isFocused to true.
+
+```Typescript
+        const handleFocus = () => setIsFocused(true);
+```
+
+The handleBlur function sets the state variable isFocused to false.
+
+```Typescript
+        const handleBlur = () => setIsFocused(false);
+```
+
+The `return` statement in the `OutlinedTextBox` component is rendering the JSX code that will be
+displayed on the screen.
+
+```Typescript
+return (
+    <View style={[styles.container, isFocused ? null : styles.focused]}>
+      <TextInput
+        onChangeText={onChangeText}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        style={[styles.textInput, isFocused ? null : styles.focused]} // Si isFocused est vrai, on ne met pas de style, sinon on met le style [styles.focused
+        value={value}
+      />
+    </View>
+  );
+```
+
+The `const styles` variable is an object that contains style definitions for different elements in
+the `OutlinedTextBox` component. It uses the `StyleSheet.create` method from the `react-native`
+library to create a stylesheet with optimized performance.
+
+```Typescript
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 3, // Largeur de la bordure
+    borderColor: '#363841', // Couleur de la bordure
+    borderRadius: 5, // Rayon des coins de la boîte
+    paddingVertical: 10, // Rembourrage vertical pour l'espace interne
+    paddingHorizontal: 10, // Rembourrage horizontal pour l'espace interne
+    marginVertical: 10, // Marge verticale pour l'espace externe
+  },
+  textInput: {
+    width: '100%', // Largeur de la boîte
+    fontSize: 18, // Taille de la police
+    fontWeight: 'bold', // Texte en gras
+    color: '#363841', // Couleur du texte
+  },
+  focused: {
+    borderColor: '#D9D9D9', // Couleur de la bordure
+    color: '#363841', // Couleur du texte
+    opacity: 0.5, // Opacité du texte
+  },
+});
+```
+
+The `export default OutlinedTextBox;` statement is exporting the `OutlinedTextBox` component as the
+default export of this module. This means that when another file imports this module, it can import
+the `OutlinedTextBox` component directly without having to specify its name in curly braces. For
+example, in another file, you can import the `OutlinedTextBox` component like this: `import
+OutlinedTextBox from './OutlinedTextBox'`.
+
+```Typescript
+export default OutlinedTextBox;
+```
+
+For more information about this file you can check his complete code here : [OutlinedTextBox.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/OutlinedTextBox.tsx)
+
+
+## [OutlinedTitleBox.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/OutlinedTitleBox.tsx)
+
+The `OutlinedTitleBox` component is the component that will be used to display the form for a text input in the mobile application.
+
+![OutlinedTitleBox.png](../images/mobileComponents/OutlinedTitleBox.png)
+
+The `interface OutlinedTitleBoxProps` defines the props that can be passed to the `OutlinedTitleBox`
+component. Here's a breakdown of each prop:
+* `onChangeText` : a function that will be called when the text of the input changes
+* `value` : the value of the input
+* `bgColor` : the background color of the input
+* `author` : the author of the input
+
+```Typescript
+interface OutlinedTitleBoxProps {
+  onChangeText : (text: string) => void;
+  value: string;
+  bgColor: string;
+  author?: string;
+}
+```
+
+The above code defines a React functional component called OutlinedTitleBox that renders a text input
+field with an outline, and updates its focus state based on user interaction.
+```Typescript
+const OutlinedTitleBox: React.FC<OutlinedTitleBoxProps> = ({onChangeText, value, bgColor, author})
+```
+
+The `React.useState` hook is used to define and initialize state variables in the `OutlinedTitleBox`
+component.
+
+```Typescript
+    const [isFocused, setIsFocused] = React.useState(false);
+```
+
+The handleFocus function sets the state variable isFocused to true.
+
+```Typescript
+        const handleFocus = () => setIsFocused(true);
+```
+
+The handleBlur function sets the state variable isFocused to false.
+
+```Typescript
+const handleBlur = async () => {
+    setIsFocused(false);
+    const appletID = await AsyncStorage.getItem('appletID');
+    await UpdateAppletTitleWithID(appletID, value);
+  };
+```
+
+The function `titleLen` returns the length of a given value as a string, followed by "/140", or an
+empty string if the value is undefined.
+
+```Typescript
+  const titleLen = () => {
+      if (value.length >= 0) {
+          return `${value.length}/140`;
+      }
+      return "";
+  };
+```
+
+The `return` statement in the `OutlinedTitleBox` component is rendering the JSX code that will be
+displayed on the screen. There is two case :
+
+* If the component is focused, it will display the text input with the value, the background color and the author.
+
+![OutlinedTitleBox-2.png](../images/mobileComponents/OutlinedTitleBox-2.png)
+
+```Typescript
+    <View>
+        <View style={[styles.container, styles.focused]}>
+            <TextInput
+                onChangeText={onChangeText}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={[styles.textInput, styles.focused, { color: getWriteColor(bgColor)}]} // Si isFocused est vrai, on ne met pas de style, sinon on met le style [styles.focused
+                value={value}
+                multiline={true}
+            />
+        </View>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', color: getWriteColor(bgColor), marginBottom: 15 }}>{titleLen()}</Text>
+    {/* The user who created the applet and the button to edit the title */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold', color: getWriteColor(bgColor) }}>by {author}</Text>
+            <TouchableOpacity onPress={handleBlur}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: getWriteColor(bgColor) }}>Save modification</Text>
+            </TouchableOpacity>
+        </View>
+    </View>
+```
+
+* Otherwise, it will display the text input with the value, the background color and the author.
+
+![OutlinedTitleBox-1.png](../images/mobileComponents/OutlinedTitleBox-1.png)
+
+```Typescript
+    <View>
+        <Text style={ [styles.textInput, {color: getWriteColor(bgColor) }]}>{value}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold', color: getWriteColor(bgColor) }}>by {author}</Text>
+            <TouchableOpacity onPress={handleFocus}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: getWriteColor(bgColor) }}>Edit title</Text>
+            </TouchableOpacity>
+        </View>
+    </View>
+```
+
+The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. These styles are then used to style the components in the `OutlinedTitleBox`
+component.
+
+```Typescript
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 3, // Largeur de la bordure
+    borderColor: '#363841', // Couleur de la bordure
+    borderRadius: 5, // Rayon des coins de la boîte
+    paddingVertical: 10, // Rembourrage vertical pour l'espace interne
+    paddingHorizontal: 10, // Rembourrage horizontal pour l'espace interne
+    marginVertical: 10, // Marge verticale pour l'espace externe
+  },
+  textInput: {
+    fontSize: 28, // Taille de la police
+    fontWeight: 'bold', // Texte en gras
+    paddingVertical: '2%',
+    paddingHorizontal: '2%',
+    marginBottom: '2%',
+  },
+  focused: {
+    borderColor: '#D9D9D9', // Couleur de la bordure
+  },
+});
+```
+
+The line `export default OutlinedTitleBox;` is exporting the `OutlinedTitleBox` component as the
+default export of the file. This means that when another file imports this module, it can import the
+`OutlinedTitleBox` component using any name of its choice. For example, in another file, you can
+import the `OutlinedTitleBox` component like this:
+
+```Typescript
+import OutlinedTitleBox from './OutlinedTitleBox';
+```
+
+For more information about this file you can check his complete code here : [OutlinedTitleBox.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/OutlinedTitleBox.tsx)
+
+
+## [PasswordModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/PasswordModal.tsx)
+
+The `PasswordModal` component is the component that will be used to display the password modal in the mobile application.
+
+![PasswordModal.png](../images/mobileComponents/PasswordModal.png)
+
+The code defines a functional component called `PasswordModal` using TypeScript and React. 
+
+```Typescript
+const PasswordModal: React.FC = ()
+```
+
+The following code is using the `React.useState` hook to define and initialize state variables in
+the `PasswordModal` component.
+
+```Typescript
+    const [password, setPassword] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+```
+The function saves the server address in local storage and checks if the server is reachable.
+
+```Typescript
+ const savePassword = async () => {
+        // Enregistrez l'adresse du serveur dans le stockage local
+        try {
+          if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+          }
+          const res = await PatchUser(null, password, currentPassword, null);
+          if (res.status === 400) {
+            alert('Wrong current password');
+            return;
+          }
+          setModalVisible(false);
+          setPassword('');
+          setCurrentPassword('');
+        } catch (error) {
+          alert('Error while saving password');
+        }
+    };
+```
+
+The function "reset" resets the state variables for a modal, password, current password, and
+confirm password.
+
+```Typescript
+    const reset = () => {
+      setModalVisible(false);
+      setPassword('');
+      setCurrentPassword('');
+      setConfirmPassword('');
+    };
+```
+
+The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
+UI of the `ServerModal` component.
+
+```Typescript
+return (
+        <View>
+            {/* <StatusBar backgroundColor={modalVisible ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.0)'}/> */}
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Text style={styles.link}>Change password</Text>
+            </TouchableOpacity>
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={ styles.title }>Change password</Text>
+                  <Text style={ styles.text }>Please, enter your current password</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={currentPassword}
+                    secureTextEntry={true}
+                    onChangeText={(text) => setCurrentPassword(text)}
+                  />
+                  <Text style={ styles.text }>Please, enter your new password</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={password}
+                    secureTextEntry={true}
+                    onChangeText={(text) => setPassword(text)}
+                  />
+                  <Text style={ styles.text }>Please, confirm your new password</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={confirmPassword}
+                    secureTextEntry={true}
+                    onChangeText={(text) => setConfirmPassword(text)}
+                  />
+                  <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                    <View style={{ flex: 1, marginRight: 10 }}>
+                    <Button title="Cancel" onPress={() => reset()} color="#363841" />
+                    </View>
+                    <View style={{ flex: 1, marginLeft: 10 }}>
+                    <Button title="Save" onPress={savePassword} color="#363841" />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+        </View>
+    );
+```
+
+The `const styles = StyleSheet.create({})` block is defining a JavaScript object that contains
+styles for different elements in the component. The `StyleSheet.create()` function is used to create
+a stylesheet object that optimizes the styles for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        width: '80%',
+        paddingHorizontal: 40,
+        paddingVertical: 20,
+        height: 'auto',
+        borderRadius: 10,
+        elevation: 5,
+    },
+    link: {
+      color: '#00C2FF',
+      textAlign: 'left',
+      fontWeight: 'bold',
+      marginBottom: 10,
+      fontSize: 14
+    },
+    input: {
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      paddingHorizontal: 10,
+      borderRadius: 20,
+      marginBottom: 25,
+    },
+    title: {
+      fontSize: 24,
+      color: '#363841',
+      fontWeight: 'bold',
+      marginBottom: 30,
+      textAlign: 'center',
+    },
+    text: {
+      color: '#363841',
+      fontSize: 14,
+      marginBottom: 5,
+      fontWeight: 'bold',
+    },
+});
+```
+
+The line `export default PasswordModal;` is exporting the `PasswordModal` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`PasswordModal` component using any name of its choice. For example, in another file, you can
+import the `PasswordModal` component like this:
+
+```Typescript
+import PasswordModal from './PasswordModal';
+```
+
+For more information about this file you can check his complete code here : [PasswordModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/PasswordModal.tsx)
 
 
 
+## [ProfileForm.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ProfileForm.tsx)
+
+The `ProfileForm` component is the component that will be used to display the form for the profile page.
+
+![ProfileForm.png](../images/mobileComponents/ProfileForm.png)
+
+The `interface ProfileFormProps` defines the props that can be passed to the `ProfileForm`
+component. Here's a breakdown of each prop:
+* `data` : the data of the user
+
+```Typescript
+interface ProfileFormProps {
+  data: any;
+}
+```
+
+The secureText function replaces each character in a string with an asterisk (*) to hide sensitive
+information like passwords. The `passwordLength` parameter is a number that represents the
+length of the password.
+
+```Typescript
+const secureText = (passwordLength: number) => {
+    return '•'.repeat(passwordLength); // Remplace chaque caractère par un astérisque (*)
+};
+```
+
+The SecureText component displays a secure text value based on the provided password length.
+The `SecureText` component takes in a `passwordLength` parameter, which is used as an
+argument for the `secureText` function. The `secureText` function is not defined in the code snippet
+provided, so it is unclear what it does. However, the result of the `secure
+
+```Typescript
+const SecureText = ({ passwordLength }) => {
+    const secureTextValue = secureText(passwordLength);
+
+    return (
+      <Text style={styles.secureText}>{secureTextValue}</Text>
+    );
+};
+```
+The `ProfileForm` component is a functional component that displays a form for editing user profile
+information.
+
+```Typescript
+const ProfileForm: React.FC<ProfileFormProps> = ({ data })
+```
+
+The `React.useState` hook is used to define and initialize state variables in the `ProfileForm`
+component.
+
+```Typescript
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('password');
+    const [email, setEmail] = useState<string>('');
+```
+
+The `useEffect` hook in the `ProfileForm` component is used to fetch data from AsyncStorage and
+update the component's state with the retrieved data.
+
+```Typescript
+    useEffect(() => {
+        const dataFetch = async () => {
+            const username = await AsyncStorage.getItem('username');
+            const email = await AsyncStorage.getItem('email');
+            setUsername(username);
+            setEmail(email);
+        };
+        dataFetch();
+    }, []);
+```
+
+The function `handleUsernameChange` updates the username state and saves it to AsyncStorage.
+The `text` parameter is a string that represents the new username value
+that needs to be saved.
+
+```Typescript
+    const handleUsernameChange = async (text: string) => {
+        setUsername(text);
+        await AsyncStorage.setItem('username', text);
+    };
+```
+
+The function `handlePasswordChange` is used to update the password state in a React component.
+The `text` parameter is a string that represents the new password value.
+
+```Typescript
+    const handlePasswordChange = async (text: string) => {
+        setPassword(text);
+    };
+```
+
+The function `handleEmailChange` updates the email state and saves it to AsyncStorage.
+The `text` parameter is a string that represents the new email address
+that needs to be updated.
+
+```Typescript
+    const handleEmailChange = async (text: string) => {
+        setEmail(text);
+        await AsyncStorage.setItem('email', text);
+    };
+```
+
+The `return` statement in the `ProfileForm` component is rendering the JSX code that represents
+the form for editing user profile information. It will not display the password form if the user account has been created by a service
+
+```Typescript
+return (
+        <View style={styles.userInfo}>
+            <View style={{marginBottom: 10}}>
+                <Text style={styles.title}>Account</Text>
+            </View>
+            <View style={{marginTop: 10}}>
+                <Text style={styles.subtitle}>Username</Text>
+                <OutlinedTextBox
+                onChangeText={handleUsernameChange}
+                value={username}
+                />
+            </View>
+            {(data.loginWithService == false) ? (
+            <View style={{marginTop: 10}}>
+                <Text style={styles.subtitle}>Password</Text>
+                <View style={styles.rectangle}>
+                    <SecureText passwordLength={data.passwordLength} />
+                </View>
+                <PasswordModal/>
+            </View>) : null}
+            <View style={{marginTop: 10}}>
+                <Text style={styles.subtitle}>E-mail</Text>
+                <OutlinedTextBox
+                    onChangeText={handleEmailChange}
+                    value={email}
+                />
+            </View>
+        </View>
+    );
+```
+
+The `const styles` object is defining a set of styles using the `StyleSheet.create` method from
+React Native. Each key-value pair in the `styles` object represents a specific style that can be
+applied to a component in the `ProfileForm` component.
+
+```Typescript
+const styles = StyleSheet.create({
+    userInfo: {
+        marginHorizontal: 10, // Marge à gauche de l'avatar pour l'espace entre l'image et le texte
+    },
+    title: {
+        fontSize: 20, // Taille de la police pour le titre
+        fontWeight: 'bold', // Texte en gras pour le titre
+        color: '#363841',
+    },
+    subtitle: {
+        fontSize: 16, // Taille de la police pour le nom d'utilisateur
+        fontWeight: 'bold', // Texte en gras pour le nom d'utilisateur
+        color: '#363841',
+    },
+    link: {
+        color: '#00C2FF',
+        textAlign: 'left',
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    secureText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#363841',
+        opacity: 0.5,
+    },
+    rectangle: {
+        backgroundColor: '#D9D9D9', // Couleur de la boîte
+        borderRadius: 5, // Rayon des coins de la boîte
+        paddingVertical: 10, // Rembourrage vertical pour l'espace interne
+        paddingHorizontal: 10, // Rembourrage horizontal pour l'espace interne
+        marginTop: 10, // Marge verticale pour l'espace externe
+        marginBottom: 5, // Marge verticale pour l'espace externe
+    },
+});
+```
+
+The line `export default ProfileForm;` is exporting the `ProfileForm` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`ProfileForm` component using any name of its choice. For example, in another file, you can
+import the `ProfileForm` component like this:
+
+```Typescript
+import ProfileForm from './ProfileForm';
+```
+
+For more information about this file you can check his complete code here : [ProfileForm.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ProfileForm.tsx)
+
+## [ServerModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServerModal.tsx)
+
+The `ServerModal` component is the component that will be used to display the server modal in the mobile application.
+It will allow the user to choose the server address where the application will be connected.
+
+![ServerModal.png](../images/mobileComponents/ServerModal.png)
+
+The code defines a functional component called `ServerModal` using TypeScript and React.
+
+```Typescript
+const ServerModal: React.FC = ()
+```
+
+The following code is using the `React.useState` hook to define and initialize state variables in
+component.
+
+```Typescript
+    const [serverAddress, setServerAddress] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+```
+
+he `useEffect` hook is used to perform side effects in functional components. In this code, the
+`useEffect` hook is used to check if the server address is already saved in the local storage.
+
+```Typescript
+    useEffect(() => {
+      const checkAndShowModal = async () => {
+        try {
+          const savedAddress = await AsyncStorage.getItem('serverAddress');
+          if (!savedAddress) {
+            // Si l'adresse du serveur n'est pas enregistrée, ouvrez le modal
+            setModalVisible(true);
+          } else {
+            setServerAddress(savedAddress);
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération de l\'adresse du serveur :', error);
+        }
+      };
+      checkAndShowModal();
+    }, []); 
+```
+
+The function saves the server address in local storage and checks if the server is reachable.
+```Typescript
+    const saveServerAddress = async () => {
+        // Enregistrez l'adresse du serveur dans le stockage local
+        // use this regex ^((?!-)[A-Za-z0-9-]{1,63}(?<!-).)+[A-Za-z]{2,6}$
+        if (!serverAddress.match(/^(http:\/\/|https:\/\/)?([a-zA-Z0-9][a-zA-Z0-9_-]*(\.[a-zA-Z0-9_-]*)+)(\/.*)?$/)) {
+          Alert.alert(
+            'Warning',
+            'The server is not on a valid domain name. Therefore, the application may not function properly. By clicking OK, you agree to use the application at your own risk.',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => {
+                  return;
+                },
+                style: 'cancel',
+              },
+              {
+                text: 'OK',
+                onPress: async () => {
+                  try {
+                    await fetch(`${serverAddress}/about.json`);
+
+                    await AsyncStorage.setItem('serverAddress', serverAddress);
+                    await AsyncStorage.setItem('serverAddressWarning', 'false');
+                    setModalVisible(false);
+                  } catch (error) {
+                    Alert.alert('Error', 'Unable to connect to the server. Please check the server address.');
+                  }
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        } else {
+          try {
+            await fetch(`${serverAddress}/about.json`);
+
+            await AsyncStorage.setItem('serverAddress', serverAddress);
+            await AsyncStorage.setItem('serverAddressWarning', 'true');
+            setModalVisible(false);
+          } catch (error) {
+            Alert.alert('Error', 'Unable to connect to the server. Please check the server address.');
+          }
+          return;
+        }
+    };
+```
+
+The `return` statement in the code is returning the JSX (JavaScript XML) code that defines the
+UI of the `ServerModal` component.
+
+```Typescript
+    return (
+        <View style={styles.container}>
+            {/* <StatusBar backgroundColor={modalVisible ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.0)'}/> */}
+            <TouchableOpacity style={styles.settingsButton} onPress={() => setModalVisible(true)}>
+                <MaterialIcons name="settings" size={50} color="#363841" />
+            </TouchableOpacity>
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={{ marginBottom: 10 }}>Please enter the server address:</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={serverAddress}
+                    onChangeText={(text) => setServerAddress(text)}
+                  />
+                  <Button title="Save" onPress={saveServerAddress} color="#363841" />
+                </View>
+              </View>
+            </Modal>
+        </View>
+    );
+```
+
+The `const styles = StyleSheet.create({})` block is defining a JavaScript object that contains
+styles for different elements in the component. The `StyleSheet.create()` function is used to create
+a stylesheet object that optimizes the styles for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        marginTop: 20,
+        marginLeft: 20,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+    },
+    input: {
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      marginBottom: 20,
+      paddingHorizontal: 10,
+    },
+    settingsButton: {
+    },
+});
+```
+
+The line `export default ServerModal;` is exporting the `ServerModal` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`ServerModal` component using any name of its choice. For example, in another file, you can
+import the `ServerModal` component like this:
+
+```Typescript
+import ServerModal from './ServerModal';
+```
+
+For more information about this file you can check his complete code here : [ServerModal.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServerModal.tsx)
+
+## [ServiceCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceCard.tsx)
+
+The `ServiceCard` component is the component that will be used to display the service card in the mobile application.
+
+![ServiceCard.png](../images/mobileComponents/ServiceCard.png)
+
+The `interface CardProps` is defining a new interface called `CardProps` that extends the
+`TouchableOpacityProps` interface. It specifies the expected props for the `ServiceCard` component. Here's a breakdown of each prop:
+* `title` : the title of the service
+* `logo` : the logo of the service
+* `color` : the color of the service
+* `slug` : the slug of the service
+* `onPress` : a function that will be called when the card is pressed
+
+```Typescript
+interface CardProps extends TouchableOpacityProps {
+    title   : string;
+    logo    : string;
+    color   : string;
+    slug    : string;
+    onPress: () => void;
+}
+```
+
+The `ServiceCard` component is a functional component that displays a card for a service.
+
+```Typescript
+const ServiceCard: React.FC<CardProps> = ({ title, logo, color, slug, onPress })
+```
+
+We start by handling the case there is no color for the service.
+
+```Typescript
+    if (color === '') {
+        color = '#EEEEEE';
+    }
+```
+
+Then we handle the case there is no logo for the service.
+
+```Typescript
+    if (logo === '') {
+        logo = 'https://via.placeholder.com/70';
+    }
+```
+
+The `return` statement in the `ServiceCard` component is rendering the JSX code that represents
+the card for a service.
+
+```Typescript
+    return (
+        <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logo}/>
+            <View>
+                <Text style={[styles.name, {color: getWriteColor(color)}]}>{title}</Text>
+            </View>
+        </TouchableOpacity>
+  );
+```
+
+The `const styles = StyleSheet.create({ ... })` block is defining a JavaScript object called
+`styles` that contains various style properties for the `ServiceCard` component. Each property in
+the `styles` object represents a different style rule, such as `container`, `logo`, and `name`.
+These style rules define the visual appearance of the `ServiceCard` component.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+      paddingTop: 30,
+      marginVertical: 15,
+      width: '85%',
+      borderRadius: 10,
+      shadowColor: '#000',
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    logo: {
+        height: 70,
+        width: 70,
+        marginVertical: 10,
+        alignSelf: 'center',
+    },
+    name: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      marginTop: 5,
+      marginBottom: 20,
+    },
+  });
+```
+
+The line `export default ServiceCard;` is exporting the `ServiceCard` component as the default
+export of the module. This means that when another file imports this module, it can import the
+`ServiceCard` component using the default import syntax, like `import ServiceCard from
+'./ServiceCard'`.
+
+```Typescript
+export default ServiceCard;
+```
+
+For more information about this file you can check his complete code here : [ServiceCard.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceCard.tsx)
 
 
+## [ServiceLogo.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceLogo.tsx)
 
+The `ServiceLogo` component is the component that will be used to display the service logo in the mobile application.
+
+![ServiceLogo.png](../images/mobileComponents/ServiceLogo.png)
+
+The `interface CardProps` is defining the props that can be passed to the `ServiceLogo` component.
+It extends the `TouchableOpacityProps` interface, which includes all the props that can be passed to
+the `TouchableOpacity` component from the `react-native` library.
+Here is a breakdown of each prop:
+
+
+```Typescript
+interface CardProps extends TouchableOpacityProps {
+    slug    : string;
+    onPress : () => void;
+    disabled ?: boolean;
+}
+```
+
+The `ServiceLogo` component is a functional component that displays a logo for a service.
+
+```Typescript
+const ServiceLogo: React.FC<CardProps> = ({ slug , onPress, disabled = false})
+```
+
+The `ServiceLogo` uses the `useState` hook to define and initialize state variables in the
+`ServiceLogo` component.
+
+```Typescript
+    const [color, setColor] = React.useState<string>("EEEEEE");
+    const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
+    const [loading, setLoading] = React.useState<boolean>(true);
+```
+
+The `React.useEffect` hook is used to perform side effects in functional components. In this
+case, it is used to fetch information about a service and update the state variables `color`,
+`logo`, and `loading` based on the fetched data.
+
+```Typescript
+    React.useEffect(() => {
+        const fetchInfos = async () => {
+            const res = await ServiceInfo(slug);
+            setColor(res.decoration.backgroundColor);
+            setLogo(res.decoration.logoUrl);
+            setLoading(false);
+        }
+        fetchInfos();
+    }, []);
+```
+
+Then we can render the component if `loading` is false.
+
+We have two cases :
+
+* If the component is not disabled, we render the logo with the color and the logo of the service and write _Log Out_.
+
+![ServiceLogo.png](../images/mobileComponents/ServiceLogo.png) 
+
+```Typescript
+                <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                    <View>
+                        <Image source={{ uri: logo, cache: 'force-cache' }} style={styles.logopti}/>
+                        <Text style={{color : getWriteColor(color), fontWeight : 'bold', fontSize : 9.9, alignSelf : 'center'}}>Log Out</Text>
+                    </View>
+                </TouchableOpacity>
+```
+
+* If the component is disabled, we render the logo with the color and the logo of the service and write _Log In_.
+
+![ServiceLogo.png](../images/mobileComponents/ServiceLogo-1.png)
+
+```Typescript
+                <TouchableOpacity onPress={onPress} style={[{backgroundColor: color}, styles.container]}>
+                    <View>
+                        <Image source={{ uri: logo, cache: 'force-cache' }} style={[styles.logopti]}/>
+                        <Text style={{color : getWriteColor(color), fontWeight : 'bold', fontSize : 13, alignSelf : 'center'}}>Log In</Text>
+                    </View>
+                </TouchableOpacity>
+```
+
+The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. This method ensures that the styles are optimized for performance.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+      height: 80,
+      width: 80,
+      marginVertical: 15,
+      marginRight: 15,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      shadowColor: '#000',
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    logo: {
+        height: 50,
+        width: 50,
+        marginVertical: 15,
+        alignSelf: 'center',
+    },
+    logopti: {
+        height: 30,
+        width: 30,
+        marginVertical: 15,
+        alignSelf: 'center',
+    }
+});
+```
+
+The line `export default ServiceLogo;` is exporting the `ServiceLogo` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`ServiceLogo` component using any name of its choice. For example, in another file, you can
+import the `ServiceLogo` component like this:
+
+```Typescript
+import ServiceLogo from './ServiceLogo';
+```
+
+For more information about this file you can check his complete code here : [ServiceLogo.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/ServiceLogo.tsx)
+
+## [SubmitButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/SubmitButton.tsx)
+
+The `SubmitButton` component is the component that will be used to display the submit button in the mobile application.
+
+![SubmitButton.png](../images/mobileComponents/SubmitButton-1.png)
+
+The `interface InputProps` is defining the props that can be passed to the `FormInput` component.
+It extends the `TouchableOpacityProps` interface, which means it inherits all the props from that
+interface. Here is a breakdown of each prop:
+* `title` : the title of the button
+* `icon` : the icon of the button
+* `textcolor` : the color of the text
+* `onPress` : a function that will be called when the button is pressed
+
+```Typescript
+interface SubmitButtonProps extends TouchableOpacityProps {
+    title        : string;
+    icon        ?: { uri: any, width: number, height: number };
+    textcolor   ?: string;
+    onPress     ?: () => void;
+}
+```
+
+The `SubmitButton` component is a functional component that displays a button for a service.
+
+```Typescript
+const SubmitButton: React.FC<SubmitButtonProps> = ({ title, icon, textcolor = '#363841', onPress })
+```
+
+It has two possible return :
+
+* If the icon is not defined, we return a button with the title and the color of the text.
+
+![SubmitButton.png](../images/mobileComponents/SubmitButton-1.png)
+
+```Typescript
+            <TouchableOpacity style={styles.containerimg} onPress={onPress}>
+                <Text style={[{color: textcolor}, styles.title]}>{title}</Text>
+                <Image source={icon.uri} style={{ width: icon.width, height: icon.height, marginLeft: 10 }} />
+            </TouchableOpacity>
+```
+
+* If the icon is defined, we return a button with the title, the color of the text and the icon.
+
+![SubmitButton.png](../images/mobileComponents/SubmitButton-2.png)
+
+```Typescript
+            <TouchableOpacity style={styles.container} onPress={onPress}>
+                <Text style={[{color: textcolor}, styles.title]}>{title}</Text>
+            </TouchableOpacity>
+```
+
+The `const styles = StyleSheet.create({ ... })` block is creating a JavaScript object that contains
+styles for different components in the `SubmitButton` component. Each key-value pair in the object
+represents a style property and its corresponding value.
+
+```Typescript
+const styles = StyleSheet.create({
+    container: {
+        marginVertical: 10,
+        alignItems: 'center',
+        width: '40%',
+        padding: 10,
+        backgroundColor: '#363841',
+        borderRadius: 90,
+        marginTop: 20,
+    },
+    containerimg: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+        flexDirection: 'row',
+        width: '65%',
+        paddingVertical: 18,
+        paddingHorizontal: 20,
+        backgroundColor: '#363841',
+        borderRadius: 90,
+    },
+    title: {
+        fontSize: 20,
+        fontStyle: 'normal',
+        fontWeight: "700",
+    }
+});
+```
+
+The line `export default SubmitButton;` is exporting the `SubmitButton` component as the default
+export of the file. This means that when another file imports this module, it can import the
+`SubmitButton` component using any name of its choice. For example, in another file, you can
+import the `SubmitButton` component like this:
+
+```Typescript
+import SubmitButton from './SubmitButton';
+```
+
+For more information about this file you can check his complete code here : [SubmitButton.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/SubmitButton.tsx)
+
+## [TopBar.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/TopBar.tsx)
+
+The `TopBar` component is the component that will be used to display the top bar in the mobile application.
+
+![TopBar.png](../images/mobileComponents/TopBar.png)
+
+The `interface TopBarProps` is defining the props (properties) that can be passed to the `TopBar`
+component. It extends the `TouchableOpacityProps` interface, which provides props related to the
+`TouchableOpacity` component. Here is a breakdown of each prop:
+* `title` : the title of the top bar
+* `iconLeft` : the icon on the left of the top bar
+* `onPressLeft` : a function that will be called when the icon on the left is pressed
+* `color` : the color of the top bar
+* `iconRight` : the icon on the right of the top bar
+* `onPressRight` : a function that will be called when the icon on the right is pressed
+
+```Typescript
+interface TopBarProps extends TouchableOpacityProps {
+    title         : string;
+    iconLeft      : string;
+    onPressLeft   : () => void;
+    color         : string;
+    iconRight     ?: string;
+    onPressRight  ?: () => void;
+}
+```
+
+The TopBar component is a functional component in TypeScript React that displays a title, left and
+right icons, and handles onPress events for the icons.
+
+```Typescript
+const TopBar: React.FC<TopBarProps> = ({ title, iconLeft, onPressLeft, color, iconRight, onPressRight })
+```
+
+The function "showIconRight" returns a TouchableOpacity component with an Icon component inside, if
+both "iconRight" and "onPressRight" are not null; otherwise, it returns an empty View component.
+The `iconRight` parameter is the name of the icon that you want to display on the
+right side. It is a string value. The `onPressRight` parameter is a function that will be called when the user
+presses the icon on the right. The "color" parameter is the color of the icon. It is used to set the color of the
+icon in the Icon component.
+
+```Typescript
+const showIconRight = (iconRight, onPressRight, color) => {
+  return (iconRight !== null && onPressRight !== null) ? (
+    <TouchableOpacity onPress={onPressRight}>
+      <Icon name={iconRight} size={30}  color={color}/>
+    </TouchableOpacity>
+  ) : (
+    <View></View>
+  )
+}
+```
+
+The `return` statement is returning a JSX expression that represents the structure and content of
+the `TopBar` component.
+
+```Typescript
+  return (
+    <View style={styles.container}>
+      <View style={{ width: '10%', alignItems: 'flex-start'}}>
+        <TouchableOpacity onPress={onPressLeft}>
+          <Icon name={iconLeft} size={30} color={color} />
+        </TouchableOpacity>
+      </View>
+      <View style={{ width: '80%', alignItems: 'center'}}>
+        <Text style={[styles.text, {color: color}]}>{title}</Text>
+      </View>
+      <View style={{ width: '10%', alignItems: 'flex-end'}}>
+        {showIconRight(iconRight, onPressRight, color)}
+      </View>
+    </View>
+  );
+```
+
+The `const styles` variable is an object that contains style definitions for the `TopBar` component.
+It uses the `StyleSheet.create` method from the `react-native` library to create a stylesheet with
+the specified styles.
+
+```Typescript
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 30,
+    fontWeight: 'bold',
+  }
+});
+```
+
+`export default TopBar;` is exporting the `TopBar` component as the default export of the module.
+This means that when another file imports this module, it can import the `TopBar` component directly
+without having to specify its name. For example, in another file, you can import the `TopBar`
+component like this:
+
+```Typescript
+export default TopBar;
+```
+
+For more information about this file you can check his complete code here : [TopBar.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/components/TopBar.tsx)
 
 

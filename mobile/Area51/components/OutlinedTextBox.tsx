@@ -48,6 +48,9 @@ const OutlinedTextBox: React.FC<OutlinedTextBoxProps> = ({onChangeText, value, s
   );
 };
 
+/* The `const styles` variable is an object that contains style definitions for different elements in
+the `OutlinedTextBox` component. It uses the `StyleSheet.create` method from the `react-native`
+library to create a stylesheet with optimized performance. */
 const styles = StyleSheet.create({
   container: {
     borderWidth: 3, // Largeur de la bordure

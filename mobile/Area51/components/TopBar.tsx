@@ -47,6 +47,8 @@ const showIconRight = (iconRight, onPressRight, color) => {
  */
 const TopBar: React.FC<TopBarProps> = ({ title, iconLeft, onPressLeft, iconRight=null, onPressRight=null, color }) => {
 
+  /* The `return` statement is returning a JSX expression that represents the structure and content of
+  the `TopBar` component. */
   return (
     <View style={styles.container}>
       <View style={{ width: '10%', alignItems: 'flex-start'}}>

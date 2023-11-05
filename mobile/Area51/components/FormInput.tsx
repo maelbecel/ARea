@@ -19,9 +19,18 @@ interface InputProps extends TouchableOpacityProps {
     size        ?: DimensionValue;
 }
 
-/* The code `const FormInput: React.FC<InputProps> = ({ title, secure = false, inputMode, icon,
-onChangeText, children }) => { ... }` is defining a functional component called `FormInput`. */
+/**
+ * The FormInput component is a reusable input field with an optional icon, title, secure text entry,
+ * input mode, and custom styling.
+ * 
+ * @param  - `title`: The placeholder text for the input field.
+ * 
+ * @return The `FormInput` component is returning a `View` component that contains an `Icon` component,
+ * a `TextInput` component, and any children components passed to it.
+ */
 const FormInput: React.FC<InputProps> = ({ title, secure = false, inputMode, icon, onChangeText, children, size = '70%' }) => {
+ /* The `return` statement is returning a JSX element that represents the structure and content of the
+ `FormInput` component. */
   return (
     <View style={[{width: size}, styles.container]}>
       <Icon name={icon.name} size={24} color="#00000080" />
@@ -67,4 +76,8 @@ const styles = StyleSheet.create({
   },
 });
 
+/* The `export default FormInput;` statement is exporting the `FormInput` component as the default
+export of this module. This means that when another file imports this module, it can import the
+`FormInput` component directly without having to specify its name. For example, in another file, you
+can import the `FormInput` component like this: `import FormInput from './FormInput';`. */
 export default FormInput;

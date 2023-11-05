@@ -160,7 +160,7 @@ const ConnectAuth = ({ navigation, route }) => {
     return (
       <View key={input.name} style={{marginVertical : 10, width:"100%"}}>
         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-          <Text style={[styles.select, { color: getWriteColor(color) }]}>{input.label}:</Text>
+          <Text style={[styles.select, { color: getWriteColor(color), width: "30%" }]}>{input.label}:</Text>
           <SelectDropdown defaultValue={input.options[0]} data={input.options.sort((a : string, b : string) => a.toLowerCase().localeCompare(b.toLowerCase()))} searchPlaceHolder={input.label} onSelect={(text) => {inputsResp[index] = text; isAllFormFill()}} rowStyle={[{ backgroundColor: getWriteColor(color, true)}]} buttonStyle={{ borderRadius : 15, alignSelf: 'center', marginBottom : 10}}/>
         </View>
      </View>

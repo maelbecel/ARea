@@ -17,6 +17,12 @@ const ChangeAddressComponent = () => {
     };
 
     const validateAddress = async () => {
+        if (address === "" || address.includes("http") === false) {
+            openModalError();
+            setShow(false);
+            return;
+        }
+
         try {
             const response = await fetch(address + "/about.json", {
                 method: "GET",

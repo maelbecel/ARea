@@ -36,13 +36,12 @@ const ServerModal: React.FC = () => {
         // use this regex ^((?!-)[A-Za-z0-9-]{1,63}(?<!-).)+[A-Za-z]{2,6}$
         if (!serverAddress.match(/^(http:\/\/|https:\/\/)?([a-zA-Z0-9][a-zA-Z0-9_-]*(\.[a-zA-Z0-9_-]*)+)(\/.*)?$/)) {
           Alert.alert(
-            'Attention',
-            'Le serveur n\'est pas sur un nom de domaine valide. Par conséquent, il est possible que l\'application ne fonctionne pas correctement. En cliquant sur OK, vous acceptez d\'utiliser l\'application à vos risques et périls.',
+            'Warning',
+            'The server is not on a valid domain name. Therefore, the application may not function properly. By clicking OK, you agree to use the application at your own risk.',
             [
               {
-                text: 'Annuler',
+                text: 'Cancel',
                 onPress: () => {
-                  console.log('L\'utilisateur a annulé. Vous pouvez effectuer des actions en conséquence.');
                   return;
                 },
                 style: 'cancel',
@@ -56,9 +55,8 @@ const ServerModal: React.FC = () => {
                     await AsyncStorage.setItem('serverAddress', serverAddress);
                     await AsyncStorage.setItem('serverAddressWarning', 'false');
                     setModalVisible(false);
-                    console.log('Adresse du serveur enregistrée :', serverAddress);
                   } catch (error) {
-                    alert('Impossible de se connecter au serveur. Veuillez vérifier l\'adresse du serveur.');
+                    Alert.alert('Error', 'Unable to connect to the server. Please check the server address.');
                   }
                 },
               },
@@ -72,9 +70,8 @@ const ServerModal: React.FC = () => {
             await AsyncStorage.setItem('serverAddress', serverAddress);
             await AsyncStorage.setItem('serverAddressWarning', 'true');
             setModalVisible(false);
-            console.log('Adresse du serveur enregistrée :', serverAddress);
           } catch (error) {
-            alert('Impossible de se connecter au serveur. Veuillez vérifier l\'adresse du serveur.');
+            Alert.alert('Error', 'Unable to connect to the server. Please check the server address.');
           }
           return;
         }
@@ -97,13 +94,13 @@ const ServerModal: React.FC = () => {
             >
               <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                  <Text>Veuillez entrer l'adresse du serveur :</Text>
+                  <Text style={{ marginBottom: 10 }}>Please enter the server address:</Text>
                   <TextInput
                     style={styles.input}
                     value={serverAddress}
                     onChangeText={(text) => setServerAddress(text)}
                   />
-                  <Button title="Enregistrer" onPress={saveServerAddress} color="#363841" />
+                  <Button title="Save" onPress={saveServerAddress} color="#363841" />
                 </View>
               </View>
             </Modal>

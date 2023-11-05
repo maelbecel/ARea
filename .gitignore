@@ -1,3 +1,5 @@
 # Some stuff used with docker
 mariadb
 apk
+.vscode
+.idea
