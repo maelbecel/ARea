@@ -12,8 +12,8 @@ ARea is a project that aims to provide a action/reaction system, like IFTTT.
 
 1. Clone the repository
 2. Run `docker-compose up`
-3. Go to `http://localhost:8080` for the web interface
-4. If you want the android APK, go to `http://localhost:8080/client.apk`
+3. Go to `http://localhost:8081` for the web interface
+4. If you want the android APK, go to `http://localhost:8081/client.apk`
 
 ### Usage
 
