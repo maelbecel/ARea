@@ -79,7 +79,7 @@ public class AppletService {
         // Trigger applets
         StringBuilder reactionsList = new StringBuilder("[");
         for (Applet.StockReaction reaction : reactions)
-            reactionsList.append(reaction.getReactionSlug()).append(", ");
+            reactionsList.append(actionReactionService.getReaction(reaction.getReactionSlug()).getName()).append(", ");
         reactionsList = new StringBuilder(reactionsList.substring(0, reactionsList.length() - 2) + "]");
         triggerAction("area51.applet-is-created", Map.of(
             "userId", String.valueOf(user.getId())
@@ -141,6 +141,19 @@ public class AppletService {
         if (dto.getEnabled() != null) {
             applet.setEnabled(dto.getEnabled());
         }
+
+        StringBuilder reactionsList = new StringBuilder("[");
+        for (Applet.StockReaction reaction : applet.getReactions())
+            reactionsList.append(actionReactionService.getReaction(reaction.getReactionSlug()).getName()).append(", ");
+        reactionsList = new StringBuilder(reactionsList.substring(0, reactionsList.length() - 2) + "]");
+        triggerAction("area51.applet-is-updated", Map.of(
+            "userId", String.valueOf(user.getId())
+        ), Map.of(
+            "applet_name", applet.getName(),
+            "applet_action", actionReactionService.getAction(applet.getActionSlug()).getName(),
+            "applet_reactions", reactionsList.toString()
+        ));
+
         return appletRepository.save(applet);
     }
 
@@ -148,6 +161,15 @@ public class AppletService {
         Applet applet = getById(id);
         if (applet.getUser().getId() != userService.getCurrentUser().getId())
             throw new DataNotFoundException("Applet not found");
+
+        if (!applet.getActionSlug().equalsIgnoreCase("area51.applet-is-deleted")) {
+            triggerAction("area51.applet-is-deleted", Map.of(
+                "userId", String.valueOf(applet.getUser().getId())
+            ), Map.of(
+                "applet_name", applet.getName()
+            ));
+        }
+
         appletRepository.deleteById(id);
     }
 

@@ -219,7 +219,7 @@ FormInput is an object representing a form field.
     "value": "Hello World!"
 }
 ```
-FormInput can be of several types. Currently the available types are **TEXT**, **SELECT**, **NUMBER** and **URL**.\
+FormInput can be of several types. Currently, the available types are **TEXT**, **SELECT**, **NUMBER** and **URL**.\
 Depending on the types chosen, a check will be carried out by the server during **POST requests** containing FormInput.\
 For **SELECT** type, server gives a list of options, in string
 ```JSON
