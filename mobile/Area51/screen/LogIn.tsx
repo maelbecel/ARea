@@ -8,7 +8,7 @@
 
 /* The code is importing the necessary components from the React and React Native libraries. */
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, Alert } from 'react-native';
 import FormInput from '../components/FormInput';
 import SubmitButton from '../components/SubmitButton';
 import ServerModal from '../components/ServerModal';
@@ -56,11 +56,11 @@ const Login = ({ navigation }) => {
     const connect = async () => {
         const response = await LoginAPI(email, password);
         if (response == null) {
-            alert("An Error occcur");
+            Alert.alert("An Error occcur", "Please check your internet connection");
         } else if (response.status == 200) {
             navigation.navigate('Area 51');
         } else {
-            alert("Error " + response.status + "\n" + response.message);
+            Alert.alert("Bad credentials", response.message);
         }
     }
 

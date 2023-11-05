@@ -4,33 +4,43 @@ import LogoApplet from "./Logo";
 import ReactionInfo from "../../api/ReactionInfo";
 import ActionInfo from "../../api/ActionInfo";
 
+/* The `ReactionListProps` interface is defining the type of props that the `MoreDetailsButton`
+component expects to receive. It has two properties: */
 interface ReactionListProps {
     reactionSlug: string;
     reactionData: any[];
 }
 
-interface ReactionProps {
-    reaction: ReactionListProps;
-    bgColor: string;
-}
-
+/* The `ButtonProps` interface is defining the type of props that the `MoreDetailsButton` component
+expects to receive. It has three properties: */
 interface ButtonProps {
     isToggle: boolean;
     actionSlug: string;
     reactionsList: ReactionListProps[];
 }
 
+/* The `MoreDetailsButton` component is a React functional component that displays a button that
+toggles between showing more details and fewer details. */
 const MoreDetailsButton = ({ isToggle, actionSlug, reactionsList }: ButtonProps) => {
     const [isButtonToggle, setIsButtonToggle] = useState<boolean>(isToggle);
     const [actionInfos, setActionInfos] = useState<any>("");
     const [reactionInfos, setReactionInfos] = useState<any>("");
     const [loading, setLoading] = useState<boolean>(true);
 
-    const handleClick = () => {
-        setIsButtonToggle(!isButtonToggle);
-    };
+    /**
+     * The handleClick function toggles the value of isButtonToggle.
+     */
+        const handleClick = () => {
+            setIsButtonToggle(!isButtonToggle);
+        };
 
+    /* The `useEffect` hook is used to perform side effects in a functional component. In this case,
+    the `useEffect` hook is used to fetch data from the server and update the component's state. */
     useEffect(() => {
+        /**
+         * The function `dataFetch` fetches action and reaction information, sets the fetched data in
+         * state variables, and handles any errors that occur during the process.
+         */
         const dataFetch = async () => {
             try {
                 const actionInfos = await ActionInfo(actionSlug);
@@ -101,6 +111,10 @@ const MoreDetailsButton = ({ isToggle, actionSlug, reactionsList }: ButtonProps)
     );
 };
 
+/* The `const styles` variable is an object that contains a style definition for a separator element.
+The `StyleSheet.create()` function is used to create a stylesheet object that can be used to define
+styles for React Native components. In this case, the `separator` style defines the padding,
+background color, and margins for the separator element. */
 const styles = StyleSheet.create({
     separator: {
         paddingVertical: "8%",
@@ -110,4 +124,9 @@ const styles = StyleSheet.create({
     },
 });
 
-export default MoreDetailsButton;
+/* The line `export default MoreDetailsButton;` is exporting the `MoreDetailsButton` component as the
+default export of the module. This means that when another file imports this module, it can import
+the `MoreDetailsButton` component using any name of its choice. For example, in another file, you
+can import the `MoreDetailsButton` component like this: `import CustomButton from
+"./MoreDetailsButton";`. */
+    export default MoreDetailsButton;

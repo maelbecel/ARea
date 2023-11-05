@@ -195,9 +195,9 @@ public class Area51App extends App {
 # Web
 
 The web part is divided into 4 principal sections:
-* [Pages/](https://github.com/maelbecel/ARea/blob/master/web/pages) is the folder where all the application screens are located. Since it's Next.JS, the pages are organized to correspond to their respective URL addresses.
-* [Api/](https://github.com/maelbecel/ARea/wiki/Web-Api) is the folder that contains all components requiring API requests. All API requests are extracted from the pages and reside within this folder.
-* [Components/](https://github.com/maelbecel/ARea/blob/master/web/components) is the folder that houses all components used within the screens, such as search bars or form inputs.
+* [Pages/](Web-Pages.md) is the folder where all the application screens are located. Since it's Next.JS, the pages are organized to correspond to their respective URL addresses.
+* [Api/](Web-Api.md) is the folder that contains all components requiring API requests. All API requests are extracted from the pages and reside within this folder.
+* [Components/](Web-Components.md) is the folder that houses all components used within the screens, such as search bars or form inputs.
 
 ### [_app.tsx](https://github.com/maelbecel/ARea/blob/master/web/pages/_app.tsx) {id="app-tsx_1"}
 The _app.tsx is the beginning of the project.

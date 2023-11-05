@@ -5,21 +5,20 @@ import ToggleSwitch from "./Switch";
 import SwitchNotifyMe from "./SwitchNotifyMe";
 import MoreDetailsButton from "./MoreDetails";
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import DeleteApplet from "../../api/DeleteApplet";
-import { getWriteColor } from "../ActionCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeleteModal from "../DeleteModal";
 import OutlinedTitleBox from "../OutlinedTitleBox";
 
+/* The `ReactionListProps` interface is defining the type of props that the `AppletInfoContainer`
+component expects to receive for the `reactionsList` prop. It specifies that the `reactionsList`
+prop should be an array of objects with two properties: `reactionSlug` (a string) and `reactionData`
+(an array of any type). This interface helps ensure that the `reactionsList` prop is used correctly
+and that the objects in the array have the expected properties and types. */
 interface ReactionListProps {
     reactionSlug: string;
     reactionData: any[];
 }
 
-interface ReactionProps {
-    reaction: ReactionListProps;
-    bgColor: string;
-}
 
 /* The `AppletInfoContainerProps` interface is defining the type of props that the
 `AppletInfoContainer` component expects to receive. It specifies the names and
@@ -52,6 +51,10 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
     functional component. It takes two arguments: a callback function and an array
     of dependencies. */
     useEffect(() => {
+        /**
+         * The function `dataFetch` retrieves data, formats dates, and stores an applet ID in
+         * AsyncStorage.
+         */
         const dataFetch = async () => {
             if (createdAt !== 0) {
                 const createdAtDate = new Date(createdAt * 1000);
@@ -66,6 +69,12 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
         dataFetch();
     }, []);
 
+    /**
+     * The function `handleTitleChange` updates the title state and saves it to AsyncStorage if the
+     * text length is less than 141 characters.
+     * @param {string} text - The `text` parameter is a string that represents the new title value that
+     * is being passed to the `handleTitleChange` function.
+     */
     const handleTitleChange = async (text: string) => {
         if (text.length < 141) {
             setTitle(text);
@@ -74,28 +83,28 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
     };
 
     return (
-        <View style={ styles.container }>
+        <View style={styles.container}>
             <View style={{ ...styles.header, backgroundColor: color.toLocaleLowerCase() == "#ffffff" ? "#eeeeee" : color }}>
                 {/* The applet's logo */}
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignContent: 'center', justifyContent: 'flex-start' }}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: actionSlug.split('.')[0]})}>
-                            {actionSlug &&
+                    <TouchableOpacity onPress={() => navigation.navigate('Info', { slug: actionSlug.split('.')[0] })}>
+                        {actionSlug &&
                             <LogoApplet
                                 slug={actionSlug.split('.')[0]}
                                 color={color}
                             />}
-                        </TouchableOpacity>
-                        {/* Loop through reactionsList */}
-                        {reactionsList && reactionsList.map((reaction: any, index: number) => (
-                            <View key={index}>
-                                <TouchableOpacity onPress={() => navigation.navigate('Info', {slug: reaction.reactionSlug.split('.')[0]})}>
-                                    <LogoApplet
+                    </TouchableOpacity>
+                    {/* Loop through reactionsList */}
+                    {reactionsList && reactionsList.map((reaction: any, index: number) => (
+                        <View key={index}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Info', { slug: reaction.reactionSlug.split('.')[0] })}>
+                                <LogoApplet
                                     slug={reaction.reactionSlug.split('.')[0]}
                                     color={color}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        ))}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ))}
                 </View>
 
                 {/* The title of the applet */}
@@ -103,9 +112,9 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
 
             </View>
 
-            <View style={ styles.body }>
+            <View style={styles.body}>
                 {/* The toggle switch that enables or disables the applet */}
-                <View style={ styles.toggleSwitch }>
+                <View style={styles.toggleSwitch}>
                     <ToggleSwitch
                         isChecked={enabled}
                         isDisabled={false}
@@ -144,6 +153,11 @@ const AppletInfoContainer: React.FC<AppletInfoContainerProps> = ({ name, color, 
     );
 };
 
+/* The `const styles` declaration is creating a JavaScript object that contains a set of styles for
+different elements in the `AppletInfoContainer` component. Each key in the object represents a style
+property, such as `container`, `header`, `title`, `text`, `toggleSwitch`, and `body`. The
+corresponding value for each key is an object that defines the specific style properties and their
+values for that element. */
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',

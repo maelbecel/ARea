@@ -1,9 +1,7 @@
 // --- Librairies import --- //
 import Link from "next/link"
 import Image from "next/image"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import express, { Request, Response } from 'express';
-import fetch from 'node-fetch';
+import { Dispatch, SetStateAction, useState } from "react"
 
 // --- Interfaces --- //
 interface ButtonProps {
@@ -84,18 +82,7 @@ const InputContainer = ({ placeholder, secureMode = false, value, setValue, icon
 
 const ConnectWithGoogle = () => {
     const handleClick = async () => {
-        try {
-            const response = await fetch(`${localStorage.getItem('address') as string}/user/login/google?redirecturi=http://localhost:8081/`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            console.log(response);
-        } catch (error) {
-            console.log(error);
-        }
+        window.location.href = `${localStorage.getItem('address') as string}/user/login/google?redirecturi=http://localhost:8081/`;
     };
 
   return (
@@ -121,11 +108,10 @@ const TextContainer = ({ title, submit, children, handleClick, noAccount = false
             {noAccount &&
                 <RedirectText text="No account ? Sign up here" redirectUri="/sign-up" />
             }
-            {/*TODO: setup Connect with google  :
             <div className="font-bold text-[48px] text-[#363841]">
                 Or
             </div>
-            <ConnectWithGoogle />*/}
+            <ConnectWithGoogle />
         </div>
     )
 }

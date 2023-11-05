@@ -7,16 +7,22 @@ import AppletDetails from "../../api/AppletDetails";
 import ToggleSwitch from "./Switch";
 import { getWriteColor } from "../ActionCard";
 
+/* The `ReactionListProps` interface is defining the structure of an object that represents a list of
+reactions for an applet. It has two properties: */
 interface ReactionListProps {
     reactionSlug: string;
     reactionData: any[];
 }
 
+/* The `ReactionProps` interface is defining the structure of an object that represents the props
+passed to the `ReactionLogo` component. It has two properties: */
 interface ReactionProps {
     reaction: ReactionListProps;
     bgColor: string;
 }
 
+/* The `AppletProps` interface is defining the structure of an object that represents the props passed
+to the `AppletComponent` component. It has the following properties: */
 interface AppletProps {
     id: number;
     name: string;
@@ -26,6 +32,14 @@ interface AppletProps {
     author: string;
 }
 
+/**
+ * The `ReactionLogo` component renders a logo based on the given reaction and background color.
+ * @param  - - `reaction`: This is an object that contains information about a reaction. It likely has
+ * properties such as `reactionSlug` which is a string representing the slug of the reaction.
+ * @returns The `ReactionLogo` component is returning a `LogoApplet` component with the `slug` prop set
+ * to the first part of the `reactionSlug` string (obtained by splitting it at the dot) and the `color`
+ * prop set to the value of the `bgColor` prop.
+ */
 const ReactionLogo: React.FC<ReactionProps> = ({ reaction, bgColor }) => {
     return (
         <LogoApplet
@@ -40,6 +54,13 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
     const navigation: any = useNavigation();
     const [loading, setLoading] = useState<boolean>(false);
 
+    /**
+     * The function `dataFetch` is an asynchronous function that fetches data using the `AppletDetails`
+     * function and sets the background color based on the fetched data.
+     * @param {string} slug - The `slug` parameter is a string that represents a unique identifier for
+     * a specific item or resource. It is used as a parameter in the `dataFetch` function to fetch data
+     * related to that specific slug.
+     */
     const dataFetch = async (slug : string) => {
         try {
             const data = await AppletDetails(slug);
@@ -50,10 +71,14 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
         }
     };
 
+    /* The `useEffect` hook is used to perform side effects in a functional component. In this case, it
+    is used to fetch data and set the background color based on the fetched data. */
     useEffect(() => {
         dataFetch(actionSlug);
     }, [navigation]);
 
+    /* The `return` statement in the code is rendering the JSX elements based on the value of the
+    `loading` state. */
     return (
         loading ? (
         <TouchableOpacity style={{ ...styles.container, backgroundColor: bgColor} } onPress={() => navigation.navigate('MyApplets', { id: id })}>
@@ -100,6 +125,9 @@ const AppletComponent: React.FC<AppletProps> = ({ id, name, actionSlug, reaction
     );
 };
 
+/* The `const styles` declaration is creating a JavaScript object that contains a set of styles for the
+components in the React Native code. The `StyleSheet.create()` function is used to create a
+stylesheet object that optimizes the styles for performance. */
 const styles = StyleSheet.create({
     container: {
         borderRadius: 10,
@@ -133,4 +161,9 @@ const styles = StyleSheet.create({
     },
 });
 
+/* The `export default AppletComponent;` statement is exporting the `AppletComponent` component as the
+default export of the module. This means that when another file imports this module, it can access
+the `AppletComponent` component directly without having to specify its name in curly braces. For
+example, in another file, you can import the `AppletComponent` like this: `import AppletComponent
+from './AppletComponent';`. */
 export default AppletComponent;
