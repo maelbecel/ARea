@@ -82,7 +82,6 @@ const ToggleSwitch = ({ isCheked, isDisable, yesLabel, noLabel, bgColor, id } : 
             </div>
             <ModalError closeModal={closeModalError} openModal={openModalError} text="Something went wrong !" modalIsOpen={modalErrorIsOpen}></ModalError>
         </div>
-
   );
 };
 

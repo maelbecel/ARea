@@ -50,7 +50,7 @@ const ButtonIconNavigate = ({ href, children }: { href: string, children?: React
                 {children}
             </div>
         </Link>
-    )
+    );
 }
 
 const NavigateButton = ({ href, text, theme = 'light' }: { href: string, text: string, theme?: string }) => {
