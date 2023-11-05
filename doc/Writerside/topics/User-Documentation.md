@@ -114,7 +114,7 @@ To initiate this protocol you must request it from the API. To do this you need 
 You also need a special auth token.
 
 ### Get temp auth token
-To get this token you need to make a **GET request** on **/service/{slug}/oauth2/token**.\
+To get this token you need to make a **GET request** on **/service/\{slug\}/oauth2/token**.\
 This request return **200** with this response payload
 ```JSON
 {
@@ -130,15 +130,19 @@ Your redirect URL need to support some parameters.\
 **success** -> If everything is good !
 
 Example redirect URL
-```
+```HTTP
 https://localhost:8080/oauth2/callback?error=Fail%20to%20do
 ```
 
 ### Do request
-**GET /service/{slug}/oauth2?redirecturi=yoururl&authToken=YourTokenGetBefore**\
+**GET /service/\{slug\}/oauth2?redirecturi=yoururl&authToken=YourTokenGetBefore**\
 This request will redirect to the third-party service site **302**.\
 Return **401** if token is not valid.\
 Can return **400**, if service doesn't exist.
+
+## Start server
+Now, how to start server ?
+Follow this [installation guide](Server-Launch-Server.md)
 
 # Web
 

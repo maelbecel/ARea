@@ -119,6 +119,79 @@ export default function App() {
 ```
 # Server
 
+In this documentation, we will see how the server works. We will also learn how to add applications, actions and reactions
+
+### How does it work?
+
+First, you should know that the server consists of two main parts:
+- API - This part handle all api call from other applications and also web & mobile calls
+- Actions & reactions system - This part manages all action detection and carrying out reactions
+\
+The server was designed to be able to add actions & reactions without needing to touch the API part of the project.\
+It was created in Java, with the Spring Boot framework. To be able to edit the server, you must therefore have a good foundation in these two aspects
+
+### Setting up the development environment
+
+To get started, you need to install **Java 17**. If you use a lower version of Java you may experience problems compiling or using the server.
+
+You must also have **Maven** installed.
+
+Install these tools on Debian/Ubuntu:
+```Bash
+sudo apt install openjdk-17-jre maven
+```
+Install these tools on Fedora/Centos:
+```Bash
+sudo dnf install openjdk-17-jre maven
+```
+On Windows, use the IntellJ IDE (IDEA) which automatically downloads what is needed for this project.
+
+Once this is done, follow step of installation [server of user documentation](Server-Launch-Server.md) to launch server.
+
+Each time you edit the server code, you must restart it with the command:
+```Bash
+docker compose up --build server
+```
+
+### App
+
+An app is the first part of actions/reactions. It defines a service, for example discord, and it is in this that we will list all the actions & reactions linked to this app.
+
+How to create an app?
+
+The project is structured so that the apps are found in the **fr.zertus.area.app** folder. Each app has its own folder.\
+Let’s take an example of an app called Area51. To create it, you must create a folder named **Area51**.
+
+You must then create the main class, **Area51App**, which extends the App class
+```Java
+public class Area51App extends App {
+
+    @Override
+    public String getName() {
+        return "Area51";
+    }
+
+    @Override
+    public List<Action> getActions() {
+        return List.of();
+    }
+
+    @Override
+    public List<Reaction> getReactions() {
+        return List.of();
+    }
+
+    @Override
+    public AppDecoration getDecoration() {
+        return null;
+    }
+    
+}
+```
+
+
+
+
 # Web
 
 The web part is divided into 4 principal sections:

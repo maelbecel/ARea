@@ -1,6 +1,7 @@
 package fr.zertus.area.service;
 
 import fr.zertus.area.app.App;
+import fr.zertus.area.app.area51.Area51App;
 import fr.zertus.area.app.discord.DiscordApp;
 import fr.zertus.area.app.github.GithubApp;
 import fr.zertus.area.app.gmail.GmailApp;
@@ -68,6 +69,9 @@ public class AppService {
 
         TimeApp timeApp = new TimeApp();
         apps.put(timeApp.getSlug(), timeApp);
+
+        Area51App area51App = new Area51App();
+        apps.put(area51App.getSlug(), area51App);
     }
 
     private static final Map<Long, String> redirectUris = new HashMap<>();

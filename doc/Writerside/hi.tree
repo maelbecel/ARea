@@ -9,6 +9,7 @@
     <toc-element topic="Home.md">
         <toc-element topic="User-Documentation.md"/>
         <toc-element topic="Technical-Documentation.md">
+            <toc-element topic="Server-Launch-Server.md"/>
             <toc-element topic="Mobile-Components.md"/>
             <toc-element topic="Mobile-Screen.md"/>
             <toc-element topic="Mobile-API.md"/>
