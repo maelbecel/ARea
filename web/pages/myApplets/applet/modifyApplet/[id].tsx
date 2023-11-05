@@ -1,10 +1,15 @@
 // --- Libraries --- //
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { NextPage } from "next";
 
-// --- Providers --- //
+// --- API --- //
 import { useToken } from "../../../../utils/api/user/Providers/TokenProvider";
+
+// --- Interface --- //
+import { ActionApplet, ReactionApplet, defaultReactionsApplet } from "../../../../components/Applet/Interface/interface";
+import { GetAppletWithID } from "../../../../utils/api/applet/applet";
+import EditPages from "../../../../components/Applet/Edit/Pages/EditPages";
 
 // --- Components --- //
 import AllActionFromServicePages from "../../../../components/Applet/Create/Pages/AllActionFromServicePages";
@@ -13,15 +18,10 @@ import ServiceConnexionPages from "../../../../components/Applet/Create/Pages/Se
 import SearchServicePages from "../../../../components/Applet/Create/Pages/SearchServicePages";
 import Footer from "../../../../components/Footer/Footer";
 
-// --- Interface --- //
-import { ActionApplet, ReactionApplet, defaultReactionsApplet } from "../../../../components/Applet/Interface/interface";
-import { GetAppletWithID } from "../../../../utils/api/applet/applet";
-import EditPages from "../../../../components/Applet/Edit/Pages/EditPages";
-
 const IndexPage: NextPage = () => {
     // --- Variables --- //
-    const [pages, setPages] = useState<number>(-1);
-    const [editMode, setEditMode] = useState<boolean>(false);
+    const [pages     , setPages]      = useState<number>(-1);
+    const [editMode  , setEditMode]   = useState<boolean>(false);
     const [dataApplet, setDataApplet] = useState<any>(undefined);
 
     // --- Providers Hookers --- //
@@ -33,6 +33,11 @@ const IndexPage: NextPage = () => {
     // --- Query --- //
     const { id } = router.query;
 
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token, router]);
+        
     /**
      * First frame useEffect and when id is updated,
      * that fill "action" and "reactions" in localStorage with the applet
@@ -62,7 +67,7 @@ const IndexPage: NextPage = () => {
     }, [dataApplet]);
 
     useEffect(() => {
-        if (token === null)
+        if (token === null || token === undefined || token == "")
             router.push("/")
     }, [token, router]);
 
@@ -122,16 +127,16 @@ const IndexPage: NextPage = () => {
 
     const parseDataAppletToAREA = (data: any) => {
         let action: ActionApplet = {
-            actionSlug: data.actionSlug,
-            actionInputs: data.actionData
+            actionSlug: data?.actionSlug,
+            actionInputs: data?.actionData
         };
 
         let reactions: ReactionApplet[] = [];
 
-        for (let i = 0; i < data.reactions.length; i++) {
+        for (let i = 0; i < data?.reactions?.length; i++) {
             reactions.push({
-                reactionSlug: data.reactions[i].reactionSlug,
-                reactionInputs: data.reactions[i].reactionData
+                reactionSlug: data?.reactions[i]?.reactionSlug,
+                reactionInputs: data?.reactions[i]?.reactionData
             });
         }
 

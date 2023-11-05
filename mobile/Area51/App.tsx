@@ -105,7 +105,7 @@ function Tabs() {
       <Tab.Screen name="My Applets" component={AppletsScreen} />
       <Tab.Screen name="Explore" component={ExploreScreen} />
       <Tab.Screen name="Create" component={CreateScreen} />
-      <Tab.Screen name="Activity" component={ActivityScreen} />
+      {/* <Tab.Screen name="Activity" component={ActivityScreen} /> */}
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

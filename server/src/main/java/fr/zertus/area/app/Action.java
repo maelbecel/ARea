@@ -69,6 +69,13 @@ public abstract class Action implements IAction {
         return false;
     }
 
+    /**
+     * Check if the action is triggered
+     * @param user the user that triggered the action
+     * @param inputs the inputs of the action
+     * @param values values given when the action was triggered (can be all you want)
+     * @return true if the action is triggered, false otherwise
+     */
     @Override
     public boolean isTrigger(User user, List<FormInput> inputs, Map<String, String> values) {
         return false;

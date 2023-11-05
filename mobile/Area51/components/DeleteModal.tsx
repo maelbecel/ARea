@@ -1,3 +1,4 @@
+/* The code is importing various modules and components from the React and React Native libraries. */
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import DeleteApplet from '../api/DeleteApplet';
@@ -12,6 +13,10 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const navigation: any = useNavigation();
 
+    /**
+     * The function `deleteApplet` is an asynchronous function that sets the modal visibility to false,
+     * deletes an applet using the `DeleteApplet` function, and navigates to the "My Applets" screen.
+     */
     const deleteApplet = async () => {
         try {
             setModalVisible(false);

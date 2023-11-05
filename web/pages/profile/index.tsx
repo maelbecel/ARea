@@ -18,6 +18,7 @@ import { NavigateButton } from "../../components/NavBar/components/Button";
 import LinkedAccounts from "../../components/ProfilePage/LinkedAccounts";
 import ProfilePicture from "../../components/ProfilePage/ProfilePicture";
 import NavBar, { LeftSection, RightSection } from "../../components/NavBar/navbar";
+import router from "next/router";
 
 const IndexPage: NextPage = () => {
     // --- Variables --- //
@@ -47,8 +48,14 @@ const IndexPage: NextPage = () => {
         setEmail(user?.email as string);
     }, [user]);
 
+    useEffect(() => {
+        if (token === null)
+            router.push("/")
+    }, [token]);
+
     return (
         <>
+            {/* --- NavBar --- */}
             <NavBar>
                 <LeftSection>
                     <Icon />
@@ -59,11 +66,17 @@ const IndexPage: NextPage = () => {
                     <Profile email={user?.email} />
                 </RightSection>
             </NavBar>
+    
+            {/* --- Body --- */}
             <div className="min-h-screen flex flex-col items-center">
+                {/* --- Profile --- */}
                 <div className="w-[75%] lg:w-[30%]">
+                    {/* --- Profile Picture --- */}
                     <div className="my-[32px]">
                         <ProfilePicture/>
                     </div>
+                        
+                    {/* --- Form --- */}
                     {user &&
                         <FormProfile
                             username={username}
@@ -75,13 +88,17 @@ const IndexPage: NextPage = () => {
                         />
                     }
                     <UpdateButton username={username} email={email} token={token} setToken={setToken}/>
+    
+                    {/* --- Linked Accounts --- */}
                     <LinkedAccounts />
                 </div>
+    
+                {/* --- Logout & Delete --- */}
                 <LogoutButton/>
                 <DeleteButton token={token}/>
             </div>
         </>
-    )
+    );
 }
 
 export default IndexPage;

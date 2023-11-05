@@ -40,7 +40,7 @@ services:
     depends_on:
       - server
     volumes:
-      - ./apk:/app/public/
+      - ./apk/app.apk:/app/public/apk/app.apk
 
   mobile:
     image: area51/mobile:latest
@@ -48,5 +48,3 @@ services:
     restart: always
     volumes:
       - ./apk:/output
-
-

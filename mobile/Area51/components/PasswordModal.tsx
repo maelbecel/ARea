@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MaterialIcons} from '@expo/vector-icons';
 import PatchUser from '../api/PatchUser';
 
+/* The code defines a functional component called `PasswordModal` using TypeScript and React. */
 const PasswordModal: React.FC = () => {
     const [password, setPassword] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
@@ -33,6 +34,10 @@ const PasswordModal: React.FC = () => {
         }
     };
 
+    /**
+     * The function "reset" resets the state variables for a modal, password, current password, and
+     * confirm password.
+     */
     const reset = () => {
       setModalVisible(false);
       setPassword('');

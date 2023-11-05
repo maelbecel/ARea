@@ -1,5 +1,6 @@
 # Mobile-Screen
 
+Here is the list of the screen of the mobile application :
 
 ## [Activity.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/Activity.tsx)
 
@@ -114,6 +115,12 @@ For more information about this file you can check his complete code here : [Act
 ## [AddServices.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/AddServices.tsx)
 
 The component `AddServices` is a screen where the user can add a new service to create a new applet.
+
+![AddService.png](../images/mobileComponents/AddServices-1.png)
+
+**or**
+
+![AddService.png](../images/mobileComponents/AddServices-2.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -238,7 +245,7 @@ In the first part we remove the current reaction input and  the second part we r
     const tmp = [...reactionInput];
     tmp.splice(item, 1);
     reactionInput = tmp;
-  
+
     const rec = [...reaction]
     rec.splice(item, 1);
     setReaction(rec);
@@ -292,7 +299,7 @@ To finish we have two case of return :
           )
         }
         {(action != "default" && reaction.length > 0) ?
-          <SubmitButton title="Continuer" onPress={newApplet} textcolor='#FFF' style={{}}/>
+          <SubmitButton title="Continue" onPress={newApplet} textcolor='#FFF' style={{}}/>
           : null
         }
       </ScrollView>
@@ -319,6 +326,8 @@ For more information about this file you can check his complete code here : [Add
 ## [ConnectAuth.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/ConnectAuth.tsx)
 
 The component `ConnectAuth` is a screen where the user can validate an action or reaction service into the applet creation, including the forms and the OAuth verification.
+
+![ConnectAuth.png](../images/mobileComponents/ConnectAuth.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -830,6 +839,8 @@ For more information about this file you can check his complete code here : [Con
 
 The component `ConnectAuthEdit` is a screen where the user can validate an action or reaction service into the applet edition, including the forms and the OAuth verification.
 
+![ConnectAuthEdit.png](../images/mobileComponents/ConnectAuthEdit.png)
+
 We start by importing the required modules and components :
 ```typescript
   import * as React from 'react';
@@ -1331,6 +1342,8 @@ For more information about this file you can check his complete code here : [Con
 
 The component `EditApplet` is a screen where the user can edit an applet.
 
+![EditApplet.png](../images/mobileComponents/EditApplet.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -1427,7 +1440,7 @@ The function `newApplet` is an asynchronous function that creates a new applet b
 The function return nothing (undefined) if the condition `data == false` is true. Otherwise, it is navigating to the "MyApplets" screen with the `id` parameter set to `data.id`.
 
 ```Typescript
-const newApplet = async () 
+const newApplet = async ()
 ```
 
 Firstly the function is setting the loading state to 1 and displaying the loading information as "Getting
@@ -1585,7 +1598,7 @@ return (
           )
         }
         {(action != "default" && reaction.length > 0) ?
-          <SubmitButton title="Continuer" onPress={newApplet} textcolor='#FFF' style={{}}/>
+          <SubmitButton title="Continue" onPress={newApplet} textcolor='#FFF' style={{}}/>
           : null
         }
       </ScrollView>
@@ -1617,6 +1630,8 @@ For more information about this file you can check his complete code here : [Edi
 ## [ExploreMyApplets.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/ExploreMyApplets.tsx)
 
 The component `ExploreMyApplets` is a screen where the user can explore his applets.
+
+![ExploreMyApplets.png](../images/mobileComponents/ExploreMyApplets.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -1687,6 +1702,8 @@ For more information about this file you can check his complete code here : [Exp
 
 The component `Home` is a screen where the user can see all the services.
 
+![Home.png](../images/mobileComponents/Home.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -1716,7 +1733,7 @@ const [dispApplets, setDispApplets] = useState([]);
 ```
 
 Then we fetch and set the applets when the component mounts using a useEffect hook.
-```typescript 
+```typescript
 useEffect(() => {
     /**
      * The function fetchApplets fetches applets from a service and sets them in state variables.
@@ -1750,7 +1767,7 @@ const filterApplets = (name : string) => {
   }
 ```
 The function "displayApplets" maps over an array of applets and returns a JSX element for each applet.
-```typescript 
+```typescript
 const displayApplets = () => {
     if (dispApplets == null) return;
     return dispApplets.map((service) => (
@@ -1813,6 +1830,8 @@ For more information about this file you can check his complete code here : [Hom
 
 The component `InfoScreen` is a screen where the user can see the information of a service.
 
+![InfoScreen.png](../images/mobileComponents/InfoScreen.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -1838,7 +1857,7 @@ Here is what is the state variables are used for :
 * `link`: the link of the service
 * `desc` : the description of the service
 
-```typescript 
+```typescript
   const { slug } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
@@ -1865,7 +1884,7 @@ The `React.useEffect` hook is used to perform side effects in a functional compo
 case, the effect is triggered when the `slug` variable changes.
 The function fetchData fetches data from a service and sets various state variables based on the fetched data.
 
-```typescript 
+```typescript
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -1887,7 +1906,7 @@ The function fetchData fetches data from a service and sets various state variab
 The `return` statement in the `InfoService` component is returning a JSX (JavaScript XML)
 expression that represents the structure and content of the component's rendered output.
 
-```typescript 
+```typescript
 return (
     <View>
       <View style={[{ backgroundColor: color }, styles.container]}>
@@ -1985,6 +2004,8 @@ The component `Login` is a screen where the user can log in.
 The code is defining a functional component called `Login` that takes a parameter `navigation`. The
 `navigation` parameter is likely being passed from a parent component and is used for navigating
 between screens in a React Native application.
+
+![Login.png](../images/mobileComponents/Login.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -2143,6 +2164,8 @@ For more information about this file you can check his complete code here : [Log
 
 The component `MyApplets` is a screen where the user can see his applets.
 
+![MyApplets.png](../images/mobileComponents/MyApplets.png)
+
 We start by importing the required modules and components :
 ```typescript
 import React, { useEffect, useState, useCallback } from "react";
@@ -2199,7 +2222,7 @@ The `useEffect` hook is used to perform side effects in a functional component. 
 the `useEffect` hook is used to add a listener to the navigation focus event and to get the
 status bar height.
 
-```typescript 
+```typescript
     useEffect(() => {
         const listener = navigation.addListener("focus", () => {
             dataFetch();
@@ -2215,7 +2238,7 @@ status bar height.
 The function `dataFetch` is an asynchronous function that fetches data using the `AppletInfos`
 function and sets the fetched data to the `dataApplet` state variable.
 
-```typescript 
+```typescript
     const dataFetch = async () => {
         try {
             const data = await AppletInfos(id);
@@ -2230,7 +2253,7 @@ The `useEffect` hook is used to perform side effects in a functional component. 
 the `useEffect` hook is used to call the `dataFetch` function whenever the `id` dependency
 changes.
 
-```typescript 
+```typescript
 useEffect(() => {
     dataFetch();
 }, [id]);
@@ -2240,7 +2263,7 @@ The `useEffect` hook is used to perform side effects in a functional component. 
 the `useEffect` hook is used to fetch data from the `ServiceInfo` API and set the background
 color based on the fetched data.
 
-```typescript 
+```typescript
 useEffect(() => {
         if (dataApplet) {
             const dataFetch = async (slug : string) => {
@@ -2332,6 +2355,8 @@ For more information about this file you can check his complete code here : [MyA
 
 The component `Profile` is a screen where the user can see his profile.
 
+![Profile.png](../images/mobileComponents/Profile.png)
+
 We start by importing the required modules and components :
 ```typescript
 import React, { useState, useEffect } from "react";
@@ -2370,7 +2395,7 @@ Here is what is the state variables are used for :
 * `services` : the services of the user
 * `servicesCon` : the services connected of the user
 
-```typescript 
+```typescript
   const [data, setData] = useState<any>([]);
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -2386,7 +2411,7 @@ are not already in `connected`. The `connected` parameter is an array of strings
 The `allserv` parameter is an array of all available servers.
 The function `orderByFirstConnected` returns an array of strings.
 
-```typescript 
+```typescript
 const orderByFirstConnected = (connected : string[], allserv : string[]) => {
     let tmp : string[] = [];
     for (let i = 0; i < connected.length; i++) {
@@ -2411,7 +2436,7 @@ tries to fetch the server address and token from AsyncStorage using `await
 AsyncStorage.getItem()`. If either the token or server address is missing, it navigates to the
 'Login' screen and returns.
 
-```typescript 
+```typescript
 useEffect(() => {
     const fetchData = async () => {
       try {
@@ -2447,7 +2472,7 @@ useEffect(() => {
 ```
 
 The function `handleLogout` deletes the 'token_api' item from SecureStore and navigates to the 'Login' screen.
-```typescript 
+```typescript
 const handleLogout = async () => {
     try {
       await SecureStore.deleteItemAsync('token_api');
@@ -2459,7 +2484,7 @@ const handleLogout = async () => {
 ```
 
 The function `handleDelete` deletes a user, removes a token from SecureStore, and navigates to the Login screen in a React Native app.
-```typescript 
+```typescript
   const handleDelete = async () => {
     try {
       await DeleteUser();
@@ -2475,7 +2500,7 @@ The function handles a button press event, retrieves user data from AsyncStorage
 user's profile using an API call, stores the API token in SecureStore, and displays success or
 error messages.
 
-```typescript 
+```typescript
 const handlePress = async () => {
     try {
       const email = await AsyncStorage.getItem('email');
@@ -2510,7 +2535,7 @@ const displayServices = () => {
 
 The `return` statement in the code is rendering the JSX elements that make up the Profile
 component.
-```typescript 
+```typescript
 return (
     <View style={styles.container}>
     {loading ? (
@@ -2638,6 +2663,8 @@ For more information about this file you can check his complete code here : [Pro
 
 The component `SearchServices` is a screen where the user can search services.
 
+![SearchServices.png](../images/mobileComponents/SearchServices.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -2669,7 +2696,7 @@ Here is what is the state variables are used for :
 
 The `useEffect` hook is used to perform side effects in functional components. In this case, the
 `useEffect` hook is used to fetch applets from a service and set them in state. The function fetchApplets fetches applets from a service and sets them in state.
-```typescript 
+```typescript
     useEffect(() => {
     const fetchApplets = async () => {
       try {
@@ -2687,7 +2714,7 @@ The `useEffect` hook is used to perform side effects in functional components. I
 
 The function `filterApplets` filters an array of applets based on a given name and updates the
 displayed applets accordingly. The `name` parameter is a string representing the name of the applet to filter.
-```typescript 
+```typescript
   const filterApplets = (name : string) => {
     if (applets == null) return;
     let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
@@ -2700,7 +2727,7 @@ The code is creating a new constant variable called `filteredApplets`. It checks
 Otherwise, it filters the `dispApplets` array based on the conditions inside the `filter`
 function.
 
-```typescript 
+```typescript
 const filteredApplets = (dispApplets == null) ? null : dispApplets.filter((service) => {
     if (type === "action") return service.action === true;
     if (type === "reaction") return service.reaction === true;
@@ -2711,7 +2738,7 @@ const filteredApplets = (dispApplets == null) ? null : dispApplets.filter((servi
 This code block is rendering the JSX elements that make up the UI of the `SearchServices`
 component.
 
-```typescript 
+```typescript
 if (applets != undefined && applets != null) {
     return (
       <View style={styles.container}>
@@ -2769,6 +2796,8 @@ For more information about this file you can check his complete code here : [Sea
 
 The component `SearchServices` is a screen where the user can search services.
 
+![SearchServicesEdit.png](../images/mobileComponents/SearchServicesEdit.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -2800,7 +2829,7 @@ Here is what is the state variables are used for :
 
 The `useEffect` hook is used to perform side effects in functional components. In this case, the
 `useEffect` hook is used to fetch applets from a service and set them in state. The function fetchApplets fetches applets from a service and sets them in state.
-```typescript 
+```typescript
     useEffect(() => {
     const fetchApplets = async () => {
       try {
@@ -2818,7 +2847,7 @@ The `useEffect` hook is used to perform side effects in functional components. I
 
 The function `filterApplets` filters an array of applets based on a given name and updates the
 displayed applets accordingly. The `name` parameter is a string representing the name of the applet to filter.
-```typescript 
+```typescript
   const filterApplets = (name : string) => {
     if (applets == null) return;
     let tmp = applets.filter((service) => service.name.toLowerCase().includes(name.toLowerCase()));
@@ -2831,7 +2860,7 @@ The code is creating a new constant variable called `filteredApplets`. It checks
 Otherwise, it filters the `dispApplets` array based on the conditions inside the `filter`
 function.
 
-```typescript 
+```typescript
 const filteredApplets = (dispApplets == null) ? null : dispApplets.filter((service) => {
     if (type === "action") return service.action === true;
     if (type === "reaction") return service.reaction === true;
@@ -2842,7 +2871,7 @@ const filteredApplets = (dispApplets == null) ? null : dispApplets.filter((servi
 This code block is rendering the JSX elements that make up the UI of the `SearchServices`
 component.
 
-```typescript 
+```typescript
 if (applets != undefined && applets != null) {
     return (
       <View style={styles.container}>
@@ -2899,6 +2928,8 @@ For more information about this file you can check his complete code here : [Sea
 ## [Service.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/Service.tsx)
 
 The component `Service` is a screen where the user can see the service information.
+
+![Service.png](../images/mobileComponents/Service.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -2972,7 +3003,7 @@ Here is what is the state variables are used for :
 * `action` : the actions of the service
 * `reaction` : the reactions of the service
 
-```typescript 
+```typescript
   const { slug } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
@@ -2984,7 +3015,7 @@ Here is what is the state variables are used for :
 The function `displayActions` returns an array of `ActionCard` components based on the `action` array, with each component having a unique key, name, description, color, and an `onPress` event
 that navigates to the 'ConnectAuth' screen with specific parameters. The `displayActions` function is returning an array of `ActionCard` components.
 
-```typescript 
+```typescript
 const displayActions = () => {
     return action.map((service) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('Create')}/>
@@ -3006,7 +3037,7 @@ The `displayReactions` function is returning an array of `ActionCard` components
 The `React.useEffect` hook is used to perform side effects in a functional component. In this
 case, the effect is triggered when the `slug` variable changes. The function fetchData fetches data from a service and sets various state variables based on the fetched data.
 
-```typescript 
+```typescript
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -3028,7 +3059,7 @@ case, the effect is triggered when the `slug` variable changes. The function fet
 The `return` statement in the `Service` component is returning a JSX expression that represents
 the structure and content of the component's rendered output.
 
-```typescript 
+```typescript
   return (
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
@@ -3096,6 +3127,8 @@ For more information about this file you can check his complete code here : [Ser
 ## [ServiceTemplate.tsx](https://github.com/maelbecel/ARea/blob/master/mobile/Area51/screen/ServiceTemplate.tsx)
 
 The component `ServiceTemplate` is a screen where the user can select the action/Reaction from the service.
+
+![ServiceTemplate.png](../images/mobileComponents/ServiceTemplate.png)
 
 We start by importing the required modules and components :
 ```typescript
@@ -3170,7 +3203,7 @@ Here is what is the state variables are used for :
 * `action` : the actions of the service
 * `reaction` : the reactions of the service
 
-```typescript 
+```typescript
   const { slug, type, actionInput, reactionInput, index } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
@@ -3181,7 +3214,7 @@ Here is what is the state variables are used for :
 
 The function `displayActions` maps over an array of actions and returns an array of `ActionCard` components with specific props. The `displayActions` function is returning an array of `ActionCard` components.
 
-```typescript 
+```typescript
   const displayActions = () => {
     return action.map((service: any) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuth', { slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index})}/>
@@ -3203,7 +3236,7 @@ The `React.useEffect` hook is used to perform side effects in a functional compo
 case, the `useEffect` hook is used to fetch data from a service and update the state variables
 based on the fetched data. The function fetchData fetches data from a service and sets various state variables based on the fetched data.
 
-```typescript 
+```typescript
 React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -3225,7 +3258,7 @@ React.useEffect(() => {
 The code block is rendering a view that contains a top bar, an image, and a text component. It
 also includes a scroll view that contains a view with action cards.
 
-```typescript 
+```typescript
 return (
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
@@ -3295,6 +3328,8 @@ For more information about this file you can check his complete code here : [Ser
 
 The component `ServiceTemplate` is a screen where the user can select the action/Reaction from the service.
 
+![ServiceTemplateEdit.png](../images/mobileComponents/ServiceTemplateEdit.png)
+
 We start by importing the required modules and components :
 ```typescript
 import * as React from 'react';
@@ -3368,7 +3403,7 @@ Here is what is the state variables are used for :
 * `action` : the actions of the service
 * `reaction` : the reactions of the service
 
-```typescript 
+```typescript
   const {id, slug, type, actionInput, reactionInput, index } = route.params;
   const [color, setColor] = React.useState<string>("#FFFFFF");
   const [url, setUrl] = React.useState<string>("https://via.placeholder.com/100");
@@ -3379,7 +3414,7 @@ Here is what is the state variables are used for :
 
 The function `displayActions` maps over an array of actions and returns an array of `ActionCard` components with specific props. The `displayActions` function is returning an array of `ActionCard` components.
 
-```typescript 
+```typescript
   const displayActions = () => {
     return action.map((service: any) => (
       <ActionCard key={service.slug} name={service.name} description={service.description} color={color} onPress={() => navigation.navigate('ConnectAuthEdit', { id: id, slug: service.slug, type: type, actionInput : actionInput, reactionInput : reactionInput, index : index})}/>
@@ -3401,7 +3436,7 @@ The `React.useEffect` hook is used to perform side effects in a functional compo
 case, the `useEffect` hook is used to fetch data from a service and update the state variables
 based on the fetched data. The function fetchData fetches data from a service and sets various state variables based on the fetched data.
 
-```typescript 
+```typescript
 React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -3423,7 +3458,7 @@ React.useEffect(() => {
 The code block is rendering a view that contains a top bar, an image, and a text component. It
 also includes a scroll view that contains a view with action cards.
 
-```typescript 
+```typescript
 return (
     <View>
       {/* <StatusBar backgroundColor={color} /> */}
@@ -3494,6 +3529,8 @@ For more information about this file you can check his complete code here : [Ser
 
 The component `SignUp` is a screen where the user can create an account.
 
+![SignUp.png](../images/mobileComponents/SignUp.png)
+
 We start by importing the required modules and components :
 ```typescript
 import React, { useEffect } from 'react';
@@ -3520,7 +3557,7 @@ Here is what is the state variables are used for :
 * `password` : the password of the user
 * `username` : the username of the user
 
-```typescript 
+```typescript
 const [email, setEmail] = React.useState('');
 const [password, setPassword] = React.useState('');
 const [username, setUsername] = React.useState('');

@@ -128,14 +128,16 @@ const EditApplet = ({navigation, route}) => {
     setLoading(70);
     setLoadingInfo("Creating the applet")
     const data = await AppletPatch(title, action, actionInputs, actionInput, reaction, reactionInputs, reactionInput, id);
-    setLoading(0);
+
     if (data == false) {
+      setLoading(0);
       return
     } else {
       await AsyncStorage.setItem('action', "default");
       await AsyncStorage.setItem('reaction', "[]");
       navigation.navigate("MyApplets", { id: data.id});
     }
+    setLoading(0);
   }
 
   /**
@@ -198,7 +200,7 @@ const EditApplet = ({navigation, route}) => {
         <TopBar title="Edit"  iconLeft='arrow-back' onPressLeft={() => (navigation.goBack(), resetAll())} color={"#363841"} />
       </View>
       <ScrollView style={{ backgroundColor: "#FFF", height: "80%", paddingTop: 0, marginTop: 0}} contentContainerStyle={{alignItems: 'center', flex: 0, justifyContent: "center"}}>
-        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServices', {type: "action"})} onPressCross={resetAll}/>
+        <ActionChoose type="action" slug={action} onPress={() => navigation.navigate('SearchServicesEdit', {type: "action"})} onPressCross={resetAll}/>
         {showReactions()}
         {
           (reaction.length >= 9) ? null : (
@@ -211,7 +213,7 @@ const EditApplet = ({navigation, route}) => {
           )
         }
         {(action != "default" && reaction.length > 0) ?
-          <SubmitButton title="Continuer" onPress={newApplet} textcolor='#FFF' style={{}}/>
+          <SubmitButton title="Continue" onPress={newApplet} textcolor='#FFF' style={{}}/>
           : null
         }
       </ScrollView>
