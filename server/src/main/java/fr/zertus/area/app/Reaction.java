@@ -65,6 +65,14 @@ public abstract class Reaction implements IReaction {
         return false;
     }
 
+    /**
+     * Trigger the reaction
+     * @param user the user that triggered the reaction
+     * @param inputs the inputs of the reaction
+     * @param parameters the placeholders values <placeholder, value>
+     * @return true if the reaction was triggered, false otherwise
+     * @throws ReactionTriggerException
+     */
     @Override
     public boolean trigger(User user, List<FormInput> inputs, Map<String, String> parameters) throws ReactionTriggerException {
         return false;
