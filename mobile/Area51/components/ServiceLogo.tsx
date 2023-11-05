@@ -2,6 +2,9 @@ import { View, TouchableOpacityProps, TouchableOpacity, StyleSheet,Text, InputMo
 import React from 'react';
 import ServiceInfo from '../api/ServiceInfo';
 
+/* The `interface CardProps` is defining the props that can be passed to the `ServiceLogo` component.
+It extends the `TouchableOpacityProps` interface, which includes all the props that can be passed to
+the `TouchableOpacity` component from the `react-native` library. */
 interface CardProps extends TouchableOpacityProps {
     slug    : string;
     onPress : () => void;
@@ -65,6 +68,9 @@ const ServiceLogo: React.FC<CardProps> = ({ slug , onPress, disabled = false}) =
     const [logo, setLogo] = React.useState<string>("https://via.placeholder.com/50");
     const [loading, setLoading] = React.useState<boolean>(true);
 
+    /* The `React.useEffect` hook is used to perform side effects in functional components. In this
+    case, it is used to fetch information about a service and update the state variables `color`,
+    `logo`, and `loading` based on the fetched data. */
     React.useEffect(() => {
         const fetchInfos = async () => {
             const res = await ServiceInfo(slug);
@@ -99,6 +105,8 @@ const ServiceLogo: React.FC<CardProps> = ({ slug , onPress, disabled = false}) =
 }
 
 
+/* The `const styles` object is defining a set of styles using the `StyleSheet.create` method from the
+`react-native` library. This method ensures that the styles are optimized for performance. */
 const styles = StyleSheet.create({
     container: {
       height: 80,

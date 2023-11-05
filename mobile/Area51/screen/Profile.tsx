@@ -172,7 +172,7 @@ const Profile = ({navigation}) => {
       <ScrollView
         showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
         showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
-        style={{height: Dimensions.get('window').height - 100, width: Dimensions.get('window').width, paddingHorizontal: 30}}
+        style={{height: Dimensions.get('window').height - 60, width: Dimensions.get('window').width, paddingHorizontal: 30}}
       >
         <View style={styles.profilePicture}>
           <SVGImg width={150} height={150} />
