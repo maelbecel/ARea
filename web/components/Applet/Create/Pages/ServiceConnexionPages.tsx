@@ -181,9 +181,12 @@ const ServiceConnexionPages = ({ setPages }: { setPages: Dispatch<SetStateAction
      * Check if the OAuth2 callback is already done
      */
     useEffect(() => {
+        if (user === undefined || user === null)
+            return;
+
         const serviceName = getServiceName();
 
-        for (let i = 0; i < user.connectedServices.length; i++) {
+        for (let i = 0; i < user?.connectedServices.length; i++) {
             if (user.connectedServices[i] === serviceName) {
                 setPages(4);
                 return;
