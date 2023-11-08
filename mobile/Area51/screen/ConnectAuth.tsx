@@ -247,13 +247,12 @@ const ConnectAuth = ({ navigation, route }) => {
       let result : WebBrowser.WebBrowserAuthSessionResult = await WebBrowser.openAuthSessionAsync(
         `${serverAddress}/service/${slug.split(".")[0]}/oauth2?authToken=${token}&redirecturi=${redirectUri}`
       );
-      if (result.type == "success") {
+      if (result.type == "success" || result.type == "dismiss") {
         return true;
       } else
         return false;
     } catch (error) {
-      alert(error);
-      console.error(error);
+      return false;
     }
   };
 
