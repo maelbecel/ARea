@@ -12,7 +12,12 @@ const LoginService  = async (slug : string) : Promise<any> => {
         const result : any = await WebBrowser.openAuthSessionAsync(
                     `${serverAddress}/user/login/${slug}?redirecturi=${redirectUri}`
                 );
+        console.log(result);
         if (result.type == "success") {
+            if(result.url.split("error=")[1] != null) {
+                Alert.alert('Error', decodeURI(result.url.split("error=")[1]));
+                return false;
+            }
             await SecureStore.setItemAsync('token_api', result.url.split("token=")[1]);
             return true;
         }
